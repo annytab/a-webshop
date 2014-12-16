@@ -1,0 +1,74 @@
+﻿@{
+    // Set the layout for the page
+    Layout = "/Views/shared_admin/_standard_layout.cshtml";
+
+    // Get values
+    Domain domain = ViewBag.CurrentDomain;
+    ProductReview productReview = ViewBag.ProductReview;
+    Product product = Product.GetOneById(productReview.product_id, domain.back_end_language);
+    Customer customer = Customer.GetOneById(productReview.customer_id);
+    Language language = Language.GetOneById(productReview.language_id, domain.back_end_language);
+    string returnUrl = ViewBag.ReturnUrl;
+
+    // Get translated texts
+    KeyStringList tt = ViewBag.TranslatedTexts;
+    string review_tt = tt.Get("review");
+    string id_tt = tt.Get("id");
+    string language_tt = tt.Get("language");
+    string product_tt = tt.Get("product");
+    string customer_tt = tt.Get("customer");
+    string rating_tt = tt.Get("rating");
+    string edit_tt = tt.Get("edit");
+    string text_tt = tt.Get("text");
+    string save_tt = tt.Get("save");
+    string cancel_tt = tt.Get("cancel");
+
+    // Set the title for the page
+    ViewBag.Title = review_tt + " - " + edit_tt.ToLower();  
+}
+
+<h1>@ViewBag.Title</h1>
+@*Menu*@
+@Html.Partial("~/Views/admin_product_reviews/_form_menu.cshtml")
+
+@*Main form*@
+@using (Html.BeginForm("edit", "admin_product_reviews", FormMethod.Post))
+{
+    <input name="returnUrl" type="hidden" value="@returnUrl" />
+    <table style="width:100%;">
+        <tr>
+            <td class="label">@(id_tt + ":")</td>
+            <td class="input"><input name="txtId" type="text" class="formTextbox" tabindex="-1" readonly="readonly" value="@productReview.id.ToString()" /></td>
+        </tr>
+        <tr>
+            <td class="label">@(language_tt + ":")</td>
+            <td class="input"><input type="text" class="formTextbox" tabindex="-1" readonly="readonly" value="@language.name" /></td>
+        </tr>
+        <tr>
+            <td class="label">@(product_tt + ":")</td>
+            <td class="input"><input type="text" class="formTextbox" tabindex="-1" readonly="readonly" value="@product.title" /></td>
+        </tr>
+        <tr>
+            <td class="label">@(customer_tt + ":")</td>
+            <td class="input"><input type="text" class="formTextbox" tabindex="-1" readonly="readonly" value="@customer.invoice_name" /></td>
+        </tr>
+        <tr>
+            <td class="label">@(rating_tt + ":")</td>
+            <td class="input"><input type="text" class="formTextbox" tabindex="-1" readonly="readonly" value="@productReview.rating.ToString()" /></td>
+        </tr>
+        <tr>
+            <td class="label">@(text_tt + ":")</td>
+            <td class="input"><textarea id="txtReviewText" name="txtReviewText" class="formTextarea" rows="10">@productReview.review_text</textarea></td>
+        </tr>
+    </table>
+
+    // Save form button
+    <div style="display:block;border:1px solid #cccccc;margin:20px 0px 0px 0px;border-radius:4px;">
+        <input id="btnSave" type="submit" value="@save_tt" />
+        <input type="button" value="@cancel_tt" onclick="@Html.Raw("location.href='/admin_product_reviews" + returnUrl + "'")" />
+    </div>
+}
+
+@section scripts {
+    <script>$("#txtReviewText").focus();</script>
+}

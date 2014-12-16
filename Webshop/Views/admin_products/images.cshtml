@@ -1,0 +1,104 @@
+﻿@{
+    // Set the layout for the page
+    Layout = "/Views/shared_admin/_standard_layout.cshtml";
+
+    // Get form values
+    Int32 languageId = ViewBag.LanguageId;
+    List<Language> languages = ViewBag.Languages;
+    Product product = ViewBag.Product;
+    string mainImageUrl = ViewBag.MainImageUrl;
+    List<string> otherImages = ViewBag.OtherImages;
+    string returnUrl = ViewBag.ReturnUrl;
+
+    // Get translated texts
+    KeyStringList tt = ViewBag.TranslatedTexts;
+    string product_tt = tt.Get("product");
+    string images_tt = tt.Get("images");
+    string image_tt = tt.Get("image");
+    string default_tt = tt.Get("default");
+    string language_tt = tt.Get("language");
+    string id_tt = tt.Get("id");
+    string title_tt = tt.Get("title");
+    string product_code_tt = tt.Get("product_code");
+    string main_image_tt = tt.Get("main_image");
+    string other_product_images_title_tt = tt.Get("other_product_images_title");
+    string add_images_tt = tt.Get("add_images");
+    string undo_tt = tt.Get("undo");
+    string save_tt = tt.Get("save");
+    string cancel_tt = tt.Get("cancel");
+    
+    // Set the title
+    ViewBag.Title = product_tt + " - " + images_tt.ToLower();
+}
+
+<h1>@ViewBag.Title</h1>
+
+@*Menu*@
+@Html.Partial("~/Views/admin_products/_form_menu.cshtml")
+
+@*Main form*@
+@using (Html.BeginForm("images", "admin_products", FormMethod.Post, new { enctype = "multipart/form-data" }))
+{
+    <input name="returnUrl" type="hidden" value="@returnUrl" />
+    <table style="width:100%;">
+        <tr>
+            <td class="label">@(language_tt + ":")</td>
+            <td class="input">
+                <select id="selectLanguage" name="selectLanguage" class="formSelect">
+                    <option value="0" data-url="@("/admin_products/images/" + product.id.ToString() + "?returnUrl=" + Server.UrlEncode(returnUrl))" @(languageId == 0 ? Html.Raw("selected='selected'") : Html.Raw(""))>@(default_tt)</option>
+                    @foreach (Language language in languages)
+                    {
+                        <option value="@language.id" data-url="@("/admin_products/images/" + product.id.ToString() + "?returnUrl=" + Server.UrlEncode(returnUrl) + "&lang=" + language.id.ToString())" @(language.id == languageId ? Html.Raw("selected='selected'") : Html.Raw(""))>@language.name</option>
+                    }
+                </select>
+            </td>
+        </tr>
+        <tr><td colspan="2">&nbsp;</td></tr>
+        <tr>
+            <td class="label">@(id_tt + ":")</td>
+            <td class="input"><input name="txtId" type="text" class="formTextbox" tabindex="-1" readonly="readonly" value="@product.id" /></td>
+        </tr>
+        <tr>
+            <td class="label">@(title_tt + ":")</td>
+            <td class="input"><input name="txtTitle" type="text" class="formTextbox" tabindex="-1" readonly="readonly" value="@product.title" /></td>
+        </tr>
+        <tr>
+            <td class="label">@(product_code_tt + ":")</td>
+            <td class="input"><input name="txtProductCode" type="text" class="formTextbox" tabindex="-1" readonly="readonly" value="@product.product_code" /></td>
+        </tr>
+        <tr>
+            <td class="label">@(main_image_tt + ", max 1 mb, jpg|jpeg (1:1):")</td>
+            <td class="input"><img id="mainImage" src="@Url.Content(mainImageUrl)" alt="@image_tt" style="max-width:300px;margin:0px 2px 0px 2px;padding:1px;border:1px solid #cccccc;" /><br /><input id="uploadMainImage" type="file" name="uploadMainImage" class="formUpload" accept="image/jpeg" /></td>
+        </tr>
+    </table>
+
+    // Other product images
+    <h2 style="margin: 20px 0px 5px 0px;border-bottom:1px solid #cccccc;">@other_product_images_title_tt</h2>
+    <div style="padding:0px 0px 5px 0px;margin:0px 0px 2px 0px;">@(add_images_tt + ", max 4 mb (1:1): ")<input id="uploadOtherImages" name="uploadOtherImages" type="file" class="formUpload" accept="image/jpeg" multiple /><button id="clearFileUpload">@undo_tt</button></div>
+    <div id="divTableOuterContainer" class="divTableOuterContainer" style="clear:both;margin:0px;border:1px solid #cccccc;border-radius:4px;overflow:auto;">
+        <div id="divOtherImagesContainer" style="clear:both;display:block;position:relative;margin:0px;padding:4px;height:300px;">
+            @for (int i = 0; i < otherImages.Count; i++)
+            {
+                @:<div data-id="otherImageContainer" class="annytab-other-image-square">
+                    @:<img src="@otherImages[i]" alt="@image_tt" style="max-width:128px;" />
+                    @:<input name="otherImageUrl" type="hidden" value="@otherImages[i]" />
+                    @:<img data-id="deleteOtherImage" alt="@image_tt" class="annytab-other-image-delete" src="/Content/images/annytab_design/black_circle_cross.png" />
+                    @:<div>@Path.GetFileName(otherImages[i])</div>
+                @:</div>        
+            }
+        </div>
+    </div>
+
+    // Save form button
+    <div style="display:block;border:1px solid #cccccc;margin:20px 0px 0px 0px;border-radius:4px;">
+        <input id="btnSave" type="submit" value="@save_tt" />
+        <input type="button" value="@cancel_tt" onclick="@Html.Raw("location.href='/admin_products" + returnUrl + "'")" />
+    </div>
+}
+
+@section scripts {
+    <script type="text/javascript">
+        $("#selectLanguage").focus();
+        $("#selectLanguage").on("change", function () { $(location).attr("href", $(this).find(":selected").attr("data-url")); });
+    </script>
+}

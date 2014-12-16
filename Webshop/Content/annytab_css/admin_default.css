@@ -1,0 +1,77 @@
+﻿@charset "UTF-8";
+body{padding:0px;margin:0px;text-align:left;font-family:Arial;font-size:12px;background-color:transparent;}
+.img-logotype{max-width:100%;}
+h1 {font-size:20px;line-height:20px;margin:0px 0px 15px 0px;}
+h2 {font-size:16px;line-height:16px;margin:0px 0px 10px 0px;}
+h3 {font-size:14px;line-height:14px;margin:0px 0px 10px 0px;}
+p {padding:5px 0px 5px 0px;margin:0px;}
+a {font-weight:bold;color:#ffffff;text-decoration:none;}
+a img {border:0;}
+img {vertical-align:middle;}
+a:hover, a:visited:hover{text-decoration:underline;}
+input[readonly="readonly"]{border:1px solid #9f9f9f;color:#9f9f9f;background-color:#dddddd;}
+input[disabled="disabled"]{border:1px solid #9f9f9f;color:#9f9f9f;background-color:#dddddd;}
+textarea[readonly="readonly"]{border:1px solid #9f9f9f;color:#9f9f9f;background-color:#dddddd;}
+input[type="button"]{cursor:pointer;}
+input[type="submit"]{cursor:pointer;}
+
+/* Basic styles */
+.annytab-header-title{font-size:22px;color:#808080;cursor:pointer;text-shadow:1px 1px 2px #ffffff;}
+.annytab-header-title:hover{text-decoration:none;color:#000000;}
+.annytab-basic-container{clear:both;padding:0px;margin:20px 0px 10px 0px;text-align:center;background-color:#cccccc;box-shadow:0px 0px 10px #000000;}
+
+.listContainer{width:100%;background-color:#cccccc;box-shadow:0px 0px 10px #000000;overflow:auto;}
+.listTable{padding:2px;margin:4px;border-radius:4px;border-collapse:collapse;}
+.listTh{height:18px;color:#ffffff;border-bottom:2px solid #9e9e9e;font-size:13px;text-shadow:1px 1px 2px #000000;}
+.listTextbox{height:16px;padding:0px;margin:0px 2px 0px 2px;font-family:Arial;border:1px solid #cccccc;}
+.annytab-list-main-row{background-color:#ffffff;cursor:default;}
+.annytab-list-main-row.highlight{background-color:#BCD5E0;}
+.annytab-list-alt-row{background-color:#f0f0f0;cursor:default;}
+.annytab-list-alt-row.highlight{background-color:#BCD5E0;}
+
+.inputTableContainer{width:100%;overflow:auto;}
+.inputTable{border-collapse:collapse;}
+.inputTableTh{background-image:url('/Content/images/annytab_design/gray-gradient_header.png');color:#3d3d3d;font-weight:normal;border:1px solid #cccccc;height:22px;font-size:12px;padding:0px 0px 0px 4px;text-shadow:1px 1px 2px #ffffff;}
+.inputTableTextbox{height:18px;padding:1px;margin:2px 4px 2px 0px;font-family:Arial;border:1px solid #cccccc;}
+.inputTableAddRemoveButton{display:inline;background-image:url('/Content/images/annytab_design/gray_gradient_button.png');height:20px;width:20px;border:1px solid #cccccc;padding:0px;margin:2px 0px 2px 4px;cursor:pointer;border-radius:4px;}
+.inputTableAddRemoveButton:hover{background-image:url('/Content/images/annytab_design/gray_gradient_button_hover.png');}
+
+.divTableOuterContainer{clear:both;width:100%;overflow:auto;}
+.divTableRowContainer{margin:0px 0px 0px 0px;padding:0px;}
+.divTableOuterTh{display:table-cell;vertical-align: middle;padding: 0px 4px 0px 4px;border-bottom:2px solid #808080;border-top:2px solid #dddddd;margin:0px;height:28px;}
+.divTableTh{display:table-cell;vertical-align:middle;background-image:url('/Content/images/annytab_design/gray-gradient_header.png');color:#3d3d3d;font-weight:normal;border:1px solid #cccccc;height:22px;font-size:12px;padding:0px 0px 0px 4px;text-shadow:1px 1px 2px #ffffff;}
+.divTableTr{display:table-row;}
+.divTableTd{display:table-cell;vertical-align:middle;}
+
+.annytab-other-image-square{display:inline-block;position:relative;max-width:128px;margin:4px;padding:1px;vertical-align:top;border:1px solid #cccccc;text-align:center;word-wrap:break-word;}
+.annytab-other-image-delete{position:absolute;width:16px;height:16px;top:-8px;right:-8px;cursor:pointer;}
+
+.menuLink{display:block;border:1px solid #9e9e9e;background-image:url('/Content/images/annytab_design/gray_gradient_button.png');font-weight:bold;color:#808080;padding:2px 5px 2px 5px;margin:0px 0px 5px 0px;cursor:pointer;border-radius:4px;text-shadow:1px 1px 1px #ffffff;}
+.menuLink:hover{background-image:url('/Content/images/annytab_design/gray_gradient_button_hover.png');text-decoration:none;}
+
+.textbox{height:16px;line-height:14px;padding:1px;margin:0px 2px 0px 2px;font-family:Arial;}
+.textarea{padding:0px;margin:0px 2px 0px 2px;font-family:Arial;}
+
+.formMenuBar{display:block;margin:0px 0px 20px 0px;padding:5px 5px 5px 5px;background-color:#cccccc;box-shadow:0px 0px 10px #000000;}
+.formTextbox{width:100%;max-width:400px;height:18px;line-height:18px;font-size:12px;padding:1px;margin:0px 2px 0px 2px;font-family:Arial;border:1px solid #cccccc;}
+.formTextarea{width:100%;max-width:400px;padding:1px;margin:0px 2px 0px 2px;font-family:Arial;border:1px solid #cccccc;}
+.formSelect{width:100%;max-width:404px;height:24px;padding:1px;margin:0px 2px 0px 2px;font-family:Arial;cursor:pointer;}
+.formCheckbox{margin:0px;padding:0px;border:1px solid #3d3d3d;cursor:pointer;}
+.formUpload{padding:0px;max-width:400px;margin:0px 2px 0px 2px;font-family:Arial;border:0px;cursor:pointer;}
+.formErrorMessage{display:none;font-style:italic;color:#F00000;padding:4px;margin:0px 0px 20px 0px;border:1px dashed #880000;border-radius:4px;}
+.formHeading{padding:4px;font-weight:bold;font-size:16px;background-color:#cccccc;}
+
+.button{border:1px solid #9e9e9e;background-image:url('/Content/images/annytab_design/gray_gradient_button.png');font-size:12px;font-weight:bold;color:#808080;padding:2px 5px 2px 5px;margin:0px;cursor:pointer;border-radius:4px;text-shadow:1px 1px 1px #ffffff;}
+.button:hover{background-image:url('/Content/images/annytab_design/gray_gradient_button_hover.png');text-shadow:none;}
+
+.sortPlaceholder{background:#BCD5E0;height:24px;}
+.sortBigPlaceholder{background:#BCD5E0;height:28px;}
+
+.label{width:30%;}
+.input{width:70%;}
+
+/* Paging menu */
+.annytab-navigate-button{margin:0px 0px 0px 0px;padding:0px 10px 0px 10px;color:#ffffff;font-weight:bold;font-size:16px;height:24px;line-height:24px;cursor:pointer;}
+.annytab-navigate-button:hover{color:#808080;text-decoration:none;}
+.annytab-page-information{margin:0px 0px 0px 0px;padding:0px 10px 0px 10px;color:#000000;height:24px;line-height:24px;}
+.annytab-inactive-navigate-button{margin:0px 0px 0px 0px;padding:0px 10px 0px 10px;font-size:16px;color:#000000;height:24px;line-height:24px;}

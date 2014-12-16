@@ -1,0 +1,231 @@
+﻿@{
+    // Set the layout for the page
+    Layout = "/Views/shared_admin/_standard_layout.cshtml";
+
+    // Get values
+    List<Language> languages = ViewBag.Languages;
+    List<Country> countries = ViewBag.Countries;
+    List<Company> companies = ViewBag.Companies;
+    List<Currency> currencies = Currency.GetAll("currency_code", "ASC");
+    List<CustomTheme> themes = CustomTheme.GetAll("name", "ASC");
+    Domain domain = ViewBag.Domain;
+    string returnUrl = ViewBag.ReturnUrl;
+
+    // Set the error message
+    string error_message = ViewBag.ErrorMessage != null ? ViewBag.ErrorMessage : string.Empty;
+
+    // Get translated texts
+    KeyStringList tt = ViewBag.TranslatedTexts;
+    string domain_tt = tt.Get("domain");
+    string new_tt = tt.Get("new");
+    string edit_tt = tt.Get("edit");
+    string no_choice_tt = tt.Get("no_choice");
+    string id_tt = tt.Get("id");
+    string name_tt = tt.Get("name");
+    string domain_name_tt = tt.Get("domain_name");
+    string web_address_tt = tt.Get("web_address");
+    string country_tt = tt.Get("country");
+    string front_end_language_tt = tt.Get("front_end_language");
+    string back_end_language_tt = tt.Get("back_end_language");
+    string currency_tt = tt.Get("currency");
+    string company_tt = tt.Get("company");
+    string default_display_view_tt = tt.Get("default_display_view");
+    string mobile_display_view_tt = tt.Get("mobile_display_view");
+    string view_tt = tt.Get("view");
+    string theme_tt = tt.Get("theme");
+    string default_tt = tt.Get("default");
+    string custom_design_tt = tt.Get("custom_design");
+    string show_tt = tt.Get("show");
+    string prices_tt = tt.Get("prices");
+    string excluding_vat_tt = tt.Get("excluding_vat");
+    string including_vat_tt = tt.Get("including_vat");
+    string analytics_tracking_id_tt = tt.Get("analytics_tracking_id");
+    string save_tt = tt.Get("save");
+    string cancel_tt = tt.Get("cancel");
+
+    // Set the title for the page
+    if (domain.id == 0)
+    {
+        ViewBag.Title = domain_tt + " - " + new_tt.ToLower();
+    }
+    else
+    {
+        ViewBag.Title = domain_tt + " - " + edit_tt.ToLower();
+    }
+}
+
+<h1>@ViewBag.Title</h1>
+
+@*Menu*@
+@Html.Partial("/Views/admin_domains/_form_menu.cshtml")
+
+@*Main form*@
+@using (Html.BeginForm("edit", "admin_domains", FormMethod.Post))
+{
+    <input name="returnUrl" type="hidden" value="@returnUrl" />
+    <div id="divErrors" class="formErrorMessage" style="@(error_message != "" ? "display:block;" : "display:none;")">@Html.Raw(error_message)</div>
+    <table style="clear:both;width:100%;">
+        <tr style="@(domain.id != 0 ? "display:table-row;" : "display:none;")">
+            <td class="label">@(id_tt + ":")</td>
+            <td class="input"><input name="txtId" type="text" class="formTextbox" tabindex="-1" readonly="readonly" value="@domain.id" /></td>
+        </tr>
+        <tr>
+            <td class="label">@(name_tt + ":")</td>
+            <td class="input"><input id="txtWebshopName" name="txtWebshopName" type="text" class="formTextbox" value="@domain.webshop_name" /></td>
+        </tr>
+        <tr>
+            <td class="label">@(domain_name_tt + ":")</td>
+            <td class="input"><input name="txtDomainName" type="text" class="formTextbox" value="@domain.domain_name" /></td>
+        </tr>
+        <tr>
+            <td class="label">@(web_address_tt + ":")</td>
+            <td class="input"><input name="txtWebAddress" type="text" class="formTextbox" value="@domain.web_address" /></td>
+        </tr>
+        <tr>
+            <td class="label">@(country_tt + ":")</td>
+            <td class="input">
+                <select name="selectCountry" class="formSelect">
+                    <option value="0" @(domain.country_id == 0 ? Html.Raw("selected='selected'") : Html.Raw(""))>@("-- " + no_choice_tt + " --")</option>
+                    @foreach (Country country in countries)
+                    {
+                        <option value="@country.id" @(country.id == domain.country_id ? Html.Raw("selected='selected'") : Html.Raw(""))>@country.name</option>
+                    }
+                </select>
+            </td>
+        </tr>
+        <tr>
+            <td class="label">@(front_end_language_tt + ":")</td>
+            <td class="input">
+                <select name="selectFrontEndLanguage" class="formSelect">
+                    <option value="0" @(domain.front_end_language == 0 ? Html.Raw("selected='selected'") : Html.Raw(""))>@("-- " + no_choice_tt + " --")</option>
+                    @foreach (Language language in languages)
+                    {
+                        <option value="@language.id" @(language.id == domain.front_end_language ? Html.Raw("selected='selected'") : Html.Raw(""))>@language.name</option>
+                    }
+                </select>
+            </td>
+        </tr>
+        <tr>
+            <td class="label">@(back_end_language_tt + ":")</td>
+            <td class="input">
+                <select name="selectBackEndLanguage" class="formSelect">
+                    <option value="0" @(domain.back_end_language == 0 ? Html.Raw("selected='selected'") : Html.Raw(""))>@("-- " + no_choice_tt + " --")</option>
+                    @foreach (Language language in languages)
+                    {
+                        <option value="@language.id" @(language.id == domain.back_end_language ? Html.Raw("selected='selected'") : Html.Raw(""))>@language.name</option>
+                    }
+                </select>
+            </td>
+        </tr>
+        <tr>
+            <td class="label">@(currency_tt + ":")</td>
+            <td class="input">
+                <select name="selectCurrency" class="formSelect">
+                    <option value="" @(domain.currency == "" ? Html.Raw("selected='selected'") : Html.Raw(""))>@("-- " + no_choice_tt + " --")</option>
+                    @foreach (Currency currency in currencies)
+                    {
+                        <option value="@currency.currency_code" @(currency.currency_code == domain.currency ? Html.Raw("selected='selected'") : Html.Raw(""))>@currency.currency_code</option>
+                    }
+                </select>
+            </td>
+        </tr>
+        <tr>
+            <td class="label">@(company_tt + ":")</td>
+            <td class="input">
+                <select name="selectCompany" class="formSelect">
+                    <option value="0" @(domain.company_id == 0 ? Html.Raw("selected='selected'") : Html.Raw(""))>@("-- " + no_choice_tt + " --")</option>
+                    @foreach (Company company in companies)
+                    {
+                        <option value="@company.id" @(company.id == domain.company_id ? Html.Raw("selected='selected'") : Html.Raw(""))>@(company.name + "," + company.vat_number)</option>
+                    }
+                </select>
+            </td>
+        </tr>
+        <tr>
+            <td class="label">@(default_display_view_tt + ":")</td>
+            <td class="input">
+                <select name="selectDefaultDisplayView" class="formSelect">
+                    <option value="0" @(domain.default_display_view == 0 ? Html.Raw("selected='selected'") : Html.Raw(""))>@(view_tt + " 0")</option>
+                    <option value="1" @(domain.default_display_view == 1 ? Html.Raw("selected='selected'") : Html.Raw(""))>@(view_tt + " 1")</option>
+                    <option value="2" @(domain.default_display_view == 2 ? Html.Raw("selected='selected'") : Html.Raw(""))>@(view_tt + " 2")</option>
+                    <option value="3" @(domain.default_display_view == 3 ? Html.Raw("selected='selected'") : Html.Raw(""))>@(view_tt + " 3")</option>
+                    <option value="4" @(domain.default_display_view == 4 ? Html.Raw("selected='selected'") : Html.Raw(""))>@(view_tt + " 4")</option>
+                    <option value="5" @(domain.default_display_view == 5 ? Html.Raw("selected='selected'") : Html.Raw(""))>@(view_tt + " 5")</option>
+                    <option value="6" @(domain.default_display_view == 6 ? Html.Raw("selected='selected'") : Html.Raw(""))>@(view_tt + " 6")</option>
+                    <option value="7" @(domain.default_display_view == 7 ? Html.Raw("selected='selected'") : Html.Raw(""))>@(view_tt + " 7")</option>
+                    <option value="8" @(domain.default_display_view == 8 ? Html.Raw("selected='selected'") : Html.Raw(""))>@(view_tt + " 8")</option>
+                    <option value="9" @(domain.default_display_view == 9 ? Html.Raw("selected='selected'") : Html.Raw(""))>@(view_tt + " 9")</option>
+                </select>
+            </td>
+        </tr>
+        <tr>
+            <td class="label">@(mobile_display_view_tt + ":")</td>
+            <td class="input">
+                <select name="selectMobileDisplayView" class="formSelect">
+                    <option value="0" @(domain.mobile_display_view == 0 ? Html.Raw("selected='selected'") : Html.Raw(""))>@(view_tt + " 0")</option>
+                    <option value="1" @(domain.mobile_display_view == 1 ? Html.Raw("selected='selected'") : Html.Raw(""))>@(view_tt + " 1")</option>
+                    <option value="2" @(domain.mobile_display_view == 2 ? Html.Raw("selected='selected'") : Html.Raw(""))>@(view_tt + " 2")</option>
+                    <option value="3" @(domain.mobile_display_view == 3 ? Html.Raw("selected='selected'") : Html.Raw(""))>@(view_tt + " 3")</option>
+                    <option value="4" @(domain.mobile_display_view == 4 ? Html.Raw("selected='selected'") : Html.Raw(""))>@(view_tt + " 4")</option>
+                    <option value="5" @(domain.mobile_display_view == 5 ? Html.Raw("selected='selected'") : Html.Raw(""))>@(view_tt + " 5")</option>
+                    <option value="6" @(domain.mobile_display_view == 6 ? Html.Raw("selected='selected'") : Html.Raw(""))>@(view_tt + " 6")</option>
+                    <option value="7" @(domain.mobile_display_view == 7 ? Html.Raw("selected='selected'") : Html.Raw(""))>@(view_tt + " 7")</option>
+                    <option value="8" @(domain.mobile_display_view == 8 ? Html.Raw("selected='selected'") : Html.Raw(""))>@(view_tt + " 8")</option>
+                    <option value="9" @(domain.mobile_display_view == 9 ? Html.Raw("selected='selected'") : Html.Raw(""))>@(view_tt + " 9")</option>
+                </select>
+            </td>
+        </tr>
+        <tr>
+            <td class="label">@(theme_tt + ":")</td>
+            <td class="input">
+                <select name="selectTemplate" class="formSelect">
+                    <option value="0" @(domain.custom_theme_id == 0 ? Html.Raw("selected='selected'") : Html.Raw(""))>@default_tt</option>
+                    @foreach(CustomTheme theme in themes)
+                    {
+                        <option value="@theme.id.ToString()" @(domain.custom_theme_id == theme.id ? Html.Raw("selected='selected'") : Html.Raw(""))>@theme.name</option>
+                    }
+                </select>
+            </td>
+        </tr>
+        <tr>
+            <td class="label">@(show_tt + " " + prices_tt.ToLower() + ":")</td>
+            <td class="input">
+                <select name="selectPricesIncludesVat" class="formSelect">
+                    <option value="false" @(domain.prices_includes_vat == false ? Html.Raw("selected='selected'") : Html.Raw(""))>@excluding_vat_tt</option>
+                    <option value="true" @(domain.prices_includes_vat == true ? Html.Raw("selected='selected'") : Html.Raw(""))>@including_vat_tt</option>
+                </select>
+            </td>
+        </tr>
+        <tr>
+            <td class="label">@(analytics_tracking_id_tt + ":")</td>
+            <td class="input"><input name="txtAnalyticsTrackingId" type="text" class="formTextbox" value="@domain.analytics_tracking_id" /></td>
+        </tr>
+        <tr>
+            <td class="label">@("Facebook app id: ")</td>
+            <td class="input"><input name="txtFacebookAppId" type="text" class="formTextbox" value="@domain.facebook_app_id" /></td>
+        </tr>
+        <tr>
+            <td class="label">@("Facebook app secret: ")</td>
+            <td class="input"><input name="txtFacebookAppSecret" type="text" class="formTextbox" value="@domain.facebook_app_secret" /></td>
+        </tr>
+        <tr>
+            <td class="label">@("Google app id: ")</td>
+            <td class="input"><input name="txtGoogleAppId" type="text" class="formTextbox" value="@domain.google_app_id" /></td>
+        </tr>
+        <tr>
+            <td class="label">@("Google app secret: ")</td>
+            <td class="input"><input name="txtGoogleAppSecret" type="text" class="formTextbox" value="@domain.google_app_secret" /></td>
+        </tr>
+    </table>
+
+    // Save form button
+    <div style="display:block;border: 1px solid #cccccc;margin: 20px 0px 0px 0px;border-radius: 4px;">
+        <input id="btnSave" type="submit" value="@save_tt" />
+        <input type="button" value="@cancel_tt" onclick="@Html.Raw("location.href='/admin_domains" + returnUrl + "'")" />
+    </div>
+
+}
+
+@section scripts {
+    <script>$("#txtWebshopName").focus();</script>
+}

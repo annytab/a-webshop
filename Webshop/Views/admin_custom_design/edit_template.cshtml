@@ -1,0 +1,124 @@
+﻿@{
+    // Set the layout for the page
+    Layout = "/Views/shared_admin/_standard_layout.cshtml";
+
+    // Get form data
+    CustomThemeTemplate template = ViewBag.CustomTemplate;
+    string masterDesign = ViewBag.MasterDesign;
+    KeyStringList tt = ViewBag.TranslatedTexts;
+    string returnUrl = ViewBag.ReturnUrl;
+
+    // Get translated texts
+    string edit_tt = tt.Get("edit");
+    string template_tt = tt.Get("template");
+    string id_tt = tt.Get("id");
+    string file_name_tt = tt.Get("file_name");
+    string comment_tt = tt.Get("comment");
+    string toggle_fullscreen_tt = tt.Get("toggle_fullscreen");
+    string save_tt = tt.Get("save");
+    string cancel_tt = tt.Get("cancel");
+
+    // Set the title for the page
+    ViewBag.Title = edit_tt + " " + template_tt.ToLower();
+}
+
+<h1>@ViewBag.Title</h1>
+
+@*The menu bar*@
+@Html.Partial("~/Views/admin_custom_design/_form_menu.cshtml")
+
+@using (Html.BeginForm("edit_template", "admin_custom_design", FormMethod.Post))
+{
+    <input name="returnUrl" type="hidden" value="@returnUrl" />
+    <div style="font-size:16px;line-height:24px;font-weight:bold;">@(id_tt)</div>
+    <input name="txtId" type="text" class="formTextbox" readonly="readonly" tabindex="-1" value="@template.custom_theme_id.ToString()" />
+
+    <div style="font-size:16px;line-height:24px;font-weight:bold;">@(file_name_tt)</div>
+    <input id="txtUserFileName" name="txtUserFileName" type="text" class="formTextbox" value="@template.user_file_name" />
+
+    <div style="font-size:16px;line-height:24px;font-weight:bold;">@(comment_tt)</div>
+    <textarea name="txtComment" class="formTextarea" rows="3">@template.comment</textarea>
+
+    <div style="margin-bottom:20px;"></div>
+
+    <div style="text-align:right;font-weight:bold;">@(tt.Get("toggle_fullscreen") + ": F11, ESC")</div>
+    <div id="view"></div>
+    <textarea id="txtContent" name="txtContent" style="display:none;">@template.user_file_content</textarea>
+    <textarea id="txtMasterDesign" style="display:none;">@masterDesign</textarea>
+    
+    // Save form button
+    <div style="display:block;border:1px solid #cccccc;margin:20px 0px 0px 0px;border-radius:4px;">
+        <input id="btnSave" type="submit" value="@save_tt" />
+        <input type="button" value="@cancel_tt" onclick="location.href='@Url.Action("edit_theme", "admin_custom_design", new { id = template.custom_theme_id, returnUrl = returnUrl })'" />
+    </div>
+}
+
+@section scripts {
+
+    <link rel="stylesheet" href="/Scripts/codemirror/codemirror.css">
+    <link rel="stylesheet" href="/Scripts/codemirror/merge.css">
+    <script src="/Scripts/codemirror/codemirror.js"></script>
+    <script src="/Scripts/codemirror/clike.js"></script>
+    <script src="/Scripts/codemirror/diff_match_patch.js"></script>
+    <script src="/Scripts/codemirror/merge.js"></script>
+  
+    <script type="text/javascript">
+
+        // Add the save changes button click event
+        $("#btnSave").click(saveChanges);
+
+        // Set the focus
+        $("#txtUserFileName").focus();
+
+        // Variables
+        var dv;
+        var target = document.getElementById("view");
+        var input = $("#txtContent");
+        var master = $("#txtMasterDesign");
+        var fullscreen = false;
+
+        // Create the code mirror window
+        dv = CodeMirror.MergeView(target, {
+            value: input.val(),
+            origLeft: null,
+            orig: master.val(),
+            lineNumbers: true,
+            mode: "text/x-csharp",
+            highlightDifferences: true,
+            indentUnit: 0,
+            tabSize: 4,
+            extraKeys: { "Esc": toggleFullscreen, "F11": toggleFullscreen}
+        });
+
+        // Toggle to full screen
+        function toggleFullscreen()
+        {
+            if(fullscreen == false)
+            {
+                var height = $(window).height();
+                dv.editor().setSize(null, height + "px");
+                dv.rightOriginal().setSize(null, height + "px");
+                $(".CodeMirror-merge-gap").css("height", height + "px");
+                target.setAttribute("style", "position:absolute;top:0px;left:0px;right:0px;bottom:0px;width:100%;");
+                fullscreen = true;
+            }
+            else
+            {
+                dv.editor().setSize(null, "500px");
+                dv.rightOriginal().setSize(null, "500px");
+                $(".CodeMirror-merge-gap").css("height", "500px");
+                target.setAttribute("style", "position:relative;");
+                fullscreen = false
+            }
+
+        } // End of the toggleFullscreen method
+
+        // This method runs before the post to the server
+        function saveChanges()
+        {
+            input.val(dv.editor().getValue());
+
+        } // End of the saveChanges method
+
+    </script>
+}

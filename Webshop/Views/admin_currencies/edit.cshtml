@@ -1,0 +1,73 @@
+﻿@using System.Globalization
+@{
+    // Set the layout for the page
+    Layout = "/Views/shared_admin/_standard_layout.cshtml";
+
+    // Get form data
+    Currency currency = ViewBag.Currency;
+    string returnUrl = ViewBag.ReturnUrl;
+    string error_message = ViewBag.ErrorMessage != null ? ViewBag.ErrorMessage : string.Empty;
+
+    // Get translated texts
+    KeyStringList tt = ViewBag.TranslatedTexts;
+    string currency_tt = tt.Get("currency");
+    string new_tt = tt.Get("new");
+    string edit_tt = tt.Get("edit");
+    string currency_code_tt = tt.Get("currency_code");
+    string conversion_rate_tt = tt.Get("conversion_rate");
+    string currency_base_tt = tt.Get("currency_base");
+    string number_of_decimals_tt = tt.Get("number_of_decimals");
+    string save_tt = tt.Get("save");
+    string cancel_tt = tt.Get("cancel");
+
+    // Set the title for the page
+    if (currency.currency_code == string.Empty)
+    {
+        ViewBag.Title = currency_tt + " - " + new_tt.ToLower();
+    }
+    else
+    {
+        ViewBag.Title = currency_tt + " - " + edit_tt.ToLower();
+    }
+}
+
+<h1>@ViewBag.Title</h1>
+@*Menu*@
+@Html.Partial("~/Views/admin_currencies/_form_menu.cshtml")
+
+@*Main form*@
+@using (Html.BeginForm("edit", "admin_currencies", FormMethod.Post))
+{
+    <input name="returnUrl" type="hidden" value="@returnUrl" />
+    <div id="divErrors" class="formErrorMessage" style="@(error_message != "" ? "display:block;" : "display:none;")">@Html.Raw(error_message)</div>
+    <table style="width:100%;">
+        <tr>
+            <td class="label">@(currency_code_tt + ":")</td>
+            <td class="input"><input id="txtCurrencyCode" name="txtCurrencyCode" type="text" class="formTextbox" value="@currency.currency_code" /></td>
+        </tr>
+        <tr>
+            <td class="label">@(conversion_rate_tt + ":")</td>
+            <td class="input"><input id="txtConversionRate" name="txtConversionRate" type="number" step="any" class="formTextbox" value="@currency.conversion_rate.ToString(CultureInfo.InvariantCulture)" /></td>
+        </tr>
+        <tr>
+            <td class="label">@(currency_base_tt + ":")</td>
+            <td class="input"><input name="txtCurrencyBase" type="number" step="1" class="formTextbox" value="@currency.currency_base.ToString(CultureInfo.InvariantCulture)" /></td>
+        </tr>
+        <tr>
+            <td class="label">@(number_of_decimals_tt + ":")</td>
+            <td class="input"><input name="txtDecimals" type="number" step="1" class="formTextbox" value="@currency.decimals" /></td>
+        </tr>
+    </table>
+
+    // Save form button
+    <div style="display:block;border:1px solid #cccccc;margin:20px 0px 0px 0px;border-radius:4px;">
+        <input id="btnSave" type="submit" value="@save_tt" />
+        <input type="button" value="@cancel_tt" onclick="@Html.Raw("location.href='/admin_currencies" + returnUrl + "'")" />
+    </div>
+
+}
+
+@section scripts {
+    <script>$("#txtCurrencyCode").val() == "" ? $("#txtCurrencyCode").focus() : $("#txtConversionRate").focus();</script>
+}
+

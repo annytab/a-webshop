@@ -1,0 +1,157 @@
+﻿@{
+    // Set the layout for the page
+    Layout = "/Views/shared_admin/_standard_layout.cshtml";
+
+    // Get the current domain
+    Domain domain = ViewBag.CurrentDomain;
+
+    // Get values
+    List<Category> mainCategories = Category.GetChildCategories(0, domain.back_end_language, "title", "ASC");
+    Category category = ViewBag.Category;
+    string returnUrl = ViewBag.ReturnUrl;
+    string error_message = ViewBag.ErrorMessage != null ? ViewBag.ErrorMessage : string.Empty;
+    KeyStringList tt = ViewBag.TranslatedTexts;
+
+    // Get translated texts
+    string category_tt = tt.Get("category");
+    string new_tt = tt.Get("new");
+    string edit_tt = tt.Get("edit");
+    string main_category_tt = tt.Get("main_category");
+    string no_choice_tt = tt.Get("no_choice");
+    string id_tt = tt.Get("id");
+    string title_tt = tt.Get("title");
+    string description_tt = tt.Get("description");
+    string meta_description_tt = tt.Get("meta_description");
+    string keywords_tt = tt.Get("keywords");
+    string page_name_tt = tt.Get("page_name");
+    string use_local_images_tt = tt.Get("use_local_images");
+    string date_tt = tt.Get("date");
+    string added_tt = tt.Get("added");
+    string inactive_tt = tt.Get("inactive");
+    string save_tt = tt.Get("save");
+    string cancel_tt = tt.Get("cancel");
+
+    // Set the title for the page
+    if (category.id == 0)
+    {
+        ViewBag.Title = category_tt + " - " + new_tt.ToLower();
+    }
+    else
+    {
+        ViewBag.Title = category_tt + " - " + edit_tt.ToLower();
+    }
+}
+
+<h1>@ViewBag.Title</h1>
+
+@*Menu*@
+@Html.Partial("/Views/admin_categories/_form_menu.cshtml")
+
+@*Main form*@
+@using (Html.BeginForm("edit", "admin_categories", FormMethod.Post))
+{
+    <input name="returnUrl" type="hidden" value="@returnUrl" />
+    <div id="divErrors" class="formErrorMessage" style="@(error_message != "" ? "display:block;" : "display:none;")">@Html.Raw(error_message)</div>
+    <table style="clear:both;width:100%;">
+        <tr>
+            <td class="label">@(main_category_tt + ":")</td>
+            <td class="input">
+                <select id="selectCategory" name="selectCategory" class="formSelect">
+                    <option value="0" @(category.parent_category_id == 0 ? Html.Raw("selected='selected'") : Html.Raw(""))>@("-- " + no_choice_tt + " --")</option>
+                    @CreateChildOptions(0, mainCategories, category.parent_category_id, domain.back_end_language)
+                </select>
+            </td>
+        </tr>
+        <tr style="@(category.id != 0 ? "display:table-row;" : "display:none;")">
+            <td class="label">@(id_tt + ":")</td>
+            <td class="input"><input name="txtId" type="text" class="formTextbox" tabindex="-1" readonly="readonly" value="@category.id" /></td>
+        </tr>
+        <tr>
+            <td class="label">@(title_tt + ":")</td>
+            <td class="input"><input name="txtTitle" type="text" class="formTextbox" value="@category.title" /></td>
+        </tr>
+        <tr>
+            <td class="label">@(description_tt + ":")</td>
+            <td class="input"><textarea name="txtDescription" class="formTextarea" rows="6">@category.main_content</textarea></td>
+        </tr>
+        <tr>
+            <td class="label">@(meta_description_tt + ":")</td>
+            <td class="input"><textarea name="txtMetaDescription" class="formTextarea" rows="3">@category.meta_description</textarea></td>
+        </tr>
+        <tr>
+            <td class="label">@(keywords_tt + ":")</td>
+            <td class="input"><input name="txtMetaKeywords" type="text" class="formTextbox" value="@category.meta_keywords" /></td>
+        </tr>
+        <tr>
+            <td class="label">@("Robots:")</td>
+            <td class="input">
+                <select name="selectMetaRobots" class="formSelect">
+                    <option value="index, follow" @(category.meta_robots == "index, follow" ? Html.Raw("selected='selected'") : Html.Raw(""))>index, follow</option>
+                    <option value="index, nofollow" @(category.meta_robots == "index, nofollow" ? Html.Raw("selected='selected'") : Html.Raw(""))>index, nofollow</option>
+                    <option value="noindex, follow" @(category.meta_robots == "noindex, follow" ? Html.Raw("selected='selected'") : Html.Raw(""))>noindex, follow</option>
+                    <option value="noindex, nofollow" @(category.meta_robots == "noindex, nofollow" ? Html.Raw("selected='selected'") : Html.Raw(""))>noindex, nofollow</option>
+                </select>
+            </td>
+        </tr>
+        <tr>
+            <td class="label">@(page_name_tt + ":")</td>
+            <td class="input"><input name="txtPageName" type="text" class="formTextbox" value="@category.page_name" /></td>
+        </tr>
+        <tr>
+            <td class="label">@(use_local_images_tt + ":")</td>
+            <td class="input"><input name="cbLocalImages" type="checkbox" value="true" @(category != null && category.use_local_images == true ? Html.Raw("checked='checked'") : Html.Raw("")) /></td>
+        </tr>
+        <tr>
+            <td class="label">@(added_tt + ", " + date_tt.ToLower() + " (yyyy-mm-dd):")</td>
+            <td class="input"><input id="txtDateAdded" name="txtDateAdded" type="text" class="formTextbox" value="@category.date_added.ToString("yyyy-MM-dd")" /></td>
+        </tr>
+        <tr>
+            <td class="label">@(inactive_tt + ":")</td>
+            <td class="input"><input name="cbInactive" type="checkbox" value="true" @(category != null && category.inactive == true ? Html.Raw("checked='checked'") : Html.Raw("")) /></td>
+        </tr>
+    </table>
+
+    // Save form button
+    <div style="display:block;border: 1px solid #cccccc;margin: 20px 0px 0px 0px;border-radius: 4px;">
+        <input id="btnSave" type="submit" value="@save_tt" />
+        <input type="button" value="@cancel_tt" onclick="@Html.Raw("location.href='/admin_categories" + returnUrl + "'")" />
+    </div>
+}
+
+@section scripts {
+    <link href="/Content/jquery_css/jquery-ui.min.css" rel="stylesheet" />
+    <script>$("#selectCategory").focus();$("#txtDateAdded").datepicker({ dateFormat: 'yy-mm-dd' });</script>
+}
+
+@helper CreateChildOptions(Int32 level, List<Category> categories, Int32 categoryId, Int32 languageId)
+{
+    // Create the intendation
+    string intendation = "";
+
+    for (int i = 0; i < level; i++)
+    {
+        intendation += "-&nbsp;";
+    }
+
+    // Loop all the categories
+    for (int i = 0; i < categories.Count; i++)
+    {
+        // Reset the level
+        if (categories[i].parent_category_id == 0)
+        {
+            level = 0;
+        }
+        
+        // Create the option
+        <option style="@(categories[i].parent_category_id == 0 ? Html.Raw("background-color:#cccccc;") : Html.Raw("background-color:#ffffff;"))" value="@categories[i].id.ToString()" @(categoryId == categories[i].id ? Html.Raw("selected='selected'") : Html.Raw(""))>@Html.Raw(intendation + categories[i].title)</option>
+
+        // Get the child categories
+        List<Category> childCategories = Category.GetChildCategories(categories[i].id, languageId, "title", "ASC");
+
+        if (childCategories.Count > 0)
+        {
+            level += 1;
+            @CreateChildOptions(level, childCategories, categoryId, languageId);
+        }
+    }
+}

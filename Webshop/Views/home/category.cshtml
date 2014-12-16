@@ -1,0 +1,136 @@
+﻿@{
+    // Get the layout type from the cookie
+    ViewBag.LayoutType = "standard";
+    if (Request.Cookies["LayoutType"] != null)
+    {
+        ViewBag.LayoutType = Request.Cookies["LayoutType"].Value;
+    }
+
+    // Get form values
+    Domain domain = ViewBag.CurrentDomain;
+    Language language = Language.GetOneById(domain.front_end_language);
+    Category category = ViewBag.CurrentCategory;
+    KeyStringList tt = ViewBag.TranslatedTexts;
+    List<string> environmentImages = Tools.GetEnvironmentImageUrls(category.id, domain.front_end_language, category.use_local_images);
+    Dictionary<string, string> userSettings = ViewBag.UserSettings;
+
+    // Make sure that user settings not is null
+    if (userSettings == null)
+    {
+        userSettings = new Dictionary<string, string>(4);
+        userSettings.Add("sort_field", "title");
+        userSettings.Add("sort_order", "ASC");
+        userSettings.Add("page_size", "10");
+        userSettings.Add("display_view", ViewBag.LayoutType == "mobile" ? domain.mobile_display_view.ToString() : domain.default_display_view.ToString());
+    }
+
+    // Set the meta data
+    ViewBag.Title = category.title;
+    ViewBag.MetaTitle = category.title;
+    ViewBag.MetaDescription = category.meta_description;
+    ViewBag.MetaKeywords = category.meta_keywords;
+    ViewBag.MetaCanonical = domain.web_address + "/home/category/" + category.page_name;
+    ViewBag.MetaRobots = category.meta_robots;
+    ViewBag.OgImageUrl = domain.web_address + Tools.GetCategoryMainImageUrl(category.id, domain.front_end_language, category.use_local_images);
+
+    // Set paging data
+    ViewBag.NavigateUrl = "/home/category/" + category.page_name + "&qp={0}";
+    ViewBag.UserSettings = userSettings;
+
+    // Get translated texts
+    string image_tt = tt.Get("image");
+    string title_tt = tt.Get("title");
+    string price_tt = tt.Get("price");
+    string page_views_tt = tt.Get("page_views");
+    string rating_tt = tt.Get("rating");
+    string buys_tt = tt.Get("buys");
+    string date_tt = tt.Get("date");
+    string ascending_tt = tt.Get("ascending");
+    string descending_tt = tt.Get("descending");
+    string including_vat_tt = tt.Get("including_vat");
+    string excluding_vat_tt = tt.Get("excluding_vat");
+    string sort_tt = tt.Get("sort");
+    string on_tt = tt.Get("on");
+    string view_tt = tt.Get("view");
+    
+    // Set the layout for the page
+    if (ViewBag.LayoutType == "mobile")
+    {
+        Layout = domain.custom_theme_id == 0 ? "/Views/shared_front/_mobile_layout.cshtml" : "/Views/theme/front_mobile_layout.cshtml";
+    }
+    else
+    {
+        Layout = domain.custom_theme_id == 0 ? "/Views/shared_front/_standard_layout.cshtml" : "/Views/theme/front_standard_layout.cshtml";
+    }
+}
+
+@* Title *@
+<h1>@category.title</h1>
+
+@* Share content *@
+<div class="annytab-share-container">
+    <div class="annytab-share-button"><div class="fb-like" data-layout="button" data-action="like" data-show-faces="false" data-share="true" data-href="@ViewBag.MetaCanonical"></div></div>
+    <div class="annytab-share-button"><a href="https://twitter.com/share" data-count="none" class="twitter-share-button" data-href="@ViewBag.MetaCanonical" data-lang="@language.language_code.ToLower()">Tweet</a></div>
+    <div class="annytab-share-button"><div class="g-plusone" data-annotation="none" data-size="medium" data-href="@ViewBag.MetaCanonical"></div></div>
+    <div class="annytab-share-button"><a href="//se.pinterest.com/pin/create/button/" data-pin-do="buttonBookmark" data-pin-color="red"><img src="//assets.pinterest.com/images/pidgets/pinit_fg_en_rect_red_20.png" /></a></div>
+    <div class="annytab-share-button"><script type="IN/Share" data-url="@ViewBag.MetaCanonical"></script></div>
+</div> 
+
+@* Description *@
+<p class="annytab-basic-bread-text">@Html.Raw(category.main_content)</p>
+
+@* Image slideshow *@
+<div id="imageSlideShow" class="annytab-slideshow-container">
+    <img id="leftArrow" src="/Content/images/annytab_design/left_arrow.png" class="annytab-slideshow-left-arrow" />
+    @for (int i = 0; i < environmentImages.Count; i++)
+    {
+        @:<img data-img="@i.ToString()" src="@environmentImages[i]" alt="@(category.title + " " + image_tt.ToLower())" class="annytab-slideshow-image" />
+    }
+    <img id="rightArrow" src="/Content/images/annytab_design/right_arrow.png" class="annytab-slideshow-right-arrow" />
+</div>
+
+<div class="annytab-basic-space"></div>
+
+@* Sorting *@
+<div class="annytab-basic-container">
+    @using (Html.BeginForm("sort_category", "home", FormMethod.Post))
+    {
+        <input name="hiddenPageName" type="hidden" value="@category.page_name" />
+        <select name="selectSortField" class="annytab-form-select" style="width:100px;">
+            <option value="id" @(userSettings["sort_field"] == "id" ? Html.Raw("selected='selected'") : Html.Raw(""))>@(sort_tt + " " + on_tt.ToLower())</option>
+            <option value="title" @(userSettings["sort_field"] == "title" ? Html.Raw("selected='selected'") : Html.Raw(""))>@title_tt</option>
+            <option value="unit_price" @(userSettings["sort_field"] == "unit_price" ? Html.Raw("selected='selected'") : Html.Raw(""))>@price_tt</option>
+            <option value="page_views" @(userSettings["sort_field"] == "page_views" ? Html.Raw("selected='selected'") : Html.Raw(""))>@page_views_tt</option>
+            <option value="rating" @(userSettings["sort_field"] == "rating" ? Html.Raw("selected='selected'") : Html.Raw(""))>@rating_tt</option>
+            <option value="buys" @(userSettings["sort_field"] == "buys" ? Html.Raw("selected='selected'") : Html.Raw(""))>@buys_tt</option>
+            <option value="date_added" @(userSettings["sort_field"] == "date_added" ? Html.Raw("selected='selected'") : Html.Raw(""))>@date_tt</option>
+        </select>
+        <select name="selectSortOrder" class="annytab-form-select" style="width:90px;">
+            <option value="ASC" @(userSettings["sort_order"] == "ASC" ? Html.Raw("selected='selected'") : Html.Raw(""))>@ascending_tt</option>
+            <option value="DESC" @(userSettings["sort_order"] == "DESC" ? Html.Raw("selected='selected'") : Html.Raw(""))>@descending_tt</option>
+        </select>
+        <select name="selectPageSize" class="annytab-form-select" style="width:50px;">
+            <option value="10" @(userSettings["page_size"] == "10" ? Html.Raw("selected='selected'") : Html.Raw(""))>10</option>
+            <option value="20" @(userSettings["page_size"] == "20" ? Html.Raw("selected='selected'") : Html.Raw(""))>20</option>
+            <option value="40" @(userSettings["page_size"] == "40" ? Html.Raw("selected='selected' ") : Html.Raw(" "))>40</option>
+            <option value="80" @(userSettings["page_size"] == "80" ? Html.Raw("selected='selected'") : Html.Raw(""))>80</option>
+        </select>
+        <select name="selectDisplayView" class="annytab-form-select" style="width:80px;">
+            <option value="0" @(userSettings["display_view"] == "0" ? Html.Raw("selected='selected'") : Html.Raw(""))>@(view_tt + " - " + "1:1")</option>
+            <option value="1" @(userSettings["display_view"] == "1" ? Html.Raw("selected='selected'") : Html.Raw(""))>@(view_tt + " - " + "2:1")</option>
+            <option value="2" @(userSettings["display_view"] == "2" ? Html.Raw("selected='selected'") : Html.Raw(""))>@(view_tt + " - " + "3:1")</option>
+            <option value="3" @(userSettings["display_view"] == "3" ? Html.Raw("selected='selected'") : Html.Raw(""))>@(view_tt + " - " + "4:1")</option>
+        </select>
+        <input type="submit" value="@sort_tt" class="annytab-form-button" />
+    }
+</div>
+
+<div class="annytab-basic-space"></div>
+
+@* Categories and products *@
+@Html.Partial(domain.custom_theme_id == 0 ? "/Views/shared_front/_display_items.cshtml" : "/Views/theme/front_display_items.cshtml")
+
+@section scripts {
+    <script>$("#txtSearch").focus();</script>
+    @Scripts.Render(domain.custom_theme_id == 0 ? "/Scripts/annytab_front/annytab.category-functions.js" : "/Scripts/theme/annytab.category-functions.js")
+}

@@ -1,0 +1,107 @@
+﻿@{
+    
+    // Set the layout for the page
+    Layout = "/Views/shared_admin/_standard_layout.cshtml";
+
+    // Get form data
+    OptionType optionType = ViewBag.OptionType;
+    List<Option> options = ViewBag.Options;
+    string returnUrl = ViewBag.ReturnUrl;
+    string error_message = ViewBag.ErrorMessage != null ? ViewBag.ErrorMessage : string.Empty;
+    
+    // Get translated texts
+    KeyStringList tt = ViewBag.TranslatedTexts;
+    string product_options_tt = tt.Get("product_options");
+    string new_tt = tt.Get("new");
+    string edit_tt = tt.Get("edit");
+    string id_tt = tt.Get("id");
+    string title_tt = tt.Get("title");
+    string no_choice_tt = tt.Get("no_choice");
+    string google_name_tt = tt.Get("google_name");
+    string product_suffix_tt = tt.Get("product_suffix");
+    string save_tt = tt.Get("save");
+    string cancel_tt = tt.Get("cancel");
+
+    // Set the title for the page
+    if(optionType.id == 0)
+    {
+        ViewBag.Title = product_options_tt + " - " + new_tt.ToLower();
+    }
+    else
+    {
+        ViewBag.Title = product_options_tt + " - " + edit_tt.ToLower();
+    }
+}
+
+<h1>@ViewBag.Title</h1>
+@*Menu*@
+@Html.Partial("~/Views/admin_options/_form_menu.cshtml")
+
+@*Main form*@
+@using (Html.BeginForm("edit", "admin_options", FormMethod.Post))
+{
+    <input name="returnUrl" type="hidden" value="@returnUrl" />
+    <div id="divErrors" class="formErrorMessage" style="@(error_message != "" ? "display:block;" : "display:none;")">@Html.Raw(error_message)</div>
+    <table style="width:100%;">
+        <tr style="@(optionType.id != 0 ? "display:table-row;" : "display:none;")">
+            <td class="label">@(id_tt + ":")</td>
+            <td class="input"><input name="txtId" type="text" class="formTextbox" tabindex="-1" readonly="readonly" value="@optionType.id" /></td>
+        </tr>
+        <tr>
+            <td class="label">@(title_tt + ":")</td>
+            <td class="input"><input id="txtTitle" name="txtTitle" type="text" class="formTextbox" value="@optionType.title" /></td>
+        </tr>
+        <tr>
+            <td class="label">@google_name_tt</td>
+            <td class="input">
+                <select name="selectGoogleName" class="formSelect">
+                    <option value="" @(optionType.google_name == "" ? Html.Raw("selected='selected'") : Html.Raw(""))>@("-- " + no_choice_tt + " --")</option>
+                    <option value="g:color" @(optionType.google_name == "g:color" ? Html.Raw("selected='selected'") : Html.Raw(""))>g:color</option>
+                    <option value="g:material" @(optionType.google_name == "g:material" ? Html.Raw("selected='selected'") : Html.Raw(""))>g:material</option>
+                    <option value="g:pattern" @(optionType.google_name == "g:pattern" ? Html.Raw("selected='selected'") : Html.Raw(""))>g:pattern</option>
+                    <option value="g:size" @(optionType.google_name == "g:size" ? Html.Raw("selected='selected'") : Html.Raw(""))>g:size</option>
+                </select>
+            </td>
+        </tr>
+    </table>
+
+    // Option input table
+    <div class="inputTableContainer" style="margin:20px 0px 0px 0px;">
+        <table id="inputTable" class="inputTable" style="width:288px;">
+            <tr style="border-bottom:2px solid #ffffff;">
+                <th style="display:none;">@id_tt</th>
+                <th class="inputTableTh" style="width:40px;">&nbsp;</th>
+                <th class="inputTableTh" style="width:100px;">@title_tt</th>
+                <th class="inputTableTh" style="width:100px;">@product_suffix_tt</th>
+                <th class="inputTableTh" style="min-width:48px;text-align:center;">&nbsp;</th>
+            </tr>
+            @for (int i = 0; i < options.Count; i++)
+            {
+                <tr>
+                    <td style="display:none;"><input name="optionId" type="hidden" tabindex="-1" class="inputTableTextbox" value="@options[i].id" /></td>
+                    <td><img src="/Content/images/annytab_design/drag_icon.png" alt="Drag icon" style="width:20px;height:20px;padding:5px 4px 0px 4px;cursor:move;" /></td>
+                    <td><input name="optionTitle" type="text" class="inputTableTextbox" value="@options[i].title" /></td>
+                    <td><input name="optionSuffix" type="text" class="inputTableTextbox" value="@options[i].product_code_suffix" /></td>
+                    <td><input data-id="addRow" type="button" class="inputTableAddRemoveButton" value="+" /><input data-id="deleteRow" type="button" class="inputTableAddRemoveButton" value="-" /></td>
+                </tr>
+            }
+            <tr>
+                <td style="display:none;"><input name="optionId" type="hidden" tabindex="-1" class="inputTableTextbox" value="0" /></td>
+                <td><img src="/Content/images/annytab_design/drag_icon.png" alt="Drag icon" style="width:20px;height:20px;padding:5px 4px 0px 4px;cursor:move;" /></td>
+                <td><input name="optionTitle" type="text" class="inputTableTextbox" /></td>
+                <td><input name="optionSuffix" type="text" class="inputTableTextbox" /></td>
+                <td><input data-id="addRow" type="button" class="inputTableAddRemoveButton" value="+" /><input data-id="deleteRow" type="button" class="inputTableAddRemoveButton" value="-" /></td>
+            </tr>
+        </table>
+    </div>
+
+    // Save form button
+    <div style="display:block;border:1px solid #cccccc;margin:20px 0px 0px 0px;border-radius:4px;">
+        <input id="btnSave" type="submit" value="@save_tt" />
+        <input type="button" value="@cancel_tt" onclick="@Html.Raw("location.href='/admin_options" + returnUrl + "'")" />
+    </div>
+}
+
+@section scripts {
+    <script>$("#txtTitle").focus();</script>
+}

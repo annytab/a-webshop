@@ -1,0 +1,315 @@
+﻿@using Annytab
+@using System.Globalization;
+@{
+    
+    // Paging and search variables
+    string keywords = string.Empty;
+    Int32 page = 1;
+    
+    // Get the layout type from the cookie
+    ViewBag.LayoutType = "standard";
+    if (Request.Cookies["LayoutType"] != null)
+    {
+        ViewBag.LayoutType = Request.Cookies["LayoutType"].Value;
+    }
+
+    // Get the keywords
+    if (Request.Params["kw"] != null)
+    {
+        keywords = Server.UrlDecode(Request.Params["kw"]);
+    }
+
+    // Get the page number
+    if (Request.Params["qp"] != null)
+    {
+        try
+        {
+            page = Int32.Parse(Request.Params["qp"]);
+        }
+        catch (Exception ex)
+        {
+            string exceptionMessage = ex.Message;
+            page = 1;
+        }
+    }
+
+    // Get form values
+    Domain domain = ViewBag.CurrentDomain;
+    Currency currency = Currency.GetOneById(domain.currency);
+    Language language = ViewBag.CurrentLanguage;
+    KeyStringList tt = ViewBag.TranslatedTexts;
+    Dictionary<string, string> userSettings = ViewBag.UserSettings;
+    bool pricesIncludesVat = ViewBag.PricesIncludesVat;
+    CultureInfo cultureInfo = ViewBag.CultureInfo;
+
+    // Make sure that user settings not is null
+    if (userSettings == null)
+    {
+        userSettings = new Dictionary<string, string>(4);
+        userSettings.Add("sort_field", "title");
+        userSettings.Add("sort_order", "ASC");
+        userSettings.Add("page_size", "10");
+        userSettings.Add("display_view", ViewBag.LayoutType == "mobile" ? domain.mobile_display_view.ToString() : domain.default_display_view.ToString());
+    }
+
+    // Create a clean string with keywords
+    string cleanKeywords = keywords.Replace("+", "");
+
+    // Create an array with search words
+    string[] words = cleanKeywords.Split(' ');
+    Stemmer stemmer = Tools.GetStemmer(language);
+    string[] steamWords = stemmer.GetSteamWords(words);
+
+    // Count the number of posts
+    Int32 count = Product.GetActiveCountBySearch(steamWords, domain.front_end_language);
+    
+    // Get the page size
+    Int32 pageSize = Int32.Parse(userSettings["page_size"]);
+
+    // Get the number of pages
+    Int32 numberOfPages = Convert.ToInt32(Math.Ceiling(((double)count / pageSize)));
+    numberOfPages = numberOfPages == 0 ? 1 : numberOfPages;
+
+    // Get products by keywords
+    List<Product> products = Product.GetActiveBySearch(steamWords, domain.front_end_language, pageSize, page, userSettings["sort_field"], userSettings["sort_order"], pricesIncludesVat);
+
+    // Calculate the decimal multiplier
+    Int32 decimalMultiplier = (Int32)Math.Pow(10, currency.decimals);
+    
+    // Get translated texts
+    string search_result_tt = tt.Get("search_result");
+    string show_tt = tt.Get("show");
+    string image_tt = tt.Get("image");
+    string search_tt = tt.Get("search");
+    string title_tt = tt.Get("title");
+    string price_tt = tt.Get("price");
+    string page_views_tt = tt.Get("page_views");
+    string rating_tt = tt.Get("rating");
+    string buys_tt = tt.Get("buys");
+    string date_tt = tt.Get("date");
+    string ascending_tt = tt.Get("ascending");
+    string descending_tt = tt.Get("descending");
+    string including_vat_tt = tt.Get("including_vat");
+    string excluding_vat_tt = tt.Get("excluding_vat");
+    string sort_tt = tt.Get("sort");
+    string on_tt = tt.Get("on");
+    string view_tt = tt.Get("view");
+    string product_tt = tt.Get("product");
+    string from_short_tt = tt.Get("from_short");
+
+    // Set meta data
+    ViewBag.Title = search_result_tt;
+    ViewBag.MetaTitle = search_result_tt;
+    ViewBag.MetaDescription = search_result_tt;
+    ViewBag.MetaKeywords = search_result_tt;
+    ViewBag.MetaCanonical = domain.web_address + "/home/search";
+    ViewBag.MetaRobots = "noindex, follow";
+
+    // Set paging data
+    ViewBag.NavigateUrl = "/home/search?kw=" + Server.UrlEncode(keywords) + "&qp={0}";
+    ViewBag.CurrentPage = page;
+    ViewBag.NumberOfPages = numberOfPages;
+    
+    // Set the layout for the page
+    if (ViewBag.LayoutType == "mobile")
+    {
+        Layout = domain.custom_theme_id == 0 ? "/Views/shared_front/_mobile_layout.cshtml" : "/Views/theme/front_mobile_layout.cshtml";
+    }
+    else
+    {
+        Layout = domain.custom_theme_id == 0 ? "/Views/shared_front/_standard_layout.cshtml" : "/Views/theme/front_standard_layout.cshtml";
+    }
+
+    // A counter for columns
+    Int32 columnCounter = 0;
+}
+
+@* Title *@
+<h1>@ViewBag.Title</h1>
+
+<div class="annytab-basic-space"></div>
+
+@* Search and sorting *@
+<div class="annytab-basic-container">
+    @using (Html.BeginForm("sort_search", "home", FormMethod.Post))
+    {
+        <input id="txtFormSearchBox" name="txtFormSearchBox" type="text" class="annytab-form-textbox" value="@keywords" />
+        <select name="selectSortField" class="annytab-form-select" style="width:100px;">
+            <option value="id" @(userSettings["sort_field"] == "id" ? Html.Raw("selected='selected'") : Html.Raw(""))>@(sort_tt + " " + on_tt.ToLower())</option>
+            <option value="title" @(userSettings["sort_field"] == "title" ? Html.Raw("selected='selected'") : Html.Raw(""))>@title_tt</option>
+            <option value="unit_price" @(userSettings["sort_field"] == "unit_price" ? Html.Raw("selected='selected'") : Html.Raw(""))>@price_tt</option>
+            <option value="page_views" @(userSettings["sort_field"] == "page_views" ? Html.Raw("selected='selected'") : Html.Raw(""))>@page_views_tt</option>
+            <option value="rating" @(userSettings["sort_field"] == "rating" ? Html.Raw("selected='selected'") : Html.Raw(""))>@rating_tt</option>
+            <option value="buys" @(userSettings["sort_field"] == "buys" ? Html.Raw("selected='selected'") : Html.Raw(""))>@buys_tt</option>
+            <option value="date_added" @(userSettings["sort_field"] == "date_added" ? Html.Raw("selected='selected'") : Html.Raw(""))>@date_tt</option>
+        </select>
+        <select name="selectSortOrder" class="annytab-form-select" style="width:80px;">
+            <option value="ASC" @(userSettings["sort_order"] == "ASC" ? Html.Raw("selected='selected'") : Html.Raw(""))>@ascending_tt</option>
+            <option value="DESC" @(userSettings["sort_order"] == "DESC" ? Html.Raw("selected='selected'") : Html.Raw(""))>@descending_tt</option>
+        </select>
+        <select name="selectPageSize" class="annytab-form-select" style="width:50px;">
+            <option value="10" @(userSettings["page_size"] == "10" ? Html.Raw("selected='selected'") : Html.Raw(""))>10</option>
+            <option value="20" @(userSettings["page_size"] == "20" ? Html.Raw("selected='selected'") : Html.Raw(""))>20</option>
+            <option value="40" @(userSettings["page_size"] == "40" ? Html.Raw("selected='selected'") : Html.Raw(""))>40</option>
+            <option value="80" @(userSettings["page_size"] == "80" ? Html.Raw("selected='selected'") : Html.Raw(""))>80</option>
+        </select>
+        <select name="selectDisplayView" class="annytab-form-select" style="width:80px;">
+            <option value="0" @(userSettings["display_view"] == "0" ? Html.Raw("selected='selected'") : Html.Raw(""))>@(view_tt + " - " + "1:1")</option>
+            <option value="1" @(userSettings["display_view"] == "1" ? Html.Raw("selected='selected'") : Html.Raw(""))>@(view_tt + " - " + "2:1")</option>
+            <option value="2" @(userSettings["display_view"] == "2" ? Html.Raw("selected='selected'") : Html.Raw(""))>@(view_tt + " - " + "3:1")</option>
+            <option value="3" @(userSettings["display_view"] == "3" ? Html.Raw("selected='selected'") : Html.Raw(""))>@(view_tt + " - " + "4:1")</option>
+        </select>
+        <input type="submit" value="@search_tt" class="annytab-form-button" />
+    }
+</div>
+
+<div class="annytab-basic-space"></div>
+
+@for (int i = 0; i < products.Count; i++)
+{
+    @* Calculate the product price *@
+    ValueAddedTax valueAddedTax = ValueAddedTax.GetOneById(products[i].value_added_tax_id);
+    decimal productPrice = products[i].unit_price;
+    productPrice *= (currency.currency_base / currency.conversion_rate);
+    productPrice = Math.Round(productPrice * decimalMultiplier, MidpointRounding.AwayFromZero) / decimalMultiplier;
+    if (pricesIncludesVat == true)
+    {
+        productPrice += Math.Round(productPrice * valueAddedTax.value * decimalMultiplier, MidpointRounding.AwayFromZero) / decimalMultiplier;
+    }
+    
+    @* Get the form data *@
+    string title = products[i].title;
+    string src = Tools.GetProductMainImageUrl(products[i].id, domain.front_end_language, "", products[i].use_local_images);
+    string url = "/home/product/" + products[i].page_name;
+    string description = products[i].main_content.TruncateHtml(500, " ...");
+    string price = products[i].from_price == true ? from_short_tt.ToLower() + " " : "";
+    price += productPrice.ToString("##,0.##", cultureInfo) + " " + domain.currency;
+    string link_text = show_tt + " " + product_tt.ToLower();
+    string short_link_text = show_tt;
+        
+    @* A product post *@
+    if (userSettings["display_view"] == "0")
+    {
+        <div class="annytab-view0-container">
+            <div class="annytab-view0-left">
+                <a href="@url"><img class="annytab-view0-image" alt="@title" src="@src" /></a>
+            </div>
+            <div class="annytab-view0-right">
+                <a href="@url" class="annytab-view0-title">@title</a><br />
+                <div class="annytab-price-tag-small" style="margin:8px 0px 8px 0px;">@Html.Raw(price)</div>
+                <div class="annytab-basic-bread-text">@Html.Raw(description)</div>
+            </div>
+        </div>
+    }
+    else if (userSettings["display_view"] == "1")
+    {
+        columnCounter++;
+        if (columnCounter == 1)
+        {
+            @:<div class="annytab-view1-container">
+        }
+
+        <div class="annytab-view1-productbox">
+            <div class="annytab-view1-title"><a href="@url">@title</a></div>
+            <a href="@url"><img class="annytab-view1-image" alt="@title" src="@src" /></a>
+            <div style="position:absolute;left:10px;bottom:10px;right:10px;">
+                <div class="annytab-price-tag-small" style="margin-bottom:10px;">@Html.Raw(price)</div>
+                <a class="annytab-basic-button" style="display:block;padding:10px;" href="@url">@link_text</a>
+            </div>
+            <div style="margin-top:76px;"></div>
+        </div>
+
+        if (columnCounter < 2 && i != products.Count - 1)
+        {
+            @:<div class="annytab-view1-divider"></div>
+        }
+
+        if (columnCounter == 2 || i == products.Count - 1)
+        {
+            for (int j = columnCounter; j < 2; j++ )
+            {
+                @:<div class="annytab-view1-divider"></div>
+                @:<div style="display:table-cell;"></div>
+            }
+            @:</div>
+            columnCounter = 0;
+        }
+    }
+    else if (userSettings["display_view"] == "2")
+    {
+        columnCounter++;
+        if (columnCounter == 1)
+        {
+            @:<div class="annytab-view1-container">
+        }
+
+        <div class="annytab-view1-productbox">
+            <div class="annytab-view1-title"><a href="@url">@title</a></div>
+            <a href="@url"><img class="annytab-view1-image" alt="@title" src="@src" /></a>
+            <div style="position:absolute;left:10px;bottom:10px;right:10px;">
+                <div class="annytab-price-tag-small" style="margin-bottom:10px;">@Html.Raw(price)</div>
+                <a class="annytab-basic-button" style="display:block;padding:10px;" href="@url">@link_text</a>
+            </div>
+            <div style="margin-top:76px;"></div>
+        </div>
+
+        if (columnCounter < 3 && i != products.Count - 1)
+        {
+            @:<div class="annytab-view1-divider"></div>
+        }
+
+        if (columnCounter == 3 || i == products.Count - 1)
+        {
+            for (int j = columnCounter; j < 3; j++ )
+            {
+                @:<div class="annytab-view1-divider"></div>
+                @:<div style="display:table-cell;"></div>
+            }
+            @:</div>
+            columnCounter = 0;
+        }
+    }
+    else if (userSettings["display_view"] == "3")
+    {
+        columnCounter++;
+        if (columnCounter == 1)
+        {
+            @:<div class="annytab-view1-container">
+        }
+
+        <div class="annytab-view1-productbox">
+            <div class="annytab-view1-title"><a href="@url">@title</a></div>
+            <a href="@url"><img class="annytab-view1-image" alt="@title" src="@src" /></a>
+            <div style="position:absolute;left:10px;bottom:10px;right:10px;">
+                <div class="annytab-price-tag-small" style="margin-bottom:10px;">@Html.Raw(price)</div>
+                <a class="annytab-basic-button" style="display:block;padding:10px;" href="@url">@short_link_text</a>
+            </div>
+            <div style="margin-top:76px;"></div>
+        </div>
+
+        if (columnCounter < 4 && i != products.Count - 1)
+        {
+            @:<div class="annytab-view1-divider"></div>
+        }
+
+        if (columnCounter == 4 || i == products.Count - 1)
+        {
+            for (int j = columnCounter; j < 4; j++)
+            {
+                @:<div class="annytab-view1-divider"></div>
+                @:<div style="display:table-cell;"></div>
+            }
+            @:</div>
+            columnCounter = 0;
+        }
+    }
+}
+
+<div class="annytab-basic-space"></div>
+
+@* Paging menu *@
+@Html.Partial(domain.custom_theme_id == 0 ? "/Views/shared_front/_paging_menu.cshtml" : "/Views/theme/front_paging_menu.cshtml")
+
+@section scripts {
+    <script>$("#txtFormSearchBox").focus();</script>
+}

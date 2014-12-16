@@ -1,0 +1,12 @@
+﻿<?xml version='1.0' encoding='utf-8'?>
+<SettingsFile xmlns="http://schemas.microsoft.com/VisualStudio/2004/01/settings" CurrentProfile="(Default)" GeneratedClassNamespace="Annytab.Webshop.Properties" GeneratedClassName="Settings">
+  <Profiles />
+  <Settings>
+    <Setting Name="Annytab_Webshop_Payex_Production_PxOrder" Type="(Web Service URL)" Scope="Application">
+      <Value Profile="(Default)">https://external.payex.com/pxorder/pxorder.asmx</Value>
+    </Setting>
+    <Setting Name="Annytab_Webshop_Payex_Test_PxOrder" Type="(Web Service URL)" Scope="Application">
+      <Value Profile="(Default)">https://test-external.payex.com/pxorder/pxorder.asmx</Value>
+    </Setting>
+  </Settings>
+</SettingsFile>

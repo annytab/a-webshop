@@ -1,0 +1,31 @@
+﻿@{
+    // Set the layout
+    Layout = null;
+    
+    // Get form values
+    string paymentForm = ViewBag.PaymentForm;
+}
+
+<!DOCTYPE html>
+
+<html>
+<head>
+    <title>Svea Webpay</title>
+    <meta name="robots" content="noindex, nofollow" />
+</head>
+<body>
+    <div id="paymentContainer">
+        @Html.Raw(paymentForm)
+    </div>
+    <script type="text/javascript">
+        window.onload = function () {
+            document.getElementById("paymentContainer").style.display = "none";
+            var form = document.getElementById("paymentForm");
+            document.getElementsByName("submit")[0].name = "";
+            form.submit();
+        }
+    </script>
+</body>
+</html>
+
+

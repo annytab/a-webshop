@@ -1,0 +1,96 @@
+﻿@using System.Globalization
+@{
+    // Set the layout for the page
+    Layout = "/Views/shared_admin/_standard_layout.cshtml";
+
+    // Get form data
+    Domain domain = ViewBag.CurrentDomain;
+    KeyStringList tt = ViewBag.TranslatedTexts;
+    Language currentLanguage = Language.GetOneById(domain.back_end_language);
+    CultureInfo cultureInfo = Tools.GetCultureInfo(currentLanguage);
+    QueryParams parameters = ViewBag.QueryParams;
+    string queryString = QueryParams.GetQueryString(parameters);
+
+    // Create a clean string with keywords
+    string cleanKeywords = parameters.keywords.Replace("+", "");
+
+    // Create an array with search words
+    string[] words = cleanKeywords.Split(' ');
+
+    // Count the number of posts
+    Int32 count = ProductReview.GetCountBySearch(words);
+
+    // Get the number of pages
+    Int32 numberOfPages = Convert.ToInt32(Math.Ceiling(((double)count / parameters.page_size)));
+    numberOfPages = numberOfPages == 0 ? 1 : numberOfPages;
+
+    // Get product reviews by keywords in search
+    List<ProductReview> reviews = ProductReview.GetBySearch(words, parameters.page_size, parameters.current_page,
+        parameters.sort_field, parameters.sort_order);
+
+    // Get translated texts
+    string review_tt = tt.Get("review");
+    string list_tt = tt.Get("list");
+    string id_tt = tt.Get("id");
+    string language_tt = tt.Get("language");
+    string product_tt = tt.Get("product");
+    string customer_tt = tt.Get("customer");
+    string rating_tt = tt.Get("rating");
+    string edit_tt = tt.Get("edit");
+    string delete_tt = tt.Get("delete");
+
+    // Set paging data
+    ViewBag.CurrentPage = parameters.current_page;
+    ViewBag.NumberOfPages = numberOfPages;
+    ViewBag.NavigateUrl = "/admin_product_reviews?kw=" + Server.UrlEncode(parameters.keywords) + "&sf=" + parameters.sort_field + "&so=" + parameters.sort_order + "&pz=" + parameters.page_size + "&qp={0}";
+
+    // Set the page title
+    ViewBag.Title = review_tt + " - " + list_tt.ToLower();
+}
+
+<h1>@ViewBag.Title</h1>
+@Html.Partial("~/Views/admin_product_reviews/_form_menu.cshtml")
+
+@*List of static texts*@
+<div class="listContainer">
+    <table class="listTable" style="width:700px;">
+        <tr>
+            <th class="listTh" style="text-align:center;width:100px;">@id_tt</th>
+            <th class="listTh" style="text-align:center;width:100px;">@language_tt</th>
+            <th class="listTh" style="text-align:center;width:100px;">@product_tt</th>
+            <th class="listTh" style="text-align:center;width:100px;">@customer_tt</th>
+            <th class="listTh" style="text-align:center;width:100px;">@rating_tt</th>
+            <th class="listTh" style="text-align:center;width:100px;">@edit_tt</th>
+            <th class="listTh" style="text-align:center;width:100px;">@delete_tt</th>
+        </tr>
+
+        @for (int i = 0; i < reviews.Count; i++)
+        {
+            if (i % 2 != 0)
+            {
+                @:<tr class="annytab-list-main-row">
+            }
+            else
+            {
+                @:<tr class="annytab-list-alt-row">
+            }
+
+            @*Columns*@
+            @:<td style="text-align:center;">@reviews[i].id.ToString()</td>
+            @:<td style="text-align:center;">@reviews[i].language_id</td>
+            @:<td style="text-align:center;">@reviews[i].product_id</td>
+            @:<td style="text-align:center;">@reviews[i].customer_id</td>
+            @:<td style="text-align:center;">@reviews[i].rating.ToString("##,0.##", cultureInfo)</td>
+            @:<td style="text-align:center;"><input type="button" value="@edit_tt" onclick="location.href='@Url.Action("edit", "admin_product_reviews", new { id = reviews[i].id, returnUrl = queryString })'" /></td>
+            @:<td style="text-align:center;"><input data-id="deletePost" type="button" value="@delete_tt" @(Html.Raw("data-url='/admin_product_reviews/delete/" + reviews[i].id + "?returnUrl=" + Server.UrlEncode(queryString) + "'")) /></td>
+            @:</tr>
+        }
+    </table>
+</div>
+
+@* Paging menu *@
+@Html.Partial("/Views/shared_admin/_paging_menu.cshtml")
+
+@section scripts {
+    <script>$("#txtSearch").focus();</script>
+}

@@ -1,0 +1,81 @@
+﻿@{
+    // Set the layout for the page
+    Layout = "/Views/shared_admin/_standard_layout.cshtml";
+
+    // Get form data
+    Administrator administrator = ViewBag.Administrator;
+    KeyStringList tt = ViewBag.TranslatedTexts;
+    string returnUrl = ViewBag.ReturnUrl;
+    string error_message = ViewBag.ErrorMessage != null ? ViewBag.ErrorMessage : string.Empty;
+
+    // Get translated texts 
+    string administrator_tt = tt.Get("administrator");
+    string new_tt = tt.Get("new");
+    string edit_tt = tt.Get("edit");
+    string id_tt = tt.Get("id");
+    string user_name_tt = tt.Get("user_name");
+    string password_tt = tt.Get("password");
+    string admin_role_tt = tt.Get("admin_role");
+    string save_tt = tt.Get("save");
+    string cancel_tt = tt.Get("cancel");
+
+    // Set the title for the page
+    if (administrator.id == 0)
+    {
+        ViewBag.Title = administrator_tt + " - " + new_tt.ToLower();
+    }
+    else
+    {
+        ViewBag.Title = administrator_tt + " - " + edit_tt.ToLower();
+    }
+}
+
+<h1>@ViewBag.Title</h1>
+
+@*Menu*@
+@Html.Partial("/Views/admin_administrators/_form_menu.cshtml")
+
+@*Main form*@
+@using (Html.BeginForm("edit", "admin_administrators", FormMethod.Post))
+{
+    <input name="returnUrl" type="hidden" value="@returnUrl" />
+    <div id="divErrors" class="formErrorMessage" style="@(error_message != "" ? "display:block;" : "display:none;")">@Html.Raw(error_message)</div>
+    <table style="clear:both;width:100%;">
+        <tr style="@(administrator.id != 0 ? "display:table-row;" : "display:none;")">
+            <td class="label">@(id_tt + ":")</td>
+            <td class="input"><input name="txtId" type="text" class="formTextbox" tabindex="-1" readonly="readonly" value="@administrator.id" /></td>
+        </tr>
+        <tr>
+            <td class="label">@(user_name_tt + ":")</td>
+            <td class="input"><input id="txtUserName" name="txtUserName" type="text" class="formTextbox" value="@administrator.admin_user_name" /></td>
+        </tr>
+        <tr>
+            <td class="label">@(password_tt + ":")</td>
+            <td class="input"><input name="txtPassword" type="password" class="formTextbox" /></td>
+        </tr>
+        <tr>
+            <td class="label">@(admin_role_tt + ":")</td>
+            <td class="input">
+                <select name="selectAdminRole" class="formSelect">
+                    <option value="Administrator" @(administrator.admin_role == "Administrator" ? Html.Raw("selected='selected'") : Html.Raw(""))>Administrator</option>
+                    <option value="Editor" @(administrator.admin_role == "Editor" ? Html.Raw("selected='selected'") : Html.Raw(""))>Editor</option>
+                    <option value="Translator" @(administrator.admin_role == "Translator" ? Html.Raw("selected='selected'") : Html.Raw(""))>Translator</option>
+                    <option value="Demo" @(administrator.admin_role == "Demo" ? Html.Raw("selected='selected'") : Html.Raw(""))>Demo</option>
+                    <option value="API_FULL_TRUST" @(administrator.admin_role == "API_FULL_TRUST" ? Html.Raw("selected='selected'") : Html.Raw(""))>API Full Trust</option>
+                    <option value="API_MEDIUM_TRUST" @(administrator.admin_role == "API_MEDIUM_TRUST" ? Html.Raw("selected='selected'") : Html.Raw(""))>API Medium Trust</option>
+                    <option value="API_MINIMAL_TRUST" @(administrator.admin_role == "API_MINIMAL_TRUST" ? Html.Raw("selected='selected'") : Html.Raw(""))>API Minimal Trust</option>
+                </select>
+            </td>
+        </tr>
+    </table>
+
+    // Save form button
+    <div style="display:block;border: 1px solid #cccccc;margin: 20px 0px 0px 0px;border-radius: 4px;">
+        <input id="btnSave" type="submit" value="@save_tt" />
+        <input type="button" value="@cancel_tt" onclick="@Html.Raw("location.href='/admin_administrators" + returnUrl + "'")" />
+    </div>
+}
+
+@section scripts {
+    <script>$("#txtUserName").focus();</script>
+}

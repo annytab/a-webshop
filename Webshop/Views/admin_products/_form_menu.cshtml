@@ -1,0 +1,57 @@
+﻿@{
+    // Get the form data
+    QueryParams parameters = ViewBag.QueryParams;
+    string queryString = QueryParams.GetQueryString(parameters);
+    
+    // Get translated texts
+    KeyStringList tt = ViewBag.TranslatedTexts;
+    string show_tt = tt.Get("show");
+    string list_tt = tt.Get("list");
+    string new_tt = tt.Get("new");
+    string search_tt = tt.Get("search");
+    string id_tt = tt.Get("id");
+    string title_tt = tt.Get("title");
+    string price_tt = tt.Get("price");
+    string page_views_tt = tt.Get("page_views");
+    string rating_tt = tt.Get("rating");
+    string buys_tt = tt.Get("buys");
+    string basket_tt = tt.Get("basket");
+    string date_tt = tt.Get("date");
+    string ascending_tt = tt.Get("ascending");
+    string descending_tt = tt.Get("descending");
+    string sort_tt = tt.Get("sort");
+    string on_tt = tt.Get("on");
+}
+
+@*The menu bar*@
+<div id="menu" class="formMenuBar">
+    @using (Html.BeginForm("search", "admin_products", FormMethod.Post))
+    {
+        <input name="view" type="hidden" value="products" />
+        <input type="button" value="@(show_tt + " " + list_tt.ToLower())" onclick="location.href='@Url.Action("index", "admin_products", new { sf = parameters.sort_field, so = parameters.sort_order, pz = parameters.page_size } )'" />
+        <input type="button" value="@new_tt" onclick="location.href='@Url.Action("edit", "admin_products", new { id = 0, returnUrl = queryString })'" />
+        <select name="selectSortField" style="width:100px;height:22px;">
+            <option value="id" @(parameters.sort_field == "" ? Html.Raw("selected='selected'") : Html.Raw(""))>@(sort_tt + " " + on_tt.ToLower())</option>
+            <option value="id" @(parameters.sort_field == "id" ? Html.Raw("selected='selected'") : Html.Raw(""))>@id_tt</option>
+            <option value="title" @(parameters.sort_field == "title" ? Html.Raw("selected='selected'") : Html.Raw(""))>@title_tt</option>
+            <option value="unit_price" @(parameters.sort_field == "unit_price" ? Html.Raw("selected='selected'") : Html.Raw(""))>@price_tt</option>
+            <option value="page_views" @(parameters.sort_field == "page_views" ? Html.Raw("selected='selected'") : Html.Raw(""))>@page_views_tt</option>
+            <option value="rating" @(parameters.sort_field == "rating" ? Html.Raw("selected='selected'") : Html.Raw(""))>@rating_tt</option>
+            <option value="buys" @(parameters.sort_field == "buys" ? Html.Raw("selected='selected'") : Html.Raw(""))>@buys_tt</option>
+            <option value="added_in_basket" @(parameters.sort_field == "added_in_basket" ? Html.Raw("selected='selected'") : Html.Raw(""))>@basket_tt</option>
+            <option value="date_added" @(parameters.sort_field == "date_added" ? Html.Raw("selected='selected'") : Html.Raw(""))>@date_tt</option>
+        </select>
+        <select name="selectSortOrder" style="width:80px;height:22px;">
+            <option value="ASC" @(parameters.sort_order == "ASC" ? Html.Raw("selected='selected'") : Html.Raw(""))>@ascending_tt</option>
+            <option value="DESC" @(parameters.sort_order == "DESC" ? Html.Raw("selected='selected'") : Html.Raw(""))>@descending_tt</option>
+        </select>
+        <select name="selectPageSize" style="width:50px;height:22px;">
+            <option value="10" @(parameters.page_size == 10 ? Html.Raw("selected='selected'") : Html.Raw(""))>10</option>
+            <option value="20" @(parameters.page_size == 20 ? Html.Raw("selected='selected'") : Html.Raw(""))>20</option>
+            <option value="40" @(parameters.page_size == 40 ? Html.Raw("selected='selected'") : Html.Raw(""))>40</option>
+            <option value="80" @(parameters.page_size == 80 ? Html.Raw("selected='selected'") : Html.Raw(""))>80</option>
+        </select>
+        <input id="txtSearch" name="txtSearch" type="text" class="textbox" value="@Server.UrlDecode(parameters.keywords)" />
+        <input type="submit" value="@search_tt" />
+    }
+</div>

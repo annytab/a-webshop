@@ -1,0 +1,46 @@
+﻿@{
+    // Get the form data
+    QueryParams parameters = ViewBag.QueryParams;
+    string queryString = QueryParams.GetQueryString(parameters);
+    
+    // Get translated texts
+    KeyStringList tt = ViewBag.TranslatedTexts;
+    string show_tt = tt.Get("show");
+    string list_tt = tt.Get("list");
+    string new_tt = tt.Get("new");
+    string search_tt = tt.Get("search");
+    string id_tt = tt.Get("id");
+    string linkname_tt = tt.Get("linkname");
+    string title_tt = tt.Get("title");
+    string ascending_tt = tt.Get("ascending");
+    string descending_tt = tt.Get("descending");
+    string sort_tt = tt.Get("sort");
+    string on_tt = tt.Get("on");
+}
+
+@*The menu bar*@
+<div id="menu" class="formMenuBar">
+    @using (Html.BeginForm("search", "admin_static_pages", FormMethod.Post))
+    {
+        <input type="button" value="@(show_tt + " " + list_tt.ToLower())" onclick="location.href='@Url.Action("index", "admin_static_pages", new { sf = parameters.sort_field, so = parameters.sort_order, pz = parameters.page_size })'" />
+        <input type="button" value="@new_tt" onclick="location.href='@Url.Action("edit", "admin_static_pages", new { id = 0, returnUrl = queryString })'" />
+        <select name="selectSortField" style="width:100px;height:22px;">
+            <option value="id" @(parameters.sort_field == "" ? Html.Raw("selected='selected'") : Html.Raw(""))>@(sort_tt + " " + on_tt.ToLower())</option>
+            <option value="id" @(parameters.sort_field == "id" ? Html.Raw("selected='selected'") : Html.Raw(""))>@id_tt</option>
+            <option value="link_name" @(parameters.sort_field == "link_name" ? Html.Raw("selected='selected'") : Html.Raw(""))>@linkname_tt</option>
+            <option value="title" @(parameters.sort_field == "title" ? Html.Raw("selected='selected'") : Html.Raw(""))>@title_tt</option>
+        </select>
+        <select name="selectSortOrder" style="width:80px;height:22px;">
+            <option value="ASC" @(parameters.sort_order == "ASC" ? Html.Raw("selected='selected'") : Html.Raw(""))>@ascending_tt</option>
+            <option value="DESC" @(parameters.sort_order == "DESC" ? Html.Raw("selected='selected'") : Html.Raw(""))>@descending_tt</option>
+        </select>
+        <select name="selectPageSize" style="width:50px;height:22px;">
+            <option value="10" @(parameters.page_size == 10 ? Html.Raw("selected='selected'") : Html.Raw(""))>10</option>
+            <option value="20" @(parameters.page_size == 20 ? Html.Raw("selected='selected'") : Html.Raw(""))>20</option>
+            <option value="40" @(parameters.page_size == 40 ? Html.Raw("selected='selected'") : Html.Raw(""))>40</option>
+            <option value="80" @(parameters.page_size == 80 ? Html.Raw("selected='selected'") : Html.Raw(""))>80</option>
+        </select>
+        <input id="txtSearch" name="txtSearch" type="text" class="textbox" value="@Server.UrlDecode(parameters.keywords)" />
+        <input type="submit" value="@search_tt" />
+    }
+</div>

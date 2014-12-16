@@ -1,0 +1,131 @@
+﻿@{
+    // Set the layout for the page
+    Layout = "/Views/shared_admin/_standard_layout.cshtml";
+
+    // Get form values
+    CustomTheme theme = ViewBag.CustomTheme;
+    List<CustomThemeTemplate> templates = ViewBag.CustomThemeTemplates;
+    KeyStringList tt = ViewBag.TranslatedTexts;
+    string returnUrl = ViewBag.ReturnUrl;
+
+    // Get translated texts
+    string edit_tt = tt.Get("edit");
+    string theme_tt = tt.Get("theme");
+    string custom_design_tt = tt.Get("custom_design");
+    string new_tt = tt.Get("new");
+    string template_tt = tt.Get("template");
+    string default_tt = tt.Get("default");
+    string export_to_zip_tt = tt.Get("export_to_zip");
+    string import_from_zip_tt = tt.Get("import_from_zip");
+    string id_tt = tt.Get("id");
+    string name_tt = tt.Get("name");
+    string file_name_tt = tt.Get("file_name");
+    string comment_tt = tt.Get("comment");
+    string delete_tt = tt.Get("delete");
+    string restore_to_default_tt = tt.Get("restore_to_default");
+    string save_tt = tt.Get("save");
+    string cancel_tt = tt.Get("cancel");
+
+    // Set the title for the page
+    if (theme.id == 0)
+    {
+        ViewBag.Title = theme_tt + " - " + new_tt.ToLower();
+    }
+    else
+    {
+        ViewBag.Title = theme_tt + " - " + edit_tt.ToLower();
+    }
+}
+
+<h1>@ViewBag.Title</h1>
+
+@*The menu bar*@
+@Html.Partial("~/Views/admin_custom_design/_form_menu.cshtml")
+
+@* Edit the theme *@
+@using (Html.BeginForm("edit_theme", "admin_custom_design", FormMethod.Post))
+{
+    <input name="returnUrl" type="hidden" value="@returnUrl" />
+    <table style="width:100%;">
+        <tr style="@(theme.id != 0 ? "display:table-row;" : "display:none;")">
+            <td class="label">@(id_tt + ":")</td>
+            <td class="input"><input name="txtId" type="text" class="formTextbox" tabindex="-1" readonly="readonly" value="@theme.id" /></td>
+        </tr>
+        <tr>
+            <td class="label">@(name_tt + ":")</td>
+            <td class="input"><input id="txtName" name="txtName" type="text" class="formTextbox" value="@theme.name" /></td>
+        </tr>
+    </table>
+
+    // Save form button
+    <div style="display:block;border:1px solid #cccccc;margin:20px 0px 20px 0px;border-radius:4px;">
+        <input id="btnSave" type="submit" value="@save_tt" />
+        <input type="button" value="@cancel_tt" onclick="@Html.Raw("location.href='/admin_custom_design" + returnUrl + "'")" />
+    </div>
+}
+
+@*Action menu bar*@
+<div class="formMenuBar">
+    <div style="padding:2px;margin-bottom:4px;background-color:#f0f0f0;">
+        <input type="button" value="@(new_tt + " " + template_tt.ToLower())" onclick="location.href='@Url.Action("edit_template", "admin_custom_design", new { id = theme.id, userFileName = "", returnUrl = returnUrl })'" @(theme.id == 0 ? "disabled='disabled'" : "") />
+    </div>
+    <div style="padding:2px;margin-bottom:4px;background-color:#f0f0f0;">
+        <input id="btnRestoreToDefault" type="button" value="@restore_to_default_tt" onclick="location.href='@Url.Action("restore_templates_to_default", "admin_custom_design", new { id = theme.id, returnUrl = returnUrl })'" disabled="disabled" />
+        <input id="toggleRestorButton" type="checkbox" value="false" style="vertical-align:middle;cursor:pointer;" @(theme.id == 0 ? "disabled='disabled'" : "") />
+    </div>
+    <div style="padding:2px;margin-bottom:4px;background-color:#f0f0f0;"><input type="button" value="@(export_to_zip_tt)" onclick="location.href='@Url.Action("export_templates_to_zip", "admin_custom_design", new { id = theme.id, returnUrl = returnUrl })'" @(theme.id == 0 ? "disabled='disabled'" : "") /></div>
+    @using (Html.BeginForm("import_templates_from_zip", "admin_custom_design", FormMethod.Post, new { enctype = "multipart/form-data" }))
+    {
+        <input name="returnUrl" type="hidden" value="@returnUrl" />
+        <div style="padding:2px;background-color:#f0f0f0;">
+            <input name="hiddenId" type="hidden" tabindex="-1" value="@theme.id" />
+            <input name="importFilesFromZip" type="file" accept=".zip" value="@import_from_zip_tt" @(theme.id == 0 ? "disabled='disabled'" : "") />
+            <input type="submit" value="@import_from_zip_tt" @(theme.id == 0 ? "disabled='disabled'" : "") />
+        </div>
+    }
+</div>
+
+@*List of design templates*@
+<div class="listContainer">
+    <table class="listTable" style="width:800px;">
+        <tr>
+            <th class="listTh" style="text-align:left;width:200px;">@file_name_tt</th>
+            <th class="listTh" style="text-align:left;width:400px;">@comment_tt</th>
+            <th class="listTh" style="text-align:center;width:100px;">@edit_tt</th>
+            <th class="listTh" style="text-align:center;width:100px;">@delete_tt</th>
+        </tr>
+
+        @for (int i = 0; i < templates.Count; i++)
+        {
+            if (i % 2 != 0)
+            {
+                @:<tr class="annytab-list-main-row">
+            }
+            else
+            {
+                @:<tr class="annytab-list-alt-row">
+            }
+
+            @*Columns*@
+            @:<td style="text-align:left;">@templates[i].user_file_name</td>
+            @:<td style="text-align:left;">@templates[i].comment</td>
+            @:<td style="text-align:center;"><input type="button" value="@edit_tt" onclick="location.href='@Url.Action("edit_template", "admin_custom_design", new { id = templates[i].custom_theme_id, userFileName = templates[i].user_file_name, returnUrl = returnUrl })'" /></td>
+            @:<td style="text-align:center;"><input type="button" value="@delete_tt" onclick="location.href='@Url.Action("delete_template", "admin_custom_design", new { id = templates[i].custom_theme_id, userFileName = templates[i].user_file_name, returnUrl = returnUrl })'" /></td>
+            @:</tr>
+        }
+    </table>
+</div>
+
+<div style="margin-bottom:4px;"></div>
+
+@section scripts {
+    <script type="text/javascript">
+
+        $(document).ready(new function () { $(document).on("click", "#toggleRestorButton", toggleRestoreButton); $("#txtName").focus(); });
+
+        function toggleRestoreButton()
+        {
+            $('#btnRestoreToDefault').attr('disabled') ? $('#btnRestoreToDefault').removeAttr('disabled') : $('#btnRestoreToDefault').attr('disabled', 'disabled');
+        }
+    </script>
+}

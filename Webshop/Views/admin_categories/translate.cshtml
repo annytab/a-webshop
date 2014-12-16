@@ -1,0 +1,121 @@
+﻿@{
+    // Set the layout for the page
+    Layout = "/Views/shared_admin/_standard_layout.cshtml";
+
+    // Get values
+    Int32 languageId = ViewBag.LanguageId;
+    List<Language> languages = ViewBag.Languages;
+    Category standardCategory = ViewBag.StandardCategory;
+    Category translatedCategory = ViewBag.TranslatedCategory;
+    string returnUrl = ViewBag.ReturnUrl;
+    string error_message = ViewBag.ErrorMessage != null ? ViewBag.ErrorMessage : string.Empty;
+    KeyStringList tt = ViewBag.TranslatedTexts;
+
+    // Get translated texts
+    string translate_tt = tt.Get("translate");
+    string no_choice_tt = tt.Get("no_choice");
+    string language_tt = tt.Get("language");
+    string category_tt = tt.Get("category");
+    string title_tt = tt.Get("title");
+    string description_tt = tt.Get("description");
+    string meta_description_tt = tt.Get("meta_description");
+    string keywords_tt = tt.Get("keywords");
+    string page_name_tt = tt.Get("page_name");
+    string use_local_images_tt = tt.Get("use_local_images");
+    string inactive_tt = tt.Get("inactive");
+    string delete_tt = tt.Get("delete");
+    string cancel_tt = tt.Get("cancel");
+
+    // Set the title for the page
+    ViewBag.Title = category_tt + " - " + translate_tt.ToLower();
+}
+
+<h1>@ViewBag.Title</h1>
+
+@*Menu*@
+@Html.Partial("/Views/admin_categories/_form_menu.cshtml")
+
+@*Main form*@
+@using (Html.BeginForm("translate", "admin_categories", FormMethod.Post))
+{
+    <input name="returnUrl" type="hidden" value="@returnUrl" />
+    <div id="divErrors" class="formErrorMessage" style="@(error_message != "" ? "display:block;" : "display:none;")">@Html.Raw(error_message)</div>
+    <input type="hidden" name="hiddenCategoryId" class="formTextbox" value="@standardCategory.id" />
+    <table style="width:100%;">
+        <tr>
+            <td class="label">@(language_tt + ":")</td>
+            <td class="input">
+                <select id="selectLanguage" name="selectLanguage" class="formSelect">
+                    <option value="0" data-url="@("/admin_categories/translate/" + standardCategory.id.ToString() + "?returnUrl=" + Server.UrlEncode(returnUrl))" @(languageId == 0 ? Html.Raw("selected='selected'") : Html.Raw(""))>@("-- " + no_choice_tt + " --")</option>
+                    @foreach (Language language in languages)
+                    {
+                        <option value="@language.id" data-url="@("/admin_categories/translate/" + standardCategory.id.ToString() + "?returnUrl=" + Server.UrlEncode(returnUrl) + "&lang=" + language.id.ToString())" @(language.id == languageId ? Html.Raw("selected='selected'") : Html.Raw(""))>@language.name</option>
+                    }
+                </select>
+            </td>
+        </tr>
+        <tr><td colspan="2">&nbsp;</td></tr>
+        <tr>
+            <td class="label">@(title_tt + ":")</td>
+            <td class="input"><input name="txtStandardTitle" type="text" class="formTextbox" tabindex="-1" readonly="readonly" value="@standardCategory.title" /></td>
+        </tr>
+        <tr>
+            <td class="label">&nbsp;</td>
+            <td class="input"><input name="txtTranslatedTitle" type="text" class="formTextbox" value="@(translatedCategory != null ? translatedCategory.title : "")" @(languageId == 0 ? Html.Raw("readonly='readonly'") : Html.Raw("")) /></td>
+        </tr>
+        <tr>
+            <td class="label">@(description_tt + ":")</td>
+            <td class="input"><textarea name="txtStandardDescription" class="formTextarea" tabindex="-1" rows="6" readonly="readonly">@standardCategory.main_content</textarea></td>
+        </tr>
+        <tr>
+            <td class="label">&nbsp;</td>
+            <td class="input"><textarea name="txtTranslatedDescription" class="formTextarea" rows="6" @(languageId == 0 ? Html.Raw("readonly='readonly'") : Html.Raw(""))>@(translatedCategory != null ? translatedCategory.main_content : "")</textarea></td>
+        </tr>
+        <tr>
+            <td class="label">@(meta_description_tt + ":")</td>
+            <td class="input"><textarea name="txtStandardMetadescription" class="formTextarea" tabindex="-1" rows="4" readonly="readonly">@standardCategory.meta_description</textarea></td>
+        </tr>
+        <tr>
+            <td class="label">&nbsp;</td>
+            <td class="input"><textarea name="txtTranslatedMetadescription" class="formTextarea" rows="4" @(languageId == 0 ? Html.Raw("readonly='readonly'") : Html.Raw(""))>@(translatedCategory != null ? translatedCategory.meta_description : "")</textarea></td>
+        </tr>
+        <tr>
+            <td class="label">@(keywords_tt + ":")</td>
+            <td class="input"><input name="txtStandardMetakeywords" type="text" class="formTextbox" tabindex="-1" readonly="readonly" value="@standardCategory.meta_keywords" /></td>
+        </tr>
+        <tr>
+            <td class="label">&nbsp;</td>
+            <td class="input"><input name="txtTranslatedMetakeywords" type="text" class="formTextbox" value="@(translatedCategory != null ? translatedCategory.meta_keywords : "")" @(languageId == 0 ? Html.Raw("readonly='readonly'") : Html.Raw("")) /></td>
+        </tr>
+        <tr>
+            <td class="label">@(page_name_tt + ":")</td>
+            <td class="input"><input name="txtStandardPagename" type="text" class="formTextbox" tabindex="-1" readonly="readonly" value="@standardCategory.page_name" /></td>
+        </tr>
+        <tr>
+            <td class="label">&nbsp;</td>
+            <td class="input"><input name="txtTranslatedPagename" type="text" class="formTextbox" value="@(translatedCategory != null ? translatedCategory.page_name : "")" @(languageId == 0 ? Html.Raw("readonly='readonly'") : Html.Raw("")) /></td>
+        </tr>
+        <tr>
+            <td class="label">@(use_local_images_tt + ":")</td>
+            <td class="input"><input name="cbLocalImages" type="checkbox" value="true" @(translatedCategory != null && translatedCategory.use_local_images == true ? Html.Raw("checked='checked'") : Html.Raw("")) /></td>
+        </tr>
+        <tr>
+            <td class="label">@(inactive_tt + ":")</td>
+            <td class="input"><input name="cbInactive" type="checkbox" value="true" @(translatedCategory != null && translatedCategory.inactive == true ? Html.Raw("checked='checked'") : Html.Raw("")) /></td>
+        </tr>
+    </table>
+
+    // Save form button
+    <div style="display:block;border:1px solid #cccccc;margin:20px 0px 0px 0px;border-radius:4px;">
+        <input id="btnSave" type="submit" value="@translate_tt" @(languageId == 0 ? Html.Raw("disabled='disabled'") : Html.Raw("")) />
+        <input data-id="deletePost" type="button" value="@delete_tt" @(Html.Raw("data-url='/admin_categories/delete/" + standardCategory.id.ToString() + "?returnUrl=" + Server.UrlEncode(returnUrl) + "&lang=" + languageId.ToString() + "'")) @(languageId == 0 ? Html.Raw("disabled='disabled'") : Html.Raw("")) />
+        <input type="button" value="@cancel_tt" onclick="@Html.Raw("location.href='/admin_categories" + returnUrl + "'")" />
+    </div>
+}
+
+@section scripts {
+    <script type="text/javascript">
+        $("#selectLanguage").focus();
+        $("#selectLanguage").on("change", function () { $(location).attr("href", $(this).find(":selected").attr("data-url")); });
+    </script>
+}

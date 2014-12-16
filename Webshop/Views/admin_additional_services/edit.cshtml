@@ -1,0 +1,111 @@
+﻿@using System.Globalization
+@{
+    // Set the layout for the page
+    Layout = "/Views/shared_admin/_standard_layout.cshtml";
+
+    // Get form data
+    List<ValueAddedTax> valueAddedTaxes = ValueAddedTax.GetAll("id", "ASC");
+    List<Unit> units = ViewBag.Units;
+    AdditionalService additionalService = ViewBag.AdditionalService;
+    string returnUrl = ViewBag.ReturnUrl;
+    string error_message = ViewBag.ErrorMessage != null ? ViewBag.ErrorMessage : string.Empty;
+
+    // Get translated texts
+    KeyStringList tt = ViewBag.TranslatedTexts;
+    string additional_service_tt = tt.Get("additional_service");
+    string new_tt = tt.Get("new");
+    string edit_tt = tt.Get("edit");
+    string id_tt = tt.Get("id");
+    string product_code_tt = tt.Get("product_code");
+    string name_tt = tt.Get("name");
+    string fee_tt = tt.Get("fee");
+    string unit_tt = tt.Get("unit");
+    string price_based_on_mount_time_tt = tt.Get("price_based_on_mount_time");
+    string value_added_tax_tt = tt.Get("value_added_tax");
+    string account_code_tt = tt.Get("account_code");
+    string inactive_tt = tt.Get("inactive");
+    string save_tt = tt.Get("save");
+    string cancel_tt = tt.Get("cancel");
+
+    // Set the title for the page
+    if (additionalService.id == 0)
+    {
+        ViewBag.Title = additional_service_tt + " - " + new_tt.ToLower();
+    }
+    else
+    {
+        ViewBag.Title = additional_service_tt + " - " + edit_tt.ToLower();
+    }
+}
+
+<h1>@ViewBag.Title</h1>
+@*Menu*@
+@Html.Partial("~/Views/admin_additional_services/_form_menu.cshtml")
+
+@*Main form*@
+@using (Html.BeginForm("edit", "admin_additional_services", FormMethod.Post))
+{
+    <input name="returnUrl" type="hidden" value="@returnUrl" />
+    <div id="divErrors" class="formErrorMessage" style="@(error_message != "" ? "display:block;" : "display:none;")">@Html.Raw(error_message)</div>
+    <table style="width:100%;">
+        <tr style="@(additionalService.id != 0 ? "display:table-row;" : "display:none;")">
+            <td class="label">@(id_tt + ":")</td>
+            <td class="input"><input name="txtId" type="text" class="formTextbox" tabindex="-1" readonly="readonly" value="@additionalService.id" /></td>
+        </tr>
+        <tr>
+            <td class="label">@(product_code_tt + ":")</td>
+            <td class="input"><input id="txtProductCode" name="txtProductCode" type="text" class="formTextbox" value="@additionalService.product_code" /></td>
+        </tr>
+        <tr>
+            <td class="label">@(name_tt + ":")</td>
+            <td class="input"><input name="txtName" type="text" class="formTextbox" value="@additionalService.name" /></td>
+        </tr>
+        <tr>
+            <td class="label">@(fee_tt + ":")</td>
+            <td class="input"><input name="txtFee" type="number" step="any" class="formTextbox" value="@additionalService.fee.ToString(CultureInfo.InvariantCulture)" /></td>
+        </tr>
+        <tr>
+            <td class="label">@(unit_tt + ":")</td>
+            <td class="input">
+                <select name="selectUnit" class="formSelect">
+                    @foreach (Unit unit in units)
+                    {
+                        <option value="@unit.id.ToString()" @(additionalService.unit_id == unit.id ? Html.Raw("selected='selected'") : Html.Raw(""))>@(unit.name + " (" + unit.unit_code + ")")</option>
+                    }
+                </select>
+            </td>
+        </tr> 
+        <tr>
+            <td class="label">@(price_based_on_mount_time_tt + ":")</td>
+            <td class="input"><input name="cbPriceBasedOnMountTime" type="checkbox" value="true" @(additionalService != null && additionalService.price_based_on_mount_time == true ? Html.Raw("checked='checked'") : Html.Raw("")) /></td>
+        </tr>
+        <tr>
+            <td class="label">@(value_added_tax_tt + ":")</td>
+            <td class="input">
+                <select name="selectValueAddedTax" class="formSelect">
+                    @foreach (ValueAddedTax valueAddedTax in valueAddedTaxes)
+                    {
+                        <option value="@valueAddedTax.id.ToString()" @(additionalService.value_added_tax_id == valueAddedTax.id ? Html.Raw("selected='selected'") : Html.Raw(""))>@((valueAddedTax.value * 100).ToString() + "%")</option>
+                    }
+                </select>
+            </td>
+        </tr>
+        <tr>
+            <td class="label">@(account_code_tt + ":")</td>
+            <td class="input"><input name="txtAccountCode" type="text" class="formTextbox" value="@additionalService.account_code" /></td>
+        </tr>
+        <tr>
+            <td class="label">@(inactive_tt + ":")</td>
+            <td class="input"><input name="cbInactive" type="checkbox" value="true" @(additionalService != null && additionalService.inactive == true ? Html.Raw("checked='checked'") : Html.Raw("")) /></td>
+        </tr>
+    </table>
+
+    <div style="display:block;border:1px solid #cccccc;margin:20px 0px 0px 0px;border-radius:4px;">
+        <input id="btnSave" type="submit" value="@save_tt" />
+        <input type="button" value="@cancel_tt" onclick="@Html.Raw("location.href='/admin_additional_services" + returnUrl + "'")" />
+    </div>
+}
+
+@section scripts {
+    <script>$("#txtProductCode").focus();</script>
+}

@@ -1,0 +1,142 @@
+﻿@using System.Globalization
+@{
+    
+    // Paging variables
+    Int32 pageSize = 5;
+    Int32 page = 1;
+
+    // Get the page number
+    if (Request.Params["qp"] != null)
+    {
+        try
+        {
+            page = Int32.Parse(Request.Params["qp"]);
+        }
+        catch (Exception ex)
+        {
+            string exceptionMessage = ex.Message;
+            page = 1;
+        }
+    }
+    
+    // Get form values
+    Domain domain = ViewBag.CurrentDomain;
+    KeyStringList tt = ViewBag.TranslatedTexts;
+    Product product = ViewBag.CurrentProduct;
+    Customer customer = Customer.GetSignedInCustomer();
+    Int32 count = ViewBag.ReviewCount;
+    CultureInfo cultureInfo = ViewBag.CultureInfo;
+
+    // Get the number of pages
+    Int32 numberOfPages = Convert.ToInt32(Math.Ceiling(((double)count / pageSize)));
+    numberOfPages = numberOfPages == 0 ? 1 : numberOfPages;
+
+    // Get all the reviews for the page
+    List<ProductReview> reviews = ProductReview.GetByProductId(product.id, domain.front_end_language, pageSize, page, "review_date", "DESC");
+
+    // Set paging data
+    ViewBag.CurrentPage = page;
+    ViewBag.NumberOfPages = numberOfPages;
+    ViewBag.NavigateUrl = "/home/product/" + product.page_name + "?qp={0}#reviews";
+    
+    // Get translated texts
+    string reviews_tt = tt.Get("reviews");
+    string email_tt = tt.Get("email");
+    string password_tt = tt.Get("password");
+    string log_in_tt = tt.Get("log_in");
+    string name_tt = tt.Get("name");
+    string rating_tt = tt.Get("rating");
+    string send_tt = tt.Get("send");  
+}
+
+@* Reviews *@
+<div class="annytab-basic-container">
+    <span id="reviews" class="annytab-form-heading">@reviews_tt</span>
+</div>
+
+<div class="annytab-basic-space"></div>
+
+@if (customer != null)
+{
+    // Customer review form
+    using (Html.BeginForm("add_review", "customer", FormMethod.Post))
+    {
+        // Hidden data
+        <input name="hiddenProductId" type="hidden" value="@product.id" />
+    
+        // Review input form
+        <div class="annytab-basic-container">
+            <div class="annytab-basic-inner-container">
+                <div style="margin:0px 0px 0px 2px;">
+                    <span class="annytab-basic-text-normal">@(name_tt + ": " + customer.invoice_name)</span><br />
+                </div>
+                <div style="margin:6px 0px 6px 2px;">
+                    <span class="annytab-basic-text-normal">@(rating_tt + ": ")</span>
+                    <input id="userVote" name="userVote" type="range" value="5" step="0.25">
+                    <div class="rateit" data-rateit-backingfld="#userVote" data-rateit-resetable="false" data-rateit-ispreset="true"
+                         data-rateit-min="0" data-rateit-max="5">
+                    </div>
+                </div>
+                <div style="margin:0px 6px 0px 2px;">
+                    <textarea name="txtReviewText" class="annytab-form-textarea" rows="5" style="margin:0px;width:100%;"></textarea>
+                </div>
+                <div style="clear:both;margin:4px 0px 0px 0px;">
+                    <input id="btnSend" type="submit" value="@send_tt" class="annytab-basic-button" />
+                </div>
+            </div>
+        </div>
+    }
+}
+@if (customer == null)
+{
+    // Customer login form
+    using (Html.BeginForm("login", "customer", FormMethod.Post))
+    {
+        // Hidden data
+        <input name="hiddenReturnUrl" type="hidden" value="@("/home/product/" + product.page_name)" />
+    
+        // Login input form
+        <div class="annytab-basic-container">
+            <div style="clear:both;">
+                <span class="annytab-form-label">@email_tt</span><br />
+                <input id="txtEmail" name="txtEmail" type="text" class="annytab-form-textbox" value="" />
+            </div>
+            <div style="clear:both;">
+                <span class="annytab-form-label">@password_tt</span><br />
+                <input name="txtPassword" type="password" class="annytab-form-textbox" value="" /><br />
+            </div>
+            <div style="clear:both;margin:4px 0px 0px 0px;">
+                <input id="btnLogin" type="submit" value="@log_in_tt" class="annytab-basic-button" />
+            </div>
+        </div>
+    }
+}
+
+<div class="annytab-basic-space"></div>
+
+@* Product reviews *@
+<div class="annytab-basic-container" style="@(reviews.Count > 0 ? "display:block" : "display:none")">
+    @foreach (ProductReview review in reviews)
+    {
+        @* Get the customer *@
+        Customer reviewCustomer = Customer.GetOneById(review.customer_id);
+
+        @* The review post *@
+        @:<div class="annytab-basic-inner-container" itemscope itemtype="http://data-vocabulary.org/Review">
+            @:<span itemprop="itemreviewed" style="display:none;">@product.title</span>
+            @:<span class="annytab-basic-text-bold" itemprop="reviewer">@reviewCustomer.invoice_name</span><span>@(" | ")</span><span class="annytab-basic-text-normal" itemprop="dtreviewed">@review.review_date.ToString("d", cultureInfo)</span><br />
+            @:<div style="margin-bottom:5px;"></div>
+            @:<div class="rateit" title="@review.rating" data-rateit-value="@review.rating.ToString(CultureInfo.InvariantCulture)" data-rateit-ispreset="true" data-rateit-readonly="true"></div>
+            @:<span>@(" | ")</span><span class="annytab-basic-text-normal">@(rating_tt + ": ")</span><span class="annytab-basic-text-normal" itemprop="rating">@review.rating.ToString("##,0.##", cultureInfo)</span>
+            @:<div style="margin-bottom:5px;"></div>
+            @:<span class="annytab-basic-bread-text" itemprop="description">@Html.Raw(review.review_text)</span><br />
+        @:</div>
+    }
+</div>
+
+@* Paging menu *@
+@if (reviews.Count > 0)
+{
+    <div class="annytab-basic-space"></div>
+    @Html.Partial(domain.custom_theme_id == 0 ? "/Views/shared_front/_paging_menu.cshtml" : "/Views/theme/front_paging_menu.cshtml")
+}

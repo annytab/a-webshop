@@ -1,0 +1,143 @@
+﻿@using System.Globalization
+@using Annytab
+@{
+    // Set the layout for the page
+    Layout = "/Views/shared_admin/_standard_layout.cshtml";
+
+    // Get the current domain
+    Domain domain = ViewBag.CurrentDomain;
+    Language currentLanguage = Language.GetOneById(domain.back_end_language);
+    CultureInfo cultureInfo = Tools.GetCultureInfo(currentLanguage);
+    QueryParams parameters = ViewBag.QueryParams;
+    string queryString = QueryParams.GetQueryString(parameters);
+
+    // Create a clean string with keywords
+    string cleanKeywords = parameters.keywords.Replace("+", "");
+
+    // Create an array with search words
+    string[] words = cleanKeywords.Split(' ');
+    Stemmer stemmer = Tools.GetStemmer(currentLanguage);
+    string[] steamWords = stemmer.GetSteamWords(words);
+
+    // Count the number of posts
+    Int32 count = Product.GetCountBySearch(steamWords, domain.back_end_language);
+
+    // Get the number of pages
+    Int32 numberOfPages = Convert.ToInt32(Math.Ceiling(((double)count / parameters.page_size)));
+    numberOfPages = numberOfPages == 0 ? 1 : numberOfPages;
+
+    // Get products by keywords in search
+    List<Product> products = Product.GetBySearch(steamWords, domain.back_end_language, parameters.page_size, parameters.current_page,
+        parameters.sort_field, parameters.sort_order);
+
+    // Get translated texts
+    KeyStringList tt = ViewBag.TranslatedTexts;
+    string product_tt = tt.Get("product");
+    string list_tt = tt.Get("list");
+    string adjust_tt = tt.Get("adjust");
+    string prices_tt = tt.Get("prices");
+    string freight_prices_tt = tt.Get("freight_prices");
+    string id_tt = tt.Get("id");
+    string product_code_short_tt = tt.Get("product_code_short");
+    string title_tt = tt.Get("title");
+    string price_tt = tt.Get("price");
+    string page_views_tt = tt.Get("page_views");
+    string buys_tt = tt.Get("buys");
+    string basket_tt = tt.Get("basket");
+    string edit_tt = tt.Get("edit");
+    string images_tt = tt.Get("images");
+    string accessories_tt = tt.Get("accessories");
+    string bundle_structure_tt = tt.Get("bundle_structure");
+    string translate_tt = tt.Get("translate");
+    string files_tt = tt.Get("files");
+    string delete_tt = tt.Get("delete");
+    
+    // Set paging data
+    ViewBag.CurrentPage = parameters.current_page;
+    ViewBag.NumberOfPages = numberOfPages;
+    ViewBag.NavigateUrl = "/admin_products?kw=" + Server.UrlEncode(parameters.keywords) + "&sf=" + parameters.sort_field + "&so=" + parameters.sort_order + "&pz=" + parameters.page_size + "&qp={0}";
+
+    // Set the page title
+    ViewBag.Title = product_tt + " - " + list_tt.ToLower();
+}
+
+<h1>@ViewBag.Title</h1>
+@Html.Partial("~/Views/admin_products/_form_menu.cshtml")
+
+@*Action menu bar*@
+<div class="formMenuBar">
+    @using (Html.BeginForm("adjust_unit_prices", "admin_products", FormMethod.Post))
+    {
+        <input name="returnUrl" type="hidden" value="@queryString" />
+        <div style="padding:2px;margin-bottom:4px;background-color:#f0f0f0;">
+            <input name="priceMultiplier" type="number" min="1" max="200" step="1" value="100" />@("% ")
+            <input type="submit" value="@(adjust_tt + " " + prices_tt.ToLower())" />
+        </div>
+    }
+    @using (Html.BeginForm("adjust_unit_freights", "admin_products", FormMethod.Post))
+    {
+        <input name="returnUrl" type="hidden" value="@queryString" />
+        <div style="padding:2px;background-color:#f0f0f0;">
+            <input name="priceMultiplier" type="number" min="1" max="200" step="1" value="100" />@("% ")
+            <input type="submit" value="@(adjust_tt + " " + freight_prices_tt.ToLower())" />
+        </div>
+    }
+</div>
+
+@*List of products*@
+<div class="listContainer">
+    <table class="listTable" style="width:1500px;">
+        <tr>
+            <th class="listTh" style="text-align:center;width:100px;">@id_tt</th>
+            <th class="listTh" style="text-align:left;width:100px;">@product_code_short_tt</th>
+            <th class="listTh" style="text-align:left;width:200px;">@title_tt</th>
+            <th class="listTh" style="text-align:left;width:100px;">@price_tt</th>
+            <th class="listTh" style="text-align:left;width:100px;">@page_views_tt</th>
+            <th class="listTh" style="text-align:left;width:100px;">@buys_tt</th>
+            <th class="listTh" style="text-align:left;width:100px;">@basket_tt</th>
+            <th class="listTh" style="text-align:center;width:100px;">@edit_tt</th>
+            <th class="listTh" style="text-align:center;width:100px;">@images_tt</th>
+            <th class="listTh" style="text-align:center;width:100px;">@accessories_tt</th>
+            <th class="listTh" style="text-align:center;width:100px;">@bundle_structure_tt</th>
+            <th class="listTh" style="text-align:center;width:100px;">@translate_tt</th>
+            <th class="listTh" style="text-align:center;width:100px;">@files_tt</th>
+            <th class="listTh" style="text-align:center;width:100px;">@delete_tt</th>
+        </tr>
+
+        @for (int i = 0; i < products.Count; i++)
+        {
+            if (i % 2 != 0)
+            {
+                @:<tr class="annytab-list-main-row">
+            }
+            else
+            {
+                @:<tr class="annytab-list-alt-row">
+            }
+
+            @*Columns*@
+            @:<td style="text-align:center;">@products[i].id.ToString()</td>
+            @:<td style="text-align:left;">@products[i].product_code.ToString()</td>
+            @:<td style="text-align:left;">@products[i].title.ToString()</td>
+            @:<td style="text-align:left;">@products[i].unit_price.ToString("##,0.##", cultureInfo)</td>
+            @:<td style="text-align:left;">@products[i].page_views.ToString("##,0.##", cultureInfo)</td>
+            @:<td style="text-align:left;">@products[i].buys.ToString("##,0.##", cultureInfo)</td>
+            @:<td style="text-align:left;">@products[i].added_in_basket.ToString("##,0.##", cultureInfo)</td>
+            @:<td style="text-align:center;"><input type="button" value="@edit_tt" onclick="location.href='@Url.Action("edit", "admin_products", new { id = products[i].id, returnUrl = queryString })'" /></td>
+            @:<td style="text-align:center;"><input type="button" value="@images_tt" onclick="location.href='@Url.Action("images", "admin_products", new { id = products[i].id, returnUrl = queryString })'" /></td>
+            @:<td style="text-align:center;"><input type="button" value="@accessories_tt" onclick="location.href='@Url.Action("accessories", "admin_products", new { id = products[i].id, returnUrl = queryString })'" /></td>
+            @:<td style="text-align:center;"><input type="button" value="@bundle_structure_tt" onclick="location.href='@Url.Action("bundle_structure", "admin_products", new { id = products[i].id, returnUrl = queryString })'" /></td>
+            @:<td style="text-align:center;"><input type="button" value="@translate_tt" onclick="location.href='@Url.Action("translate", "admin_products", new { id = products[i].id, returnUrl = queryString })'" /></td>
+            @:<td style="text-align:center;"><input type="button" value="@files_tt" onclick="location.href='@Url.Action("files", "admin_products", new { id = products[i].id, returnUrl = queryString })'" /></td>
+            @:<td style="text-align:center;"><input data-id="deletePost" type="button" value="@delete_tt" @(Html.Raw("data-url='/admin_products/delete/" + products[i].id + "?returnUrl=" + Server.UrlEncode(queryString) + "'")) /></td>
+            @:</tr>
+        }
+    </table>
+</div>
+
+@* Paging menu *@
+@Html.Partial("/Views/shared_admin/_paging_menu.cshtml")
+
+@section scripts {
+    <script>$("#txtSearch").focus();</script>
+}

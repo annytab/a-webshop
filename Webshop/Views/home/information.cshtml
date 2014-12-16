@@ -1,0 +1,42 @@
+﻿@{
+
+    // Get the layout type from the cookie
+    ViewBag.LayoutType = "standard";
+    if (Request.Cookies["LayoutType"] != null)
+    {
+        ViewBag.LayoutType = Request.Cookies["LayoutType"].Value;
+    }
+
+    // Get form values
+    Domain domain = ViewBag.CurrentDomain;
+    StaticPage staticPage = ViewBag.StaticPage;
+    KeyStringList tt = ViewBag.TranslatedTexts;
+
+    // Set meta data
+    ViewBag.Title = staticPage.title;
+    ViewBag.MetaTitle = staticPage.title;
+    ViewBag.MetaDescription = staticPage.meta_description;
+    ViewBag.MetaKeywords = staticPage.meta_keywords;
+    ViewBag.MetaCanonical = domain.web_address + "/home/information/" + staticPage.page_name;
+    ViewBag.MetaRobots = staticPage.meta_robots;
+
+    // Set the layout for the page
+    if (ViewBag.LayoutType == "mobile")
+    {
+        Layout = domain.custom_theme_id == 0 ? "/Views/shared_front/_mobile_layout.cshtml" : "/Views/theme/front_mobile_layout.cshtml";
+    }
+    else
+    {
+        Layout = domain.custom_theme_id == 0 ? "/Views/shared_front/_standard_layout.cshtml" : "/Views/theme/front_standard_layout.cshtml";
+    }
+}
+
+@* Title *@
+<h1>@ViewBag.Title</h1>
+
+@* Description *@
+<p class="annytab-basic-bread-text">@Html.Raw(staticPage.main_content)</p>
+
+@section scripts {
+    <script>$("#txtSearch").focus();</script>
+}

@@ -1,0 +1,140 @@
+﻿@using System.Globalization
+@{
+    // Set the layout for the page
+    Layout = "/Views/shared_admin/_standard_layout.cshtml";
+
+    // Get values
+    List<ValueAddedTax> valueAddedTaxes = ValueAddedTax.GetAll("id", "ASC");
+    List<Unit> units = ViewBag.Units;
+    PaymentOption paymentOption = ViewBag.PaymentOption;
+    string returnUrl = ViewBag.ReturnUrl;
+    string error_message = ViewBag.ErrorMessage != null ? ViewBag.ErrorMessage : string.Empty;
+
+    // Get translated texts
+    KeyStringList tt = ViewBag.TranslatedTexts;
+    string payment_option_tt = tt.Get("payment_option");
+    string new_tt = tt.Get("new");
+    string edit_tt = tt.Get("edit");
+    string id_tt = tt.Get("id");
+    string product_code_tt = tt.Get("product_code");
+    string name_tt = tt.Get("name");
+    string payment_term_code_tt = tt.Get("payment_term_code");
+    string fee_tt = tt.Get("fee");
+    string unit_tt = tt.Get("unit");
+    string value_added_tax_tt = tt.Get("value_added_tax");
+    string account_code_tt = tt.Get("account_code");
+    string connected_to_tt = tt.Get("connected_to");
+    string no_connection_tt = tt.Get("no_connection");
+    string payson_direct_tt = tt.Get("payson_direct");
+    string payson_invoice_tt = tt.Get("payson_invoice");
+    string paypal_tt = tt.Get("paypal");
+    string svea_invoice_tt = tt.Get("svea_invoice");
+    string svea_card_payment_tt = tt.Get("svea_card_payment");
+    string payex_creditcard_tt = tt.Get("payex_creditcard");
+    string payex_direct_bank_tt = tt.Get("payex_direct_bank");
+    string payex_invoice_tt = tt.Get("payex_invoice");
+    string payex_wywallet_tt = tt.Get("payex_wywallet");
+    string inactive_tt = tt.Get("inactive");
+    string save_tt = tt.Get("save");
+    string cancel_tt = tt.Get("cancel");
+
+    // Set the title for the page
+    if (paymentOption.id == 0)
+    {
+        ViewBag.Title = payment_option_tt + " - " + new_tt.ToLower();
+    }
+    else
+    {
+        ViewBag.Title = payment_option_tt + " - " + edit_tt.ToLower();
+    }
+}
+
+<h1>@ViewBag.Title</h1>
+@*Menu*@
+@Html.Partial("~/Views/admin_payment_options/_form_menu.cshtml")
+
+@*Main form*@
+@using (Html.BeginForm("edit", "admin_payment_options", FormMethod.Post))
+{
+    <input name="returnUrl" type="hidden" value="@returnUrl" />
+    <div id="divErrors" class="formErrorMessage" style="@(error_message != "" ? "display:block;" : "display:none;")">@Html.Raw(error_message)</div>
+    <table style="width:100%;">
+        <tr style="@(paymentOption.id != 0 ? "display:table-row;" : "display:none;")">
+            <td class="label">@(id_tt + ":")</td>
+            <td class="input"><input name="txtId" type="text" class="formTextbox" tabindex="-1" readonly="readonly" value="@paymentOption.id" /></td>
+        </tr>
+        <tr>
+            <td class="label">@(product_code_tt + ":")</td>
+            <td class="input"><input id="txtProductCode" name="txtProductCode" type="text" class="formTextbox" value="@paymentOption.product_code" /></td>
+        </tr>
+        <tr>
+            <td class="label">@(name_tt + ":")</td>
+            <td class="input"><input name="txtName" type="text" class="formTextbox" value="@paymentOption.name" /></td>
+        </tr>
+        <tr>
+            <td class="label">@(payment_term_code_tt + ":")</td>
+            <td class="input"><input name="txtPaymentTermCode" type="text" class="formTextbox" value="@paymentOption.payment_term_code" /></td>
+        </tr>
+        <tr>
+            <td class="label">@(value_added_tax_tt + ":")</td>
+            <td class="input">
+                <select name="selectValueAddedTax" class="formSelect">
+                    @foreach (ValueAddedTax valueAddedTax in valueAddedTaxes)
+                    {
+                        <option value="@valueAddedTax.id.ToString()" @(paymentOption.value_added_tax_id == valueAddedTax.id ? Html.Raw("selected='selected'") : Html.Raw(""))>@((valueAddedTax.value * 100).ToString() + "%")</option>
+                    }
+                </select>
+            </td>
+        </tr>
+        <tr>
+            <td class="label">@(fee_tt + ":")</td>
+            <td class="input"><input name="txtFee" type="number" step="any" class="formTextbox" value="@paymentOption.fee.ToString(CultureInfo.InvariantCulture)" /></td>
+        </tr>
+        <tr>
+            <td class="label">@(unit_tt + ":")</td>
+            <td class="input">
+                <select name="selectUnit" class="formSelect">
+                    @foreach (Unit unit in units)
+                    {
+                        <option value="@unit.id.ToString()" @(paymentOption.unit_id == unit.id ? Html.Raw("selected='selected'") : Html.Raw(""))>@(unit.name + " (" + unit.unit_code + ")")</option>
+                    }
+                </select>
+            </td>
+        </tr>
+        <tr>
+            <td class="label">@(account_code_tt + ":")</td>
+            <td class="input"><input name="txtAccountCode" type="text" class="formTextbox" value="@paymentOption.account_code" /></td>
+        </tr>
+        <tr>
+            <td class="label">@(connected_to_tt + ":")</td>
+            <td class="input">
+                <select name="selectConnection" class="formSelect">
+                    <option value="0" @(paymentOption.connection == 0 ? Html.Raw("selected='selected'") : Html.Raw(""))>@no_connection_tt</option>
+                    <option value="101" @(paymentOption.connection == 101 ? Html.Raw("selected='selected'") : Html.Raw(""))>@payson_direct_tt</option>
+                    <option value="102" @(paymentOption.connection == 102 ? Html.Raw("selected='selected'") : Html.Raw(""))>@payson_invoice_tt</option>
+                    <option value="201" @(paymentOption.connection == 201 ? Html.Raw("selected='selected'") : Html.Raw(""))>@paypal_tt</option>
+                    <option value="301" @(paymentOption.connection == 301 ? Html.Raw("selected='selected'") : Html.Raw(""))>@svea_invoice_tt</option>
+                    <option value="302" @(paymentOption.connection == 302 ? Html.Raw("selected='selected'") : Html.Raw(""))>@svea_card_payment_tt</option>
+                    <option value="401" @(paymentOption.connection == 401 ? Html.Raw("selected='selected'") : Html.Raw(""))>@payex_creditcard_tt</option>
+                    <option value="402" @(paymentOption.connection == 402 ? Html.Raw("selected='selected'") : Html.Raw(""))>@payex_direct_bank_tt</option>
+                    <option value="403" @(paymentOption.connection == 403 ? Html.Raw("selected='selected'") : Html.Raw(""))>@payex_invoice_tt</option>
+                    <option value="404" @(paymentOption.connection == 404 ? Html.Raw("selected='selected'") : Html.Raw(""))>@payex_wywallet_tt</option>
+                </select>
+            </td>
+        </tr>
+        <tr>
+            <td class="label">@(inactive_tt + ":")</td>
+            <td class="input"><input name="cbInactive" type="checkbox" value="true" @(paymentOption != null && paymentOption.inactive == true ? Html.Raw("checked='checked'") : Html.Raw("")) /></td>
+        </tr>
+    </table>
+
+    // Save form button
+    <div style="display:block;border:1px solid #cccccc;margin:20px 0px 0px 0px;border-radius:4px;">
+        <input id="btnSave" type="submit" value="@save_tt" />
+        <input type="button" value="@cancel_tt" onclick="@Html.Raw("location.href='/admin_payment_options" + returnUrl + "'")" />
+    </div>
+}
+
+@section scripts {
+    <script>$("#txtProductCode").focus();</script>
+}

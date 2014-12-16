@@ -1,0 +1,97 @@
+﻿@{
+    // Set the layout for the page
+    Layout = "/Views/shared_admin/_standard_layout.cshtml";
+
+    // Get form values
+    Domain domain = ViewBag.CurrentDomain;
+    KeyStringList tt = ViewBag.TranslatedTexts;
+    DateTime minDate = new DateTime(2000, 1, 1);
+    QueryParams parameters = ViewBag.QueryParams;
+    string queryString = QueryParams.GetQueryString(parameters);
+
+    // Create a clean string with keywords
+    string cleanKeywords = parameters.keywords.Replace("+", "");
+
+    // Create an array with search words
+    string[] words = cleanKeywords.Split(' ');
+
+    // Count the number of posts
+    Int32 count = Newsletter.GetCountBySearch(words);
+
+    // Get the number of pages
+    Int32 numberOfPages = Convert.ToInt32(Math.Ceiling(((double)count / parameters.page_size)));
+    numberOfPages = numberOfPages == 0 ? 1 : numberOfPages;
+
+    // Get newsletters by keywords in search
+    List<Newsletter> newsletters = Newsletter.GetBySearch(words, parameters.page_size, parameters.current_page,
+        parameters.sort_field, parameters.sort_order);
+
+    // Get translated texts
+    string newsletter_tt = tt.Get("newsletter");
+    string list_tt = tt.Get("list");
+    string id_tt = tt.Get("id");
+    string language_tt = tt.Get("language");
+    string title_tt = tt.Get("title");
+    string sent_tt = tt.Get("sent");
+    string edit_tt = tt.Get("edit");
+    string send_tt = tt.Get("send");
+    string delete_tt = tt.Get("delete");
+
+    // Set paging data
+    ViewBag.CurrentPage = parameters.current_page;
+    ViewBag.NumberOfPages = numberOfPages;
+    ViewBag.NavigateUrl = "/admin_newsletters?kw=" + Server.UrlEncode(parameters.keywords) + "&sf=" + parameters.sort_field + "&so=" + parameters.sort_order + "&pz=" + parameters.page_size + "&qp={0}";
+
+    // Set the page title
+    ViewBag.Title = newsletter_tt + " - " + list_tt.ToLower();
+}
+
+<h1>@ViewBag.Title</h1>
+@Html.Partial("~/Views/admin_newsletters/_form_menu.cshtml")
+
+@* List of newsletters *@
+<div class="listContainer">
+    <table class="listTable" style="width:900px;">
+        <tr>
+            <th class="listTh" style="text-align:center;width:100px;">@id_tt</th>
+            <th class="listTh" style="text-align:center;width:100px;">@language_tt</th>
+            <th class="listTh" style="text-align:left;width:200px;">@title_tt</th>
+            <th class="listTh" style="text-align:left;width:200px;">@sent_tt</th>
+            <th class="listTh" style="text-align:center;width:100px;">@edit_tt</th>
+            <th class="listTh" style="text-align:center;width:100px;">@send_tt</th>
+            <th class="listTh" style="text-align:center;width:100px;">@delete_tt</th>
+        </tr>
+
+        @for (int i = 0; i < newsletters.Count; i++)
+        {
+            // Get the language
+            Language language = Language.GetOneById(newsletters[i].language_id, domain.back_end_language);
+            
+            if (i % 2 != 0)
+            {
+                @:<tr class="annytab-list-main-row">
+            }
+            else
+            {
+                @:<tr class="annytab-list-alt-row">
+            }
+
+            @*Columns*@
+            @:<td style="text-align:center;">@newsletters[i].id.ToString()</td>
+            @:<td style="text-align:center;">@(language.language_code.ToLower() + "-" + language.country_code.ToUpper())</td>
+            @:<td style="text-align:left;">@newsletters[i].title</td>
+            @:<td style="text-align:left;">@(newsletters[i].sent_date > minDate ? newsletters[i].sent_date.ToString() : "-")</td>
+            @:<td style="text-align:center;"><input type="button" value="@edit_tt" onclick="location.href='@Url.Action("edit", "admin_newsletters", new { id = newsletters[i].id, returnUrl = queryString })'" /></td>
+            @:<td style="text-align:center;"><input type="button" value="@send_tt" onclick="location.href='@Url.Action("send_newsletter", "admin_newsletters", new { id = newsletters[i].id, returnUrl = queryString })'" /></td>
+            @:<td style="text-align:center;"><input data-id="deletePost" type="button" value="@delete_tt" @(Html.Raw("data-url='/admin_newsletters/delete/" + newsletters[i].id + "?returnUrl=" + Server.UrlEncode(queryString) + "'")) /></td>
+            @:</tr>
+        }
+    </table>
+</div>
+
+@* Paging menu *@
+@Html.Partial("/Views/shared_admin/_paging_menu.cshtml")
+
+@section scripts {
+    <script>$("#txtSearch").focus();</script>
+}

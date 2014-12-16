@@ -1,0 +1,30 @@
+﻿@{   
+    // Get form values
+    Int32 currentPage = ViewBag.CurrentPage;
+    Int32 numberOfPages = ViewBag.NumberOfPages;
+    string navigationUrl = ViewBag.NavigateUrl;
+    KeyStringList tt = ViewBag.TranslatedTexts;  
+}
+
+@* Paging menu *@
+<div class="annytab-basic-container" style="text-align:center;">
+    @if (currentPage > 1)
+    {
+        @:<div style="float:left;text-align:left;"><a class="annytab-navigate-button" href="@String.Format(navigationUrl, (currentPage - 1))">@Html.Raw("&#60;&#60;")</a></div>
+    }
+    else
+    {
+        @:<div style="float:left;text-align:left;"><span class="annytab-inactive-navigate-button">@Html.Raw("&#60;&#60;")</span></div>
+    }
+
+    <span class="annytab-page-information">@(tt.Get("page") + " " + currentPage + " " + tt.Get("of").ToLower() + " " + numberOfPages)</span>
+
+    @if (currentPage < numberOfPages)
+    {
+        @:<div style="float:right;text-align:right;"><a class="annytab-navigate-button" href="@String.Format(navigationUrl, (currentPage + 1))">@Html.Raw("&#62;&#62;")</a></div>
+    }
+    else
+    {
+        @:<div style="float:right;text-align:right;"><span class="annytab-inactive-navigate-button">@Html.Raw("&#62;&#62;")</span></div>
+    }
+</div>

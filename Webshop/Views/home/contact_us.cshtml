@@ -1,0 +1,106 @@
+﻿@{
+
+    // Get the layout type from the cookie
+    ViewBag.LayoutType = "standard";
+    if (Request.Cookies["LayoutType"] != null)
+    {
+        ViewBag.LayoutType = Request.Cookies["LayoutType"].Value;
+    }
+
+    // Get form values
+    Domain domain = ViewBag.CurrentDomain;
+    Company company = ViewBag.Company;
+    KeyStringList tt = ViewBag.TranslatedTexts;
+    
+    // Get translated texts
+    string contact_us_tt = tt.Get("contact_us");
+    string customer_service_tt = tt.Get("customer_service");
+    string email_tt = tt.Get("email");
+    string title_tt = tt.Get("title");
+    string message_tt = tt.Get("message");
+    string send_tt = tt.Get("send");
+    string org_number_short_tt = tt.Get("org_number_short");
+    string vat_number_tt = tt.Get("vat_number");
+    string phone_number_tt = tt.Get("phone_number");
+    string mobile_phone_number_tt = tt.Get("mobile_phone_number");
+    string registered_office_tt = tt.Get("registered_office");
+
+    // Customer service data
+    string title = contact_us_tt;
+    string customer_email = "";
+        
+    // Get the signed in customer
+    Customer customer = Customer.GetSignedInCustomer();
+    if (customer != null)
+    {
+        title = customer_service_tt;
+        customer_email = customer.email;
+    }
+
+    // Set meta data
+    ViewBag.Title = title;
+    ViewBag.MetaTitle = title;
+    ViewBag.MetaDescription = title;
+    ViewBag.MetaKeywords = title;
+    ViewBag.MetaCanonical = domain.web_address + "/home/contact_us";
+    ViewBag.MetaRobots = "noindex, follow";
+
+    // Set the layout for the page
+    if (ViewBag.LayoutType == "mobile")
+    {
+        Layout = domain.custom_theme_id == 0 ? "/Views/shared_front/_mobile_layout.cshtml" : "/Views/theme/front_mobile_layout.cshtml";
+    }
+    else
+    {
+        Layout = domain.custom_theme_id == 0 ? "/Views/shared_front/_standard_layout.cshtml" : "/Views/theme/front_standard_layout.cshtml";
+    }
+}
+
+@* Title *@
+<h1>@ViewBag.Title</h1>
+
+@* Contact us form *@
+@using (Html.BeginForm("contact_us", "home", FormMethod.Post))
+{
+    <div class="annytab-basic-container">
+        <div style="clear:both;">
+            <span class="annytab-form-label">@email_tt</span><br />
+            <input id="txtEmail" name="txtEmail" type="text" class="annytab-form-textbox" style="width:300px;" value="@customer_email" />
+        </div>
+        <div style="clear:both;">
+            <span class="annytab-form-label">@title_tt</span><br />
+            <input name="txtSubject" type="text" class="annytab-form-textbox" style="width:300px;" value="" />
+        </div>
+        <div style="clear:both;">
+            <span class="annytab-form-label">@message_tt</span><br />
+            <textarea name="txtMessage" class="annytab-form-textarea" rows="5" style="width:300px;"></textarea>
+        </div>
+        <div style="clear:both;margin:4px 0px 0px 0px;">
+            <input id="btnSend" type="submit" value="@send_tt" class="annytab-basic-button" />
+        </div>
+    </div>
+}
+
+<div class="annytab-basic-space"></div>
+
+@* Company information *@
+<div style="margin:0px;padding:5px;border-top: 1px solid #d9d9d9;">
+    <div style="font-size:14px;font-weight:bold;line-height:18px;">@company.name</div>
+    <div>@company.post_address_1</div>
+    <div>@company.post_address_2</div>
+    <div>@company.post_code</div>
+    <div>@company.post_city</div>
+    <div>@company.post_country</div>
+    <div style="margin-bottom:10px;"></div>
+    <div>@(org_number_short_tt + ": " + company.org_number)</div>
+    <div>@(vat_number_tt + ": " + company.vat_number)</div>
+    <div>@(registered_office_tt + ": " + company.registered_office)</div>
+    <div style="margin-bottom:10px;"></div>
+    <div>@(email_tt + ": " + company.email)</div>
+    <div>@(phone_number_tt + ": " + company.phone_number)</div>
+    <div>@(mobile_phone_number_tt + ": " + company.mobile_phone_number)</div>
+</div>
+
+@section scripts {
+    <script>$("#txtEmail").focus();</script>
+}

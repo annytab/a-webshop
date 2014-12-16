@@ -1,0 +1,36 @@
+﻿@{
+    // Set the layout for the page
+    Layout = "/Views/shared_admin/_standard_layout.cshtml";
+    
+    // Get form data
+    Administrator admin = ViewBag.Administrator;
+    KeyStringList tt = ViewBag.TranslatedTexts;
+    string error_message = ViewBag.ErrorMessage != null ? ViewBag.ErrorMessage : "";
+
+    // Get translated texts
+    string log_in_tt = tt.Get("log_in");
+    string user_name_tt = tt.Get("user_name");
+    string password_tt = tt.Get("password");
+
+    // Set the title for the page
+    ViewBag.Title = log_in_tt;
+}
+
+<h1>@ViewBag.Title</h1>
+@using(Html.BeginForm("login", "admin_login", FormMethod.Post))
+{
+    <div id="divErrors" class="formErrorMessage" style="@(error_message != "" ? "display:block;" : "display:none;")">@Html.Raw(error_message)</div>
+    <div style="margin:5px 0px 5px 0px;">
+        <div style="display:inline-block;width:200px">@(user_name_tt + ":")</div><input id="txtUserName" name="txtUserName" type="text" class="textbox" value="@admin.admin_user_name" />
+    </div>
+    <div style="margin:5px 0px 5px 0px;">
+        <div style="display:inline-block;width:200px;">@(password_tt + ":")</div><input name="txtPassword" type="password" class="textbox" value="" />
+    </div>
+    <div style="margin:5px 0px 5px 0px;">
+        <input id="btnLogin" type="submit" value="@log_in_tt" class="button" />
+    </div>
+}
+
+@section scripts {
+    <script>$("#txtUserName").focus();</script>
+}

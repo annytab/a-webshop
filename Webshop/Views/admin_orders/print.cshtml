@@ -1,0 +1,16 @@
+﻿@{  
+    // Get translated texts
+    KeyStringList tt = ViewBag.TranslatedTexts;
+    
+    // Get translations
+    string title_tt = tt.Get("print"); 
+}
+
+<html>
+<head>
+    <title>@title_tt</title>
+</head>
+<body>
+    @Html.Partial("/Views/order/_confirmation_body.cshtml")
+</body>
+</html>

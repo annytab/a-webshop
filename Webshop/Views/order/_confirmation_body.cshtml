@@ -1,0 +1,227 @@
+﻿@using System.Globalization
+@{  
+    // Get form values
+    Domain domain = ViewBag.CurrentDomain;
+    Order order = ViewBag.Order;
+    List<OrderRow> orderRows = ViewBag.OrderRows;
+    Country invoiceCountry = ViewBag.InvoiceCountry;
+    Country deliveryCountry = ViewBag.DeliveryCountry;
+    PaymentOption paymentOption = ViewBag.PaymentOption;
+    Company company = ViewBag.Company;
+    KeyStringList tt = ViewBag.TranslatedTexts;
+    CultureInfo cultureInfo = ViewBag.CultureInfo;
+    
+    // Get the currency
+    Currency currency = Currency.GetOneById(order.currency_code);
+    
+    // Calculate the decimal multiplier
+    Int32 decimalMultiplier = (Int32)Math.Pow(10, currency.decimals);
+    
+    // Get vat specifications
+    Dictionary<decimal, VatSpecification> vatSpecifications = VatSpecification.GetVatSpecifications(orderRows, decimalMultiplier);
+    List<decimal> vatKeys = vatSpecifications.Keys.ToList<decimal>();
+    vatKeys.Sort((a, b) => -1* a.CompareTo(b));
+
+    // Get translated texts
+    string order_confirmation_tt = tt.Get("order_confirmation");
+    string order_number_tt = tt.Get("order_number");
+    string order_date_tt = tt.Get("order_date");
+    string request_tt = tt.Get("request");
+    string number_tt = tt.Get("number");
+    string date_tt = tt.Get("date");
+    string email_tt = tt.Get("email");
+    string org_number_short_tt = tt.Get("org_number_short");
+    string person_number_tt = tt.Get("person_number");
+    string vat_number_tt = tt.Get("vat_number");
+    string reference_tt = tt.Get("reference");
+    string phone_number_tt = tt.Get("phone_number");
+    string mobile_phone_number_tt = tt.Get("mobile_phone_number");
+    string payment_option_tt = tt.Get("payment_option");
+    string payment_status_tt = tt.Get("payment_status");
+    string status_tt = tt.Get("status");
+    string invoice_address_tt = tt.Get("invoice_address");
+    string delivery_address_tt = tt.Get("delivery_address");
+    string name_tt = tt.Get("name");
+    string address_tt = tt.Get("address");
+    string post_code_tt = tt.Get("post_code");
+    string city_tt = tt.Get("city");
+    string country_tt = tt.Get("country");
+    string product_code_short_tt = tt.Get("product_code_short");
+    string delivery_time_tt = tt.Get("delivery_time");
+    string quantity_tt = tt.Get("quantity");
+    string unit_tt = tt.Get("unit");
+    string price_tt = tt.Get("price");
+    string sum_tt = tt.Get("sum");
+    string value_added_tax_tt = tt.Get("value_added_tax");
+    string freight_tt = tt.Get("freight");
+    string rounding_tt = tt.Get("rounding");
+    string total_sum_tt = tt.Get("total_sum");
+    string registered_office_tt = tt.Get("registered_office");
+    string percent_tt = tt.Get("percent");
+    string amount_tt = tt.Get("amount");
+    string desired_date_of_delivery_tt = tt.Get("desired_date_of_delivery");
+}
+
+@* The printable area *@
+<div id="printArea">
+    @* All styling must be defined in this file (this template can be emailed) *@
+    <style>
+        body {font-family:Arial;-webkit-print-color-adjust:exact;word-break:break-all;}
+        .printTableTh {display:table-cell;vertical-align:middle;background-color:#d9d9d9;font-weight:bold;height:22px;font-size:12px;padding:2px;text-shadow:1px 1px 2px #ffffff;}
+        .printTableTr {display:table-row;}
+        .printTableTd {display:table-cell;font-size:12px;border-bottom:1px solid #cccccc;vertical-align:middle;padding:2px;}
+        .order-text {font-size:12px;line-height:16px;vertical-align:middle;padding:0px;}
+        .footer-text {font-size:12px;line-height:20px;vertical-align:middle;padding:0px;margin:0px 10px 0px 0px;}
+        .point {margin-right:10px;vertical-align:middle;font-weight:bold;}
+        .heading {font-size:14px;font-weight:bold;line-height:20px;}
+    </style>
+
+    <div style="margin:0px 0px 0px 0px;padding:2px;">
+        <div style="float:left;vertical-align:middle;font-size:28px;font-weight:bold;line-height:40px;">@(order.document_type == 0 ? request_tt : order_confirmation_tt)</div>
+        <div style="float:right;border:1px solid #cccccc;border-radius:4px;padding:0px 8px 0px 8px;">
+            <span class="heading">@(order.document_type == 0 ? date_tt : order_date_tt)</span><br />
+            <span style="font-size:12px;line-height:18px;padding:1px;">@order.order_date.ToString("d", cultureInfo)</span>
+        </div>
+        <div style="float:right;border:1px solid #cccccc;border-radius:4px;margin-right:2px;padding:0px 8px 0px 8px;">
+            <span class="heading">@(order.document_type == 0 ? number_tt : order_number_tt)</span><br />
+            <span style="font-size:12px;line-height:18px;padding:1px;">@order.id.ToString()</span>
+        </div>
+        <div style="clear:both;"></div>
+    </div>
+
+    <div style="clear:both;margin-bottom:20px;"></div>
+
+    <div style="display:table;width:100%;border-spacing:2px;">
+        <div style="display:table-cell;padding:4px;width:50%;border:1px solid #cccccc;border-radius:4px;">
+            <div class="heading">@delivery_address_tt</div>
+            <div class="order-text">@Html.Raw(order.delivery_name != "" ? order.delivery_name : "&nbsp;")</div>
+            <div class="order-text">@Html.Raw(order.delivery_address_1 != "" ? order.delivery_address_1 : "&nbsp;")</div>
+            <div class="order-text">@Html.Raw(order.delivery_address_2 != "" ? order.delivery_address_2 : "&nbsp;")</div>
+            <div class="order-text">@Html.Raw(order.delivery_post_code != "" ? order.delivery_post_code : "&nbsp;")</div>
+            <div class="order-text">@Html.Raw(order.delivery_city != "" ? order.delivery_city : "&nbsp;")</div>
+            <div class="order-text">@Html.Raw(deliveryCountry.name != "" ? deliveryCountry.name : "&nbsp;")</div>
+        </div>
+        <div style="display:table-cell;padding:4px;width:50%;border:1px solid #cccccc;border-radius:4px;">
+            <div class="heading">@invoice_address_tt</div>
+            <div class="order-text">@Html.Raw(order.invoice_name != "" ? order.invoice_name : "&nbsp;")</div>
+            <div class="order-text">@Html.Raw(order.invoice_address_1 != "" ? order.invoice_address_1 : "&nbsp;")</div>
+            <div class="order-text">@Html.Raw(order.invoice_address_2 != "" ? order.invoice_address_2 : "&nbsp;")</div>
+            <div class="order-text">@Html.Raw(order.invoice_post_code != "" ? order.invoice_post_code : "&nbsp;")</div>
+            <div class="order-text">@Html.Raw(order.invoice_city != "" ? order.invoice_city : "&nbsp;")</div>
+            <div class="order-text">@Html.Raw(invoiceCountry.name != "" ? invoiceCountry.name : "&nbsp;")</div>
+        </div>
+    </div>
+
+    <div style="clear:both;margin-bottom:10px;"></div>
+
+    @* Order information *@
+    <div style="display:table;width:100%;border-spacing:2px;">
+        <div style="display:table-cell;padding:4px;width:50%;line-height:18px;">
+            <div class="order-text">@(email_tt + ": ")</div>
+            <div class="order-text">@(order.customer_type == 0 ? org_number_short_tt + ": " : person_number_tt + ": ")</div>
+            <div class="order-text" style="@(order.customer_type == 0 ? "display:inline;" : "display:none;")">@(vat_number_tt + ": ")</div>
+            <div class="order-text">@(reference_tt + ": ")</div>
+            <div class="order-text">@(phone_number_tt + ": ")</div>
+            <div class="order-text">@(mobile_phone_number_tt + ": ")</div>
+            <div class="order-text">@(desired_date_of_delivery_tt + ": ")</div>
+            <div class="order-text">@(status_tt + ": ")</div>
+            <div class="order-text">@(payment_option_tt + ": ")</div>
+            <div class="order-text">@(payment_status_tt + ": ")</div>
+        </div>
+        <div style="display:table-cell;padding:4px;width:50%;line-height:18px;">
+            <div class="order-text">@Html.Raw(order.customer_email != "" ? order.customer_email : "&nbsp;")</div>
+            <div class="order-text">@Html.Raw(order.customer_org_number != "" ? order.customer_org_number : "&nbsp;")</div>
+            <div class="order-text" style="@(order.customer_type == 0 ? "display:inline;" : "display:none;")">@Html.Raw(order.customer_vat_number != "" ? order.customer_vat_number : "&nbsp;")</div>
+            <div class="order-text">@Html.Raw(order.customer_name != "" ? order.customer_name : "&nbsp;")</div>
+            <div class="order-text">@Html.Raw(order.customer_phone != "" ? order.customer_phone : "&nbsp;")</div>
+            <div class="order-text">@Html.Raw(order.customer_mobile_phone != "" ? order.customer_mobile_phone : "&nbsp;")</div>
+            <div class="order-text">@Html.Raw(order.desired_date_of_delivery != null ? order.desired_date_of_delivery.ToString("d", cultureInfo) : "&nbsp;")</div>
+            <div class="order-text">@Html.Raw(order.order_status != "" ? tt.Get(order.order_status) : "&nbsp;")</div>
+            <div class="order-text">@Html.Raw(paymentOption != null ? paymentOption.name : "&nbsp;")</div>
+            <div class="order-text">@Html.Raw(order.payment_status != "" ? tt.Get(order.payment_status) : "&nbsp;")</div>
+        </div>
+    </div>
+
+    <div style="clear:both;margin-bottom:10px;"></div>
+
+    @* Order row container *@
+    <div id="printTable" style="display:table;width:100%;">
+        <div class="printTableTr">
+            <div class="printTableTh" style="width:150px;text-align:left;border-radius:4px 0px 0px 0px;">@product_code_short_tt</div>
+            <div class="printTableTh" style="width:200px;text-align:left;">@name_tt</div>
+            <div class="printTableTh" style="width:100px;text-align:right;">@quantity_tt</div>
+            <div class="printTableTh" style="width:50px;text-align:left;"></div>
+            <div class="printTableTh" style="width:100px;text-align:right;">@price_tt</div>
+            <div class="printTableTh" style="width:100px;text-align:right;border-radius:0px 4px 0px 0px;">@sum_tt</div>
+        </div>
+        @foreach (OrderRow orderRow in orderRows)
+        {
+            @* Get the product name array *@
+            string[] productName = orderRow.product_name.Split(',');
+
+            @* Create the product name string *@
+            string productString = "";
+            for (int i = 0; i < productName.Length; i++)
+            {
+                productString += productName[i] + "<br />";
+            }
+            
+            @* Get the unit *@
+            Unit unit = Unit.GetOneById(orderRow.unit_id, domain.front_end_language);
+            unit = unit != null ? unit : new Unit();
+
+            @* Calculate the row sum *@
+            decimal rowPriceSum = orderRow.quantity * orderRow.unit_price;
+
+            @* An order row *@
+            @:<div class="printTableTr">
+                @:<div class="printTableTd" style="width:150px;text-align:left">@(orderRow.unit_price == 0 ? Html.Raw("&#8627;&nbsp;") : Html.Raw(""))@orderRow.product_code</div>
+                @:<div class="printTableTd" style="width:200px;text-align:left;">@Html.Raw(productString)</div>
+                @:<div class="printTableTd" style="width:100px;text-align:right;">@orderRow.quantity.ToString("##,0.##", cultureInfo)</div>
+                @:<div class="printTableTd" style="width:50px;text-align:left;">@Html.Raw(unit.unit_code != "" ? unit.unit_code : "&nbsp;")</div>
+                @:<div class="printTableTd" style="width:100px;text-align:right;">@orderRow.unit_price.ToString("##,0.##", cultureInfo)</div>
+                @:<div class="printTableTd" style="width:100px;text-align:right;">@rowPriceSum.ToString("##,0.##", cultureInfo)</div>
+            @:</div>
+    }
+    </div>
+
+    @* Order sums *@
+    <div style="display:block;margin:10px 0px 0px 0px;padding:10px;text-align:right;background-color:#d9d9d9;border-radius:4px;">
+        <div style="font-size:12px;line-height:16px;">@(sum_tt + ": " + order.net_sum.ToString("##,0.##", cultureInfo) + " " + order.currency_code)</div>
+        <div style="font-size:12px;line-height:16px;">@(value_added_tax_tt + ": " + order.vat_sum.ToString("##,0.##", cultureInfo) + " " + order.currency_code)</div>
+        <div style="@(order.vat_code == 0 ? "display:inline-block;" : "display:none;")line-height:16px;margin:2px 0px 2px 0px;border-top:1px solid #808080;border-bottom:1px solid #808080;">
+            <div style="font-size:12px;">@(percent_tt + ": " + amount_tt.ToLower() + " (" + value_added_tax_tt.ToLower() + ")")</div>
+            @for (int i = 0; i < vatKeys.Count; i++)
+            {
+                @* Get vat rates *@
+                string vatPercent = (vatKeys[i] * 100).ToString("##,0.##", cultureInfo) + " %";
+                VatSpecification vatSpecification = vatSpecifications[vatKeys[i]];
+
+                @* A vat specification row *@
+                @:<div style="font-size:12px;">@(vatPercent + ": " + vatSpecification.price_amount.ToString("##,0.##", cultureInfo) + " (" + vatSpecification.vat_amount.ToString("##,0.##", cultureInfo) + ")")</div>
+            }
+        </div>
+        <div style="font-size:12px;line-height:16px;">@(rounding_tt + ": " + order.rounding_sum.ToString("##,0.##", cultureInfo) + " " + order.currency_code)</div>
+        <div style="font-size:16px;font-weight:bold;line-height:28px;">@(total_sum_tt.ToUpper() + ": " + order.total_sum.ToString("##,0.##", cultureInfo) + " " + order.currency_code)</div>
+    </div>
+
+    <div style="clear:both;margin-bottom:10px;"></div>
+
+    @* Company information *@
+    <div style="margin:0px;padding:0px;border-top: 1px solid #000000;">
+        @if(company.name != ""){<span class="footer-text">@company.name</span><span class="point">&#149;</span>}
+        @if(company.post_address_1 != ""){<span class="footer-text">@company.post_address_1</span><span class="point">&#149;</span>}
+        @if(company.post_address_2 != ""){<span class="footer-text">@company.post_address_2</span><span class="point">&#149;</span>}
+        @if(company.post_code != ""){<span class="footer-text">@company.post_code</span><span class="point">&#149;</span>}
+        @if(company.post_city != ""){<span class="footer-text">@company.post_city</span><span class="point">&#149;</span>}
+        @if(company.post_country != ""){<span class="footer-text">@company.post_country</span><span class="point">&#149;</span>}
+        @if(company.org_number != ""){<span class="footer-text">@(org_number_short_tt + ": " + company.org_number)</span><span class="point">&#149;</span>}
+        @if(company.vat_number != ""){<span class="footer-text">@(vat_number_tt + ": " + company.vat_number)</span><span class="point">&#149;</span>}
+        @if(company.registered_office != ""){<span class="footer-text">@(registered_office_tt + ": " + company.registered_office)</span><span class="point">&#149;</span>}
+        @if(company.email != ""){<span class="footer-text">@(email_tt + ": " + company.email)</span><span class="point">&#149;</span>}
+        @if(company.phone_number != ""){<span class="footer-text">@(phone_number_tt + ": " + company.phone_number)</span><span class="point">&#149;</span>}
+        @if(company.mobile_phone_number != ""){<span class="footer-text">@(mobile_phone_number_tt + ": " + company.mobile_phone_number)</span>}
+    </div>
+
+    <div style="clear:both;margin-bottom:10px;"></div>
+</div>

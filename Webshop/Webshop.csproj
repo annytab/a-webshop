@@ -1,0 +1,597 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="12.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
+    <ProductVersion>
+    </ProductVersion>
+    <SchemaVersion>2.0</SchemaVersion>
+    <ProjectGuid>{55EB76E1-9887-4418-86BF-EE0EDE87BBCF}</ProjectGuid>
+    <ProjectTypeGuids>{349c5851-65df-11da-9384-00065b846f21};{fae04ec0-301f-11d3-bf4b-00c04f79efbc}</ProjectTypeGuids>
+    <OutputType>Library</OutputType>
+    <AppDesignerFolder>Properties</AppDesignerFolder>
+    <RootNamespace>Annytab.Webshop</RootNamespace>
+    <AssemblyName>AnnytabWebshop</AssemblyName>
+    <TargetFrameworkVersion>v4.5.1</TargetFrameworkVersion>
+    <MvcBuildViews>false</MvcBuildViews>
+    <UseIISExpress>true</UseIISExpress>
+    <IISExpressSSLPort>44301</IISExpressSSLPort>
+    <IISExpressAnonymousAuthentication>enabled</IISExpressAnonymousAuthentication>
+    <IISExpressWindowsAuthentication>disabled</IISExpressWindowsAuthentication>
+    <IISExpressUseClassicPipelineMode />
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+    <DebugSymbols>true</DebugSymbols>
+    <DebugType>full</DebugType>
+    <Optimize>false</Optimize>
+    <OutputPath>bin\</OutputPath>
+    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+    <DebugType>pdbonly</DebugType>
+    <Optimize>true</Optimize>
+    <OutputPath>bin\</OutputPath>
+    <DefineConstants>
+    </DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <ItemGroup>
+    <Reference Include="Annytab.Stemmer, Version=1.1.3.0, Culture=neutral, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\packages\Annytab.Stemmer.1.1.3.0\lib\net451\Annytab.Stemmer.dll</HintPath>
+    </Reference>
+    <Reference Include="Antlr3.Runtime, Version=3.5.0.2, Culture=neutral, PublicKeyToken=eb42632606e9261f, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\packages\Antlr.3.5.0.2\lib\Antlr3.Runtime.dll</HintPath>
+    </Reference>
+    <Reference Include="Ionic.Zip">
+      <HintPath>..\packages\DotNetZip.1.9.3\lib\net20\Ionic.Zip.dll</HintPath>
+    </Reference>
+    <Reference Include="Microsoft.CSharp" />
+    <Reference Include="Microsoft.WindowsAzure.Configuration">
+      <HintPath>..\packages\Microsoft.WindowsAzure.ConfigurationManager.2.0.3\lib\net40\Microsoft.WindowsAzure.Configuration.dll</HintPath>
+    </Reference>
+    <Reference Include="Newtonsoft.Json, Version=6.0.0.0, Culture=neutral, PublicKeyToken=30ad4fe6b2a6aeed, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\packages\Newtonsoft.Json.6.0.4\lib\net45\Newtonsoft.Json.dll</HintPath>
+    </Reference>
+    <Reference Include="nunit.framework">
+      <HintPath>..\packages\NUnit.2.6.3\lib\nunit.framework.dll</HintPath>
+    </Reference>
+    <Reference Include="PayPalCoreSDK">
+      <HintPath>..\packages\PayPalCoreSDK.1.4.2\lib\net45\PayPalCoreSDK.dll</HintPath>
+    </Reference>
+    <Reference Include="PaysonIntegration">
+      <HintPath>..\packages\PaysonApiIntegrationDotNet.1.21\lib\PaysonIntegration.dll</HintPath>
+    </Reference>
+    <Reference Include="RestApiSDK">
+      <HintPath>..\packages\RestApiSDK.0.7.7\lib\net45\RestApiSDK.dll</HintPath>
+    </Reference>
+    <Reference Include="System" />
+    <Reference Include="System.Data" />
+    <Reference Include="System.Drawing" />
+    <Reference Include="System.Net.Http.Formatting, Version=5.2.2.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\packages\Microsoft.AspNet.WebApi.Client.5.2.2\lib\net45\System.Net.Http.Formatting.dll</HintPath>
+    </Reference>
+    <Reference Include="System.Runtime.Serialization" />
+    <Reference Include="System.ServiceModel" />
+    <Reference Include="System.Web.DynamicData" />
+    <Reference Include="System.Web.Entity" />
+    <Reference Include="System.Web.ApplicationServices" />
+    <Reference Include="System.ComponentModel.DataAnnotations" />
+    <Reference Include="System.Core" />
+    <Reference Include="System.Data.DataSetExtensions" />
+    <Reference Include="System.Web.Helpers, Version=3.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\packages\Microsoft.AspNet.WebPages.3.2.2\lib\net45\System.Web.Helpers.dll</HintPath>
+    </Reference>
+    <Reference Include="System.Web.Http, Version=5.2.2.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\packages\Microsoft.AspNet.WebApi.Core.5.2.2\lib\net45\System.Web.Http.dll</HintPath>
+    </Reference>
+    <Reference Include="System.Web.Http.WebHost, Version=5.2.2.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\packages\Microsoft.AspNet.WebApi.WebHost.5.2.2\lib\net45\System.Web.Http.WebHost.dll</HintPath>
+    </Reference>
+    <Reference Include="System.Web.Mvc, Version=5.2.2.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\packages\Microsoft.AspNet.Mvc.5.2.2\lib\net45\System.Web.Mvc.dll</HintPath>
+    </Reference>
+    <Reference Include="System.Web.Optimization, Version=1.1.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\packages\Microsoft.AspNet.Web.Optimization.1.1.3\lib\net40\System.Web.Optimization.dll</HintPath>
+    </Reference>
+    <Reference Include="System.Web.Razor, Version=3.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\packages\Microsoft.AspNet.Razor.3.2.2\lib\net45\System.Web.Razor.dll</HintPath>
+    </Reference>
+    <Reference Include="System.Web.WebPages, Version=3.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\packages\Microsoft.AspNet.WebPages.3.2.2\lib\net45\System.Web.WebPages.dll</HintPath>
+    </Reference>
+    <Reference Include="System.Web.WebPages.Deployment, Version=3.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\packages\Microsoft.AspNet.WebPages.3.2.2\lib\net45\System.Web.WebPages.Deployment.dll</HintPath>
+    </Reference>
+    <Reference Include="System.Web.WebPages.Razor, Version=3.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\packages\Microsoft.AspNet.WebPages.3.2.2\lib\net45\System.Web.WebPages.Razor.dll</HintPath>
+    </Reference>
+    <Reference Include="System.Xml.Linq" />
+    <Reference Include="System.Web" />
+    <Reference Include="System.Web.Extensions" />
+    <Reference Include="System.Web.Abstractions" />
+    <Reference Include="System.Web.Routing" />
+    <Reference Include="System.Xml" />
+    <Reference Include="System.Configuration" />
+    <Reference Include="System.Web.Services" />
+    <Reference Include="System.EnterpriseServices" />
+    <Reference Include="Microsoft.Web.Infrastructure, Version=1.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
+      <Private>True</Private>
+      <HintPath>..\packages\Microsoft.Web.Infrastructure.1.0.0.0\lib\net40\Microsoft.Web.Infrastructure.dll</HintPath>
+    </Reference>
+    <Reference Include="System.Net.Http">
+    </Reference>
+    <Reference Include="System.Net.Http.WebRequest">
+    </Reference>
+    <Reference Include="WebGrease, Version=1.6.5135.21930, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\packages\WebGrease.1.6.0\lib\WebGrease.dll</HintPath>
+    </Reference>
+    <Reference Include="Webpay.Integration.CSharp">
+      <HintPath>..\packages\Webpay.Integration.CSharp.1.0.0.0\lib\net451\Webpay.Integration.CSharp.dll</HintPath>
+    </Reference>
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="App_Start\BundleConfig.cs" />
+    <Compile Include="App_Start\FilterConfig.cs" />
+    <Compile Include="App_Start\RouteConfig.cs" />
+    <Compile Include="App_Start\WebApiConfig.cs" />
+    <Compile Include="ControllersApi\additional_servicesController.cs" />
+    <Compile Include="ControllersApi\campaignsController.cs" />
+    <Compile Include="ControllersApi\categoriesController.cs" />
+    <Compile Include="ControllersApi\companiesController.cs" />
+    <Compile Include="ControllersApi\countriesController.cs" />
+    <Compile Include="ControllersApi\currenciesController.cs" />
+    <Compile Include="ControllersApi\customersController.cs" />
+    <Compile Include="ControllersApi\custom_designController.cs" />
+    <Compile Include="ControllersApi\domainsController.cs" />
+    <Compile Include="ControllersApi\languagesController.cs" />
+    <Compile Include="ControllersApi\newslettersController.cs" />
+    <Compile Include="ControllersApi\optionsController.cs" />
+    <Compile Include="ControllersApi\option_typesController.cs" />
+    <Compile Include="ControllersApi\order_rowsController.cs" />
+    <Compile Include="ControllersApi\ordersController.cs" />
+    <Compile Include="ControllersApi\paymentsController.cs" />
+    <Compile Include="ControllersApi\payment_optionsController.cs" />
+    <Compile Include="ControllersApi\productsController.cs" />
+    <Compile Include="ControllersApi\product_accessoriesController.cs" />
+    <Compile Include="ControllersApi\product_bundlesController.cs" />
+    <Compile Include="ControllersApi\product_optionsController.cs" />
+    <Compile Include="ControllersApi\product_option_typesController.cs" />
+    <Compile Include="ControllersApi\product_reviewsController.cs" />
+    <Compile Include="ControllersApi\static_pagesController.cs" />
+    <Compile Include="ControllersApi\static_textsController.cs" />
+    <Compile Include="ControllersApi\unitsController.cs" />
+    <Compile Include="ControllersApi\value_added_taxesController.cs" />
+    <Compile Include="Controllers\admin_additional_servicesController.cs" />
+    <Compile Include="Controllers\admin_administratorsController.cs" />
+    <Compile Include="Controllers\admin_campaignsController.cs" />
+    <Compile Include="Controllers\admin_categoriesController.cs" />
+    <Compile Include="Controllers\admin_companiesController.cs" />
+    <Compile Include="Controllers\admin_newslettersController.cs" />
+    <Compile Include="Controllers\admin_webshop_settingsController.cs" />
+    <Compile Include="Controllers\admin_countriesController.cs" />
+    <Compile Include="Controllers\admin_currenciesController.cs" />
+    <Compile Include="Controllers\admin_customersController.cs" />
+    <Compile Include="Controllers\admin_defaultController.cs" />
+    <Compile Include="Controllers\admin_custom_designController.cs" />
+    <Compile Include="Controllers\admin_domainsController.cs" />
+    <Compile Include="Controllers\admin_languagesController.cs" />
+    <Compile Include="Controllers\admin_loginController.cs" />
+    <Compile Include="Controllers\admin_optionsController.cs" />
+    <Compile Include="Controllers\admin_ordersController.cs" />
+    <Compile Include="Controllers\admin_payment_optionsController.cs" />
+    <Compile Include="Controllers\admin_productsController.cs" />
+    <Compile Include="Controllers\admin_product_reviewsController.cs" />
+    <Compile Include="Controllers\admin_static_pagesController.cs" />
+    <Compile Include="Controllers\admin_static_textsController.cs" />
+    <Compile Include="Controllers\admin_unitsController.cs" />
+    <Compile Include="Controllers\admin_value_added_taxesController.cs" />
+    <Compile Include="Controllers\orderController.cs" />
+    <Compile Include="Controllers\customerController.cs" />
+    <Compile Include="Controllers\homeController.cs" />
+    <Compile Include="Global.asax.cs">
+      <DependentUpon>Global.asax</DependentUpon>
+    </Compile>
+    <Compile Include="Helpers\AnnytabExternalLogin.cs" />
+    <Compile Include="Helpers\AnnytabMultipartFormDataStreamProvider.cs" />
+    <Compile Include="Helpers\ApiCustomerAuthorizeAttribute .cs" />
+    <Compile Include="Helpers\ApiAuthorizeAttribute.cs" />
+    <Compile Include="Helpers\AnnytabDataValidation.cs" />
+    <Compile Include="Helpers\AnnytabRequireHttpsAttribute.cs" />
+    <Compile Include="Helpers\PayExManager.cs" />
+    <Compile Include="Helpers\QueryParams.cs" />
+    <Compile Include="Helpers\SessionAgent.cs" />
+    <Compile Include="Helpers\DatabaseManager.cs" />
+    <Compile Include="Helpers\GoogleShopping.cs" />
+    <Compile Include="Helpers\KeyStringList.cs" />
+    <Compile Include="Helpers\SitemapManager.cs" />
+    <Compile Include="Helpers\SqlSessionStateProvider.cs" />
+    <Compile Include="Helpers\StringHtmlExtensions.cs" />
+    <Compile Include="Helpers\SveaSettings.cs" />
+    <Compile Include="Models\WebshopSession.cs" />
+    <Compile Include="Models\AdditionalService.cs" />
+    <Compile Include="Models\Administrator.cs" />
+    <Compile Include="Models\BreadCrumb.cs" />
+    <Compile Include="Models\Campaign.cs" />
+    <Compile Include="Models\Company.cs" />
+    <Compile Include="Models\CustomTheme.cs" />
+    <Compile Include="Models\Newsletter.cs" />
+    <Compile Include="Models\ProductBundle.cs" />
+    <Compile Include="Models\WebshopSetting.cs" />
+    <Compile Include="Models\CartItem.cs" />
+    <Compile Include="Models\Category.cs" />
+    <Compile Include="Models\Country.cs" />
+    <Compile Include="Models\Currency.cs" />
+    <Compile Include="Models\Customer.cs" />
+    <Compile Include="Models\CustomThemeTemplate.cs" />
+    <Compile Include="Models\CustomerFile.cs" />
+    <Compile Include="Models\Domain.cs" />
+    <Compile Include="Models\DisplayItem.cs" />
+    <Compile Include="Models\Language.cs" />
+    <Compile Include="Models\Option.cs" />
+    <Compile Include="Models\OptionType.cs" />
+    <Compile Include="Models\Order.cs" />
+    <Compile Include="Models\OrderRow.cs" />
+    <Compile Include="Models\OrderSaleData.cs" />
+    <Compile Include="Models\PaymentOption.cs" />
+    <Compile Include="Models\ProductAccessory.cs" />
+    <Compile Include="Models\ProductReview.cs" />
+    <Compile Include="Models\ProductSaleData.cs" />
+    <Compile Include="Models\StaticPage.cs" />
+    <Compile Include="Helpers\PasswordHash.cs" />
+    <Compile Include="Models\Product.cs" />
+    <Compile Include="Models\ProductOption.cs" />
+    <Compile Include="Models\ProductOptionType.cs" />
+    <Compile Include="Models\Unit.cs" />
+    <Compile Include="Models\ValueAddedTax.cs" />
+    <Compile Include="Models\StaticText.cs" />
+    <Compile Include="Helpers\Tools.cs" />
+    <Compile Include="Models\VatSpecification.cs" />
+    <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Properties\Settings.Designer.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTimeSharedInput>True</DesignTimeSharedInput>
+      <DependentUpon>Settings.settings</DependentUpon>
+    </Compile>
+    <Compile Include="VirtualPathProvider\AnnytabDirectory.cs" />
+    <Compile Include="VirtualPathProvider\AnnytabFile.cs" />
+    <Compile Include="VirtualPathProvider\AnnytabPathProvider.cs" />
+    <Compile Include="Web References\Payex.Production\Reference.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>Reference.map</DependentUpon>
+    </Compile>
+    <Compile Include="Web References\Payex.Test\Reference.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>Reference.map</DependentUpon>
+    </Compile>
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="Content\annytab_css\admin_default.css" />
+    <Content Include="Content\annytab_css\admin_layout.css" />
+    <Content Include="Content\images\annytab_design\cross.cur" />
+    <Content Include="Content\images\annytab_design\cross.png" />
+    <Content Include="Content\images\annytab_design\google_plus.png" />
+    <Content Include="Content\images\annytab_design\facebook_button.png" />
+    <Content Include="Content\images\annytab_design\facebook_logo.png" />
+    <Content Include="Content\images\annytab_design\google_button.png" />
+    <Content Include="Content\images\annytab_design\gradient_down_10.jpg" />
+    <Content Include="Content\images\annytab_design\gradient_up_10.jpg" />
+    <Content Include="Content\images\annytab_design\left_arrow.png" />
+    <Content Include="Content\images\annytab_design\left_circle_arrow.png" />
+    <Content Include="Content\images\annytab_design\minus_button_12.jpg" />
+    <Content Include="Content\images\annytab_design\plus_button_12.jpg" />
+    <Content Include="Content\images\annytab_design\right_arrow.png" />
+    <Content Include="Content\images\annytab_design\right_circle_arrow.png" />
+    <Content Include="Content\images\annytab_design\square_32.jpg" />
+    <Content Include="Content\images\annytab_design\square_cross_button_20.jpg" />
+    <Content Include="Content\jquery_css\images\ui-bg_flat_0_aaaaaa_40x100.png" />
+    <Content Include="Content\jquery_css\images\ui-bg_flat_75_ffffff_40x100.png" />
+    <Content Include="Content\jquery_css\images\ui-bg_glass_55_fbf9ee_1x400.png" />
+    <Content Include="Content\jquery_css\images\ui-bg_glass_65_ffffff_1x400.png" />
+    <Content Include="Content\jquery_css\images\ui-bg_glass_75_dadada_1x400.png" />
+    <Content Include="Content\jquery_css\images\ui-bg_glass_75_e6e6e6_1x400.png" />
+    <Content Include="Content\jquery_css\images\ui-bg_glass_95_fef1ec_1x400.png" />
+    <Content Include="Content\jquery_css\images\ui-bg_highlight-soft_75_cccccc_1x100.png" />
+    <Content Include="Content\jquery_css\images\ui-icons_222222_256x240.png" />
+    <Content Include="Content\jquery_css\images\ui-icons_2e83ff_256x240.png" />
+    <Content Include="Content\jquery_css\images\ui-icons_454545_256x240.png" />
+    <Content Include="Content\jquery_css\images\ui-icons_888888_256x240.png" />
+    <Content Include="Content\jquery_css\images\ui-icons_cd0a0a_256x240.png" />
+    <Content Include="Content\jquery_css\jquery-ui.min.css" />
+    <Content Include="Content\images\annytab_design\cart_icon.png" />
+    <Content Include="Content\images\annytab_design\delete.gif" />
+    <Content Include="Content\images\annytab_design\list_arrow_down.png" />
+    <Content Include="Content\images\annytab_design\list_arrow_left.png" />
+    <Content Include="Content\images\annytab_design\menu_icon.png" />
+    <Content Include="Content\images\annytab_design\message_box_header.png" />
+    <Content Include="Content\images\annytab_design\star.gif" />
+    <Content Include="Content\images\annytab_design\transparent_background.png" />
+    <None Include="DeveloperFiles\db_alter_column.sql" />
+    <Content Include="Content\theme\readme.txt" />
+    <Content Include="DatabaseFiles\db_version_0.sql" />
+    <None Include="DeveloperFiles\db_drop_statements.sql" />
+    <None Include="DeveloperFiles\db_update_settings.sql" />
+    <Content Include="robots.txt" />
+    <Content Include="Scripts\annytab_front\annytab.home-functions.js" />
+    <Content Include="Scripts\annytab_front\annytab.mobile-layout-functions.js" />
+    <Content Include="Scripts\annytab_front\annytab.standard-layout-functions.js" />
+    <Content Include="Scripts\jquery.rateit.min.js" />
+    <Content Include="Content\annytab_css\front_mobile_layout.css" />
+    <Content Include="Content\annytab_css\front_default_style.css" />
+    <Content Include="Content\annytab_css\front_standard_layout.css" />
+    <Content Include="Content\images\annytab_design\black_circle_cross.png" />
+    <Content Include="Content\images\annytab_design\drag_icon.png" />
+    <Content Include="Content\images\annytab_design\expand_icon.png" />
+    <Content Include="Content\images\annytab_design\gray_gradient_button.png" />
+    <Content Include="Content\images\annytab_design\gray_gradient_button_hover.png" />
+    <Content Include="Content\images\annytab_design\gray-gradient_header.png" />
+    <Content Include="Content\images\annytab_design\magnifier.png" />
+    <Content Include="Content\images\annytab_design\no_image_square.jpg" />
+    <Content Include="Content\images\annytab_design\blue_button_hover.png" />
+    <Content Include="Content\images\annytab_design\blue_button.png" />
+    <Content Include="Content\images\annytab_design\circle.png" />
+    <Content Include="Content\images\annytab_design\no_image_wide.jpg" />
+    <Content Include="Global.asax" />
+    <Content Include="Scripts\annytab_admin\annytab.default.js" />
+    <Content Include="Scripts\annytab_front\annytab.default-functions.js" />
+    <Content Include="DatabaseFiles\db_version_1.sql" />
+    <None Include="DeveloperFiles\db_testdata.sql" />
+    <Content Include="Scripts\annytab_front\annytab.category-functions.js" />
+    <Content Include="Scripts\annytab_front\annytab.order-functions.js" />
+    <Content Include="Scripts\annytab_front\annytab.product-functions.js" />
+    <None Include="Properties\Settings.settings">
+      <Generator>SettingsSingleFileGenerator</Generator>
+      <LastGenOutput>Settings.Designer.cs</LastGenOutput>
+    </None>
+    <None Include="Scripts\jquery-2.1.1.intellisense.js" />
+    <Content Include="Scripts\codemirror\clike.js" />
+    <Content Include="Scripts\codemirror\codemirror.css" />
+    <Content Include="Scripts\codemirror\codemirror.js" />
+    <Content Include="Scripts\codemirror\diff_match_patch.js" />
+    <Content Include="Scripts\codemirror\merge.css" />
+    <Content Include="Scripts\codemirror\merge.js" />
+    <Content Include="Scripts\codemirror\xml.js" />
+    <Content Include="Scripts\jquery-2.1.1.js" />
+    <Content Include="Scripts\jquery-2.1.1.min.js" />
+    <Content Include="Content\annytab_css\rateit.css" />
+    <Content Include="Scripts\jquery-ui-1.11.1.js" />
+    <Content Include="Scripts\jquery-ui.min-1.11.1.js" />
+    <Content Include="Scripts\jquery.mousewheel.js" />
+    <Content Include="Scripts\jquery.mousewheel.min.js" />
+    <Content Include="Scripts\jquery.spin.js" />
+    <Content Include="Scripts\spin.min.js" />
+    <Content Include="Scripts\theme\readme.txt" />
+    <Content Include="Scripts\_references.js" />
+    <Content Include="Views\theme\readme.txt" />
+    <Content Include="Web.config">
+      <SubType>Designer</SubType>
+    </Content>
+    <Content Include="Web.Debug.config">
+      <DependentUpon>Web.config</DependentUpon>
+    </Content>
+    <Content Include="Web.Release.config">
+      <DependentUpon>Web.config</DependentUpon>
+    </Content>
+    <Content Include="Views\shared_admin\_standard_layout.cshtml" />
+    <Content Include="Views\shared_front\_standard_layout.cshtml" />
+    <Content Include="Views\shared_front\_mobile_layout.cshtml" />
+    <Content Include="Views\admin_default\index.cshtml" />
+    <Content Include="Views\Web.config">
+      <SubType>Designer</SubType>
+    </Content>
+    <Content Include="Views\admin_login\index.cshtml" />
+    <Content Include="Views\admin_options\index.cshtml" />
+    <Content Include="Views\admin_options\edit.cshtml" />
+    <Content Include="Views\admin_options\_form_menu.cshtml" />
+    <Content Include="Views\admin_options\translate.cshtml" />
+    <Content Include="Views\admin_products\index.cshtml" />
+    <Content Include="Views\admin_products\_form_menu.cshtml" />
+    <Content Include="Views\admin_products\edit.cshtml" />
+    <Content Include="Views\admin_products\translate.cshtml" />
+    <Content Include="Views\admin_products\images.cshtml" />
+    <Content Include="Views\admin_static_texts\index.cshtml" />
+    <Content Include="Views\admin_static_texts\_form_menu.cshtml" />
+    <Content Include="Views\admin_static_texts\edit.cshtml" />
+    <Content Include="Views\admin_static_texts\translate.cshtml" />
+    <Content Include="Views\admin_languages\index.cshtml" />
+    <Content Include="Views\admin_languages\_form_menu.cshtml" />
+    <Content Include="Views\admin_languages\edit.cshtml" />
+    <Content Include="Views\admin_languages\translate.cshtml" />
+    <Content Include="Views\admin_currencies\index.cshtml" />
+    <Content Include="Views\admin_currencies\_form_menu.cshtml" />
+    <Content Include="Views\admin_currencies\edit.cshtml" />
+    <Content Include="Views\admin_value_added_taxes\index.cshtml" />
+    <Content Include="Views\admin_value_added_taxes\_form_menu.cshtml" />
+    <Content Include="Views\admin_value_added_taxes\edit.cshtml" />
+    <Content Include="Views\admin_countries\index.cshtml" />
+    <Content Include="Views\admin_countries\_form_menu.cshtml" />
+    <Content Include="Views\admin_countries\edit.cshtml" />
+    <Content Include="Views\admin_countries\translate.cshtml" />
+    <Content Include="Views\admin_static_pages\index.cshtml" />
+    <Content Include="Views\admin_static_pages\_form_menu.cshtml" />
+    <Content Include="Views\admin_static_pages\edit.cshtml" />
+    <Content Include="Views\admin_static_pages\translate.cshtml" />
+    <Content Include="Views\admin_categories\index.cshtml" />
+    <Content Include="Views\admin_categories\_form_menu.cshtml" />
+    <Content Include="Views\admin_categories\edit.cshtml" />
+    <Content Include="Views\admin_categories\images.cshtml" />
+    <Content Include="Views\admin_categories\translate.cshtml" />
+    <Content Include="Views\admin_customers\index.cshtml" />
+    <Content Include="Views\admin_customers\_form_menu.cshtml" />
+    <Content Include="Views\admin_customers\edit.cshtml" />
+    <Content Include="Views\admin_domains\index.cshtml" />
+    <Content Include="Views\admin_domains\_form_menu.cshtml" />
+    <Content Include="Views\admin_domains\edit.cshtml" />
+    <Content Include="Views\admin_administrators\index.cshtml" />
+    <Content Include="Views\admin_administrators\edit.cshtml" />
+    <Content Include="Views\admin_administrators\_form_menu.cshtml" />
+    <Content Include="Views\home\index.cshtml" />
+    <Content Include="Views\customer\index.cshtml" />
+    <Content Include="Views\customer\login.cshtml" />
+    <Content Include="Views\customer\forgot_email_password.cshtml" />
+    <Content Include="Views\customer\edit_company.cshtml" />
+    <Content Include="Views\customer\edit_person.cshtml" />
+    <Content Include="Views\order\index.cshtml" />
+    <Content Include="Views\admin_units\index.cshtml" />
+    <Content Include="Views\admin_units\_form_menu.cshtml" />
+    <Content Include="Views\admin_units\edit.cshtml" />
+    <Content Include="Views\admin_units\translate.cshtml" />
+    <Content Include="Views\admin_payment_options\index.cshtml" />
+    <Content Include="Views\admin_payment_options\_form_menu.cshtml" />
+    <Content Include="Views\admin_payment_options\edit.cshtml" />
+    <Content Include="Views\admin_payment_options\translate.cshtml" />
+    <Content Include="Views\order\confirmation.cshtml" />
+    <Content Include="Views\order\_confirmation_body.cshtml" />
+    <Content Include="Views\admin_additional_services\index.cshtml" />
+    <Content Include="Views\admin_additional_services\_form_menu.cshtml" />
+    <Content Include="Views\admin_additional_services\edit.cshtml" />
+    <Content Include="Views\admin_additional_services\translate.cshtml" />
+    <Content Include="Views\admin_webshop_settings\index.cshtml" />
+    <Content Include="Views\admin_orders\index.cshtml" />
+    <Content Include="Views\admin_orders\_form_menu.cshtml" />
+    <Content Include="Views\admin_orders\print.cshtml" />
+    <Content Include="Views\admin_orders\edit.cshtml" />
+    <Content Include="Views\admin_domains\images.cshtml" />
+    <Content Include="Views\home\error.cshtml" />
+    <Content Include="Views\home\terms_of_purchase.cshtml" />
+    <Content Include="Views\home\category.cshtml" />
+    <Content Include="Views\home\product.cshtml" />
+    <Content Include="Views\home\contact_us.cshtml" />
+    <Content Include="Views\home\information.cshtml" />
+    <Content Include="Views\home\search.cshtml" />
+    <Content Include="Views\admin_custom_design\index.cshtml" />
+    <Content Include="Views\admin_custom_design\edit_template.cshtml" />
+    <Content Include="Views\admin_campaigns\index.cshtml" />
+    <Content Include="Views\admin_campaigns\_form_menu.cshtml" />
+    <Content Include="Views\admin_campaigns\edit.cshtml" />
+    <Content Include="Views\admin_default\product_sale_data.cshtml" />
+    <Content Include="Views\shared_front\_paging_menu.cshtml" />
+    <Content Include="Views\shared_front\_display_items.cshtml" />
+    <Content Include="Views\shared_front\_category_menu.cshtml" />
+    <Content Include="Views\admin_default\order_sale_data.cshtml" />
+    <Content Include="Views\admin_products\accessories.cshtml" />
+    <Content Include="Views\customer\edit_reviews.cshtml" />
+    <Content Include="Views\shared_front\_product_reviews.cshtml" />
+    <Content Include="Views\shared_front\_product_accessories.cshtml" />
+    <Content Include="Views\admin_product_reviews\index.cshtml" />
+    <Content Include="Views\admin_product_reviews\_form_menu.cshtml" />
+    <Content Include="Views\admin_product_reviews\edit.cshtml" />
+    <Content Include="Views\order\svea_webpay.cshtml" />
+    <Content Include="Views\shared_front\_shared_scripts.cshtml" />
+    <Content Include="Views\admin_custom_design\images.cshtml" />
+    <Content Include="Views\admin_custom_design\_form_menu.cshtml" />
+    <Content Include="Views\admin_products\files.cshtml" />
+    <Content Include="Views\customer\download_files.cshtml" />
+    <Content Include="Scripts\jquery-2.1.1.min.map" />
+    <Content Include="Views\admin_domains\sitemap.cshtml" />
+    <Content Include="Views\admin_custom_design\user_files.cshtml" />
+    <Content Include="Views\admin_companies\index.cshtml" />
+    <Content Include="Views\admin_companies\_form_menu.cshtml" />
+    <Content Include="Views\admin_companies\edit.cshtml" />
+    <Content Include="Views\admin_products\bundle_structure.cshtml" />
+    <Content Include="Views\admin_newsletters\index.cshtml" />
+    <Content Include="Views\admin_newsletters\_form_menu.cshtml" />
+    <Content Include="Views\admin_newsletters\edit.cshtml" />
+    <Content Include="Views\admin_domains\marketing.cshtml" />
+    <Content Include="Views\shared_admin\_paging_menu.cshtml" />
+    <Content Include="Views\admin_customers\files.cshtml" />
+    <Content Include="Views\admin_custom_design\edit_theme.cshtml" />
+    <Content Include="Views\customer\_menu.cshtml" />
+    <None Include="Web References\Payex.Production\pxorder.wsdl" />
+    <Content Include="Web References\Payex.Production\Reference.map">
+      <Generator>MSDiscoCodeGenerator</Generator>
+      <LastGenOutput>Reference.cs</LastGenOutput>
+    </Content>
+    <None Include="Web References\Payex.Test\pxorder.wsdl" />
+    <Content Include="Web References\Payex.Test\Reference.map">
+      <Generator>MSDiscoCodeGenerator</Generator>
+      <LastGenOutput>Reference.cs</LastGenOutput>
+    </Content>
+  </ItemGroup>
+  <ItemGroup />
+  <ItemGroup>
+    <Content Include="packages.config">
+      <SubType>Designer</SubType>
+    </Content>
+  </ItemGroup>
+  <ItemGroup>
+    <WebReferences Include="Web References\" />
+  </ItemGroup>
+  <ItemGroup>
+    <WebReferenceUrl Include="https://external.payex.com/pxorder/pxorder.asmx%3fwsdl">
+      <UrlBehavior>Dynamic</UrlBehavior>
+      <RelPath>Web References\Payex.Production\</RelPath>
+      <UpdateFromURL>https://external.payex.com/pxorder/pxorder.asmx%3fwsdl</UpdateFromURL>
+      <ServiceLocationURL>
+      </ServiceLocationURL>
+      <CachedDynamicPropName>
+      </CachedDynamicPropName>
+      <CachedAppSettingsObjectName>Settings</CachedAppSettingsObjectName>
+      <CachedSettingsPropName>Annytab_Webshop_Payex_Production_PxOrder</CachedSettingsPropName>
+    </WebReferenceUrl>
+    <WebReferenceUrl Include="https://test-external.payex.com/pxorder/pxorder.asmx%3fwsdl">
+      <UrlBehavior>Dynamic</UrlBehavior>
+      <RelPath>Web References\Payex.Test\</RelPath>
+      <UpdateFromURL>https://test-external.payex.com/pxorder/pxorder.asmx%3fwsdl</UpdateFromURL>
+      <ServiceLocationURL>
+      </ServiceLocationURL>
+      <CachedDynamicPropName>
+      </CachedDynamicPropName>
+      <CachedAppSettingsObjectName>Settings</CachedAppSettingsObjectName>
+      <CachedSettingsPropName>Annytab_Webshop_Payex_Test_PxOrder</CachedSettingsPropName>
+    </WebReferenceUrl>
+  </ItemGroup>
+  <PropertyGroup>
+    <VisualStudioVersion Condition="'$(VisualStudioVersion)' == ''">10.0</VisualStudioVersion>
+    <VSToolsPath Condition="'$(VSToolsPath)' == ''">$(MSBuildExtensionsPath32)\Microsoft\VisualStudio\v$(VisualStudioVersion)</VSToolsPath>
+  </PropertyGroup>
+  <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
+  <Import Project="$(VSToolsPath)\WebApplications\Microsoft.WebApplication.targets" Condition="'$(VSToolsPath)' != ''" />
+  <Import Project="$(MSBuildExtensionsPath32)\Microsoft\VisualStudio\v10.0\WebApplications\Microsoft.WebApplication.targets" Condition="false" />
+  <Target Name="MvcBuildViews" AfterTargets="AfterBuild" Condition="'$(MvcBuildViews)'=='true'">
+    <AspNetCompiler VirtualPath="temp" PhysicalPath="$(WebProjectOutputDir)" />
+  </Target>
+  <ProjectExtensions>
+    <VisualStudio>
+      <FlavorProperties GUID="{349c5851-65df-11da-9384-00065b846f21}">
+        <WebProjectProperties>
+          <UseIIS>True</UseIIS>
+          <AutoAssignPort>True</AutoAssignPort>
+          <DevelopmentServerPort>51256</DevelopmentServerPort>
+          <DevelopmentServerVPath>/</DevelopmentServerVPath>
+          <IISUrl>https://localhost:44301/</IISUrl>
+          <NTLMAuthentication>False</NTLMAuthentication>
+          <UseCustomServer>False</UseCustomServer>
+          <CustomServerUrl>
+          </CustomServerUrl>
+          <SaveServerSettingsInUserFile>False</SaveServerSettingsInUserFile>
+        </WebProjectProperties>
+      </FlavorProperties>
+    </VisualStudio>
+  </ProjectExtensions>
+  <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
+       Other similar extension points exist, see Microsoft.Common.targets.
+  <Target Name="BeforeBuild">
+  </Target>
+  <Target Name="AfterBuild">
+  </Target> -->
+</Project>

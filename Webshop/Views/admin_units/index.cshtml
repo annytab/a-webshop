@@ -1,0 +1,90 @@
+﻿@{
+    // Set the layout for the page
+    Layout = "/Views/shared_admin/_standard_layout.cshtml";
+
+    // Get form data
+    Domain domain = ViewBag.CurrentDomain;
+    QueryParams parameters = ViewBag.QueryParams;
+    string queryString = QueryParams.GetQueryString(parameters);
+
+    // Create a clean string with keywords
+    string cleanKeywords = parameters.keywords.Replace("+", "");
+
+    // Create an array with search words
+    string[] words = cleanKeywords.Split(' ');
+
+    // Count the number of posts
+    Int32 count = Unit.GetCountBySearch(words, domain.back_end_language);
+
+    // Get the number of pages
+    Int32 numberOfPages = Convert.ToInt32(Math.Ceiling(((double)count / parameters.page_size)));
+    numberOfPages = numberOfPages == 0 ? 1 : numberOfPages;
+
+    // Get units by keywords in a search
+    List<Unit> units = Unit.GetBySearch(words, domain.back_end_language, parameters.page_size, parameters.current_page,
+        parameters.sort_field, parameters.sort_order);
+
+    // Get translated texts
+    KeyStringList tt = ViewBag.TranslatedTexts;
+    string unit_tt = tt.Get("unit");
+    string list_tt = tt.Get("list");
+    string id_tt = tt.Get("id");
+    string name_tt = tt.Get("name");
+    string unit_code_tt = tt.Get("unit_code");
+    string edit_tt = tt.Get("edit");
+    string translate_tt = tt.Get("translate");
+    string delete_tt = tt.Get("delete");
+
+    // Set paging data
+    ViewBag.CurrentPage = parameters.current_page;
+    ViewBag.NumberOfPages = numberOfPages;
+    ViewBag.NavigateUrl = "/admin_units?kw=" + Server.UrlEncode(parameters.keywords) + "&sf=" + parameters.sort_field + "&so=" + parameters.sort_order + "&pz=" + parameters.page_size + "&qp={0}";
+
+    // Set the title for the page
+    ViewBag.Title = unit_tt + " - " + list_tt.ToLower();
+}
+
+<h1>@ViewBag.Title</h1>
+@Html.Partial("~/Views/admin_units/_form_menu.cshtml")
+
+@*List of option types*@
+<div class="listContainer">
+    <table class="listTable" style="width:700px;">
+        <tr>
+            <th class="listTh" style="text-align:center;width:100px;">@id_tt</th>
+            <th class="listTh" style="text-align:left;width:200px;">@name_tt</th>
+            <th class="listTh" style="text-align:center;width:100px;">@unit_code_tt</th>
+            <th class="listTh" style="text-align:center;width:100px;">@edit_tt</th>
+            <th class="listTh" style="text-align:center;width:100px;">@translate_tt</th>
+            <th class="listTh" style="text-align:center;width:100px;">@delete_tt</th>
+        </tr>
+
+        @for (int i = 0; i < units.Count; i++)
+        {
+            if (i % 2 != 0)
+            {
+                @:<tr class="annytab-list-main-row">
+            }
+            else
+            {
+                @:<tr class="annytab-list-alt-row">
+            }
+
+            @*Columns*@
+            @:<td style="text-align:center;">@units[i].id.ToString()</td>
+            @:<td style="text-align:left;">@units[i].name.ToString()</td>
+            @:<td style="text-align:center;">@units[i].unit_code.ToString()</td>
+            @:<td style="text-align:center;"><input type="button" value="@edit_tt" onclick="location.href='@Url.Action("edit", "admin_units", new { id = units[i].id, returnUrl = queryString })'" /></td>
+            @:<td style="text-align:center;"><input type="button" value="@translate_tt" onclick="location.href='@Url.Action("translate", "admin_units", new { id = units[i].id, returnUrl = queryString })'" /></td>
+            @:<td style="text-align:center;"><input data-id="deletePost" type="button" value="@delete_tt" @(Html.Raw("data-url='/admin_units/delete/" + units[i].id + "?returnUrl=" + Server.UrlEncode(queryString) + "'")) /></td>
+            @:</tr>
+        }
+    </table>
+</div>
+
+@* Paging menu *@
+@Html.Partial("/Views/shared_admin/_paging_menu.cshtml")
+
+@section scripts {
+    <script>$("#txtSearch").focus();</script>
+}

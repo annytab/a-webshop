@@ -1,0 +1,12 @@
+﻿@charset "UTF-8";
+/* Layout containers */
+.annytab-layout-outer-container{margin:20px auto 0px auto;width:1366px;}
+.annytab-layout-inner-container{float:left;width:1046px;background-color:#ffffff;border-radius:12px;}
+.annytab-layout-header{clear:both;overflow:hidden;width:auto;background-color:transparent;margin:0px 0px 0px 0px;border-radius:8px 8px 0px 0px;}
+.annytab-layout-left-content{float:left;width:263px;margin:0px 0px 0px 0px;}
+.annytab-layout-main-content{float:left;width:783px;margin:0px 0px 0px 0px;}
+.annytab-layout-footer{clear:both;overflow:hidden;width:1046px;color:#ffffff;background-color:#207298;border-radius:0px 0px 8px 8px;}
+.annytab-layout-right-content{float:left;width:300px;}
+
+/* Master page styling */
+.annytab-logotype{max-width:100%;}

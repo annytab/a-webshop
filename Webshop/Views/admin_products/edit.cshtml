@@ -1,0 +1,474 @@
+﻿@using System.Globalization
+@{
+    // Set the layout for the page
+    Layout = "/Views/shared_admin/_standard_layout.cshtml";
+
+    // Get form data
+    Domain domain = ViewBag.CurrentDomain;
+    List<Category> mainCategories = Category.GetChildCategories(0, domain.back_end_language, "title", "ASC");
+    List<ValueAddedTax> valueAddedTaxes = ValueAddedTax.GetAll("id", "ASC");
+    List<Unit> units = ViewBag.Units;
+    Product product = ViewBag.Product;
+    List<ProductOptionType> productOptionTypes = ViewBag.ProductOptionTypes;
+    Dictionary<Int32, List<ProductOption>> productOptions = ViewBag.ProductOptions;
+    string returnUrl = ViewBag.ReturnUrl;
+
+    // Set the error message
+    string error_message = ViewBag.ErrorMessage != null ? ViewBag.ErrorMessage : string.Empty;
+
+    // Get translated texts
+    KeyStringList tt = ViewBag.TranslatedTexts;
+    string new_tt = tt.Get("new");
+    string edit_tt = tt.Get("edit");
+    string product_tt = tt.Get("product");
+    string no_choice_tt = tt.Get("no_choice");
+    string category_tt = tt.Get("category");
+    string id_tt = tt.Get("id");
+    string title_tt = tt.Get("title");
+    string product_code_tt = tt.Get("product_code");
+    string manufacturer_code_tt = tt.Get("manufacturer_code");
+    string gtin_tt = tt.Get("gtin");
+    string price_tt = tt.Get("price");
+    string freight_tt = tt.Get("freight");
+    string unit_tt = tt.Get("unit");
+    string mount_time_hours_tt = tt.Get("mount_time_hours");
+    string show_tt = tt.Get("show");
+    string as_tt = tt.Get("as");
+    string from_tt = tt.Get("from");
+    string brand_tt = tt.Get("brand");
+    string supplier_erp_id_tt = tt.Get("supplier_erp_id");
+    string condition_tt = tt.Get("condition");
+    string variant_image_filename_tt = tt.Get("variant_image_filename");
+    string description_tt = tt.Get("description");
+    string extras_tt = tt.Get("extras");
+    string meta_description_tt = tt.Get("meta_description");
+    string keywords_tt = tt.Get("keywords");
+    string page_name_tt = tt.Get("page_name");
+    string availability_status_tt = tt.Get("availability_status");
+    string availability_in_stock_tt = tt.Get("availability_in_stock");
+    string availability_out_of_stock_tt = tt.Get("availability_out_of_stock");
+    string availability_to_order_tt = tt.Get("availability_to_order");
+    string availability_preorder_tt = tt.Get("availability_preorder");
+    string gender_tt = tt.Get("gender");
+    string female_tt = tt.Get("female");
+    string male_tt = tt.Get("male");
+    string unisex_tt = tt.Get("unisex");
+    string age_group_tt = tt.Get("age_group");
+    string adult_tt = tt.Get("adult");
+    string kids_tt = tt.Get("kids");
+    string adult_only_tt = tt.Get("adult_only");
+    string downloadable_files_tt = tt.Get("downloadable_files");
+    string delivery_time_tt = tt.Get("delivery_time");
+    string affiliate_link_tt = tt.Get("affiliate_link");
+    string toll_freight_addition_tt = tt.Get("toll_freight_addition");
+    string value_added_tax_tt = tt.Get("value_added_tax");
+    string account_code_tt = tt.Get("account_code");
+    string google_category_tt = tt.Get("google_category");
+    string use_local_images_tt = tt.Get("use_local_images");
+    string use_local_files_tt = tt.Get("use_local_files");
+    string inactive_tt = tt.Get("inactive");
+    string product_options_tt =tt.Get("product_options");
+    string product_suffix_tt = tt.Get("product_suffix");
+    string mpn_suffix_tt = tt.Get("mpn_suffix");
+    string price_addition_tt = tt.Get("price_addition");
+    string freight_addition_tt = tt.Get("freight_addition");
+    string availability_date_tt = tt.Get("availability_date");
+    string unit_pricing_measure_tt = tt.Get("unit_pricing_measure");
+    string unit_pricing_base_measure_tt = tt.Get("unit_pricing_base_measure");
+    string energy_efficiency_class_tt = tt.Get("energy_efficiency_class");
+    string size_system_tt = tt.Get("size_system");
+    string size_type_tt = tt.Get("size_type");
+    string regular_tt = tt.Get("regular");
+    string petite_tt = tt.Get("petite");
+    string plus_tt = tt.Get("plus");
+    string big_and_tall_tt = tt.Get("big_and_tall");
+    string maternity_tt = tt.Get("maternity");
+    string date_tt = tt.Get("date");
+    string added_tt = tt.Get("added");
+    string save_tt = tt.Get("save");
+    string cancel_tt = tt.Get("cancel");
+
+    // Set the title for the page
+    if (product.id == 0)
+    {
+        ViewBag.Title = product_tt + " - " + new_tt.ToLower();
+    }
+    else
+    {
+        ViewBag.Title = product_tt + " - " + edit_tt.ToLower();
+    }
+}
+
+<h1>@ViewBag.Title</h1>
+
+@*Menu*@
+@Html.Partial("~/Views/admin_products/_form_menu.cshtml")
+
+@*Main form*@
+@using (Html.BeginForm("edit", "admin_products", FormMethod.Post))
+{
+    <input name="returnUrl" type="hidden" value="@returnUrl" />
+    <div id="divErrors" class="formErrorMessage" style="@(error_message != "" ? "display:block;" : "display:none;")">@Html.Raw(error_message)</div>
+    <table style="clear:both;width:100%;">
+        <tr>
+            <td class="label">@(category_tt + ":")</td>
+            <td class="input">
+                <select id="selectCategory" name="selectCategory" class="formSelect">
+                    <option value="0" @(product.category_id == 0 ? Html.Raw("selected='selected'") : Html.Raw(""))>@("-- " + no_choice_tt + " --")</option>
+                    @CreateChildOptions(0, mainCategories, product.category_id, domain.back_end_language)
+                </select>
+            </td>
+        </tr>
+        <tr style="@(product.id != 0 ? "display:table-row;" : "display:none;")">
+            <td class="label">@(id_tt + ":")</td>
+            <td class="input"><input name="txtId" type="text" class="formTextbox" tabindex="-1" readonly="readonly" value="@product.id" /></td>
+        </tr>
+        <tr>
+            <td class="label">@(title_tt + ":")</td>
+            <td class="input"><input name="txtTitle" type="text" class="formTextbox" value="@product.title" /></td>
+        </tr>
+        <tr>
+            <td class="label">@(product_code_tt + ":")</td>
+            <td class="input"><input name="txtProductCode" type="text" class="formTextbox" value="@product.product_code" /></td>
+        </tr>
+        <tr>
+            <td class="label">@(manufacturer_code_tt + ":")</td>
+            <td class="input"><input name="txtManufacturerCode" type="text" class="formTextbox" value="@product.manufacturer_code" /></td>
+        </tr>
+        <tr>
+            <td class="label">@(gtin_tt.ToUpper() + ":")</td>
+            <td class="input"><input name="txtGtin" type="text" class="formTextbox" value="@product.gtin" /></td>
+        </tr>
+        <tr>
+            <td class="label">@(price_tt + ":")</td>
+            <td class="input"><input name="txtPrice" type="number" step="any" class="formTextbox" value="@product.unit_price.ToString(CultureInfo.InvariantCulture)" /></td>
+        </tr>
+        <tr>
+            <td class="label">@(freight_tt + ":")</td>
+            <td class="input"><input name="txtFreight" type="number" step="any" class="formTextbox" value="@product.unit_freight.ToString(CultureInfo.InvariantCulture)" /></td>
+        </tr>
+        <tr>
+            <td class="label">@(toll_freight_addition_tt + ":")</td>
+            <td class="input"><input name="txtTollFreight" type="number" step="any" class="formTextbox" value="@product.toll_freight_addition.ToString(CultureInfo.InvariantCulture)" /></td>
+        </tr>
+        <tr>
+            <td class="label">@(unit_tt + ":")</td>
+            <td class="input">
+                <select name="selectUnit" class="formSelect">
+                    @foreach (Unit unit in units)
+                    {
+                        <option value="@unit.id.ToString()" @(product.unit_id == unit.id ? Html.Raw("selected='selected'") : Html.Raw(""))>@(unit.name + " (" + unit.unit_code + ")")</option>
+                    }
+                </select>
+            </td>
+        </tr>
+        <tr>
+            <td class="label">@(mount_time_hours_tt + ":")</td>
+            <td class="input"><input name="txtMountTimeHours" type="number" step="any" class="formTextbox" value="@product.mount_time_hours.ToString(CultureInfo.InvariantCulture)" /></td>
+        </tr>
+        <tr>
+            <td class="label">@(show_tt + " " + as_tt.ToLower() + " " + from_tt.ToLower() + " " + price_tt.ToLower() + ":")</td>
+            <td class="input"><input name="cbFromPrice" type="checkbox" value="true" @(product != null && product.from_price == true ? Html.Raw("checked='checked'") : Html.Raw("")) /></td>
+        </tr>
+        <tr>
+            <td class="label">@(brand_tt + ":")</td>
+            <td class="input"><input name="txtBrand" type="text" class="formTextbox" value="@product.brand" /></td>
+        </tr>
+        <tr>
+            <td class="label">@(supplier_erp_id_tt + ":")</td>
+            <td class="input"><input name="txtSupplierErpId" type="text" class="formTextbox" value="@product.supplier_erp_id" /></td>
+        </tr>
+        <tr>
+            <td class="label">@(condition_tt + ":")</td>
+            <td class="input">
+                <select name="selectCondition" class="formSelect">
+                    <option value="" @(product.condition == "" ? Html.Raw("selected='selected'") : Html.Raw(""))>@("-- " + no_choice_tt + " --")</option>
+                    <option value="new" @(product.condition == "new" ? Html.Raw("selected='selected'") : Html.Raw(""))>@tt.Get("new")</option>
+                    <option value="used" @(product.condition == "used" ? Html.Raw("selected='selected'") : Html.Raw(""))>@tt.Get("used")</option>
+                    <option value="refurbished" @(product.condition == "refurbished" ? Html.Raw("selected='selected'") : Html.Raw(""))>@tt.Get("refurbished")</option>
+                </select>
+            </td>
+        </tr>
+        <tr>
+            <td class="label">@(variant_image_filename_tt + " (nike-[0]-[1].jpg):")</td>
+            <td class="input"><input name="txtVariantImageFileName" type="text" class="formTextbox" value="@product.variant_image_filename" /></td>
+        </tr>
+        <tr>
+            <td class="label">@(description_tt + ":")</td>
+            <td class="input"><textarea name="txtDescription" class="formTextarea" rows="6">@product.main_content</textarea></td>
+        </tr>
+        <tr>
+            <td class="label">@(extras_tt + ":")</td>
+            <td class="input"><textarea name="txtExtraContent" class="formTextarea" rows="6">@product.extra_content</textarea></td>
+        </tr>
+        <tr>
+            <td class="label">@(meta_description_tt + ":")</td>
+            <td class="input"><textarea name="txtMetaDescription" class="formTextarea" rows="3">@product.meta_description</textarea></td>
+        </tr>
+        <tr>
+            <td class="label">@(keywords_tt + ":")</td>
+            <td class="input"><input name="txtMetaKeywords" type="text" class="formTextbox" value="@product.meta_keywords" /></td>
+        </tr>
+        <tr>
+            <td class="label">@("Robots:")</td>
+            <td class="input">
+                <select name="selectMetaRobots" class="formSelect">
+                    <option value="index, follow" @(product.meta_robots == "index, follow" ? Html.Raw("selected='selected'") : Html.Raw(""))>index, follow</option>
+                    <option value="index, nofollow" @(product.meta_robots == "index, nofollow" ? Html.Raw("selected='selected'") : Html.Raw(""))>index, nofollow</option>
+                    <option value="noindex, follow" @(product.meta_robots == "noindex, follow" ? Html.Raw("selected='selected'") : Html.Raw(""))>noindex, follow</option>
+                    <option value="noindex, nofollow" @(product.meta_robots == "noindex, nofollow" ? Html.Raw("selected='selected'") : Html.Raw(""))>noindex, nofollow</option>
+                </select>
+            </td>
+        </tr>
+        <tr>
+            <td class="label">@(page_name_tt + ":")</td>
+            <td class="input"><input name="txtPageName" type="text" class="formTextbox" value="@product.page_name" /></td>
+        </tr>
+        <tr>
+            <td class="label">@(availability_status_tt)</td>
+            <td class="input">
+                <select name="selectAvailabilityStatus" class="formSelect">
+                    <option value="" @(product.availability_status == "" ? Html.Raw("selected='selected'") : Html.Raw(""))>@("-- " + no_choice_tt + " --")</option>
+                    <option value="availability_in_stock" @(product.availability_status == "availability_in_stock" ? Html.Raw("selected='selected'") : Html.Raw(""))>@availability_in_stock_tt</option>
+                    <option value="availability_out_of_stock" @(product.availability_status == "availability_out_of_stock" ? Html.Raw("selected='selected'") : Html.Raw(""))>@availability_out_of_stock_tt</option>
+                    <option value="availability_to_order" @(product.availability_status == "availability_to_order" ? Html.Raw("selected='selected'") : Html.Raw(""))>@availability_to_order_tt</option>
+                    <option value="availability_preorder" @(product.availability_status == "availability_preorder" ? Html.Raw("selected='selected'") : Html.Raw(""))>@availability_preorder_tt</option>
+                </select>
+            </td>
+        </tr>
+        <tr>
+            <td class="label">@(availability_date_tt + " (yyyy-mm-dd):")</td>
+            <td class="input"><input id="txtAvailabilityDate" name="txtAvailabilityDate" type="text" class="formTextbox" value="@product.availability_date.ToString("yyyy-MM-dd")" /></td>
+        </tr>
+        <tr>
+            <td class="label">@(delivery_time_tt + ":")</td>
+            <td class="input"><input name="txtDeliveryTime" type="text" class="formTextbox" value="@product.delivery_time" /></td>
+        </tr>
+        <tr>
+            <td class="label">@(affiliate_link_tt + ":")</td>
+            <td class="input"><input name="txtAffiliateLink" type="text" class="formTextbox" value="@product.affiliate_link" /></td>
+        </tr>
+        <tr>
+            <td class="label">@(value_added_tax_tt + ":")</td>
+            <td class="input">
+                <select name="selectValueAddedTax" class="formSelect">
+                    @foreach (ValueAddedTax valueAddedTax in valueAddedTaxes)
+                    {
+                        <option value="@valueAddedTax.id.ToString()" @(product.value_added_tax_id == valueAddedTax.id ? Html.Raw("selected='selected'") : Html.Raw(""))>@((valueAddedTax.value * 100).ToString() + "%")</option>
+                    }
+                </select>
+            </td>
+        </tr>
+        <tr>
+            <td class="label">@(account_code_tt + ":")</td>
+            <td class="input"><input name="txtAccountCode" type="text" class="formTextbox" value="@product.account_code" /></td>
+        </tr>
+        <tr>
+            <td class="label">@(unit_pricing_measure_tt + ":")</td>
+            <td class="input"><input name="txtUnitPricingMeasure" type="number" class="formTextbox" step="any" value="@product.unit_pricing_measure.ToString(CultureInfo.InvariantCulture)" /></td>
+        </tr>
+        <tr>
+            <td class="label">@(unit_pricing_base_measure_tt + ":")</td>
+            <td class="input"><input name="txtUnitPricingBaseMeasure" type="number" class="formTextbox" step="1" value="@product.unit_pricing_base_measure.ToString()" /></td>
+        </tr>
+        <tr>
+            <td class="label">@(google_category_tt + ":")</td>
+            <td class="input"><textarea name="txtGoogleCategory" class="formTextarea" rows="3">@product.google_category</textarea></td>
+        </tr>
+        <tr>
+            <td class="label">@(use_local_images_tt + ":")</td>
+            <td class="input"><input name="cbLocalImages" type="checkbox" value="true" @(product != null && product.use_local_images == true ? Html.Raw("checked='checked'") : Html.Raw("")) /></td>
+        </tr>
+        <tr>
+            <td class="label">@(downloadable_files_tt + ":")</td>
+            <td class="input"><input name="cbDownloadableFiles" type="checkbox" value="true" @(product != null && product.downloadable_files == true ? Html.Raw("checked='checked'") : Html.Raw("")) /></td>
+        </tr>
+        <tr>
+            <td class="label">@(use_local_files_tt + ":")</td>
+            <td class="input"><input name="cbLocalFiles" type="checkbox" value="true" @(product != null && product.use_local_files == true ? Html.Raw("checked='checked'") : Html.Raw("")) /></td>
+        </tr>
+        <tr>
+            <td class="label">@(gender_tt + ":")</td>
+            <td class="input">
+                <select name="selectGender" class="formSelect">
+                    <option value="" @(product.gender == "" ? Html.Raw("selected='selected'") : Html.Raw(""))>@("-- " + no_choice_tt + " --")</option>
+                    <option value="female" @(product.gender == "female" ? Html.Raw("selected='selected'") : Html.Raw(""))>@female_tt</option>
+                    <option value="male" @(product.gender == "male" ? Html.Raw("selected='selected'") : Html.Raw(""))>@male_tt</option>
+                    <option value="unisex" @(product.gender == "unisex" ? Html.Raw("selected='selected'") : Html.Raw(""))>@unisex_tt</option>
+                </select>
+            </td>
+        </tr>
+        <tr>
+            <td class="label">@(age_group_tt + ":")</td>
+            <td class="input">
+                <select name="selectAgeGroup" class="formSelect">
+                    <option value="" @(product.age_group == "" ? Html.Raw("selected='selected'") : Html.Raw(""))>@("-- " + no_choice_tt + " --")</option>
+                    <option value="adult" @(product.age_group == "adult" ? Html.Raw("selected='selected'") : Html.Raw(""))>@adult_tt</option>
+                    <option value="kids" @(product.age_group == "kids" ? Html.Raw("selected='selected'") : Html.Raw(""))>@kids_tt</option>
+                </select>
+            </td>
+        </tr>
+        <tr>
+            <td class="label">@(size_type_tt + ":")</td>
+            <td class="input">
+                <select name="selectSizeType" class="formSelect">
+                    <option value="" @(product.size_type == "" ? Html.Raw("selected='selected'") : Html.Raw(""))>@("-- " + no_choice_tt + " --")</option>
+                    <option value="regular" @(product.size_type == "regular" ? Html.Raw("selected='selected'") : Html.Raw(""))>@regular_tt</option>
+                    <option value="petite" @(product.size_type == "petite" ? Html.Raw("selected='selected'") : Html.Raw(""))>@petite_tt</option>
+                    <option value="plus" @(product.size_type == "plus" ? Html.Raw("selected='selected'") : Html.Raw(""))>@plus_tt</option>
+                    <option value="big_and_tall" @(product.size_type == "big_and_tall" ? Html.Raw("selected='selected'") : Html.Raw(""))>@big_and_tall_tt</option>
+                    <option value="maternity" @(product.size_type == "maternity" ? Html.Raw("selected='selected'") : Html.Raw(""))>@maternity_tt</option>
+                </select>
+            </td>
+        </tr>
+        <tr>
+            <td class="label">@(size_system_tt + ":")</td>
+            <td class="input">
+                <select name="selectSizeSystem" class="formSelect">
+                    <option value="" @(product.size_system == "" ? Html.Raw("selected='selected'") : Html.Raw(""))>@("-- " + no_choice_tt + " --")</option>
+                    <option value="US" @(product.size_system == "US" ? Html.Raw("selected='selected'") : Html.Raw(""))>US</option>
+                    <option value="UK" @(product.size_system == "UK" ? Html.Raw("selected='selected'") : Html.Raw(""))>UK</option>
+                    <option value="EU" @(product.size_system == "EU" ? Html.Raw("selected='selected'") : Html.Raw(""))>EU</option>
+                    <option value="DE" @(product.size_system == "DE" ? Html.Raw("selected='selected'") : Html.Raw(""))>DE</option>
+                    <option value="FR" @(product.size_system == "FR" ? Html.Raw("selected='selected'") : Html.Raw(""))>FR</option>
+                    <option value="JP" @(product.size_system == "JP" ? Html.Raw("selected='selected'") : Html.Raw(""))>JP</option>
+                    <option value="CN" @(product.size_system == "CN" ? Html.Raw("selected='selected'") : Html.Raw(""))>CN</option>
+                    <option value="IT" @(product.size_system == "IT" ? Html.Raw("selected='selected'") : Html.Raw(""))>IT</option>
+                    <option value="BR" @(product.size_system == "BR" ? Html.Raw("selected='selected'") : Html.Raw(""))>BR</option>
+                    <option value="MEX" @(product.size_system == "MEX" ? Html.Raw("selected='selected'") : Html.Raw(""))>MEX</option>
+                    <option value="AU" @(product.size_system == "AU" ? Html.Raw("selected='selected'") : Html.Raw(""))>AU</option>
+                </select>
+            </td>
+        </tr>
+        <tr>
+            <td class="label">@(energy_efficiency_class_tt + ":")</td>
+            <td class="input">
+                <select name="selectEnergyClass" class="formSelect">
+                    <option value="" @(product.energy_efficiency_class == "" ? Html.Raw("selected='selected'") : Html.Raw(""))>@("-- " + no_choice_tt + " --")</option>
+                    <option value="G" @(product.energy_efficiency_class == "G" ? Html.Raw("selected='selected'") : Html.Raw(""))>G</option>
+                    <option value="F" @(product.energy_efficiency_class == "F" ? Html.Raw("selected='selected'") : Html.Raw(""))>F</option>
+                    <option value="E" @(product.energy_efficiency_class == "E" ? Html.Raw("selected='selected'") : Html.Raw(""))>E</option>
+                    <option value="D" @(product.energy_efficiency_class == "D" ? Html.Raw("selected='selected'") : Html.Raw(""))>D</option>
+                    <option value="C" @(product.energy_efficiency_class == "C" ? Html.Raw("selected='selected'") : Html.Raw(""))>C</option>
+                    <option value="B" @(product.energy_efficiency_class == "B" ? Html.Raw("selected='selected'") : Html.Raw(""))>B</option>
+                    <option value="A" @(product.energy_efficiency_class == "A" ? Html.Raw("selected='selected'") : Html.Raw(""))>A</option>
+                    <option value="A+" @(product.energy_efficiency_class == "A+" ? Html.Raw("selected='selected'") : Html.Raw(""))>A+</option>
+                    <option value="A++" @(product.energy_efficiency_class == "A++" ? Html.Raw("selected='selected'") : Html.Raw(""))>A++</option>
+                    <option value="A+++" @(product.energy_efficiency_class == "A+++" ? Html.Raw("selected='selected'") : Html.Raw(""))>A+++</option>
+                </select>
+            </td>
+        </tr>
+        <tr>
+            <td class="label">@(adult_only_tt + ":")</td>
+            <td class="input"><input name="cbAdultOnly" type="checkbox" value="true" @(product != null && product.adult_only == true ? Html.Raw("checked='checked'") : Html.Raw("")) /></td>
+        </tr>
+        <tr>
+            <td class="label">@(added_tt + ", " + date_tt.ToLower()+ " (yyyy-mm-dd):")</td>
+            <td class="input"><input id="txtDateAdded" name="txtDateAdded" type="text" class="formTextbox" value="@product.date_added.ToString("yyyy-MM-dd")" /></td>
+        </tr>
+        <tr>
+            <td class="label">@(inactive_tt + ":")</td>
+            <td class="input"><input name="cbInactive" type="checkbox" value="true" @(product != null && product.inactive == true ? Html.Raw("checked='checked'") : Html.Raw("")) /></td>
+        </tr>
+    </table>
+
+    // Product options
+    <h2 style="margin: 20px 0px 5px 0px;border-bottom:1px solid #cccccc;">@(product_options_tt)</h2>
+    <div id="divTableOuterContainer" class="divTableOuterContainer" style="margin:0px 0px 0px 0px;">
+        <div id="divTable" style="display:table;width:905px">
+            @*Product option types*@
+            @for (int i = 0; i < productOptionTypes.Count; i++)
+            {
+                @:<div data-id="optionTypeContainer" class="divTableRowContainer">
+                    @:<div data-id="optionTypeRow" class="divTableTr" style="background-color: #cccccc;">
+                        @:<div style="display:none;"><input name="productOptionTypeId" type="hidden" tabindex="-1" value="@productOptionTypes[i].id"><input name="optionTypeId" type="hidden" tabindex="-1" value="@productOptionTypes[i].option_type_id"></div>
+                        @:<div class="divTableOuterTh" style="width: 28px; "><img src="/Content/images/annytab_design/drag_icon.png" alt="Drag icon" style="width:20px;height:20px;cursor:move;" /></div>
+                        @:<div class="divTableOuterTh" style="width: 28px; "><img data-id="toggleVisibilityOptions" src="/Content/images/annytab_design/expand_icon.png" alt="Visibility icon" style="width:20px;height:20px;cursor:pointer;" /></div>
+                        @:<div class="divTableOuterTh" style="width: 20px; "><input name="optionTypeSelected" value="true" type="checkbox" class="formCheckbox" @(productOptionTypes[i].selected == true ? Html.Raw("checked='checked'") : Html.Raw("")) /><input type="hidden" value="false" name="optionTypeSelected" /></div>
+                        @:<div class="divTableOuterTh" style="width: 829px; font-size: 16px; text-shadow: 1px 1px 1px #ffffff; "><input name="optionTypeTitle" type="text" value="@productOptionTypes[i].title" style="border:0px;color:#000000;background-color:transparent;" readonly="readonly" /></div>
+                    @:</div>
+
+                // Create the list of product options
+                List<ProductOption> listProductOptions = null;
+
+                // Try to get the list from the dictionary
+                if (productOptions.TryGetValue(productOptionTypes[i].option_type_id, out listProductOptions) == true)
+                {
+                    // Make sure that there is post in lists
+                    if (productOptions.Count > 0)
+                    {
+                        @:<div data-id="optionsTable" style="width:805px;display:none;">
+                            @:<div class="divTableTr">
+                                @:<div style="display:none;">Id</div>
+                                @:<div class="divTableTh" style="width:20px;"><input data-id="checkAllOptions" type="checkbox" class="formCheckbox" /></div>
+                                @:<div class="divTableTh" style="width:157px;">@title_tt</div>
+                                @:<div class="divTableTh" style="width:157px;">@product_suffix_tt</div>
+                                @:<div class="divTableTh" style="width:157px;">@mpn_suffix_tt</div>
+                                @:<div class="divTableTh" style="width:157px;">@price_addition_tt</div>
+                                @:<div class="divTableTh" style="width:157px;">@freight_addition_tt</div>
+                            @:</div>
+                        for (int j = 0; j < listProductOptions.Count; j++)
+                        {
+                            @:<div class="divTableTr">
+                                @:<div style="display:none;"><input name="keyOptionTypeId" type="hidden" tabindex="-1" value="@productOptionTypes[i].option_type_id" /><input name="optionId" type="hidden" tabindex="-1" value="@listProductOptions[j].option_id" /></div>
+                                @:<div class="divTableTd"><input name="optionSelected" value="true" type="checkbox" @(listProductOptions[j].selected == true ? Html.Raw("checked='checked'") : Html.Raw("")) /><input type="hidden" value="false" name="optionSelected" /></div>
+                                @:<div class="divTableTd"><input name="optionTitle" type="text" class="inputTableTextbox" tabindex="-1" readonly="readonly" value="@listProductOptions[j].title" /></div>
+                                @:<div class="divTableTd"><input name="optionSuffix" type="text" class="inputTableTextbox" tabindex="-1" readonly="readonly" value="@listProductOptions[j].product_code_suffix" /></div>
+                                @:<div class="divTableTd"><input name="optionMpnSuffix" type="text" class="inputTableTextbox" value="@listProductOptions[j].mpn_suffix" /></div>
+                                @:<div class="divTableTd"><input name="optionPriceAddition" type="number" step="any" class="inputTableTextbox" value="@listProductOptions[j].price_addition.ToString(CultureInfo.InvariantCulture)" /></div>
+                                @:<div class="divTableTd"><input name="optionFreightAddition" type="number" step="any" class="inputTableTextbox" value="@listProductOptions[j].freight_addition.ToString(CultureInfo.InvariantCulture)" /></div>
+                            @:</div>
+                        }
+                    @:</div>
+                    }
+                }
+                @:</div>
+            }
+        </div>
+    </div>
+    <div style="display:block;border-bottom:1px solid #cccccc;margin-top:5px;"></div>
+    
+    // Save form button
+    <div style="display:block;border:1px solid #cccccc;margin:20px 0px 0px 0px;border-radius: 4px;">
+        <input id="btnSave" type="submit" value="@save_tt" />
+        <input type="button" value="@cancel_tt" onclick="@Html.Raw("location.href='/admin_products" + returnUrl + "'")" />
+    </div>
+}
+
+@section scripts {
+    <link href="~/Content/jquery_css/jquery-ui.min.css" rel="stylesheet" />
+    <script type="text/javascript">$("#selectCategory").focus(); $("#txtAvailabilityDate").datepicker({ dateFormat: 'yy-mm-dd' }); $("#txtDateAdded").datepicker({ dateFormat: 'yy-mm-dd' });</script>
+}
+
+@helper CreateChildOptions(Int32 level, List<Category> categories, Int32 productCategoryId, Int32 languageId)
+{
+    // Create the intendation
+    string intendation = "";
+    
+    for(int i = 0; i < level; i++)
+    {
+        intendation += "-&nbsp;";
+    }
+
+    // Loop all the categories
+    for (int i = 0; i < categories.Count; i++)
+    {
+        // Reset the level
+        if (categories[i].parent_category_id == 0)
+        {
+            level = 0;
+        }
+        
+        // Create the option
+        <option style="@(categories[i].parent_category_id == 0 ? Html.Raw("background-color:#cccccc;") : Html.Raw("background-color:#ffffff;"))" value="@categories[i].id.ToString()" @(productCategoryId == categories[i].id ? Html.Raw("selected='selected'") : Html.Raw(""))>@Html.Raw(intendation + categories[i].title)</option>
+    
+        // Get the child categories
+        List<Category> childCategories = Category.GetChildCategories(categories[i].id, languageId, "title", "ASC");
+
+        if (childCategories.Count > 0)
+        {
+            level += 1;
+            @CreateChildOptions(level, childCategories, productCategoryId, languageId);
+        }
+    }
+}

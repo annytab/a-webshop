@@ -1,0 +1,76 @@
+﻿@{
+
+    // Set the layout for the page
+    Layout = "/Views/shared_admin/_standard_layout.cshtml";
+
+    // Get values
+    Unit unit = ViewBag.Unit;
+    string returnUrl = ViewBag.ReturnUrl;
+    string error_message = ViewBag.ErrorMessage != null ? ViewBag.ErrorMessage : string.Empty;
+
+    // Get translated texts
+    KeyStringList tt = ViewBag.TranslatedTexts;
+    string unit_tt = tt.Get("unit");
+    string new_tt = tt.Get("new");
+    string edit_tt = tt.Get("edit");
+    string id_tt = tt.Get("id");
+    string name_tt = tt.Get("name");
+    string unit_code_si_tt = tt.Get("unit_code_si");
+    string erp_code_tt = tt.Get("erp_code");
+    string unit_code_tt = tt.Get("unit_code");
+    string save_tt = tt.Get("save");
+    string cancel_tt = tt.Get("cancel");
+
+    // Set the title for the page
+    if (unit.id == 0)
+    {
+        ViewBag.Title = unit_tt + " - " + new_tt.ToLower();
+    }
+    else
+    {
+        ViewBag.Title = unit_tt + " - " + edit_tt.ToLower();
+    }
+}
+
+<h1>@ViewBag.Title</h1>
+@*Menu*@
+@Html.Partial("~/Views/admin_units/_form_menu.cshtml")
+
+@*Main form*@
+@using (Html.BeginForm("edit", "admin_units", FormMethod.Post))
+{
+    <input name="returnUrl" type="hidden" value="@returnUrl" />
+    <div id="divErrors" class="formErrorMessage" style="@(error_message != "" ? "display:block;" : "display:none;")">@Html.Raw(error_message)</div>
+    <table style="width:100%;">
+        <tr style="@(unit.id != 0 ? "display:table-row;" : "display:none;")">
+            <td class="label">@(id_tt + ":")</td>
+            <td class="input"><input name="txtId" type="text" class="formTextbox" tabindex="-1" readonly="readonly" value="@unit.id" /></td>
+        </tr>
+        <tr>
+            <td class="label">@(unit_code_tt + ":")</td>
+            <td class="input"><input id="txtUnitCode" name="txtUnitCode" type="text" class="formTextbox" value="@unit.unit_code" /></td>
+        </tr>
+        <tr>
+            <td class="label">@(name_tt + ":")</td>
+            <td class="input"><input name="txtName" type="text" class="formTextbox" value="@unit.name" /></td>
+        </tr>
+        <tr>
+            <td class="label">@(unit_code_si_tt + ":")</td>
+            <td class="input"><input name="txtUnitCodeSi" type="text" class="formTextbox" value="@unit.unit_code_si" /></td>
+        </tr>
+        <tr>
+            <td class="label">@(erp_code_tt + ":")</td>
+            <td class="input"><input name="txtErpCode" type="text" class="formTextbox" value="@unit.erp_code" /></td>
+        </tr>
+    </table>
+
+    // Save form button
+    <div style="display:block;border:1px solid #cccccc;margin:20px 0px 0px 0px;border-radius:4px;">
+        <input id="btnSave" type="submit" value="@save_tt" />
+        <input type="button" value="@cancel_tt" onclick="@Html.Raw("location.href='/admin_units" + returnUrl + "'")" />
+    </div>
+}
+
+@section scripts {
+    <script>$("#txtUnitCode").focus();</script>
+}

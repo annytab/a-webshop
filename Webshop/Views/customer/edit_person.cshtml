@@ -1,0 +1,225 @@
+﻿@{
+
+    // Get the layout type from the cookie
+    ViewBag.LayoutType = "standard";
+    if (Request.Cookies["LayoutType"] != null)
+    {
+        ViewBag.LayoutType = Request.Cookies["LayoutType"].Value;
+    }
+
+    // Get form values
+    Domain domain = ViewBag.CurrentDomain;
+    List<Country> countries = Country.GetAll(domain.front_end_language, "name", "ASC"); ;
+    Customer customer = ViewBag.Customer;
+    KeyStringList tt = ViewBag.TranslatedTexts;
+    string error_message = ViewBag.ErrorMessage != null ? ViewBag.ErrorMessage : string.Empty;
+
+    // Get translated texts
+    string register_as_tt = tt.Get("register_as");
+    string company_tt = tt.Get("company");
+    string private_person_tt = tt.Get("private_person");
+    string edit_tt = tt.Get("edit");
+    string address_information_tt = tt.Get("address_information");
+    string no_choice_tt = tt.Get("no_choice");
+    string id_tt = tt.Get("id");
+    string email_tt = tt.Get("email");
+    string password_tt = tt.Get("password");
+    string person_number_tt = tt.Get("person_number");
+    string reference_tt = tt.Get("reference");
+    string phone_number_tt = tt.Get("phone_number");
+    string mobile_phone_number_tt = tt.Get("mobile_phone_number");
+    string name_tt = tt.Get("name");
+    string address_tt = tt.Get("address");
+    string post_code_tt = tt.Get("post_code");
+    string city_tt = tt.Get("city");
+    string country_tt = tt.Get("country");
+    string invoice_address_tt = tt.Get("invoice_address");
+    string delivery_address_tt = tt.Get("delivery_address");
+    string copy_invoice_address_tt = tt.Get("copy_invoice_address");
+    string i_want_newsletter_tt = tt.Get("i_want_newsletter");
+    string save_tt = tt.Get("save");
+
+    // Set the title for the page
+    if (customer.id == 0)
+    {
+        ViewBag.Title = register_as_tt + " " + private_person_tt.ToLower();
+    }
+    else
+    {
+        ViewBag.Title = edit_tt + " " + address_information_tt.ToLower();
+    }
+    
+    // Set meta data
+    ViewBag.MetaTitle = ViewBag.Title;
+    ViewBag.MetaDescription = ViewBag.Title;
+    ViewBag.MetaKeywords = ViewBag.Title;
+    ViewBag.MetaCanonical = domain.web_address + "/customer/edit_person";
+    ViewBag.MetaRobots = "noindex, follow";
+
+    // Set the layout for the page
+    if (ViewBag.LayoutType == "mobile")
+    {
+        Layout = domain.custom_theme_id == 0 ? "/Views/shared_front/_mobile_layout.cshtml" : "/Views/theme/front_mobile_layout.cshtml";
+    }
+    else
+    {
+        Layout = domain.custom_theme_id == 0 ? "/Views/shared_front/_standard_layout.cshtml" : "/Views/theme/front_standard_layout.cshtml";
+    }
+}
+
+@* Title *@
+<h1>@ViewBag.Title</h1>
+
+@* Menu *@
+@if (customer.id != 0)
+{
+    @Html.Partial(domain.custom_theme_id == 0 ? "/Views/customer/_menu.cshtml" : "/Views/theme/customer_menu.cshtml")
+}
+
+@* Edit person form *@
+@using (Html.BeginForm("edit_person", "customer", FormMethod.Post))
+{
+    @* Error box *@
+    <div class="annytab-form-errorbox" style="@(error_message != "" ? "display:block;" : "display:none;")">@Html.Raw(error_message)</div>
+    
+    @* Customer type *@
+    <div class="annytab-basic-container">
+        <input name="customerType" type="radio" value="0" class="annytab-form-radio" @(customer.customer_type == 0 ? Html.Raw("checked='checked'") : Html.Raw("")) /><span class="annytab-basic-text-normal">@company_tt</span>
+        <input name="customerType" type="radio" value="1" class="annytab-form-radio" @(customer.customer_type == 1 ? Html.Raw("checked='checked'") : Html.Raw("")) /><span class="annytab-basic-text-normal">@private_person_tt</span>
+    </div>
+    
+    <div class="annytab-basic-space"></div>
+    
+    @* General information *@
+    <div class="annytab-basic-container">
+        <input name="txtId" type="hidden" tabindex="-1" value="@customer.id" />
+        <div style="float:left;margin-right:8px;">
+            <span class="annytab-form-label">@email_tt</span><br />
+            <input id="txtEmail" name="txtEmail" type="text" class="annytab-form-textbox" value="@customer.email" />
+        </div>
+        <div style="float:left;margin-right:8px;">
+            <span class="annytab-form-label">@password_tt</span><br />
+            <input name="txtPassword" type="password" class="annytab-form-textbox" value="" /><br />
+        </div>
+        <div style="float:left;margin-right:8px;">
+            <span class="annytab-form-label">@person_number_tt</span><br />
+            <input name="txtPersonNumber" type="text" class="annytab-form-textbox" value="@customer.org_number" /><br />
+        </div>
+        <div style="float:left;margin-right:8px;">
+            <span class="annytab-form-label">@reference_tt</span><br />
+            <input name="txtContactName" type="text" class="annytab-form-textbox" value="@customer.contact_name" /><br />
+        </div>
+        <div style="float:left;margin-right:8px;">
+            <span class="annytab-form-label">@phone_number_tt</span><br />
+            <input name="txtPhoneNumber" type="text" class="annytab-form-textbox" value="@customer.phone_number" /><br />
+        </div>
+        <div style="float:left;margin-right:8px;">
+            <span class="annytab-form-label">@mobile_phone_number_tt</span><br />
+            <input name="txtMobilePhoneNumber" type="text" class="annytab-form-textbox" value="@customer.mobile_phone_number" /><br />
+        </div>
+        <div style="clear:both;"></div>
+    </div>
+    
+    <div class="annytab-basic-space"></div>
+    
+    @* Invoice address *@
+    <div class="annytab-basic-container">
+        <div style="clear:both;margin-bottom: 4px;">
+            <span class="annytab-form-heading">@invoice_address_tt</span>
+        </div>
+        <div style="float:left;margin-right:8px;">
+            <span class="annytab-form-label">@name_tt</span><br />
+            <input id="txtInvoiceName" name="txtInvoiceName" type="text" class="annytab-form-textbox" value="@customer.invoice_name" /><br />
+        </div>
+        <div style="float:left;margin-right:8px;">
+            <span class="annytab-form-label">@(address_tt + " 1")</span><br />
+            <input id="txtInvoiceAddress1" name="txtInvoiceAddress1" type="text" class="annytab-form-textbox" value="@customer.invoice_address_1" /><br />
+        </div>
+        <div style="float:left;margin-right:8px;">
+            <span class="annytab-form-label">@(address_tt + " 2")</span><br />
+            <input id="txtInvoiceAddress2" name="txtInvoiceAddress2" type="text" class="annytab-form-textbox" value="@customer.invoice_address_2" /><br />
+        </div>
+        <div style="float:left;margin-right:8px;">
+            <span class="annytab-form-label">@post_code_tt</span><br />
+            <input id="txtInvoicePostCode" name="txtInvoicePostCode" type="text" class="annytab-form-textbox" value="@customer.invoice_post_code" /><br />
+        </div>
+        <div style="float:left;margin-right:8px;">
+            <span class="annytab-form-label">@city_tt</span><br />
+            <input id="txtInvoiceCity" name="txtInvoiceCity" type="text" class="annytab-form-textbox" value="@customer.invoice_city" /><br />
+        </div>
+        <div style="float:left;margin-right:8px;">
+            <span class="annytab-form-label">@country_tt</span><br />
+            <select id="selectInvoiceCountry" name="selectInvoiceCountry" class="annytab-form-select">
+                <option value="0" @(customer.invoice_country == 0 ? Html.Raw("selected='selected'") : Html.Raw(""))>@("-- " + no_choice_tt + " --")</option>
+                @foreach (Country country in countries)
+                {
+                    <option value="@country.id" @(customer.invoice_country == country.id ? Html.Raw("selected='selected'") : Html.Raw(""))>@country.name</option>
+                }
+            </select>
+        </div>
+        <div style="clear:both;"></div>
+    </div>
+    
+    <div class="annytab-basic-space"></div>
+    
+    @* Delivery address *@
+    <div class="annytab-basic-container">
+        <div style="clear:both;margin-bottom:4px;">
+            <span class="annytab-form-heading">@(delivery_address_tt + " |")</span>
+            <input id="copyInvoiceAddress" type="button" class="annytab-basic-linkbutton" value="@copy_invoice_address_tt" />
+        </div>
+        <div style="float:left;margin-right:8px;">
+            <span class="annytab-form-label">@name_tt</span><br />
+            <input id="txtDeliveryName" name="txtDeliveryName" type="text" class="annytab-form-textbox" value="@customer.delivery_name" /><br />
+        </div>
+        <div style="float:left;margin-right:8px;">
+            <span class="annytab-form-label">@(address_tt + " 1")</span><br />
+            <input id="txtDeliveryAddress1" name="txtDeliveryAddress1" type="text" class="annytab-form-textbox" value="@customer.delivery_address_1" /><br />
+        </div>
+        <div style="float:left;margin-right:8px;">
+            <span class="annytab-form-label">@(address_tt + " 2")</span><br />
+            <input id="txtDeliveryAddress2" name="txtDeliveryAddress2" type="text" class="annytab-form-textbox" value="@customer.delivery_address_2" /><br />
+        </div>
+        <div style="float:left;margin-right:8px;">
+            <span class="annytab-form-label">@post_code_tt</span><br />
+            <input id="txtDeliveryPostCode" name="txtDeliveryPostCode" type="text" class="annytab-form-textbox" value="@customer.delivery_post_code" /><br />
+        </div>
+        <div style="float:left;margin-right:8px;">
+            <span class="annytab-form-label">@city_tt</span><br />
+            <input id="txtDeliveryCity" name="txtDeliveryCity" type="text" class="annytab-form-textbox" value="@customer.delivery_city" /><br />
+        </div>
+        <div style="float:left;margin-right:8px;">
+            <span class="annytab-form-label">@country_tt</span><br />
+            <select id="selectDeliveryCountry" name="selectDeliveryCountry" class="annytab-form-select">
+                <option value="0" @(customer.delivery_country == 0 ? Html.Raw("selected='selected'") : Html.Raw(""))>@("-- " + no_choice_tt + " --")</option>
+                @foreach (Country country in countries)
+                {
+                    <option value="@country.id" @(customer.delivery_country == country.id ? Html.Raw("selected='selected'") : Html.Raw(""))>@country.name</option>
+                }
+            </select>
+        </div>
+        <div style="clear:both;"></div>
+    </div>
+    
+    <div class="annytab-basic-space"></div>
+    
+    @* Newsletter *@
+    <div class="annytab-basic-container">
+        <input name="cbNewsletter" type="checkbox" class="annytab-form-checkbox" value="true" @(customer != null && customer.newsletter == true ? Html.Raw("checked='checked'") : Html.Raw("")) />
+        <span style="font-weight:bold;">@i_want_newsletter_tt</span>
+    </div>
+    
+    <div class="annytab-basic-space"></div>
+    
+    @* Button panel *@
+    <div class="annytab-basic-container">
+        <input id="btnSave" type="submit" value="@save_tt" class="annytab-basic-button" />
+    </div>
+    
+    <div class="annytab-basic-space"></div>
+}
+
+@section scripts {
+    <script>$("#txtEmail").focus();</script>
+    @Scripts.Render(domain.custom_theme_id == 0 ? "/Scripts/annytab_front/annytab.order-functions.js" : "/Scripts/theme/annytab.order-functions.js")
+}

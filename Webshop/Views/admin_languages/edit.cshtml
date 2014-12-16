@@ -1,0 +1,73 @@
+﻿@{
+
+    // Set the layout for the page
+    Layout = "/Views/shared_admin/_standard_layout.cshtml";
+
+    // Get form data
+    Language language = ViewBag.Language;
+    string returnUrl = ViewBag.ReturnUrl;
+    string error_message = ViewBag.ErrorMessage != null ? ViewBag.ErrorMessage : string.Empty;
+
+    // Get translated texts
+    KeyStringList tt = ViewBag.TranslatedTexts;
+    string language_tt = tt.Get("language");
+    string new_tt = tt.Get("new");
+    string edit_tt = tt.Get("edit");
+    string id_tt = tt.Get("id");
+    string language_code_tt = tt.Get("language_code");
+    string country_code_tt = tt.Get("country_code");
+    string name_tt = tt.Get("name");
+    string save_tt = tt.Get("save");
+    string cancel_tt = tt.Get("cancel");
+
+    // Set the title for the page
+    if (language.id == 0)
+    {
+        ViewBag.Title = language_tt + " - " + new_tt.ToLower();
+    }
+    else
+    {
+        ViewBag.Title = language_tt + " - " + edit_tt.ToLower();
+    }
+}
+
+<h1>@ViewBag.Title</h1>
+@*Menu*@
+@Html.Partial("~/Views/admin_languages/_form_menu.cshtml")
+
+@*Main form*@
+@using (Html.BeginForm("edit", "admin_languages", FormMethod.Post))
+{
+    <input name="returnUrl" type="hidden" value="@returnUrl" />
+    <div id="divErrors" class="formErrorMessage" style="@(error_message != "" ? "display:block;" : "display:none;")">@Html.Raw(error_message)</div>
+    <table style="width:100%;">
+        <tr style="@(language.id != 0 ? "display:table-row;" : "display:none;")">
+            <td class="label">@(id_tt + ":")</td>
+            <td class="input"><input name="txtId" type="text" class="formTextbox" tabindex="-1" readonly="readonly" value="@language.id" /></td>
+        </tr>
+        <tr>
+            <td class="label">@(name_tt + ":")</td>
+            <td class="input"><input id="txtName" name="txtName" type="text" class="formTextbox" value="@language.name" /></td>
+        </tr>
+        <tr>
+            <td class="label">@(language_code_tt + ":")</td>
+            <td class="input"><input name="txtLanguageCode" type="text" class="formTextbox" value="@language.language_code" /></td>
+        </tr>
+        <tr>
+            <td class="label">@(country_code_tt + ":")</td>
+            <td class="input"><input name="txtCountryCode" type="text" class="formTextbox" value="@language.country_code" /></td>
+        </tr>
+    </table>
+
+    // Save form button
+    <div style="display:block;border:1px solid #cccccc;margin:20px 0px 0px 0px;border-radius:4px;">
+        <input id="btnSave" type="submit" value="@save_tt" />
+        <input type="button" value="@cancel_tt" onclick="@Html.Raw("location.href='/admin_languages" + returnUrl + "'")" />
+    </div>
+
+}
+
+@section scripts {
+    <script>$("#txtName").focus();</script>
+}
+

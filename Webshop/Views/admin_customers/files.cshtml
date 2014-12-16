@@ -1,0 +1,99 @@
+﻿@using System.Globalization
+@{ 
+    // Set the layout for the page
+    Layout = "/Views/shared_admin/_standard_layout.cshtml";
+
+    // Get form values
+    Domain domain = ViewBag.CurrentDomain;
+    Customer customer = ViewBag.Customer;
+    KeyStringList tt = ViewBag.TranslatedTexts;
+    Language currentLanguage = Language.GetOneById(domain.back_end_language);
+    CultureInfo cultureInfo = Tools.GetCultureInfo(currentLanguage);
+    string returnUrl = ViewBag.ReturnUrl;
+
+    // Declare variables
+    Int32 pageSize = 10;
+    Int32 page = 1;
+
+    // Get the page number
+    if (Request.Params["qp"] != null)
+    {
+        try
+        {
+            page = Int32.Parse(Request.Params["qp"]);
+        }
+        catch (Exception ex)
+        {
+            string exceptionMessage = ex.Message;
+            page = 1;
+        }
+    }
+    // Count the number of posts
+    Int32 count = CustomerFile.GetCountByCustomerId(customer.id);
+
+    // Get the number of pages
+    Int32 numberOfPages = Convert.ToInt32(Math.Ceiling(((double)count / pageSize)));
+    numberOfPages = numberOfPages == 0 ? 1 : numberOfPages;
+
+    // Get all the files for the customer
+    List<CustomerFile> customerFiles = CustomerFile.GetByCustomerId(customer.id, pageSize, page, "product_id", "ASC");
+
+    // Get translated texts
+    string files_tt = tt.Get("files");
+    string product_tt = tt.Get("product");
+    string order_date_tt = tt.Get("order_date");
+    string delete_tt = tt.Get("delete");
+
+    // Set paging data
+    ViewBag.CurrentPage = page;
+    ViewBag.NumberOfPages = numberOfPages;
+    ViewBag.NavigateUrl = "/admin_customers/files?qp={0}";
+    ViewBag.QueryParams = new QueryParams(returnUrl);
+
+    // Set the page title
+    ViewBag.Title = files_tt;
+}
+
+@* Title *@
+<h1>@ViewBag.Title</h1>
+@Html.Partial("~/Views/admin_customers/_form_menu.cshtml")
+
+@* List of files *@
+<div class="listContainer">
+    <table class="listTable" style="width:400px;">
+        <tr>
+            <th class="listTh" style="text-align:left;width:200px;">@product_tt</th>
+            <th class="listTh" style="text-align:left;width:100px;">@order_date_tt</th>
+            <th class="listTh" style="text-align:center;width:100px;"></th>
+        </tr>
+
+        @for (int i = 0; i < customerFiles.Count; i++)
+        {
+            // Get the product
+            Product product = Product.GetOneById(customerFiles[i].product_id, domain.back_end_language);
+
+            if (i % 2 != 0)
+            {
+                @:<tr class="annytab-list-main-row">
+            }
+            else
+            {
+                @:<tr class="annytab-list-alt-row">
+            }
+
+            @:<td style="text-align:left;">@product.title</td>
+            @:<td style="text-align:left;">@customerFiles[i].order_date.ToString("d", cultureInfo)</td>
+            @:<td style="text-align:center;"><input data-id="deletePost" type="button" value="@delete_tt" @(Html.Raw("data-url='/admin_customers/delete_file?customerId=" + customerFiles[i].customer_id + "&productId=" + customerFiles[i].product_id + "&returnUrl=" + Server.UrlEncode(returnUrl) + "'")) /></td>
+            @:</tr>
+        }
+    </table>
+</div>
+
+<div class="annytab-basic-space"></div>
+
+@* Paging menu *@
+@Html.Partial("/Views/shared_admin/_paging_menu.cshtml")
+
+@section scripts {
+    <script>$("#txtSearch").focus();</script>
+}

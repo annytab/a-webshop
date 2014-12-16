@@ -1,0 +1,76 @@
+﻿@{
+    // Set the layout for the page
+    Layout = "/Views/shared_admin/_standard_layout.cshtml";
+
+    // Get form values
+    List<string> userFileUrls = ViewBag.UserFiles;
+    KeyStringList tt = ViewBag.TranslatedTexts;
+    string returnUrl = ViewBag.ReturnUrl;
+
+    // Get translated texts
+    string custom_design_tt = tt.Get("custom_design");
+    string files_tt = tt.Get("files");
+    string export_to_zip_tt = tt.Get("export_to_zip");
+    string import_from_zip_tt = tt.Get("import_from_zip");
+    string add_tt = tt.Get("add");
+    string file_name_tt = tt.Get("file_name");
+    string delete_tt = tt.Get("delete");
+
+    // Set the title
+    ViewBag.Title = custom_design_tt + " - " + files_tt.ToLower();
+}
+
+<h1>@ViewBag.Title</h1>
+
+@*The menu bar*@
+@Html.Partial("~/Views/admin_custom_design/_form_menu.cshtml")
+
+@*Action menu bar*@
+<div class="formMenuBar">
+        <div style="padding:2px;margin-bottom:4px;background-color:#f0f0f0;"><input type="button" value="@export_to_zip_tt" onclick="location.href='@Url.Action("export_user_files_to_zip", "admin_custom_design", new { returnUrl = returnUrl })'" /></div>
+        @using (Html.BeginForm("import_user_files_from_zip", "admin_custom_design", FormMethod.Post, new { enctype = "multipart/form-data" }))
+        {
+            <input name="returnUrl" type="hidden" value="@returnUrl" />
+            <div style="padding:2px;margin-bottom:4px;background-color:#f0f0f0;">
+                <input name="importFilesFromZip" type="file" accept=".zip" />
+                <input type="submit" value="@import_from_zip_tt" />
+            </div>
+        }
+        @using (Html.BeginForm("add_user_files", "admin_custom_design", FormMethod.Post, new { enctype = "multipart/form-data" }))
+        {
+            <input name="returnUrl" type="hidden" value="@returnUrl" />
+            <div style="padding:2px;background-color:#f0f0f0;">
+                <input name="addFiles" type="file" accept=".css, .js" multiple />
+                <input type="submit" value="@(add_tt + " " + files_tt.ToLower())" />
+            </div>
+        }
+    </div>
+
+@*List of user files*@
+<div class="listContainer">
+    <table class="listTable" style="width:500px;">
+        <tr>
+            <th class="listTh" style="text-align:left;width:400px;">@file_name_tt</th>
+            <th class="listTh" style="text-align:center;width:100px;">@delete_tt</th>
+        </tr>
+
+        @for (int i = 0; i < userFileUrls.Count; i++)
+        {
+            if (i % 2 != 0)
+            {
+                @:<tr class="annytab-list-main-row">
+            }
+            else
+            {
+                @:<tr class="annytab-list-alt-row">
+            }
+
+            @*Columns*@
+            @:<td style="text-align:left;">@userFileUrls[i]</td>
+            @:<td style="text-align:center;"><input type="button" value="@delete_tt" onclick="location.href='@Url.Action("delete_user_file", "admin_custom_design", new { file_name = userFileUrls[i], returnUrl = returnUrl })'" /></td>
+            @:</tr>
+        }
+    </table>
+</div>
+
+<div class="annytab-basic-space"></div>

@@ -1,0 +1,141 @@
+﻿@using System.Globalization
+@{
+    
+    // Set paging values
+    Int32 pageSize = 10;
+    Int32 page = 1;
+
+    // Get the layout type from the cookie
+    ViewBag.LayoutType = "standard";
+    if (Request.Cookies["LayoutType"] != null)
+    {
+        ViewBag.LayoutType = Request.Cookies["LayoutType"].Value;
+    }
+
+    // Get the page number
+    if (Request.Params["qp"] != null)
+    {
+        try
+        {
+            page = Int32.Parse(Request.Params["qp"]);
+        }
+        catch (Exception ex)
+        {
+            string exceptionMessage = ex.Message;
+            page = 1;
+        }
+    }
+
+    // Get form values
+    Domain domain = ViewBag.CurrentDomain;
+    Customer customer = ViewBag.Customer;
+    KeyStringList tt = ViewBag.TranslatedTexts;
+    CultureInfo cultureInfo = ViewBag.CultureInfo;
+
+    // Count the number of posts
+    Int32 count = CustomerFile.GetCountByCustomerId(customer.id);
+
+    // Get the number of pages
+    Int32 numberOfPages = Convert.ToInt32(Math.Ceiling(((double)count / pageSize)));
+    numberOfPages = numberOfPages == 0 ? 1 : numberOfPages;
+
+    // Get all the files for the customer
+    List<CustomerFile> customerFiles = CustomerFile.GetByCustomerId(customer.id, pageSize, page, "order_date", "DESC");
+
+    // Get translated texts
+    string files_tt = tt.Get("files");
+    string product_tt = tt.Get("product");
+    string language_tt = tt.Get("language");
+    string order_date_tt = tt.Get("order_date");
+    string file_name_tt = tt.Get("file_name");
+    string version_tt = tt.Get("version");
+    string download_tt = tt.Get("download");
+
+    // Set meta data
+    ViewBag.Title = files_tt;
+    ViewBag.MetaTitle = files_tt;
+    ViewBag.MetaDescription = files_tt;
+    ViewBag.MetaKeywords = files_tt;
+    ViewBag.MetaCanonical = domain.web_address + "/customer/download_files";
+    ViewBag.MetaRobots = "noindex, nofollow";
+
+    // Set paging data
+    ViewBag.CurrentPage = page;
+    ViewBag.NumberOfPages = numberOfPages;
+    ViewBag.NavigateUrl = "/customer/files?qp={0}";
+
+    // Set the layout for the page
+    if (ViewBag.LayoutType == "mobile")
+    {
+        Layout = domain.custom_theme_id == 0 ? "/Views/shared_front/_mobile_layout.cshtml" : "/Views/theme/front_mobile_layout.cshtml";
+    }
+    else
+    {
+        Layout = domain.custom_theme_id == 0 ? "/Views/shared_front/_standard_layout.cshtml" : "/Views/theme/front_standard_layout.cshtml";
+    }
+}
+
+@* Title *@
+<h1>@ViewBag.Title</h1>
+
+@* Menu *@
+@Html.Partial(domain.custom_theme_id == 0 ? "/Views/customer/_menu.cshtml" : "/Views/theme/customer_menu.cshtml")
+
+@* List of files *@
+<div class="annytab-list-container">
+    <div class="annytab-list-table" style="width:800px;">
+        <div class="annytab-list-row">
+            <div class="annytab-list-column-head" style="text-align:center;width:100px;border-radius:4px 0px 0px 4px;"></div>
+            <div class="annytab-list-column-head" style="text-align:center;width:100px;">@language_tt</div>
+            <div class="annytab-list-column-head" style="text-align:left;width:100px;">@order_date_tt</div>
+            <div class="annytab-list-column-head" style="text-align:left;width:200px;">@product_tt</div>
+            <div class="annytab-list-column-head" style="text-align:left;width:200px;">@file_name_tt</div>
+            <div class="annytab-list-column-head" style="text-align:left;width:100px;">@version_tt</div>
+        </div>
+
+        @for (int i = 0; i < customerFiles.Count; i++)
+        {
+            // Get the product
+            Product product = Product.GetOneById(customerFiles[i].product_id, domain.front_end_language);
+
+            // Just continue if the product is null
+            if (product == null)
+            {
+                continue;
+            }
+                
+            // Get all the files
+            List<string> downloadableFiles = Tools.GetDownloadableFiles(customerFiles[i].product_id, customerFiles[i].language_id, product.use_local_files);
+
+            // Get the language codes
+            Language language = Language.GetOneById(customerFiles[i].language_id);
+            string languageCode = language.language_code.ToLower() + "-" + language.country_code.ToUpper();
+            languageCode = product.use_local_files == true ? languageCode : "-";
+
+            // Loop all the files
+            for (int j = 0; j < downloadableFiles.Count; j++)
+            {
+                using (Html.BeginForm("download_files", "customer", FormMethod.Post))
+                {
+                    @:<div class="@(i % 2 != 0 ? "annytab-list-row-main" : "annytab-list-row-alt")">
+                    @:<div class="annytab-list-column" style="width:100px;text-align:center;"><input type="submit" class="annytab-form-button" value="@download_tt" /></div>
+                    @:<div class="annytab-list-column" style="width:100px;text-align:center;"><input name="hiddenLanguageId" type="hidden" value="@customerFiles[i].language_id" />@languageCode</div>
+                    @:<div class="annytab-list-column" style="width:100px;text-align:left;">@customerFiles[i].order_date.ToString("d", cultureInfo)</div>
+                    @:<div class="annytab-list-column" style="width:200px;text-align:left;"><input name="hiddenProductId" type="hidden" value="@customerFiles[i].product_id" />@product.title</div>
+                    @:<div class="annytab-list-column" style="width:200px;text-align:left;"><input name="hiddenFileName" type="hidden" value="@Path.GetFileName(downloadableFiles[j])" />@Path.GetFileName(downloadableFiles[j])</div>
+                    @:<div class="annytab-list-column" style="width:100px;text-align:left;">@Product.GetFileVersionDate(Server.MapPath(downloadableFiles[j])).ToString("d", cultureInfo)</div>
+                    @:</div>
+                }
+            }
+        }
+    </div>
+</div>
+
+<div class="annytab-basic-space"></div>
+
+@* Paging menu *@
+@Html.Partial(domain.custom_theme_id == 0 ? "/Views/shared_front/_paging_menu.cshtml" : "/Views/theme/front_paging_menu.cshtml")
+
+@section scripts {
+    <script>$("#txtSearch").focus();</script>
+}

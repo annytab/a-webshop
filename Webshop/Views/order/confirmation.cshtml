@@ -1,0 +1,50 @@
+﻿@{
+
+    // Get the layout type from the cookie
+    ViewBag.LayoutType = "standard";
+    if (Request.Cookies["LayoutType"] != null)
+    {
+        ViewBag.LayoutType = Request.Cookies["LayoutType"].Value;
+    }
+
+    // Get form data
+    Domain domain = ViewBag.CurrentDomain;
+    KeyStringList tt = ViewBag.TranslatedTexts;
+
+    // Get translated texts
+    string order_confirmation_tt = tt.Get("order_confirmation");
+    string print_tt = tt.Get("print");
+
+    // Set meta data
+    ViewBag.Title = order_confirmation_tt;
+    ViewBag.MetaTitle = order_confirmation_tt;
+    ViewBag.MetaDescription = order_confirmation_tt;
+    ViewBag.MetaKeywords = order_confirmation_tt;
+    ViewBag.MetaCanonical = domain.web_address + "/order/confirmation";
+    ViewBag.MetaRobots = "noindex, nofollow";
+
+    // Set the layout for the page
+    if (ViewBag.LayoutType == "mobile")
+    {
+        Layout = domain.custom_theme_id == 0 ? "/Views/shared_front/_mobile_layout.cshtml" : "/Views/theme/front_mobile_layout.cshtml";
+    }
+    else
+    {
+        Layout = domain.custom_theme_id == 0 ? "/Views/shared_front/_standard_layout.cshtml" : "/Views/theme/front_standard_layout.cshtml";
+    }
+}
+
+@* Print button panel *@
+<div class="annytab-basic-container" style="text-align:right;">
+    <button id="btnPrint" class="annytab-basic-button">@print_tt</button>
+</div>
+
+<div class="annytab-basic-space"></div>
+
+@* Order confirmation body *@
+@Html.Partial(domain.custom_theme_id == 0 ? "/Views/order/_confirmation_body.cshtml" : "/Views/theme/order_confirmation_body.cshtml")
+
+@section scripts {
+    <script>$("#txtSearch").focus();</script>
+    @Scripts.Render(domain.custom_theme_id == 0 ? "/Scripts/annytab_front/annytab.order-functions.js" : "/Scripts/theme/annytab.order-functions.js")
+}

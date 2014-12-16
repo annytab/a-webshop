@@ -1,0 +1,98 @@
+﻿@{
+
+    // Get the layout type from the cookie
+    ViewBag.LayoutType = "standard";
+    if (Request.Cookies["LayoutType"] != null)
+    {
+        ViewBag.LayoutType = Request.Cookies["LayoutType"].Value;
+    }
+
+    // Get form values
+    Domain domain = ViewBag.CurrentDomain;
+    List<Category> mainCategories = ViewBag.MainCategories;
+    Customer customer = ViewBag.Customer;
+    KeyStringList tt = ViewBag.TranslatedTexts;
+    string error_message = ViewBag.ErrorMessage != null ? ViewBag.ErrorMessage : string.Empty;
+
+    // Get translated texts
+    string log_in_tt = tt.Get("log_in");
+    string email_tt = tt.Get("email");
+    string password_tt = tt.Get("password");
+    string forgot_tt = tt.Get("forgot");
+    string register_as_tt = tt.Get("register_as");
+    string company_tt = tt.Get("company");
+    string private_person_tt = tt.Get("private_person");
+
+    // Set meta data
+    ViewBag.Title = log_in_tt;
+    ViewBag.MetaTitle = log_in_tt;
+    ViewBag.MetaDescription = log_in_tt;
+    ViewBag.MetaKeywords = log_in_tt;
+    ViewBag.MetaCanonical = domain.web_address + "/customer/login";
+    ViewBag.MetaRobots = "noindex, nofollow";
+    
+    // Set the layout for the page
+    if (ViewBag.LayoutType == "mobile")
+    {
+        Layout = domain.custom_theme_id == 0 ? "/Views/shared_front/_mobile_layout.cshtml" : "/Views/theme/front_mobile_layout.cshtml";
+    }
+    else
+    {
+        Layout = domain.custom_theme_id == 0 ? "/Views/shared_front/_standard_layout.cshtml" : "/Views/theme/front_standard_layout.cshtml";
+    }
+}
+
+@* Title *@
+<h1>@ViewBag.Title</h1>
+
+@* Login form *@
+@using (Html.BeginForm("login", "customer", FormMethod.Post))
+{
+    @* Hidden data *@
+    <input name="hiddenReturnUrl" type="hidden" value="@("/customer")" />
+    
+    @* Error box *@
+    <div class="annytab-form-errorbox" style="@(error_message != "" ? "display:block;" : "display:none;")">@Html.Raw(error_message)</div>
+    
+    @* Login form *@
+    <div class="annytab-basic-container">
+        <div style="clear:both;">
+            <span class="annytab-form-label">@email_tt</span><br />
+            <input id="txtEmail" name="txtEmail" type="text" class="annytab-form-textbox" value="@customer.email" />
+        </div>
+        <div style="clear:both;">
+            <span class="annytab-form-label">@password_tt</span><br />
+            <input name="txtPassword" type="password" class="annytab-form-textbox" value="" /><br />
+        </div>
+        <div style="clear:both;margin:4px 0px 0px 0px;">
+            <input id="btnLogin" type="submit" value="@log_in_tt" class="annytab-basic-button" />
+            @* External login *@
+            @if (domain.facebook_app_id != "")
+            {
+                <button type="button" class="annytab-facebook-button" onclick="location.href='@Url.Action("facebook_login", "customer")'"><img src="~/Content/images/annytab_design/facebook_logo.png" alt="Facebook logo" style="height:16px;vertical-align:top;" />&nbsp;&nbsp;@log_in_tt</button>
+            }
+            @if (domain.google_app_id != "")
+            {
+                <button type="button" class="annytab-google-button" onclick="location.href='@Url.Action("google_login", "customer")'"><img src="~/Content/images/annytab_design/google_plus.png" alt="Google plus" style="height:24px;" />&nbsp;@log_in_tt</button>
+            }
+        </div>
+    </div> 
+}
+
+<div class="annytab-basic-space"></div>
+
+@* Forgot email/password *@
+<div class="annytab-basic-container">
+    <a href="/customer/forgot_email_password">@(forgot_tt + " " + email_tt.ToLower() + "/" + password_tt.ToLower() + "?")</a>
+</div>
+
+<div class="annytab-basic-space"></div>
+
+@* Create account links *@
+<div class="annytab-basic-container">
+    @(register_as_tt + ": ") <a href="/customer/edit_company">@company_tt</a> | <a href="/customer/edit_person">@private_person_tt</a>
+</div>
+
+@section scripts {
+    <script>$("#txtEmail").focus();</script>
+}

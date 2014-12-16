@@ -1,0 +1,171 @@
+﻿@using System.Globalization
+@{
+    // Set the layout for the page
+    Layout = "/Views/shared_admin/_standard_layout.cshtml";
+
+    // Declare variables
+    string countryCode = "";
+    string year = "";
+    string datepart = "";
+    Int32 groupBy = 1;
+    Int32 pageSize = 10;
+    Int32 page = 1;
+
+    // Get the country code
+    if (Request.Params["cc"] != null)
+    {
+        countryCode = Request.Params["cc"];
+    }
+
+    // Get the year
+    if (Request.Params["year"] != null)
+    {
+        year = Request.Params["year"];
+    }
+
+    // Get the datepart
+    if (Request.Params["dp"] != null)
+    {
+        datepart = Request.Params["dp"];
+    }
+
+    // Get the group by parameter
+    if (Request.Params["gb"] != null)
+    {
+        try
+        {
+            groupBy = Int32.Parse(Request.Params["gb"]);
+        }
+        catch (Exception ex)
+        {
+            string exceptionMessage = ex.Message;
+        }
+    }
+
+    // Get the page size
+    if (Request.Params["pz"] != null)
+    {
+        try
+        {
+            pageSize = Int32.Parse(Request.Params["pz"]);
+        }
+        catch (Exception ex)
+        {
+            string exceptionMessage = ex.Message;
+        }
+    }
+    
+    // Get the page number
+    if (Request.Params["qp"] != null)
+    {
+        try
+        {
+            page = Int32.Parse(Request.Params["qp"]);
+        }
+        catch (Exception ex)
+        {
+            string exceptionMessage = ex.Message;
+            page = 1;
+        }
+    }
+
+    // Get form data
+    Domain domain = ViewBag.CurrentDomain;
+    Language currentLanguage = Language.GetOneById(domain.back_end_language);
+    CultureInfo cultureInfo = Tools.GetCultureInfo(currentLanguage);
+
+    // Count the number of posts and get them
+    Int32 count = 0;
+    List<ProductSaleData> productSaleDataPosts = new List<ProductSaleData>(10);
+    if (groupBy == 0)
+    {
+        count = ProductSaleData.GetCountByYear(countryCode, year);
+        productSaleDataPosts = ProductSaleData.GetByYear(countryCode, year, pageSize, page);
+    }
+    else if (groupBy == 2)
+    {
+        count = ProductSaleData.GetCountByWeek(countryCode, year, datepart);
+        productSaleDataPosts = ProductSaleData.GetByWeek(countryCode, year, datepart, pageSize, page);
+    }
+    else if (groupBy == 3)
+    {
+        count = ProductSaleData.GetCountByDay(countryCode, year, datepart);
+        productSaleDataPosts = ProductSaleData.GetByDay(countryCode, year, datepart, pageSize, page);
+    }
+    else
+    {
+        count = ProductSaleData.GetCountByMonth(countryCode, year, datepart);
+        productSaleDataPosts = ProductSaleData.GetByMonth(countryCode, year, datepart, pageSize, page);
+    }
+
+    // Get the number of pages
+    Int32 numberOfPages = Convert.ToInt32(Math.Ceiling(((double)count / pageSize)));
+    numberOfPages = numberOfPages == 0 ? 1 : numberOfPages;
+
+    // Get translated texts
+    KeyStringList tt = ViewBag.TranslatedTexts;
+    string products_tt = tt.Get("products");
+    string order_statistics_tt = tt.Get("order_statistics");
+    string product_code_tt = tt.Get("product_code");
+    string name_tt = tt.Get("name");
+    string quantity_tt = tt.Get("quantity");
+
+    // Set paging data
+    ViewBag.CurrentPage = page;
+    ViewBag.NumberOfPages = numberOfPages;
+    ViewBag.NavigateUrl = "/admin_default/product_sale_data?year=" + year + "&dp=" + datepart + "&cc=" + countryCode + "&gb=" + groupBy + "&pz=" + pageSize + "&qp={0}";
+    
+    // The period string 
+    string period = year;
+    period += datepart != "0" ? " - " + datepart : "";
+    period += countryCode != "" ? " (" + countryCode + ")" : "";
+
+    // Set the page title
+    ViewBag.Title = products_tt + " " + period;
+}
+
+<h1>@ViewBag.Title</h1>
+<div id="menu" class="formMenuBar">
+    <input type="button" value="@order_statistics_tt" onclick="location.href='@Url.Action("index", "admin_default", new { cc = countryCode, gb = groupBy, pz = pageSize })'" />
+</div>
+
+<div class="listContainer">
+    <table class="listTable" style="width:600px;">
+        <tr>
+            <th class="listTh" style="text-align:left;width:200px;">@product_code_tt</th>
+            <th class="listTh" style="text-align:left;width:300px;">@name_tt</th>
+            <th class="listTh" style="text-align:center;width:100px;">@quantity_tt</th>
+        </tr>
+
+        @for (int i = 0; i < productSaleDataPosts.Count; i++)
+        {
+            if (i % 2 != 0)
+            {
+                @:<tr class="annytab-list-main-row">
+            }
+            else
+            {
+                @:<tr class="annytab-list-alt-row">
+            }
+            
+            @* Get the product name array *@
+            string[] productName = productSaleDataPosts[i].product_name.Split(',');
+
+            @* Create the product name string *@
+            string productString = "";
+            for (int j = 0; j < productName.Length; j++)
+            {
+                productString += productName[j] + "<br />";
+            }
+
+            @*Columns*@
+            @:<td style="text-align:left;">@productSaleDataPosts[i].product_code</td>
+            @:<td style="text-align:left;">@Html.Raw(productString)</td>
+            @:<td style="text-align:center;">@productSaleDataPosts[i].quantity.ToString("##,0.##", cultureInfo)</td>
+            @:</tr>
+        }
+    </table>
+</div>
+
+@* Paging menu *@
+@Html.Partial("/Views/shared_admin/_paging_menu.cshtml")

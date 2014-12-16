@@ -1,0 +1,108 @@
+﻿@{
+    // Set the layout for the page
+    Layout = "/Views/shared_admin/_standard_layout.cshtml";
+
+    // Get values
+    Campaign campaign = ViewBag.Campaign;
+    List<Language> languages = ViewBag.Languages;
+    string returnUrl = ViewBag.ReturnUrl;
+    string imageUrl = campaign.image_name != "" ? Tools.GetCampaignImageUrl(campaign.image_name) : "/Content/images/annytab_design/no_image_wide.jpg";
+
+    // Set the error message
+    string error_message = ViewBag.ErrorMessage != null ? ViewBag.ErrorMessage : string.Empty;
+
+    // Get translated texts
+    KeyStringList tt = ViewBag.TranslatedTexts;
+    string campaign_tt = tt.Get("campaign");
+    string new_tt = tt.Get("new");
+    string edit_tt = tt.Get("edit");
+    string id_tt = tt.Get("id");
+    string no_choice_tt = tt.Get("no_choice");
+    string language_tt = tt.Get("language");
+    string name_tt = tt.Get("name");
+    string category_tt = tt.Get("category");
+    string url_tt = tt.Get("url");
+    string inactive_tt = tt.Get("inactive");
+    string image_tt = tt.Get("image");
+    string save_tt = tt.Get("save");
+    string cancel_tt = tt.Get("cancel");
+
+    // Set the title for the page
+    if (campaign.id == 0)
+    {
+        ViewBag.Title = campaign_tt + " - " + new_tt.ToLower();
+    }
+    else
+    {
+        ViewBag.Title = campaign_tt + " - " + edit_tt.ToLower();
+    }
+}
+
+<h1>@ViewBag.Title</h1>
+
+@*Menu*@
+@Html.Partial("/Views/admin_campaigns/_form_menu.cshtml")
+
+@*Main form*@
+@using (Html.BeginForm("edit", "admin_campaigns", FormMethod.Post, new { enctype = "multipart/form-data" }))
+{
+    <input name="returnUrl" type="hidden" value="@returnUrl" />
+    <div id="divErrors" class="formErrorMessage" style="@(error_message != "" ? "display:block;" : "display:none;")">@Html.Raw(error_message)</div>
+    <table style="clear:both;width:100%;">
+        <tr style="@(campaign.id != 0 ? "display:table-row;" : "display:none;")">
+            <td class="label">@(id_tt + ":")</td>
+            <td class="input"><input name="txtId" type="text" class="formTextbox" tabindex="-1" readonly="readonly" value="@campaign.id" /></td>
+        </tr>
+        <tr>
+            <td class="label">@(language_tt + ":")</td>
+            <td class="input">
+                <select id="selectLanguage" name="selectLanguage" class="formSelect">
+                    <option value="0" @(campaign.language_id == 0 ? Html.Raw("selected='selected'") : Html.Raw(""))>@("-- " + no_choice_tt + " --")</option>
+                    @foreach (Language language in languages)
+                    {
+                        <option value="@language.id" @(language.id == campaign.language_id ? Html.Raw("selected='selected'") : Html.Raw(""))>@language.name</option>
+                    }
+                </select>
+            </td>
+        </tr>
+        <tr>
+            <td class="label">@(name_tt + ":")</td>
+            <td class="input"><input name="txtName" type="text" class="formTextbox" value="@campaign.name" /></td>
+        </tr>
+        <tr>
+            <td class="label">@(url_tt + ":")</td>
+            <td class="input"><input name="txtUrl" type="text" class="formTextbox" value="@campaign.link_url" /></td>
+        </tr>
+        <tr>
+            <td class="label">@(category_tt + ":")</td>
+            <td class="input">
+                <select name="selectCategory" class="formSelect">
+                    <option value="slideshow" @(campaign.category_name == "slideshow" ? Html.Raw("selected='selected'") : Html.Raw(""))>Slideshow</option>
+                    <option value="left" @(campaign.category_name == "left" ? Html.Raw("selected='selected'") : Html.Raw(""))>Left</option>
+                    <option value="right" @(campaign.category_name == "right" ? Html.Raw("selected='selected'") : Html.Raw(""))>Right</option>
+                </select>
+            </td>
+        </tr>
+        <tr>
+            <td class="label">@(inactive_tt + ":")</td>
+            <td class="input"><input name="cbInactive" type="checkbox" value="true" @(campaign != null && campaign.inactive == true ? Html.Raw("checked='checked'") : Html.Raw("")) /></td>
+        </tr>
+        <tr>
+            <td class="label">@(image_tt + " [Max 1 MB]")</td>
+            <td class="input"><input id="uploadCampaignImage" name="campaignImage" type="file" class="formUpload" accept="image" /></td>
+        </tr>
+    </table>
+    
+    // The image
+    <div style="display:block;margin-top:20px;"><img id="campaignImage" src="@imageUrl" alt="@image_tt" style="max-width:100%;border:1px solid #cccccc;" /></div>
+
+    // Save form button
+    <div style="display:block;border:1px solid #cccccc;margin:20px 0px 0px 0px;border-radius:4px;">
+        <input id="btnSave" type="submit" value="@save_tt" />
+        <input type="button" value="@cancel_tt" onclick="@Html.Raw("location.href='/admin_campaigns" + returnUrl + "'")" />
+    </div>
+}
+
+@section scripts {
+    <script>$("#selectLanguage").focus();</script>
+}

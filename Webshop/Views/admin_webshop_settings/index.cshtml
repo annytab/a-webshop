@@ -1,0 +1,185 @@
+﻿@{
+    // Set the layout for the page
+    Layout = "/Views/shared_admin/_standard_layout.cshtml";
+
+    // Get form data
+    KeyStringList webshopSettings = ViewBag.WebshopSettings;
+    KeyStringList tt = ViewBag.TranslatedTexts;
+
+    // Get translated texts
+    string settings_tt = tt.Get("settings");
+    string save_tt = tt.Get("save");
+    string cancel_tt = tt.Get("cancel");
+
+    // Set the title for the page
+    ViewBag.Title = settings_tt;
+}
+
+<h1>@ViewBag.Title</h1>
+
+@*Main form*@
+@using (Html.BeginForm("index", "admin_webshop_settings", FormMethod.Post))
+{
+    <!-- EMAIL -->
+    <div style="font-size:14px;font-weight:bold;margin:10px 0px 0px 0px;line-height:20px;">EMAIL</div>
+    <table style="clear:both;width:100%;border:1px solid #cccccc;background-color:#eae9e9;border-radius:4px;">
+        <tr>
+            <td class="label">SEND-EMAIL-HOST</td>
+            <td class="input"><input name="SEND-EMAIL-HOST" type="text" class="formTextbox" value="@webshopSettings.Get("SEND-EMAIL-HOST")" /></td>
+        </tr>
+        <tr>
+            <td class="label">SEND-EMAIL-PORT</td>
+            <td class="input"><input name="SEND-EMAIL-PORT" type="text" class="formTextbox" value="@webshopSettings.Get("SEND-EMAIL-PORT")" /></td>
+        </tr>
+        <tr>
+            <td class="label">SEND-EMAIL-ADDRESS</td>
+            <td class="input"><input name="SEND-EMAIL-ADDRESS" type="text" class="formTextbox" value="@webshopSettings.Get("SEND-EMAIL-ADDRESS")" /></td>
+        </tr>
+        <tr>
+            <td class="label">SEND-EMAIL-PASSWORD</td>
+            <td class="input"><input name="SEND-EMAIL-PASSWORD" type="password" class="formTextbox" value="@webshopSettings.Get("SEND-EMAIL-PASSWORD")" /></td>
+        </tr>
+        <tr>
+            <td class="label">ORDER-EMAIL</td>
+            <td class="input"><input name="ORDER-EMAIL" type="text" class="formTextbox" value="@webshopSettings.Get("ORDER-EMAIL")" /></td>
+        </tr>
+        <tr>
+            <td class="label">CUSTOMER-SERVICE-EMAIL</td>
+            <td class="input"><input name="CUSTOMER-SERVICE-EMAIL" type="text" class="formTextbox" value="@webshopSettings.Get("CUSTOMER-SERVICE-EMAIL")" /></td>
+        </tr>
+        <tr>
+            <td class="label">CONTACT-US-EMAIL</td>
+            <td class="input"><input name="CONTACT-US-EMAIL" type="text" class="formTextbox" value="@webshopSettings.Get("CONTACT-US-EMAIL")" /></td>
+        </tr>
+    </table>
+    
+    <!-- PAYPAL -->
+    <div style="font-size:14px;font-weight:bold;margin:10px 0px 0px 0px;line-height:20px;">PAYPAL</div>
+    <table style="clear:both;width:100%;border:1px solid #cccccc;background-color:#eae9e9;border-radius:4px;">
+        <tr>
+            <td class="label">PAYPAL-CLIENT-ID</td>
+            <td class="input"><input name="PAYPAL-CLIENT-ID" type="text" class="formTextbox" value="@webshopSettings.Get("PAYPAL-CLIENT-ID")" /></td>
+        </tr>
+        <tr>
+            <td class="label">PAYPAL-CLIENT-SECRET</td>
+            <td class="input"><input name="PAYPAL-CLIENT-SECRET" type="text" class="formTextbox" value="@webshopSettings.Get("PAYPAL-CLIENT-SECRET")" /></td>
+        </tr>
+        <tr>
+            <td class="label">PAYPAL-MODE (sandbox/live)</td>
+            <td class="input"><input name="PAYPAL-MODE" type="text" class="formTextbox" value="@webshopSettings.Get("PAYPAL-MODE")" /></td>
+        </tr>
+    </table>
+    
+    <!-- PAYSON -->
+    <div style="font-size:14px;font-weight:bold;margin:10px 0px 0px 0px;line-height:20px;">PAYSON</div>
+    <table style="clear:both;width:100%;border:1px solid #cccccc;background-color:#eae9e9;border-radius:4px;">
+        <tr>
+            <td class="label">PAYSON-EMAIL</td>
+            <td class="input"><input name="PAYSON-EMAIL" type="text" class="formTextbox" value="@webshopSettings.Get("PAYSON-EMAIL")" /></td>
+        </tr>
+        <tr>
+            <td class="label">PAYSON-AGENT-ID</td>
+            <td class="input"><input name="PAYSON-AGENT-ID" type="text" class="formTextbox" value="@webshopSettings.Get("PAYSON-AGENT-ID")" /></td>
+        </tr>
+        <tr>
+            <td class="label">PAYSON-MD5-KEY</td>
+            <td class="input"><input name="PAYSON-MD5-KEY" type="text" class="formTextbox" value="@webshopSettings.Get("PAYSON-MD5-KEY")" /></td>
+        </tr>
+        <tr>
+            <td class="label">PAYSON-TEST (true/false)</td>
+            <td class="input"><input name="PAYSON-TEST" type="text" class="formTextbox" value="@webshopSettings.Get("PAYSON-TEST")" /></td>
+        </tr>
+    </table>
+
+    <!-- PAYEX -->
+    <div style="font-size:14px;font-weight:bold;margin:10px 0px 0px 0px;line-height:20px;">PAYEX</div>
+    <table style="clear:both;width:100%;border:1px solid #cccccc;background-color:#eae9e9;border-radius:4px;">
+        <tr>
+            <td class="label">PAYEX-ACCOUNT-NUMBER</td>
+            <td class="input"><input name="PAYEX-ACCOUNT-NUMBER" type="text" class="formTextbox" value="@webshopSettings.Get("PAYEX-ACCOUNT-NUMBER")" /></td>
+        </tr>
+        <tr>
+            <td class="label">PAYEX-ENCRYPTION-KEY</td>
+            <td class="input"><input name="PAYEX-ENCRYPTION-KEY" type="text" class="formTextbox" value="@webshopSettings.Get("PAYEX-ENCRYPTION-KEY")" /></td>
+        </tr>
+        <tr>
+            <td class="label">PAYEX-TEST (true/false)</td>
+            <td class="input"><input name="PAYEX-TEST" type="text" class="formTextbox" value="@webshopSettings.Get("PAYEX-TEST")" /></td>
+        </tr>
+    </table>
+
+    <!-- SVEA -->
+    <div style="font-size:14px;font-weight:bold;margin:10px 0px 0px 0px;line-height:20px;">SVEA</div>
+    <table style="clear:both;width:100%;border:1px solid #cccccc;background-color:#eae9e9;border-radius:4px;">
+        <tr>
+            <td class="label">SVEA-MERCHANT-ID</td>
+            <td class="input"><input name="SVEA-MERCHANT-ID" type="text" class="formTextbox" value="@webshopSettings.Get("SVEA-MERCHANT-ID")" /></td>
+        </tr>
+        <tr>
+            <td class="label">SVEA-SECRET-WORD</td>
+            <td class="input"><input name="SVEA-SECRET-WORD" type="text" class="formTextbox" value="@webshopSettings.Get("SVEA-SECRET-WORD")" /></td>
+        </tr>
+        <tr>
+            <td class="label">SVEA-TEST (true/false)</td>
+            <td class="input"><input name="SVEA-TEST" type="text" class="formTextbox" value="@webshopSettings.Get("SVEA-TEST")" /></td>
+        </tr>
+        <tr>
+            <td class="label">SVEA-SE-USER-NAME</td>
+            <td class="input"><input name="SVEA-SE-USER-NAME" type="text" class="formTextbox" value="@webshopSettings.Get("SVEA-SE-USER-NAME")" /></td>
+        </tr>
+        <tr>
+            <td class="label">SVEA-SE-PASSWORD</td>
+            <td class="input"><input name="SVEA-SE-PASSWORD" type="text" class="formTextbox" value="@webshopSettings.Get("SVEA-SE-PASSWORD")" /></td>
+        </tr>
+        <tr>
+            <td class="label">SVEA-SE-INVOICE-CLIENT-NUMBER</td>
+            <td class="input"><input name="SVEA-SE-INVOICE-CLIENT-NUMBER" type="text" class="formTextbox" value="@webshopSettings.Get("SVEA-SE-INVOICE-CLIENT-NUMBER")" /></td>
+        </tr>
+        <tr>
+            <td class="label">SVEA-DK-USER-NAME</td>
+            <td class="input"><input name="SVEA-DK-USER-NAME" type="text" class="formTextbox" value="@webshopSettings.Get("SVEA-DK-USER-NAME")" /></td>
+        </tr>
+        <tr>
+            <td class="label">SVEA-DK-PASSWORD</td>
+            <td class="input"><input name="SVEA-DK-PASSWORD" type="text" class="formTextbox" value="@webshopSettings.Get("SVEA-DK-PASSWORD")" /></td>
+        </tr>
+        <tr>
+            <td class="label">SVEA-DK-INVOICE-CLIENT-NUMBER</td>
+            <td class="input"><input name="SVEA-DK-INVOICE-CLIENT-NUMBER" type="text" class="formTextbox" value="@webshopSettings.Get("SVEA-DK-INVOICE-CLIENT-NUMBER")" /></td>
+        </tr>
+        <tr>
+            <td class="label">SVEA-NO-USER-NAME</td>
+            <td class="input"><input name="SVEA-NO-USER-NAME" type="text" class="formTextbox" value="@webshopSettings.Get("SVEA-NO-USER-NAME")" /></td>
+        </tr>
+        <tr>
+            <td class="label">SVEA-NO-PASSWORD</td>
+            <td class="input"><input name="SVEA-NO-PASSWORD" type="text" class="formTextbox" value="@webshopSettings.Get("SVEA-NO-PASSWORD")" /></td>
+        </tr>
+        <tr>
+            <td class="label">SVEA-NO-INVOICE-CLIENT-NUMBER</td>
+            <td class="input"><input name="SVEA-NO-INVOICE-CLIENT-NUMBER" type="text" class="formTextbox" value="@webshopSettings.Get("SVEA-NO-INVOICE-CLIENT-NUMBER")" /></td>
+        </tr>
+        <tr>
+            <td class="label">SVEA-FI-USER-NAME</td>
+            <td class="input"><input name="SVEA-FI-USER-NAME" type="text" class="formTextbox" value="@webshopSettings.Get("SVEA-FI-USER-NAME")" /></td>
+        </tr>
+        <tr>
+            <td class="label">SVEA-FI-PASSWORD</td>
+            <td class="input"><input name="SVEA-FI-PASSWORD" type="text" class="formTextbox" value="@webshopSettings.Get("SVEA-FI-PASSWORD")" /></td>
+        </tr>
+        <tr>
+            <td class="label">SVEA-FI-INVOICE-CLIENT-NUMBER</td>
+            <td class="input"><input name="SVEA-FI-INVOICE-CLIENT-NUMBER" type="text" class="formTextbox" value="@webshopSettings.Get("SVEA-FI-INVOICE-CLIENT-NUMBER")" /></td>
+        </tr>
+    </table>
+
+    <!-- Button panel -->
+    <div style="display:block;border: 1px solid #cccccc;margin:20px 0px 0px 0px;border-radius: 4px;">
+        <input id="btnSave" type="submit" value="@save_tt" />
+        <input type="button" value="@cancel_tt" onclick="location.href='@Url.Action("index", "admin_default")'" />
+    </div>
+}
+
+@section scripts {
+    <script>$("#txtApiUserName").focus();</script>
+}

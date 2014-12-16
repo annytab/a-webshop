@@ -1,0 +1,95 @@
+﻿@{
+    // Set the layout for the page
+    Layout = "/Views/shared_admin/_standard_layout.cshtml";
+
+    // Get form values
+    List<Language> languages = ViewBag.Languages;
+    KeyStringList tt = ViewBag.TranslatedTexts;
+    Newsletter newsletter = ViewBag.Newsletter;
+    string returnUrl = ViewBag.ReturnUrl;
+    string error_message = ViewBag.ErrorMessage != null ? ViewBag.ErrorMessage : string.Empty;
+
+    // Set the message text
+    string messageText = newsletter.content != "" ? newsletter.content : "<html>\n  <head>\n    <title>Newsletter</title>\n  </head>\n  <body>\n  </body>\n</html>";
+    
+    // Get translated texts
+    string newsletter_tt = tt.Get("newsletter");
+    string no_choice_tt = tt.Get("no_choice");
+    string language_tt = tt.Get("language");
+    string title_tt = tt.Get("title");
+    string message_tt = tt.Get("message");
+    string preview_tt = tt.Get("preview");
+    string save_tt = tt.Get("save");
+    string cancel_tt = tt.Get("cancel");
+
+    // Set the title for the page
+    ViewBag.Title = newsletter_tt;
+}
+
+<h1>@ViewBag.Title</h1>
+
+@*Menu*@
+@Html.Partial("~/Views/admin_newsletters/_form_menu.cshtml")
+
+@*Main form*@
+@using (Html.BeginForm("edit", "admin_newsletters", FormMethod.Post))
+{
+    <input name="returnUrl" type="hidden" value="@returnUrl" />
+    <div id="divErrors" class="formErrorMessage" style="@(error_message != "" ? "display:block;" : "display:none;")">@Html.Raw(error_message)</div>
+    <input name="hiddenId" type="hidden" value="@newsletter.id" />
+    <div style="font-size:16px;line-height:24px;font-weight:bold;">@language_tt</div>
+    <select id="selectLanguage" name="selectLanguage" class="formSelect">
+        <option value="0" @(newsletter.language_id == 0 ? Html.Raw("selected='selected'") : Html.Raw(""))>@("-- " + no_choice_tt + " --")</option>
+        @foreach (Language language in languages)
+        {
+            <option value="@language.id" @(language.id == newsletter.language_id ? Html.Raw("selected='selected'") : Html.Raw(""))>@language.name</option>
+        }
+    </select>
+    
+    <div style="margin-bottom:20px;"></div>
+
+    <div style="font-size:16px;line-height:24px;font-weight:bold;">@(title_tt)</div>
+    <input name="txtTitle" type="text" class="formTextbox" value="@newsletter.title" />
+
+    <div style="margin-bottom:20px;"></div>
+
+    <div>
+        <span style="font-size:16px;line-height:24px;font-weight:bold;">@message_tt</span>
+        <textarea id="txtContent" name="txtContent" style="height:400px;">@Html.Raw(messageText)</textarea>
+    </div>
+
+    // Button panel
+    <div style="display:block;border:1px solid #cccccc;margin:20px 0px 0px 0px;border-radius:4px;">
+        <input id="btnPreview" type="button" value="@preview_tt" />
+        <input id="btnSave" type="submit" value="@save_tt" />
+        <input type="button" value="@cancel_tt" onclick="@Html.Raw("location.href='/admin_newsletters" + returnUrl + "'")" />
+    </div>
+}
+
+@section scripts {
+
+    <link rel="stylesheet" href="/Scripts/codemirror/codemirror.css">
+    <script src="/Scripts/codemirror/codemirror.js"></script>
+    <script src="/Scripts/codemirror/xml.js"></script>
+
+    <script type="text/javascript">
+        $("#selectLanguage").focus();
+        var editor = CodeMirror.fromTextArea(document.getElementById("txtContent"), { lineNumbers: true, htmlMode: true, mode: "text/html", autofocus: false, indentUnit: 0, tabSize: 4 });
+
+        $("#btnPreview").click(previewNewsletter);
+
+        function previewNewsletter()
+        {
+            // Calculate offsets
+            var left = (screen.width / 2) - (800 / 2);
+            var top = (screen.height / 2) - (600 / 2);
+
+            // Create the preview window
+            var printWindow = window.open("", "", "resizable=yes,scrollbars=yes,height=600,width=800,top=" + top + ",left=" + left, true);
+            printWindow.document.write(editor.getValue());
+            printWindow.document.close();
+
+        } // End of the previewNewsletter method
+
+    </script>
+}

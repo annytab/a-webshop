@@ -1,0 +1,68 @@
+﻿@using System.Globalization
+@{ 
+    
+    // Get form values
+    Domain domain = ViewBag.CurrentDomain;
+    Currency currency = ViewBag.Currency;
+    Product product = ViewBag.CurrentProduct;
+    List<Product> accessories = ProductAccessory.GetByProductId(product.id, domain.front_end_language, "title", "ASC"); ;
+    KeyStringList tt = ViewBag.TranslatedTexts;
+    bool pricesIncludesVat = ViewBag.PricesIncludesVat;
+    Dictionary<string, string> userSettings = ViewBag.UserSettings;
+    
+    CultureInfo cultureInfo = ViewBag.CultureInfo;
+
+    // Make sure that sort settings not is null
+    if (userSettings == null)
+    {
+        userSettings = new Dictionary<string, string>(4);
+        userSettings.Add("sort_field", "id");
+        userSettings.Add("sort_order", "ASC");
+        userSettings.Add("page_size", "10");
+        userSettings.Add("display_view", ViewBag.LayoutType == "mobile" ? domain.mobile_display_view.ToString() : domain.default_display_view.ToString());
+    }
+
+    // Calculate the decimal multiplier
+    Int32 decimalMultiplier = (Int32)Math.Pow(10, currency.decimals);
+    
+    // Get translated texts
+    string accessories_tt = tt.Get("accessories");
+    string from_short_tt = tt.Get("from_short");
+}
+
+@* Product accessories *@
+<div style="@(accessories.Count > 0 ? "display:block;" : "display:none;")">
+    <div class="annytab-basic-container">
+        <span class="annytab-form-heading">@accessories_tt</span>
+    </div>
+
+    <div class="annytab-basic-space"></div>
+
+    <div class="annytab-basic-container">
+        @foreach (Product accessory in accessories)
+        {
+            @* Calculate the product price *@
+            ValueAddedTax valueAddedTax = ValueAddedTax.GetOneById(product.value_added_tax_id);
+            decimal accessoryPrice = accessory.unit_price;
+            accessoryPrice *= (currency.currency_base / currency.conversion_rate);
+            accessoryPrice = Math.Round(accessoryPrice * decimalMultiplier, MidpointRounding.AwayFromZero) / decimalMultiplier;
+            if (pricesIncludesVat == true)
+            {
+                accessoryPrice += Math.Round(accessoryPrice * valueAddedTax.value * decimalMultiplier, MidpointRounding.AwayFromZero) / decimalMultiplier;
+            }
+            string price = accessory.from_price == true ? from_short_tt.ToLower() + " " : "";
+            price += accessoryPrice.ToString("##,0.##", cultureInfo) + " " + domain.currency;
+
+            @* The accessory post *@
+            @:<div class="annytab-basic-inner-container" style="min-height:128px;">
+                @:<a href="@("/home/product/" + accessory.page_name)"><img class="annytab-list-product-image" alt="@accessory.title" src="@Tools.GetProductMainImageUrl(accessory.id, domain.front_end_language, "", accessory.use_local_images)" /></a>
+                @:<a href="@("/home/product/" + accessory.page_name)" class="annytab-list-product-title">@accessory.title</a><br />
+                @:<div class="annytab-price-tag-small" style="margin:5px 0px 5px 0px;">@price</div>
+                @:<span class="annytab-basic-bread-text">@Html.Raw(accessory.meta_description)</span><br /><br />         
+            @:</div>
+        }
+    </div>
+
+    <div class="annytab-basic-space"></div>
+
+</div>

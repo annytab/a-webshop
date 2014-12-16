@@ -1,0 +1,123 @@
+﻿@{
+
+    // Set the layout for the page
+    Layout = "/Views/shared_admin/_standard_layout.cshtml";
+
+    // Get form data
+    StaticPage staticPage = ViewBag.StaticPage;
+    string returnUrl = ViewBag.ReturnUrl;
+    string error_message = ViewBag.ErrorMessage != null ? ViewBag.ErrorMessage : string.Empty;
+
+    // Get translated texts
+    KeyStringList tt = ViewBag.TranslatedTexts;
+    string page_tt = tt.Get("page");
+    string new_tt = tt.Get("new");
+    string edit_tt = tt.Get("edit");
+    string id_tt = tt.Get("id");
+    string linkname_tt = tt.Get("linkname");
+    string title_tt = tt.Get("title");
+    string description_tt = tt.Get("description");
+    string meta_description_tt = tt.Get("meta_description");
+    string keywords_tt = tt.Get("keywords");
+    string page_name_tt = tt.Get("page_name");
+    string connected_to_tt = tt.Get("connected_to");
+    string no_connection_tt = tt.Get("no_connection");
+    string start_page_tt = tt.Get("start_page");
+    string terms_of_purchase_tt = tt.Get("terms_of_purchase");
+    string error_general_tt = tt.Get("error_general");
+    string error_invalid_input_tt = tt.Get("error_invalid_input");
+    string error_404_tt = tt.Get("error_404");
+    string inactive_tt = tt.Get("inactive");
+    string save_tt = tt.Get("save");
+    string cancel_tt = tt.Get("cancel");
+
+    // Set the title for the page
+    if (staticPage.id == 0)
+    {
+        ViewBag.Title = page_tt + " - " + new_tt.ToLower();
+    }
+    else
+    {
+        ViewBag.Title = page_tt + " - " + edit_tt.ToLower();
+    }
+}
+
+<h1>@ViewBag.Title</h1>
+@*Menu*@
+@Html.Partial("~/Views/admin_static_pages/_form_menu.cshtml")
+
+@*Main form*@
+@using (Html.BeginForm("edit", "admin_static_pages", FormMethod.Post))
+{
+    <input name="returnUrl" type="hidden" value="@returnUrl" />
+    <div id="divErrors" class="formErrorMessage" style="@(error_message != "" ? "display:block;" : "display:none;")">@Html.Raw(error_message)</div>
+    <table style="width:100%;">
+        <tr style="@(staticPage.id != 0 ? "display:table-row;" : "display:none;")">
+            <td class="label">@(id_tt + ":")</td>
+            <td class="input"><input name="txtId" type="text" class="formTextbox" tabindex="-1" readonly="readonly" value="@staticPage.id" /></td>
+        </tr>
+        <tr>
+            <td class="label">@(title_tt + ":")</td>
+            <td class="input"><input id="txtTitle" name="txtTitle" type="text" class="formTextbox" value="@staticPage.title" /></td>
+        </tr>
+        <tr>
+            <td class="label">@(linkname_tt + ":")</td>
+            <td class="input"><input name="txtLinkname" type="text" class="formTextbox" value="@staticPage.link_name" /></td>
+        </tr>
+        <tr>
+            <td class="label">@(description_tt + ":")</td>
+            <td class="input"><textarea name="txtDescription" class="formTextarea" rows="6">@staticPage.main_content</textarea></td>
+        </tr>
+        <tr>
+            <td class="label">@(meta_description_tt + ":")</td>
+            <td class="input"><textarea name="txtMetaDescription" class="formTextarea" rows="3">@staticPage.meta_description</textarea></td>
+        </tr>
+        <tr>
+            <td class="label">@(keywords_tt + ":")</td>
+            <td class="input"><input name="txtMetaKeywords" type="text" class="formTextbox" value="@staticPage.meta_keywords" /></td>
+        </tr>
+        <tr>
+            <td class="label">@("Robots:")</td>
+            <td class="input">
+                <select name="selectMetaRobots" class="formSelect">
+                    <option value="index, follow" @(staticPage.meta_robots == "index, follow" ? Html.Raw("selected='selected'") : Html.Raw(""))>index, follow</option>
+                    <option value="index, nofollow" @(staticPage.meta_robots == "index, nofollow" ? Html.Raw("selected='selected'") : Html.Raw(""))>index, nofollow</option>
+                    <option value="noindex, follow" @(staticPage.meta_robots == "noindex, follow" ? Html.Raw("selected='selected'") : Html.Raw(""))>noindex, follow</option>
+                    <option value="noindex, nofollow" @(staticPage.meta_robots == "noindex, nofollow" ? Html.Raw("selected='selected'") : Html.Raw(""))>noindex, nofollow</option>
+                </select>
+            </td>
+        </tr>
+        <tr>
+            <td class="label">@(page_name_tt + ":")</td>
+            <td class="input"><input name="txtPageName" type="text" class="formTextbox" value="@staticPage.page_name" /></td>
+        </tr>
+        <tr>
+            <td class="label">@(connected_to_tt + ":")</td>
+            <td class="input">
+                <select id="selectConnectionId" name="selectConnectionId" class="formSelect">
+                    <option value="0" @(staticPage.connected_to_page == 0 ? Html.Raw("selected='selected'") : Html.Raw(""))>@no_connection_tt</option>
+                    <option value="1" @(staticPage.connected_to_page == 1 ? Html.Raw("selected='selected'") : Html.Raw(""))>@start_page_tt</option>
+                    <option value="2" @(staticPage.connected_to_page == 2 ? Html.Raw("selected='selected'") : Html.Raw(""))>@terms_of_purchase_tt</option>
+                    <option value="3" @(staticPage.connected_to_page == 3 ? Html.Raw("selected='selected'") : Html.Raw(""))>@error_general_tt</option>
+                    <option value="4" @(staticPage.connected_to_page == 4 ? Html.Raw("selected='selected'") : Html.Raw(""))>@error_invalid_input_tt</option>
+                    <option value="5" @(staticPage.connected_to_page == 5 ? Html.Raw("selected='selected'") : Html.Raw(""))>@error_404_tt</option>
+                </select>
+            </td>
+        </tr>
+        <tr>
+            <td class="label">@(inactive_tt + ":")</td>
+            <td class="input"><input name="cbInactive" type="checkbox" value="true" @(staticPage != null && staticPage.inactive == true ? Html.Raw("checked='checked'") : Html.Raw("")) /></td>
+        </tr>
+    </table>
+
+    // Save form button
+    <div style="display:block;border:1px solid #cccccc;margin:20px 0px 0px 0px;border-radius:4px;">
+        <input id="btnSave" type="submit" value="@save_tt" />
+        <input type="button" value="@cancel_tt" onclick="@Html.Raw("location.href='/admin_static_pages" + returnUrl + "'")" />
+    </div>
+}
+
+@section scripts {
+    <script>$("#txtTitle").focus();</script>
+}
+

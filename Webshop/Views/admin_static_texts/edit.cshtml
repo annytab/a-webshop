@@ -1,0 +1,62 @@
+﻿@{
+    // Set the layout for the page
+    Layout = "/Views/shared_admin/_standard_layout.cshtml";
+
+    // Get values
+    StaticText staticText = ViewBag.StaticText;
+    string returnUrl = ViewBag.ReturnUrl;
+    string error_message = ViewBag.ErrorMessage != null ? ViewBag.ErrorMessage : string.Empty;
+
+    // Get translated texts
+    KeyStringList tt = ViewBag.TranslatedTexts;
+    string static_text_tt = tt.Get("static_text");
+    string new_tt = tt.Get("new");
+    string edit_tt = tt.Get("edit");
+    string id_tt = tt.Get("id");
+    string text_tt = tt.Get("text");
+    string save_tt = tt.Get("save");
+    string cancel_tt = tt.Get("cancel");
+
+    // Set the title for the page
+    if (staticText.id == string.Empty)
+    {
+        ViewBag.Title = static_text_tt + " - " + new_tt.ToLower();
+    }
+    else
+    {
+        ViewBag.Title = static_text_tt + " - " + edit_tt.ToLower();
+    }
+}
+
+<h1>@ViewBag.Title</h1>
+@*Menu*@
+@Html.Partial("~/Views/admin_static_texts/_form_menu.cshtml")
+
+@*Main form*@
+@using (Html.BeginForm("edit", "admin_static_texts", FormMethod.Post))
+{
+    <input name="returnUrl" type="hidden" value="@returnUrl" />
+    <div id="divErrors" class="formErrorMessage" style="@(error_message != "" ? "display:block;" : "display:none;")">@Html.Raw(error_message)</div>
+    <table style="width:100%;">
+        <tr>
+            <td class="label">@(id_tt + ":")</td>
+            <td class="input"><input id="txtId" name="txtId" type="text" class="formTextbox" value="@staticText.id" /></td>
+        </tr>
+        <tr>
+            <td class="label">@(text_tt + ":")</td>
+            <td class="input"><textarea id="txtText" name="txtText" class="formTextarea" rows="4">@staticText.value</textarea></td>
+        </tr>
+    </table>
+
+    // Save form button
+    <div style="display:block;border:1px solid #cccccc;margin:20px 0px 0px 0px;border-radius:4px;">
+        <input id="btnSave" type="submit" value="@save_tt" />
+        <input type="button" value="@cancel_tt" onclick="@Html.Raw("location.href='/admin_static_texts" + returnUrl + "'")" />
+    </div>
+    
+}
+
+@section scripts {
+    <script>$("#txtId").val() == "" ? $("#txtId").focus() : $("#txtText").focus();</script>
+}
+

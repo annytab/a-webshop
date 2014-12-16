@@ -1,0 +1,188 @@
+﻿@using System.Globalization
+@{
+    // Set the layout for the page
+    Layout = "/Views/shared_admin/_standard_layout.cshtml";
+    
+    // Declare variables
+    string countryCode = "";
+    Int32 groupBy = 1;
+    Int32 pageSize = 12;
+    Int32 page = 1;
+    
+    // Get the country code
+    if(Request.Params["cc"] != null)
+    {
+        countryCode = Request.Params["cc"];
+    }
+    
+    // Get the group by parameter
+    if (Request.Params["gb"] != null)
+    {
+        try
+        {
+            groupBy = Int32.Parse(Request.Params["gb"]);
+        }
+        catch (Exception ex)
+        {
+            string exceptionMessage = ex.Message;
+        }
+    }
+
+    // Get the page size
+    if (Request.Params["pz"] != null)
+    {
+        try
+        {
+            pageSize = Int32.Parse(Request.Params["pz"]);
+        }
+        catch (Exception ex)
+        {
+            string exceptionMessage = ex.Message;
+        }
+    }
+
+    // Get the page number
+    if (Request.Params["qp"] != null)
+    {
+        try
+        {
+            page = Int32.Parse(Request.Params["qp"]);
+        }
+        catch (Exception ex)
+        {
+            string exceptionMessage = ex.Message;
+        }
+    }
+
+    // Get form data
+    Domain domain = ViewBag.CurrentDomain;
+    List<Country> countries = Country.GetAll(domain.back_end_language, "name", "ASC");
+    Language currentLanguage = Language.GetOneById(domain.back_end_language);
+    CultureInfo cultureInfo = Tools.GetCultureInfo(currentLanguage);
+
+    // Count the number of posts and get them
+    Int32 count = 0;
+    List<OrderSaleData> orderSaleDataPosts = new List<OrderSaleData>(10);
+    if(groupBy == 0)
+    {
+        count = OrderSaleData.GetCountOfYears(countryCode);
+        orderSaleDataPosts = OrderSaleData.GetByYear(countryCode, pageSize, page);
+    }
+    else if(groupBy == 2)
+    {
+        count = OrderSaleData.GetCountOfWeeks(countryCode);
+        orderSaleDataPosts = OrderSaleData.GetByWeek(countryCode, pageSize, page);
+    }
+    else if(groupBy == 3)
+    {
+        count = OrderSaleData.GetCountOfDays(countryCode);
+        orderSaleDataPosts = OrderSaleData.GetByDay(countryCode, pageSize, page);
+    }
+    else
+    {
+        count =  OrderSaleData.GetCountOfMonths(countryCode);
+        orderSaleDataPosts = OrderSaleData.GetByMonth(countryCode, pageSize, page);
+    }
+        
+    // Get the number of pages
+    Int32 numberOfPages = Convert.ToInt32(Math.Ceiling(((double)count / pageSize)));
+    numberOfPages = numberOfPages == 0 ? 1 : numberOfPages;
+
+    // Get translated texts
+    KeyStringList tt = ViewBag.TranslatedTexts;
+    string order_statistics_tt = tt.Get("order_statistics");
+    string period_tt = tt.Get("period");
+    string all_tt = tt.Get("all");
+    string countries_tt = tt.Get("countries");
+    string year_tt = tt.Get("year");
+    string month_tt = tt.Get("month");
+    string week_tt = tt.Get("week");
+    string day_tt = tt.Get("day");
+    string filter_tt = tt.Get("filter");
+    string quantity_tt = tt.Get("quantity");
+    string sum_tt = tt.Get("sum");
+    string value_added_tax_tt = tt.Get("value_added_tax");
+    string total_sum_tt = tt.Get("total_sum");
+    string orders_tt = tt.Get("orders");
+    string products_tt = tt.Get("products");
+
+    // Set paging data
+    ViewBag.CurrentPage = page;
+    ViewBag.NumberOfPages = numberOfPages;
+    ViewBag.NavigateUrl = "/admin_default?cc=" + countryCode + "&gb=" + groupBy + "&pz=" + pageSize + "&qp={0}";
+
+    // Set the page title
+    string title = order_statistics_tt;
+    title += countryCode != "" ? " (" + countryCode + ")" : "";
+    ViewBag.Title = title;
+}
+
+<h1>@ViewBag.Title</h1>
+<div id="menu" class="formMenuBar">
+    @using (Html.BeginForm("filter_report", "admin_default", FormMethod.Post))
+    {
+        <select name="selectCountry" style="height:22px;">
+            <option value="" @(countryCode == "" ? Html.Raw("selected='selected'") : Html.Raw(""))>@(all_tt + " " + countries_tt.ToLower())</option>
+            @foreach (Country country in countries)
+            {
+                <option value="@country.country_code" @(country.country_code == countryCode ? Html.Raw("selected='selected'") : Html.Raw(""))>@country.name</option>
+            }
+        </select>
+    <select name="selectGroupBy" style="height:22px;">
+        <option value="0" @(groupBy == 0 ? Html.Raw("selected='selected'") : Html.Raw(""))>@year_tt</option>
+        <option value="1" @(groupBy == 1 ? Html.Raw("selected='selected'") : Html.Raw(""))>@month_tt</option>
+        <option value="2" @(groupBy == 2 ? Html.Raw("selected='selected'") : Html.Raw(""))>@week_tt</option>
+        <option value="3" @(groupBy == 3 ? Html.Raw("selected='selected'") : Html.Raw(""))>@day_tt</option>
+    </select>
+    <select name="selectPageSize" style="height:22px;">
+        <option value="12" @(pageSize == 12 ? Html.Raw("selected='selected'") : Html.Raw(""))>12</option>
+        <option value="24" @(pageSize == 24 ? Html.Raw("selected='selected'") : Html.Raw(""))>24</option>
+        <option value="36" @(pageSize == 36 ? Html.Raw("selected='selected'") : Html.Raw(""))>36</option>
+    </select>
+        <input type="submit" value="@filter_tt" />
+    }
+</div>
+
+@*List of static texts*@
+<div class="listContainer">
+    <table class="listTable" style="width:780px;">
+        <tr>
+            <th class="listTh" style="text-align:center;width:80px;">@period_tt</th>
+            <th class="listTh" style="text-align:right;width:50px;">@quantity_tt</th>
+            <th class="listTh" style="text-align:right;width:150px;">@sum_tt</th>
+            <th class="listTh" style="text-align:right;width:150px;">@value_added_tax_tt</th>
+            <th class="listTh" style="text-align:right;width:150px;">@total_sum_tt</th>
+            <th class="listTh" style="text-align:center;width:100px;"></th>
+            <th class="listTh" style="text-align:center;width:100px;"></th>
+        </tr>
+
+        @for (int i = 0; i < orderSaleDataPosts.Count; i++)
+        {
+            if (i % 2 != 0)
+            {
+                @:<tr class="annytab-list-main-row">
+            }
+            else
+            {
+                @:<tr class="annytab-list-alt-row">
+            }
+            
+            // Create the period string
+            string period = orderSaleDataPosts[i].year;
+            period += orderSaleDataPosts[i].datepart != "0" ? "-" + orderSaleDataPosts[i].datepart : "";
+            
+            @*Columns*@
+            @:<td style="text-align:center;">@period</td>
+            @:<td style="text-align:right;">@orderSaleDataPosts[i].quantity.ToString("##,0.##", cultureInfo)</td>
+            @:<td style="text-align:right;">@orderSaleDataPosts[i].net_sum.ToString("##,0.##", cultureInfo)</td>
+            @:<td style="text-align:right;">@orderSaleDataPosts[i].vat_sum.ToString("##,0.##", cultureInfo)</td>
+            @:<td style="text-align:right;">@orderSaleDataPosts[i].total_sum.ToString("##,0.##", cultureInfo)</td>
+            @:<td style="text-align:center;"><input type="button" value="@orders_tt" onclick="location.href='@Url.Action("order_sale_data", "admin_default", new { year = orderSaleDataPosts[i].year, dp = orderSaleDataPosts[i].datepart, cc = countryCode, gb = groupBy, pz = pageSize})'" /></td>
+            @:<td style="text-align:center;"><input type="button" value="@products_tt" onclick="location.href='@Url.Action("product_sale_data", "admin_default", new { year = orderSaleDataPosts[i].year, dp = orderSaleDataPosts[i].datepart, cc = countryCode, gb = groupBy, pz = pageSize })'" /></td>
+            @:</tr>
+        }
+    </table>
+</div>
+
+@* Paging menu *@
+@Html.Partial("/Views/shared_admin/_paging_menu.cshtml")

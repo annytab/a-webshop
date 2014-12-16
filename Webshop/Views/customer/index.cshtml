@@ -1,0 +1,127 @@
+﻿@using System.Globalization
+@{
+    // Set paging values
+    Int32 pageSize = 10;
+    Int32 page = 1;
+    
+    // Get the layout type from the cookie
+    ViewBag.LayoutType = "standard";
+    if (Request.Cookies["LayoutType"] != null)
+    {
+        ViewBag.LayoutType = Request.Cookies["LayoutType"].Value;
+    }
+
+    // Get the page number
+    if (Request.Params["qp"] != null)
+    {
+        try
+        {
+            page = Int32.Parse(Request.Params["qp"]);
+        }
+        catch (Exception ex)
+        {
+            string exceptionMessage = ex.Message;
+            page = 1;
+        }
+    }
+
+    // Get form values
+    Domain domain = ViewBag.CurrentDomain;
+    Customer customer = ViewBag.Customer;
+    KeyStringList tt = ViewBag.TranslatedTexts;
+    CultureInfo cultureInfo = ViewBag.CultureInfo;
+
+    // Count the number of posts
+    Int32 count = Order.GetCountByCustomerId(customer.id);
+
+    // Get the number of pages
+    Int32 numberOfPages = Convert.ToInt32(Math.Ceiling(((double)count / pageSize)));
+    numberOfPages = numberOfPages == 0 ? 1 : numberOfPages;
+
+    // Get all the orders for the customer
+    List<Order> orders = Order.GetByCustomerId(customer.id, pageSize, page, "order_date", "DESC");
+
+    // Get translated texts
+    string my_pages_tt = tt.Get("my_pages");
+    string order_tt = tt.Get("order");
+    string request_tt = tt.Get("request");
+    string number_tt = tt.Get("number");
+    string type_tt = tt.Get("type");
+    string status_tt = tt.Get("status");
+    string date_tt = tt.Get("date");
+    string currency_tt = tt.Get("currency");
+    string excluding_vat_tt = tt.Get("excluding_vat");
+    string value_added_tax_tt = tt.Get("value_added_tax");
+    string total_sum_tt = tt.Get("total_sum");
+    string show_tt = tt.Get("show");
+    
+    // Set meta data
+    ViewBag.Title = my_pages_tt;
+    ViewBag.MetaTitle = my_pages_tt;
+    ViewBag.MetaDescription = my_pages_tt;
+    ViewBag.MetaKeywords = my_pages_tt;
+    ViewBag.MetaCanonical = domain.web_address + "/customer";
+    ViewBag.MetaRobots = "noindex, nofollow";
+
+    // Set paging data
+    ViewBag.CurrentPage = page;
+    ViewBag.NumberOfPages = numberOfPages;
+    ViewBag.NavigateUrl = "/customer?qp={0}";
+
+    // Set the layout for the page
+    if (ViewBag.LayoutType == "mobile")
+    {
+        Layout = domain.custom_theme_id == 0 ? "/Views/shared_front/_mobile_layout.cshtml" : "/Views/theme/front_mobile_layout.cshtml";
+    }
+    else
+    {
+        Layout = domain.custom_theme_id == 0 ? "/Views/shared_front/_standard_layout.cshtml" : "/Views/theme/front_standard_layout.cshtml";
+    }
+}
+
+@* Title *@
+<h1>@ViewBag.Title</h1>
+
+@* Menu *@
+@Html.Partial(domain.custom_theme_id == 0 ? "/Views/customer/_menu.cshtml" : "/Views/theme/customer_menu.cshtml")
+
+@* List of orders *@
+<div class="annytab-list-container">
+    <div class="annytab-list-table" style="width:880px;">
+        <div class="annytab-list-row">
+            <div class="annytab-list-column-head" style="width:60px;text-align:center;border-radius:4px 0px 0px 4px;"></div>
+            <div class="annytab-list-column-head" style="width:100px;text-align:center;">@number_tt</div>
+            <div class="annytab-list-column-head" style="width:100px;text-align:left;">@type_tt</div>
+            <div class="annytab-list-column-head" style="width:100px;text-align:left;">@status_tt</div>
+            <div class="annytab-list-column-head" style="width:100px;text-align:left;">@date_tt</div>
+            <div class="annytab-list-column-head" style="width:60px;text-align:center;">@currency_tt</div>
+            <div class="annytab-list-column-head" style="width:120px;text-align:right;">@excluding_vat_tt</div>
+            <div class="annytab-list-column-head" style="width:120px;text-align:right;">@value_added_tax_tt</div>
+            <div class="annytab-list-column-head" style="width:120px;text-align:right;border-radius:0px 4px 4px 0px;">@total_sum_tt</div>
+        </div>
+
+        @for (int i = 0; i < orders.Count; i++)
+        {
+            @:<div class="@(i % 2 != 0 ? "annytab-list-row-main" : "annytab-list-row-alt")">
+            @:<div class="annytab-list-column" style="width:60px;text-align:center;"><input type="button" class="annytab-form-button" value="@show_tt" onclick="location.href='@Url.Action("confirmation", "order", new { id = orders[i].id })'" /></div>
+            @:<div class="annytab-list-column" style="width:100px;text-align:center;">@orders[i].id.ToString()</div>
+            @:<div class="annytab-list-column" style="width:100px;text-align:left;">@(orders[i].document_type == 0 ? request_tt : order_tt)</div>
+            @:<div class="annytab-list-column" style="width:100px;text-align:left;">@tt.Get(orders[i].order_status)</div>
+            @:<div class="annytab-list-column" style="width:100px;text-align:left;">@orders[i].order_date.ToString("d", cultureInfo)</div>
+            @:<div class="annytab-list-column" style="width:60px;text-align:center;">@orders[i].currency_code.ToString()</div>
+            @:<div class="annytab-list-column" style="width:120px;text-align:right;">@(orders[i].net_sum.ToString("##,0.##", cultureInfo))</div>
+            @:<div class="annytab-list-column" style="width:120px;text-align:right;">@(orders[i].vat_sum.ToString("##,0.##", cultureInfo))</div>
+            @:<div class="annytab-list-column" style="width:120px;text-align:right;">@(orders[i].total_sum.ToString("##,0.##", cultureInfo))</div>
+            @:</div>
+        }
+    </div>
+</div>
+
+<div class="annytab-basic-space"></div>
+
+@* Paging menu *@
+@Html.Partial(domain.custom_theme_id == 0 ? "/Views/shared_front/_paging_menu.cshtml" : "/Views/theme/front_paging_menu.cshtml")
+
+@section scripts {
+    <script>$("#txtSearch").focus();</script>
+}

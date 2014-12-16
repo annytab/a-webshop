@@ -1,0 +1,154 @@
+﻿@using System.Diagnostics
+
+@{
+
+    // Set the robots tag
+    ViewBag.Robots = "noindex, nofollow";
+    
+    // Set the admin session variable
+    bool adminSession = ViewBag.AdminSession != null ? ViewBag.AdminSession : false;
+    
+    // An admin error code
+    Int32 errorCode = ViewBag.AdminErrorCode != null ? ViewBag.AdminErrorCode : 0;
+    
+    // Get form data
+    Domain domain = ViewBag.CurrentDomain;
+    KeyStringList imageUrls = Tools.GetDomainImageUrls(domain.id);
+    KeyStringList tt = ViewBag.TranslatedTexts;
+    
+    // Get translated texts
+    string start_page_tt = tt.Get("start_page");
+    string settings_tt = tt.Get("settings");
+    string companies_tt = tt.Get("companies");
+    string domains_tt = tt.Get("domains");
+    string administrators_tt = tt.Get("administrators");
+    string custom_design_tt = tt.Get("custom_design");
+    string campaigns_tt = tt.Get("campaigns");
+    string languages_tt = tt.Get("languages");
+    string currencies_tt = tt.Get("currencies");
+    string value_added_tax_rates_tt = tt.Get("value_added_tax_rates");
+    string units_tt = tt.Get("units");
+    string payment_options_tt = tt.Get("payment_options");
+    string additional_services_tt = tt.Get("additional_services");
+    string countries_tt = tt.Get("countries");
+    string static_texts_tt = tt.Get("static_texts");
+    string static_pages_tt = tt.Get("static_pages");
+    string categories_tt = tt.Get("categories");
+    string product_options_tt = tt.Get("product_options");
+    string products_tt = tt.Get("products");
+    string customers_tt = tt.Get("customers");
+    string orders_tt = tt.Get("orders");
+    string reviews_tt = tt.Get("reviews");
+    string newsletters_tt = tt.Get("newsletters");
+    string log_out_tt = tt.Get("log_out");
+    string message_box_title_1_tt = tt.Get("message_box_title_1");
+    string message_box_title_2_tt = tt.Get("message_box_title_2");
+    string message_box_title_3_tt = tt.Get("message_box_title_3");
+    string message_box_title_4_tt = tt.Get("message_box_title_4");
+    string message_box_title_5_tt = tt.Get("message_box_title_5");
+    string message_box_message_1_tt = tt.Get("message_box_message_1");
+    string message_box_message_2_tt = tt.Get("message_box_message_2");
+    string message_box_message_3_tt = tt.Get("message_box_message_3");
+    string message_box_message_4_tt = tt.Get("message_box_message_4");
+    string message_box_message_5_tt = tt.Get("message_box_message_5");
+    string ok_tt = tt.Get("ok");
+    string cancel_tt = tt.Get("cancel");
+    string logotype_tt = tt.Get("logotype");
+    string copyright_information_tt = tt.Get("copyright_information");
+
+}
+
+<!DOCTYPE html>
+<html>
+<head>
+    @* Title and meta tags *@
+    <title>@ViewBag.Title</title>
+    <meta name="robots" content="@ViewBag.Robots" />
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width" />
+    <meta name="google" content="notranslate">
+
+    @* Resources *@
+    <link href="@imageUrls.Get("small_icon")" rel="shortcut icon" type="image/x-icon" />
+    @Styles.Render("/Content/admin_css")
+    
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <div style="padding:20px 10px 20px 10px;"><a href="/admin_default" class="annytab-header-title">@domain.webshop_name</a></div>
+        </div>
+        <div class="leftContent">
+            <div id="adminMenu" style="padding: 10px 10px 10px 10px;@(adminSession ? "display:block;":"display:none;")">
+                <a href="/admin_default" class="menuLink">@start_page_tt</a>
+                <a href="/admin_domains" class="menuLink">@domains_tt</a>
+                <a href="/admin_administrators" class="menuLink">@administrators_tt</a>
+                <a href="/admin_webshop_settings" class="menuLink">@settings_tt</a>
+                <a href="/admin_units" class="menuLink">@units_tt</a>
+                <a href="/admin_languages" class="menuLink">@languages_tt</a>
+                <a href="/admin_currencies" class="menuLink">@currencies_tt</a>
+                <a href="/admin_countries" class="menuLink">@countries_tt</a>
+                <a href="/admin_value_added_taxes" class="menuLink">@value_added_tax_rates_tt</a>
+                <a href="/admin_companies" class="menuLink">@companies_tt</a>
+                <a href="/admin_custom_design" class="menuLink">@custom_design_tt</a>
+                <a href="/admin_campaigns" class="menuLink">@campaigns_tt</a>
+                <a href="/admin_payment_options" class="menuLink">@payment_options_tt</a>
+                <a href="/admin_additional_services" class="menuLink">@additional_services_tt</a>
+                <a href="/admin_static_texts" class="menuLink">@static_texts_tt</a>
+                <a href="/admin_static_pages" class="menuLink">@static_pages_tt</a>
+                <a href="/admin_categories" class="menuLink">@categories_tt</a>
+                <a href="/admin_options" class="menuLink">@product_options_tt</a>
+                <a href="/admin_products" class="menuLink">@products_tt</a>
+                <a href="/admin_customers" class="menuLink">@customers_tt</a>
+                <a href="/admin_orders" class="menuLink">@orders_tt</a>
+                <a href="/admin_product_reviews" class="menuLink">@reviews_tt</a>
+                <a href="/admin_newsletters" class="menuLink">@newsletters_tt</a>
+                <a href="/admin_login/logout" class="menuLink">@log_out_tt</a>
+            </div>
+        </div>
+        <div class="mainContent">
+            <div style="padding:10px 10px 10px 10px;">
+                @RenderBody()
+            </div>
+        </div>
+        <div class="footer">
+            <div style="padding:10px 10px 10px 10px;color:#808080;text-shadow:1px 1px 1px #ffffff;">
+                @Html.Raw(copyright_information_tt)
+            </div>
+        </div>
+    </div>
+
+    @* Used to check for errors *@
+    <div id="errorCode" data-error="@errorCode" style="display:none;"></div>
+
+    @*Message box*@
+    <div id="messageBoxContainer" style="display:none;top:0;left:0;z-index:1;position:fixed;width:100%;height:100%;background-image:url('/Content/images/annytab_design/transparent_background.png');">
+        <div id="messageBox" style="z-index:2;position:absolute;top:10px;right:10px;bottom:10px;left:10px;width:420px;height:183px;margin:auto auto auto auto;background-color:#ffffff;border-radius:4px;border:4px solid #57abe8;">
+            <img id="messageBoxClose" src="@Url.Content("/Content/images/annytab_design/black_circle_cross.png")" alt="Close" style="position:absolute;width:20px;height:20px;top:3px;right:3px;cursor:pointer;" />
+            <div id="messageBoxHeader" style="clear:both;height:28px;background-image:url('/Content/images/annytab_design/message_box_header.png');background-repeat:repeat-x;padding:0px 0px 0px 8px;font-size:14px;line-height:28px;font-weight:bold;color:#ffffff;">
+                <span id="messageBoxTitle1" data-number="1" style="display:none">@message_box_title_1_tt</span>
+                <span id="messageBoxTitle2" data-number="2" style="display:none">@message_box_title_2_tt</span>
+                <span id="messageBoxTitle3" data-number="3" style="display:none">@message_box_title_3_tt</span>
+                <span id="messageBoxTitle4" data-number="4" style="display:none">@message_box_title_4_tt</span>
+                <span id="messageBoxTitle5" data-number="5" style="display:none">@message_box_title_5_tt</span>
+            </div>
+            <div id="messageBoxMessage" style="clear:both;height:80px;padding:15px">
+                <span id="messageBoxMessage1" data-number="1" style="display:none">@message_box_message_1_tt</span>
+                <span id="messageBoxMessage2" data-number="2" style="display:none">@message_box_message_2_tt</span>
+                <span id="messageBoxMessage3" data-number="3" style="display:none">@message_box_message_3_tt</span>
+                <span id="messageBoxMessage4" data-number="4" style="display:none">@message_box_message_4_tt</span>
+                <span id="messageBoxMessage5" data-number="5" style="display:none">@message_box_message_5_tt</span>
+            </div>
+            <div id="messageBoxButtonPanel" style="clear: both; background-color: #dcdcdc;bottom: 0px; height: 44px; border-top: 1px solid #adadad;">
+                <input id="messageBoxCancelButton" type="button" class="button" value="@cancel_tt" style="width:80px;float:right;height:24px;margin:10px 15px 10px 0px;" />
+                <input id="messageBoxOkButton" type="button" class="button" value="@ok_tt" style="width:80px;float:right;height:24px;margin:10px 15px 10px 0px;" />
+            </div>
+        </div>
+    </div>
+
+    @* Scripts *@
+    @Scripts.Render("~/bundles/jquery")
+    @Scripts.Render("~/bundles/annytab_admin")
+    @RenderSection("scripts", required: false)
+</body>
+</html>

@@ -1,0 +1,10 @@
+﻿@charset "UTF-8";
+/* Layout containers */
+.annytab-layout-container{margin:0px auto 0px auto;max-width:1181px;background-color:#ffffff;}
+.annytab-layout-header{clear:both;position:relative;overflow:hidden;width:auto;height:42px;text-align:center;background-color:#207298;margin:0px;}
+.annytab-layout-main-menu{clear:both;background-color:#dcdcdc;z-index:5;position:absolute;width:256px;margin:0px;display:none;}
+.annytab-layout-main-content{clear:both;width:100%;max-width:1181px;margin:0px 0px 0px 0px;}
+.annytab-layout-footer{clear:both;overflow:hidden;max-width:1181px;color:#ffffff;background-color:#207298;}
+
+/* Master page styling */
+.annytab-logotype{max-width:100%;}

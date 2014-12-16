@@ -1,0 +1,235 @@
+﻿@using System.Globalization
+@{
+    // Set the layout for the page
+    Layout = "/Views/shared_admin/_standard_layout.cshtml";
+
+    // Get values
+    Domain domain = ViewBag.CurrentDomain;
+    Order order = ViewBag.Order;
+    PaymentOption paymentOption = PaymentOption.GetOneById(order.payment_option, domain.back_end_language);
+    List<Country> countries = Country.GetAll(domain.back_end_language, "name", "ASC");
+    Language currentLanguage = Language.GetOneById(domain.back_end_language);
+    CultureInfo cultureInfo = Tools.GetCultureInfo(currentLanguage);
+    string returnUrl = ViewBag.ReturnUrl;
+    string error_message = ViewBag.ErrorMessage != null ? ViewBag.ErrorMessage : string.Empty;
+
+    // Get translated texts
+    KeyStringList tt = ViewBag.TranslatedTexts;
+    string order_tt = tt.Get("order");
+    string edit_tt = tt.Get("edit");
+    string order_number_tt = tt.Get("order_number");
+    string order_date_tt = tt.Get("order_date");
+    string document_type_tt = tt.Get("document_type");
+    string request_tt = tt.Get("request");
+    string no_choice_tt = tt.Get("no_choice");
+    string email_tt = tt.Get("email");
+    string customer_type_tt = tt.Get("customer_type");
+    string company_tt = tt.Get("company");
+    string private_person_tt = tt.Get("private_person");
+    string organization_number_tt = tt.Get("organization_number");
+    string vat_number_tt = tt.Get("vat_number");
+    string reference_tt = tt.Get("reference");
+    string phone_number_tt = tt.Get("phone_number");
+    string mobile_phone_number_tt = tt.Get("mobile_phone_number");
+    string name_tt = tt.Get("name");
+    string address_tt = tt.Get("address");
+    string post_code_tt = tt.Get("post_code");
+    string city_tt = tt.Get("city");
+    string country_tt = tt.Get("country");
+    string invoice_address_tt = tt.Get("invoice_address");
+    string delivery_address_tt = tt.Get("delivery_address");
+    string status_tt = tt.Get("status");
+    string payment_option_tt = tt.Get("payment_option");
+    string order_status_pending_tt = tt.Get("order_status_pending");
+    string order_status_cancelled_tt = tt.Get("order_status_cancelled");
+    string order_status_delivered_tt = tt.Get("order_status_delivered");
+    string payment_status_tt = tt.Get("payment_status");
+    string payment_status_invoice_not_approved_tt = tt.Get("payment_status_invoice_not_approved");
+    string payment_status_pending_tt = tt.Get("payment_status_pending");
+    string payment_status_invoice_approved_tt = tt.Get("payment_status_invoice_approved");
+    string payment_status_paid_tt = tt.Get("payment_status_paid");
+    string exported_to_erp_tt = tt.Get("exported_to_erp");
+    string desired_date_of_delivery_tt = tt.Get("desired_date_of_delivery");
+    string update_tt = tt.Get("update");
+    string cancel_tt = tt.Get("cancel");
+
+    // Set the title for the page
+    ViewBag.Title = order_tt + " - " + edit_tt.ToLower();   
+}
+
+<h1>@ViewBag.Title</h1>
+
+@*Menu*@
+@Html.Partial("~/Views/admin_orders/_form_menu.cshtml")
+
+@*Main form*@
+@using (Html.BeginForm("edit", "admin_orders", FormMethod.Post))
+{
+    <input name="returnUrl" type="hidden" value="@returnUrl" />
+    <div id="divErrors" class="formErrorMessage" style="@(error_message != "" ? "display:block;" : "display:none;")">@Html.Raw(error_message)</div>
+    <table style="width:100%;">
+        <tr>
+            <td class="label">@(order_number_tt + ":")</td>
+            <td class="input"><input name="txtId" type="text" class="formTextbox" tabindex="-1" readonly="readonly" value="@order.id"></td>
+        </tr>
+        <tr>
+            <td class="label">@(order_date_tt + ":")</td>
+            <td class="input"><input type="text" class="formTextbox" tabindex="-1" readonly="readonly" value="@order.order_date.ToString("d", cultureInfo)" /></td>
+        </tr>
+        <tr>
+            <td class="label">@(document_type_tt + ":")</td>
+            <td class="input"><input type="text" class="formTextbox" tabindex="-1" readonly="readonly" value="@(order.document_type == 0 ? request_tt : order_tt)" /></td>
+        </tr>
+        <tr>
+            <td class="label">@(customer_type_tt + ":")</td>
+            <td class="input"><input type="text" class="formTextbox" tabindex="-1" readonly="readonly" value="@(order.customer_type == 0 ? company_tt : private_person_tt)" /></td>
+        </tr>
+        <tr>
+            <td class="label">@(email_tt + ":")</td>
+            <td class="input"><input id="txtEmail" name="txtEmail" type="text" class="formTextbox" value="@order.customer_email" /></td>
+        </tr>
+        <tr>
+            <td class="label">@(organization_number_tt + ":")</td>
+            <td class="input"><input name="txtOrgNumber" type="text" class="formTextbox" value="@order.customer_org_number" /></td>
+        </tr>
+        <tr>
+            <td class="label">@(vat_number_tt + ":")</td>
+            <td class="input"><input name="txtVatNumber" type="text" class="formTextbox" value="@order.customer_vat_number" /></td>
+        </tr>
+        <tr>
+            <td class="label">@(reference_tt + ":")</td>
+            <td class="input"><input name="txtCustomerName" type="text" class="formTextbox" value="@order.customer_name" /></td>
+        </tr>
+        <tr>
+            <td class="label">@(phone_number_tt + ":")</td>
+            <td class="input"><input name="txtPhoneNumber" type="text" class="formTextbox" value="@order.customer_phone" /></td>
+        </tr>
+        <tr>
+            <td class="label">@(mobile_phone_number_tt + ":")</td>
+            <td class="input"><input name="txtMobilePhoneNumber" type="text" class="formTextbox" value="@order.customer_mobile_phone" /></td>
+        </tr>
+        <tr>
+            <td class="label">@(desired_date_of_delivery_tt + ":")</td>
+            <td class="input"><input id="txtDesiredDateOfDelivery" name="txtDesiredDateOfDelivery" type="text" class="formTextbox" value="@order.desired_date_of_delivery.ToString("d", cultureInfo)" /></td>
+        </tr>
+        <tr><td colspan="2">&nbsp;</td></tr>
+        <tr>
+            <td colspan="2" style="border-bottom:1px solid #cccccc;font-weight: bold;font-size:16px;">@invoice_address_tt</td>
+        </tr>
+        <tr>
+            <td class="label">@(name_tt + ":")</td>
+            <td class="input"><input id="txtInvoiceName" name="txtInvoiceName" type="text" class="formTextbox" value="@order.invoice_name" /></td>
+        </tr>
+        <tr>
+            <td class="label">@(address_tt + "1:")</td>
+            <td class="input"><input id="txtInvoiceAddress1" name="txtInvoiceAddress1" type="text" class="formTextbox" value="@order.invoice_address_1" /></td>
+        </tr>
+        <tr>
+            <td class="label">@(address_tt + "2:")</td>
+            <td class="input"><input id="txtInvoiceAddress2" name="txtInvoiceAddress2" type="text" class="formTextbox" value="@order.invoice_address_2" /></td>
+        </tr>
+        <tr>
+            <td class="label">@(post_code_tt + ":")</td>
+            <td class="input"><input id="txtInvoicePostCode" name="txtInvoicePostCode" type="text" class="formTextbox" value="@order.invoice_post_code" /></td>
+        </tr>
+        <tr>
+            <td class="label">@(city_tt + ":")</td>
+            <td class="input"><input id="txtInvoiceCity" name="txtInvoiceCity" type="text" class="formTextbox" value="@order.invoice_city" /></td>
+        </tr>
+        <tr>
+            <td class="label">@(country_tt + ":")</td>
+            <td class="input">
+                <select id="selectInvoiceCountry" name="selectInvoiceCountry" class="formSelect">
+                    <option value="0" @(order.invoice_country_id == 0 ? Html.Raw("selected='selected'") : Html.Raw(""))>@("-- " + no_choice_tt + " --")</option>
+                    @foreach (Country country in countries)
+                    {
+                        <option value="@country.id" @(order.invoice_country_id == country.id ? Html.Raw("selected='selected'") : Html.Raw(""))>@country.name</option>
+                    }
+                </select>
+            </td>
+        </tr>
+        <tr><td colspan="2">&nbsp;</td></tr>
+        <tr>
+            <td colspan="2" style="border-bottom:1px solid #cccccc;font-weight:bold;font-size:16px;">@delivery_address_tt</td>
+        </tr>
+        <tr>
+            <td class="label">@(name_tt + ":")</td>
+            <td class="input"><input id="txtDeliveryName" name="txtDeliveryName" type="text" class="formTextbox" value="@order.delivery_name" /></td>
+        </tr>
+        <tr>
+            <td class="label">@(address_tt + "1:")</td>
+            <td class="input"><input id="txtDeliveryAddress1" name="txtDeliveryAddress1" type="text" class="formTextbox" value="@order.delivery_address_1" /></td>
+        </tr>
+        <tr>
+            <td class="label">@(address_tt + "2:")</td>
+            <td class="input"><input id="txtDeliveryAddress2" name="txtDeliveryAddress2" type="text" class="formTextbox" value="@order.delivery_address_2" /></td>
+        </tr>
+        <tr>
+            <td class="label">@(post_code_tt + ":")</td>
+            <td class="input"><input id="txtDeliveryPostCode" name="txtDeliveryPostCode" type="text" class="formTextbox" value="@order.delivery_post_code" /></td>
+        </tr>
+        <tr>
+            <td class="label">@(city_tt + ":")</td>
+            <td class="input"><input id="txtDeliveryCity" name="txtDeliveryCity" type="text" class="formTextbox" value="@order.delivery_city" /></td>
+        </tr>
+        <tr>
+            <td class="label">@(country_tt + ":")</td>
+            <td class="input">
+                <select id="selectDeliveryCountry" name="selectDeliveryCountry" class="formSelect">
+                    <option value="0" @(order.delivery_country_id == 0 ? Html.Raw("selected='selected'") : Html.Raw(""))>@("-- " + no_choice_tt + " --")</option>
+                    @foreach (Country country in countries)
+                    {
+                        <option value="@country.id" @(order.delivery_country_id == country.id ? Html.Raw("selected='selected'") : Html.Raw(""))>@country.name</option>
+                    }
+                </select>
+            </td>
+        </tr>
+        <tr><td colspan="2">&nbsp;</td></tr>
+        <tr>
+            <td colspan="2" style="border-bottom:1px solid #cccccc;font-weight:bold;font-size:16px;">@status_tt</td>
+        </tr>
+        <tr>
+            <td class="label">@(payment_option_tt + ":")</td>
+            <td class="input"><input type="text" class="formTextbox" tabindex="-1" readonly="readonly" value="@paymentOption.name"></td>
+        </tr>
+        <tr>
+            <td class="label">@(payment_status_tt + ":")</td>
+            <td class="input">
+                <select name="selectPaymentStatus" class="formSelect">
+                    <option value="payment_status_pending" @(order.payment_status == "payment_status_pending" ? Html.Raw("selected='selected'") : Html.Raw(""))>@payment_status_pending_tt</option>
+                    <option value="payment_status_invoice_not_approved" @(order.payment_status == "payment_status_invoice_not_approved" ? Html.Raw("selected='selected'") : Html.Raw(""))>@payment_status_invoice_not_approved_tt</option>
+                    <option value="payment_status_invoice_approved" @(order.payment_status == "payment_status_invoice_approved" ? Html.Raw("selected='selected'") : Html.Raw(""))>@payment_status_invoice_approved_tt</option>
+                    <option value="payment_status_paid" @(order.payment_status == "payment_status_paid" ? Html.Raw("selected='selected'") : Html.Raw(""))>@payment_status_paid_tt</option>
+                </select>
+            </td>
+        </tr>
+        <tr>
+            <td class="label">@(status_tt + ":")</td>
+            <td class="input">
+                <select name="selectOrderStatus" class="formSelect">
+                    <option value="order_status_pending" @(order.order_status == "order_status_pending" ? Html.Raw("selected='selected'") : Html.Raw(""))>@order_status_pending_tt</option>
+                    <option value="order_status_cancelled" @(order.order_status == "order_status_cancelled" ? Html.Raw("selected='selected'") : Html.Raw(""))>@order_status_cancelled_tt</option>
+                    <option value="order_status_delivered" @(order.order_status == "order_status_delivered" ? Html.Raw("selected='selected'") : Html.Raw(""))>@order_status_delivered_tt</option>
+                </select>
+            </td>
+        </tr>
+        <tr>
+            <td class="label">@(exported_to_erp_tt + ":")</td>
+            <td class="input"><input name="cbExportedToErp" type="checkbox" value="true" @(order.exported_to_erp == true ? Html.Raw("checked='checked'") : Html.Raw("")) /></td>
+        </tr>
+    </table>
+
+    // Update button
+    <div style="display:block;border:1px solid #cccccc;margin:20px 0px 0px 0px;border-radius:4px;">
+        <input id="btnSave" type="submit" value="@update_tt" />
+        <input type="button" value="@cancel_tt" onclick="@Html.Raw("location.href='/admin_orders" + returnUrl + "'")" />
+    </div>
+}
+
+@section scripts {
+    <link href="~/Content/jquery_css/jquery-ui.min.css" rel="stylesheet" />
+    <script type="text/javascript">
+        $("#txtEmail").focus();
+        $("#txtDesiredDateOfDelivery").datepicker({ dateFormat: 'yy-mm-dd' });
+    </script>
+}

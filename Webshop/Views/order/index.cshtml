@@ -1,0 +1,454 @@
+﻿@using System.Globalization;
+@{
+
+    // Get the layout type from the cookie
+    ViewBag.LayoutType = "standard";
+    if (Request.Cookies["LayoutType"] != null)
+    {
+        ViewBag.LayoutType = Request.Cookies["LayoutType"].Value;
+    }
+
+    // Get form data
+    Domain domain = ViewBag.CurrentDomain;
+    Currency currency = ViewBag.Currency;
+    List<Country> countries = Country.GetAll(domain.front_end_language, "name", "ASC");
+    List<PaymentOption> paymentOptions = PaymentOption.GetAllActive(domain.front_end_language, "name", "ASC");
+    Customer customer = ViewBag.Customer;
+    List<CartItem> cartItems = ViewBag.CartItems;
+    Dictionary<string, decimal> cartAmounts = ViewBag.CartAmounts;
+    List<AdditionalService> additionalServices = AdditionalService.GetAllActive(domain.front_end_language, "name", "ASC");
+    Int32 paymentOptionId = ViewBag.PaymentOptionId;
+    KeyStringList tt = ViewBag.TranslatedTexts;
+    string error_message = ViewBag.ErrorMessage != null ? ViewBag.ErrorMessage : string.Empty;
+    decimal decimalMultiplier = ViewBag.DecimalMultiplier;
+    byte vatCode = ViewBag.VatCode;
+    CultureInfo cultureInfo = ViewBag.CultureInfo;
+    bool pricesIncludesVat = ViewBag.PricesIncludesVat;
+    DateTime desiredDateOfDelivery = ViewBag.DesiredDateOfDelivery;
+
+    // Get translated texts
+    string check_out_tt = tt.Get("check_out");
+    string shopping_cart_tt = tt.Get("shopping_cart");
+    string name_tt = tt.Get("name");
+    string product_code_short_tt = tt.Get("product_code_short");
+    string delivery_time_tt = tt.Get("delivery_time");
+    string quantity_tt = tt.Get("quantity");
+    string price_tt = tt.Get("price");
+    string sum_tt = tt.Get("sum");
+    string delete_tt = tt.Get("delete");
+    string value_added_tax_tt = tt.Get("value_added_tax");
+    string freight_tt = tt.Get("freight");
+    string rounding_tt = tt.Get("rounding");
+    string total_sum_tt = tt.Get("total_sum");
+    string additional_services_tt = tt.Get("additional_services");
+    string no_additional_services_available_tt = tt.Get("no_additional_services_available");
+    string no_payment_options_available_tt = tt.Get("no_payment_options_available");
+    string log_in_tt = tt.Get("log_in");
+    string forgot_tt = tt.Get("forgot");
+    string register_as_tt = tt.Get("register_as");
+    string company_tt = tt.Get("company");
+    string private_person_tt = tt.Get("private_person");
+    string address_information_tt = tt.Get("address_information");
+    string no_choice_tt = tt.Get("no_choice");
+    string id_tt = tt.Get("id");
+    string email_tt = tt.Get("email");
+    string password_tt = tt.Get("password");
+    string organization_number_tt = tt.Get("organization_number");
+    string person_number_tt = tt.Get("person_number");
+    string vat_number_tt = tt.Get("vat_number");
+    string reference_tt = tt.Get("reference");
+    string phone_number_tt = tt.Get("phone_number");
+    string mobile_phone_number_tt = tt.Get("mobile_phone_number");
+    string address_tt = tt.Get("address");
+    string post_code_tt = tt.Get("post_code");
+    string city_tt = tt.Get("city");
+    string country_tt = tt.Get("country");
+    string invoice_address_tt = tt.Get("invoice_address");
+    string delivery_address_tt = tt.Get("delivery_address");
+    string copy_invoice_address_tt = tt.Get("copy_invoice_address");
+    string payment_options_tt = tt.Get("payment_options");
+    string approve_terms_of_purchase_text_tt = tt.Get("approve_terms_of_purchase_text");
+    string terms_of_purchase_text_tt = tt.Get("terms_of_purchase");
+    string confirm_order_tt = tt.Get("confirm_order");
+    string create_order_tt = tt.Get("create_order");
+    string send_request_tt = tt.Get("send") + " " + tt.Get("request").ToLower();
+    string desired_date_of_delivery_tt = tt.Get("desired_date_of_delivery");
+
+    // Set meta data
+    ViewBag.Title = check_out_tt;
+    ViewBag.MetaTitle = check_out_tt;
+    ViewBag.MetaDescription = check_out_tt;
+    ViewBag.MetaKeywords = check_out_tt;
+    ViewBag.MetaCanonical = domain.web_address + "/order";
+    ViewBag.MetaRobots = "noindex, nofollow";
+
+    // Set the layout for the page
+    if (ViewBag.LayoutType == "mobile")
+    {
+        Layout = domain.custom_theme_id == 0 ? "/Views/shared_front/_mobile_layout.cshtml" : "/Views/theme/front_mobile_layout.cshtml";
+    }
+    else
+    {
+        Layout = domain.custom_theme_id == 0 ? "/Views/shared_front/_standard_layout.cshtml" : "/Views/theme/front_standard_layout.cshtml";
+    }
+}
+
+@* Title *@
+<h1>@ViewBag.Title</h1>
+
+@* Error message container *@
+<div class="annytab-form-errorbox" style="@(error_message != "" ? "display:block;" : "display:none;")">@Html.Raw(error_message)</div>
+    
+@* Shopping cart *@
+<div class="annytab-step-heading">
+    <div class="annytab-step-circle">1</div><span>@shopping_cart_tt</span>
+</div>
+    
+<div class="annytab-cart-container">
+    <div id="divTable" class="annytab-cart-table">
+        <div class="annytab-cart-row">
+            <div class="annytab-cart-column-head" style="width:100px;border-radius:4px 0px 0px 4px;"></div>
+            <div class="annytab-cart-column-head" style="width:200px;text-align:left;">@name_tt</div>
+            <div class="annytab-cart-column-head" style="width:100px;text-align:center;">@quantity_tt</div>
+            <div class="annytab-cart-column-head" style="width:100px;text-align:right;">@price_tt</div>
+            <div class="annytab-cart-column-head" style="width:100px;text-align:right;">@sum_tt</div>
+            <div class="annytab-cart-column-head" style="width:80px;border-radius:0px 4px 4px 0px;"></div>
+        </div>
+        @for (int i = 0; i < cartItems.Count; i++)
+        {
+            @* Get the product *@
+            Product product = Product.GetOneById(cartItems[i].product_id, domain.front_end_language);
+
+            @* Get the product name array *@
+            string[] productName = cartItems[i].product_name.Split(',');
+
+            @* Create the product name string *@
+            string productString = "";
+            for (int j = 0; j < productName.Length; j++)
+            {
+                if (j == 0)
+                {
+                    productString += "<a href='/home/product/" + product.page_name + "'>" + productName[j] + "</a><br />";
+                }
+                else
+                {
+                    productString += productName[j] + "<br />";
+                }
+            }
+            productString += product_code_short_tt + ": " + cartItems[i].product_code + "<br />";
+
+            @* Calculate the row sum *@
+            decimal rowPriceSum = Math.Round(cartItems[i].quantity * cartItems[i].unit_price * 100, MidpointRounding.AwayFromZero) / 100;
+
+            @* The cart item *@
+            @:<div class="annytab-cart-row">
+            @:<input data-id="unitValues" type="hidden" tabindex="-1" data-vat="@cartItems[i].vat_percent.ToString(CultureInfo.InvariantCulture)" data-quantity="@cartItems[i].quantity.ToString(CultureInfo.InvariantCulture)" data-price="@cartItems[i].unit_price.ToString(CultureInfo.InvariantCulture)" data-freight="@cartItems[i].unit_freight.ToString(CultureInfo.InvariantCulture)" />
+            @:<div class="annytab-cart-column" style="width:100px;text-align:center;"><a href="@("/home/product/" + product.page_name)"><img class="annytab-cart-image" alt="@productName[0]" src="@Tools.GetProductMainImageUrl(cartItems[i].product_id, domain.front_end_language, cartItems[i].variant_image_url, cartItems[i].use_local_images)" /></a></div>
+            @:<div class="annytab-cart-column" style="width:200px;text-align:left;vertical-align:top;">@Html.Raw(productString)</div>
+            @:<div class="annytab-cart-column" style="width:100px;text-align:center;"><a href="@("/order/remove_quantity/" + Server.UrlEncode(cartItems[i].product_code))"><img src="/Content/images/annytab_design/minus_button_12.jpg" alt="@quantity_tt" style="vertical-align:middle;" /></a><span style="vertical-align:middle;">@(" " + cartItems[i].quantity.ToString("##,0.##", cultureInfo) + " ")</span><a href="@("/order/add_quantity/" + Server.UrlEncode(cartItems[i].product_code))"><img src="/Content/images/annytab_design/plus_button_12.jpg" alt="@quantity_tt" style="vertical-align:middle;" /></a></div>
+            @:<div class="annytab-cart-column" style="width:100px;text-align:right;">@cartItems[i].unit_price.ToString("##,0.##", cultureInfo)</div>
+            @:<div class="annytab-cart-column" style="width:100px;text-align:right;">@rowPriceSum.ToString("##,0.##", cultureInfo)</div>
+            @:<div class="annytab-cart-column" style="width:80px;text-align:center;"><a href="@("/order/delete_row/" + Server.UrlEncode(cartItems[i].product_code))"><img src="/Content/images/annytab_design/square_cross_button_20.jpg" alt="@delete_tt" style="vertical-align:middle;border-radius:2px;" /></a></div>
+            @:</div>
+        }
+    </div>
+</div>
+
+<div class="annytab-basic-space"></div>
+    
+@* Cart sums *@
+<div class="annytab-basic-container" style="font-size:12px;line-height:16px;text-align:right;">
+    <div>@(sum_tt + ": ")<span id="netSum">@cartAmounts["net_amount"].ToString("##,0.##", cultureInfo)</span>@(" " + currency.currency_code)</div>
+    <div>@(freight_tt + ": ")<span id="freightSum">@cartAmounts["freight_amount"].ToString("##,0.##", cultureInfo)</span>@(" " + currency.currency_code)</div>
+    <div>@(value_added_tax_tt + ": ")<span id="vatSum">@cartAmounts["vat_amount"].ToString("##,0.##", cultureInfo)</span>@(" " + currency.currency_code)</div>
+    <div>@(rounding_tt + ": ")<span id="roundingSum">@cartAmounts["rounding_amount"].ToString("##,0.##", cultureInfo)</span>@(" " + currency.currency_code)</div>
+    <div style="font-size:16px;font-weight:bold;line-height:28px;">@(total_sum_tt.ToUpper() + ": ")<span id="totalSum">@cartAmounts["total_amount"].ToString("##,0.##", cultureInfo)</span>@(" " + currency.currency_code)</div>
+</div>
+
+<div class="annytab-basic-space"></div>
+
+@* Customer address information *@
+<div class="annytab-step-heading">
+    <div class="annytab-step-circle">2</div><span>@address_information_tt</span>
+</div>
+
+@if(customer.id == 0)
+{ 
+    @* Customer form *@
+    using (Html.BeginForm("login", "customer", FormMethod.Post))
+    {
+        @* Hidden data *@
+        <input name="hiddenReturnUrl" type="hidden" value="@("/order")" />
+    
+        @* Login form *@
+        <div class="annytab-basic-container">
+            <div style="clear:both;">
+                <span class="annytab-form-label">@email_tt</span><br />
+                <input id="txtEmail" name="txtEmail" type="text" class="annytab-form-textbox" value="@customer.email" />
+            </div>
+            <div style="clear:both;">
+                <span class="annytab-form-label">@password_tt</span><br />
+                <input name="txtPassword" type="password" class="annytab-form-textbox" value="" /><br />
+            </div>
+            <div style="clear:both;margin:4px 0px 0px 0px;">
+                <input id="btnLogin" type="submit" value="@log_in_tt" class="annytab-basic-button" />
+                @* External login *@
+                @if (domain.facebook_app_id != "")
+                {
+                    <button type="button" class="annytab-facebook-button" onclick="location.href='@Url.Action("facebook_login", "customer")'"><img src="~/Content/images/annytab_design/facebook_logo.png" alt="Facebook logo" style="height:16px;vertical-align:top;" />&nbsp;&nbsp;@log_in_tt</button>
+                }
+                @if (domain.google_app_id != "")
+                {
+                    <button type="button" class="annytab-google-button" onclick="location.href='@Url.Action("google_login", "customer")'"><img src="~/Content/images/annytab_design/google_plus.png" alt="Google plus" style="height:24px;" />&nbsp;@log_in_tt</button>
+                }
+            </div>
+        </div>
+    
+        <div class="annytab-basic-space"></div>
+
+        @* Forgot email or password *@
+        <div class="annytab-basic-container">
+            <a href="/customer/forgot_email_password">@(forgot_tt + " " + email_tt.ToLower() + "/" + password_tt.ToLower() + "?")</a>
+        </div>
+
+        <div class="annytab-basic-space"></div>
+
+        @* Register as a new customer *@
+        <div class="annytab-basic-container">
+            @(register_as_tt + ": ") <a href="/customer/edit_company">@company_tt</a> | <a href="/customer/edit_person">@private_person_tt</a>
+        </div>
+
+        <div class="annytab-basic-space"></div>
+    }
+}
+
+@* Check out form *@
+@using (Html.BeginForm("index", "order", FormMethod.Post))
+{
+    @* Hidden data *@
+    <input id="hiddenCustomerId" name="hiddenCustomerId" type="hidden" tabindex="-1" value="@customer.id" />
+    <input id="hiddenCustomerType" name="hiddenCustomerType" type="hidden" tabindex="-1" value="@customer.customer_type" />
+    <input id="hiddenVatCode" name="hiddenVatCode" type="hidden" tabindex="-1" value="@vatCode" />
+    <input id="hiddenDecimalMultiplier" type="hidden" tabindex="-1" value="@decimalMultiplier" />
+    
+    if (customer.id != 0)
+    {
+        @* Customer information *@
+        <div class="annytab-basic-container">
+            <div style="float:left;margin-right:8px;">
+                <span class="annytab-form-label">@email_tt</span><br />
+                <input id="txtEmail" name="txtEmail" type="text" class="annytab-form-textbox" value="@customer.email" />
+            </div>
+            <div style="float:left;margin-right: 8px;">
+                <span class="annytab-form-label">@(customer.customer_type == 0 ? organization_number_tt : person_number_tt)</span><br />
+                <input name="txtOrgNumber" type="text" class="annytab-form-textbox" value="@customer.org_number" /><br />
+            </div>
+            <div style="@(customer.customer_type == 0 ? "display:block;" : "display:none;")float:left;margin-right:8px;">
+                <span class="annytab-form-label">@vat_number_tt</span><br />
+                <input id="txtVatNumber" name="txtVatNumber" type="text" class="annytab-form-textbox" value="@customer.vat_number" /><br />
+            </div>
+            <div style="float:left;margin-right: 8px;">
+                <span class="annytab-form-label">@reference_tt</span><br />
+                <input name="txtContactName" type="text" class="annytab-form-textbox" value="@customer.contact_name" /><br />
+            </div>
+            <div style="float:left;margin-right:8px;">
+                <span class="annytab-form-label">@phone_number_tt</span><br />
+                <input name="txtPhoneNumber" type="text" class="annytab-form-textbox" value="@customer.phone_number" /><br />
+            </div>
+            <div style="float:left;margin-right:8px;">
+                <span class="annytab-form-label">@mobile_phone_number_tt</span><br />
+                <input name="txtMobilePhoneNumber" type="text" class="annytab-form-textbox" value="@customer.mobile_phone_number" /><br />
+            </div>
+            <div style="clear:both;"></div>
+        </div>
+    
+        <div class="annytab-basic-space"></div>
+    
+        @* Customer invoice address *@
+        <div class="annytab-basic-container">
+            <div style="clear:both;margin-bottom: 4px;">
+                <span class="annytab-form-heading">@invoice_address_tt</span>
+            </div>
+            <div style="float:left;margin-right:8px;">
+                <span class="annytab-form-label">@name_tt</span><br />
+                <input id="txtInvoiceName" name="txtInvoiceName" type="text" class="annytab-form-textbox" value="@customer.invoice_name" /><br />
+            </div>
+            <div style="float:left;margin-right:8px;">
+                <span class="annytab-form-label">@(address_tt + " 1")</span><br />
+                <input id="txtInvoiceAddress1" name="txtInvoiceAddress1" type="text" class="annytab-form-textbox" value="@customer.invoice_address_1" /><br />
+            </div>
+            <div style="float:left;margin-right:8px;">
+                <span class="annytab-form-label">@(address_tt + " 2")</span><br />
+                <input id="txtInvoiceAddress2" name="txtInvoiceAddress2" type="text" class="annytab-form-textbox" value="@customer.invoice_address_2" /><br />
+            </div>
+            <div style="float:left;margin-right:8px;">
+                <span class="annytab-form-label">@post_code_tt</span><br />
+                <input id="txtInvoicePostCode" name="txtInvoicePostCode" type="text" class="annytab-form-textbox" value="@customer.invoice_post_code" /><br />
+            </div>
+            <div style="float:left;margin-right:8px;">
+                <span class="annytab-form-label">@city_tt</span><br />
+                <input id="txtInvoiceCity" name="txtInvoiceCity" type="text" class="annytab-form-textbox" value="@customer.invoice_city" /><br />
+            </div>
+            <div style="float:left;margin-right:8px;">
+                <span class="annytab-form-label">@country_tt</span><br />
+                <select id="selectInvoiceCountry" data-id="selectCountry" name="selectInvoiceCountry" class="annytab-form-select">
+                    <option value="0" data-vat_code="0" @(customer.invoice_country == 0 ? Html.Raw("selected='selected'") : Html.Raw(""))>@("-- " + no_choice_tt + " --")</option>
+                    @foreach (Country country in countries)
+                    {
+                        <option value="@country.id" data-vat_code="@country.vat_code" @(customer.invoice_country == country.id ? Html.Raw("selected='selected'") : Html.Raw(""))>@country.name</option>
+                    }
+                </select>
+            </div>
+            <div style="clear:both;"></div>
+        </div>
+    
+        <div class="annytab-basic-space"></div>
+    
+        @* Customer delivery address *@
+        <div class="annytab-basic-container">
+            <div style="clear:both;margin-bottom:4px;">
+                <span class="annytab-form-heading">@(delivery_address_tt + " |")</span>
+                <input id="copyInvoiceAddress" type="button" class="annytab-basic-linkbutton" value="@copy_invoice_address_tt" />
+            </div>
+            <div style="float:left;margin-right:8px;">
+                <span class="annytab-form-label">@name_tt</span><br />
+                <input id="txtDeliveryName" name="txtDeliveryName" type="text" class="annytab-form-textbox" value="@customer.delivery_name" /><br />
+            </div>
+            <div style="float:left;margin-right:8px;">
+                <span class="annytab-form-label">@(address_tt + " 1")</span><br />
+                <input id="txtDeliveryAddress1" name="txtDeliveryAddress1" type="text" class="annytab-form-textbox" value="@customer.delivery_address_1" /><br />
+            </div>
+            <div style="float:left;margin-right:8px;">
+                <span class="annytab-form-label">@(address_tt + " 2")</span><br />
+                <input id="txtDeliveryAddress2" name="txtDeliveryAddress2" type="text" class="annytab-form-textbox" value="@customer.delivery_address_2" /><br />
+            </div>
+            <div style="float:left;margin-right:8px;">
+                <span class="annytab-form-label">@post_code_tt</span><br />
+                <input id="txtDeliveryPostCode" name="txtDeliveryPostCode" type="text" class="annytab-form-textbox" value="@customer.delivery_post_code" /><br />
+            </div>
+            <div style="float:left;margin-right:8px;">
+                <span class="annytab-form-label">@city_tt</span><br />
+                <input id="txtDeliveryCity" name="txtDeliveryCity" type="text" class="annytab-form-textbox" value="@customer.delivery_city" /><br />
+            </div>
+            <div style="float:left;margin-right:8px;">
+                <span class="annytab-form-label">@country_tt</span><br />
+                <select id="selectDeliveryCountry" data-id="selectCountry" name="selectDeliveryCountry" class="annytab-form-select">
+                    <option value="0" data-vat_code="0" @(customer.delivery_country == 0 ? Html.Raw("selected='selected'") : Html.Raw(""))>@("-- " + no_choice_tt + " --")</option>
+                    @foreach (Country country in countries)
+                    {
+                        <option value="@country.id" data-vat_code="@country.vat_code" @(customer.delivery_country == country.id ? Html.Raw("selected='selected'") : Html.Raw(""))>@country.name</option>
+                    }
+                </select>
+            </div>
+            <div style="clear:both;"></div>
+        </div>
+    
+        <div class="annytab-basic-space"></div>
+    
+        @* Delivery information *@
+        <div class="annytab-basic-container">
+            <div style="float:left;margin-right:8px;">
+                <span class="annytab-form-label">@desired_date_of_delivery_tt</span><br />
+                <input id="txtDesiredDateOfDelivery" name="txtDesiredDateOfDelivery" type="text" class="annytab-form-textbox" value="@desiredDateOfDelivery.ToString("d", cultureInfo)" /><br />
+            </div>
+            <div style="clear:both;"></div>
+        </div>
+    }
+    
+    <div class="annytab-basic-space"></div>
+    
+    @* Additional services *@
+    <div class="annytab-step-heading">
+        <div class="annytab-step-circle">3</div><span>@additional_services_tt</span>
+    </div>
+
+    <div class="annytab-basic-container">
+        @foreach (AdditionalService service in additionalServices)
+        {
+            @* Calculate the fee *@
+            ValueAddedTax valueAddedTax = ValueAddedTax.GetOneById(service.value_added_tax_id);
+            decimal fee = service.price_based_on_mount_time == true ? service.fee * cartAmounts["total_mount_time"] : service.fee;
+            fee *= (currency.currency_base / currency.conversion_rate);
+            fee = Math.Round(fee * decimalMultiplier, MidpointRounding.AwayFromZero) / decimalMultiplier;
+            if(pricesIncludesVat == true)
+            {
+                fee += Math.Round(fee * valueAddedTax.value * decimalMultiplier, MidpointRounding.AwayFromZero) / decimalMultiplier;
+            }
+            
+            @* The additional service post *@
+            <div style="float:left;margin-right:8px;">
+                <input name="cbService" type="checkbox" class="annytab-form-checkbox" value="@service.id" @(service.selected == true ? Html.Raw("selected='selected'") : Html.Raw("")) />
+                <span class="annytab-form-label">@(service.name + ", " + fee.ToString("##,0.##", cultureInfo) + " " + currency.currency_code)</span>
+            </div>
+        }
+
+        @if(additionalServices.Count == 0)
+        {
+            @* Display a message if no additional services exists *@
+            <div style="float:left;margin-right:8px;">
+                <span>@no_additional_services_available_tt</span><br />
+            </div>
+        }
+
+        <div style="clear:both;"></div>
+    </div>
+
+    <div class="annytab-basic-space"></div>
+    
+    @* Payment options *@
+    <div class="annytab-step-heading">
+        <div class="annytab-step-circle">4</div><span>@payment_options_tt</span>
+    </div>
+    
+    <div class="annytab-basic-container">
+
+        @foreach(PaymentOption paymentOption in paymentOptions)
+        {
+            @* Calculate the fee *@
+            ValueAddedTax valueAddedTax = ValueAddedTax.GetOneById(paymentOption.value_added_tax_id);
+            decimal fee = paymentOption.fee * (currency.currency_base / currency.conversion_rate);
+            fee = Math.Round(fee * decimalMultiplier, MidpointRounding.AwayFromZero) / decimalMultiplier;
+            if (pricesIncludesVat == true)
+            {
+                fee += Math.Round(fee * valueAddedTax.value * decimalMultiplier, MidpointRounding.AwayFromZero) / decimalMultiplier;
+            }
+            
+            @* The payment option post *@
+            <div style="float:left;margin-right:8px;">
+                <input name="radioPaymentOption" type="radio" class="annytab-form-radio" value="@paymentOption.id" @(paymentOption.id == paymentOptionId ? Html.Raw("selected='selected'") : Html.Raw("")) />
+                <span class="annytab-form-label">@(paymentOption.name + ", " + fee.ToString("##,0.##", cultureInfo) + " " + currency.currency_code)</span><br />
+            </div>
+        }
+
+        @if(paymentOptions.Count == 0)
+        {
+            @* Display a message if no payment options exists *@
+            <div style="float:left;margin-right:8px;">
+                <span>@no_payment_options_available_tt</span><br />
+            </div>
+        }
+
+        <div style="clear:both;"></div>
+    </div>
+    
+    <div class="annytab-basic-space"></div>
+    
+    @* Confirm the order *@
+    <div class="annytab-step-heading">
+        <div class="annytab-step-circle">5</div><span>@confirm_order_tt</span>
+    </div>
+    
+    @* Terms of purchase *@
+    <div style="margin:10px 0px 10px 0px;">@(approve_terms_of_purchase_text_tt + " ")<a href="/home/terms_of_purchase" target="_blank">@terms_of_purchase_text_tt</a>.</div>
+    
+    @* Send order *@
+    <div class="annytab-basic-container">
+        <input id="btnCreateOrder" name="btnOrder" type="submit" value="@create_order_tt" class="annytab-basic-button" /><input id="btnSendRequest" name="btnRequest" type="submit" value="@send_request_tt" class="annytab-basic-button" />
+    </div>
+}
+
+@section scripts {
+    <link href="~/Content/jquery_css/jquery-ui.min.css" rel="stylesheet" />
+    <script type="text/javascript">$("#txtEmail").focus(); $("#txtDesiredDateOfDelivery").datepicker({ dateFormat: 'yy-mm-dd' });</script>
+    @Scripts.Render(domain.custom_theme_id == 0 ? "/Scripts/annytab_front/annytab.order-functions.js" : "/Scripts/theme/annytab.order-functions.js")
+}

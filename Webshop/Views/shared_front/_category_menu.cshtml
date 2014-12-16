@@ -1,0 +1,38 @@
+﻿@{
+    // Get form values
+    Domain domain = ViewBag.CurrentDomain;
+    Category currentCategory = ViewBag.CurrentCategory;
+    List<Category> categories = Category.GetActiveChildCategories(0, domain.front_end_language, "title", "ASC");
+    Dictionary<Int32, List<Category>> parentKeyCategories = new Dictionary<Int32, List<Category>>(10);
+    Category.GetMainParentId(currentCategory, domain.front_end_language, parentKeyCategories);
+}
+
+@* Create the menu *@
+@CreateMenu(true, categories, parentKeyCategories)
+
+@* A recursive method to create the category menu *@
+@helper CreateMenu(bool main, List<Category> categories, Dictionary<Int32, List<Category>> parentKeyCategories)
+{
+    @:<ul>
+    for (int i = 0; i < categories.Count; i++)
+    {
+        @* Get all the child categories *@
+        List<Category> childCategories = parentKeyCategories.ContainsKey(categories[i].id) == true ? parentKeyCategories[categories[i].id] : new List<Category>(0);
+
+        if (childCategories.Count > 0)
+        {
+            @:<li><a href="@("/home/category/" + categories[i].page_name)" @(main == true ? Html.Raw("class='annytab-menu-link annytab-menu-arrow-down'") : Html.Raw("class='annytab-sub-menu-link annytab-menu-arrow-down'"))>@categories[i].title</a>
+                @:<ul>
+                    @CreateMenu(false, childCategories, parentKeyCategories)
+                @:</ul>
+            @:</li>
+        }
+        else
+        {
+            @:<li><a href="@("/home/category/" + categories[i].page_name)" @(main == true ? Html.Raw("class='annytab-menu-link annytab-menu-arrow-left'") : Html.Raw("class='annytab-sub-menu-link annytab-menu-arrow-left'"))>@categories[i].title</a>
+            @:</li>
+        }
+
+    }
+    @:</ul>
+}
