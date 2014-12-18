@@ -138,7 +138,7 @@ SET IDENTITY_INSERT dbo.administrators OFF;
 
 /* WEB DOMAINS */
 SET IDENTITY_INSERT dbo.web_domains ON;
-INSERT INTO dbo.web_domains (id, webshop_name, domain_name, web_address, country_id, front_end_language, back_end_language, currency, company_id, default_display_view, mobile_display_view, custom_theme_id, prices_includes_vat, analytics_tracking_id, facebook_app_id, facebook_app_secret, google_app_id, google_app_secret) VALUES (1,'Webshop demo','localhost','https://localhost:44301',1,1,1,'SEK',1,1,0,0,0,'','','','','');
+INSERT INTO dbo.web_domains (id, webshop_name, domain_name, web_address, country_id, front_end_language, back_end_language, currency, company_id, default_display_view, mobile_display_view, custom_theme_id, prices_includes_vat, analytics_tracking_id, facebook_app_id, facebook_app_secret, google_app_id, google_app_secret) VALUES (1,'Webshop demo','localhost','https://localhost:44301',1,2,2,'SEK',1,1,0,0,0,'','','','','');
 SET IDENTITY_INSERT dbo.web_domains OFF;
 
 /* WEBSHOP SETTINGS */

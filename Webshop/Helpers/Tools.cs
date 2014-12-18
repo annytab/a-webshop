@@ -52,8 +52,8 @@ public static class Tools
             domain.domain_name = "localhost";
             domain.web_address = "https://localhost:443";
             domain.country_id = 1;
-            domain.front_end_language = 1;
-            domain.back_end_language = 1;
+            domain.front_end_language = 2;
+            domain.back_end_language = 2;
             domain.currency = "SEK";
             domain.company_id = 1;
             domain.default_display_view = 0;

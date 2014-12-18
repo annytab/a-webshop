@@ -10,7 +10,7 @@
 
     // Get translated texts
     KeyStringList tt = ViewBag.TranslatedTexts;
-    string page_tt = tt.Get("page");
+    string static_page_tt = tt.Get("static_page");
     string new_tt = tt.Get("new");
     string edit_tt = tt.Get("edit");
     string id_tt = tt.Get("id");
@@ -34,11 +34,11 @@
     // Set the title for the page
     if (staticPage.id == 0)
     {
-        ViewBag.Title = page_tt + " - " + new_tt.ToLower();
+        ViewBag.Title = static_page_tt + " - " + new_tt.ToLower();
     }
     else
     {
-        ViewBag.Title = page_tt + " - " + edit_tt.ToLower();
+        ViewBag.Title = static_page_tt + " - " + edit_tt.ToLower();
     }
 }
 

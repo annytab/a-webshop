@@ -69,7 +69,7 @@ li li {padding-left:2px;}
 /* Social content */
 .annytab-share-container{margin:6px 0px 6px 0px;}
 .annytab-share-button{display:inline-block;vertical-align:top;margin:0px;padding:0px;z-index:2;}
-.annytab-facebook-button{display:inline;font-size:14px;height:28px;background-image:url('/Content/images/annytab_design/facebook_button.png');color:#ffffff;font-weight:bold;border-radius:4px;vertical-align:middle;padding:0px 10px 0px 5px;margin:2px 2px 2px 2px;text-decoration:none;cursor:pointer;border:0px;background-size:1px 28px;text-shadow:0px -1px 3px #000000;}
+.annytab-facebook-button{display:inline;font-size:14px;height:28px;background-image:url('/Content/images/annytab_design/facebook_button.png');color:#ffffff;font-weight:bold;border-radius:4px;vertical-align:middle;padding:0px 10px 0px 7px;margin:2px 2px 2px 2px;text-decoration:none;cursor:pointer;border:0px;background-size:1px 28px;text-shadow:0px -1px 3px #000000;}
 .annytab-google-button{display:inline;font-size:14px;height:28px;background-image:url('/Content/images/annytab_design/google_button.png');color:#ffffff;font-weight:bold;border-radius:4px;vertical-align:middle;padding:0px 10px 0px 5px;margin:2px 2px 2px 2px;text-decoration:none;cursor:pointer;border:0px;background-size:1px 28px;text-shadow:0px -1px 3px #000000;}
 
 /* Fullscreen container */

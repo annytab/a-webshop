@@ -30,7 +30,7 @@
 
     // Get translated texts
     KeyStringList tt = ViewBag.TranslatedTexts;
-    string page_tt = tt.Get("page");
+    string static_page_tt = tt.Get("static_page");
     string list_tt = tt.Get("list");
     string id_tt = tt.Get("id");
     string title_tt = tt.Get("title");
@@ -45,7 +45,7 @@
     ViewBag.NavigateUrl = "/admin_static_pages?kw=" + Server.UrlEncode(parameters.keywords) + "&sf=" + parameters.sort_field + "&so=" + parameters.sort_order + "&pz=" + parameters.page_size + "&qp={0}";
 
     // Set the title for the page
-    ViewBag.Title = page_tt + " - " + list_tt.ToLower();
+    ViewBag.Title = static_page_tt + " - " + list_tt.ToLower();
 }
 
 <h1>@ViewBag.Title</h1>

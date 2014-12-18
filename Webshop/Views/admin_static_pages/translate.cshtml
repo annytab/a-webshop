@@ -15,7 +15,7 @@
     string translate_tt = tt.Get("translate");
     string no_choice_tt = tt.Get("no_choice");
     string language_tt = tt.Get("language");
-    string page_tt = tt.Get("page");
+    string static_page_tt = tt.Get("static_page");
     string title_tt = tt.Get("title");
     string linkname_tt = tt.Get("linkname");
     string description_tt = tt.Get("description");
@@ -27,7 +27,7 @@
     string cancel_tt = tt.Get("cancel");
 
     // Set the title for the page
-    ViewBag.Title = page_tt + " - " + translate_tt.ToLower();
+    ViewBag.Title = static_page_tt + " - " + translate_tt.ToLower();
 }
 
 <h1>@ViewBag.Title</h1>
