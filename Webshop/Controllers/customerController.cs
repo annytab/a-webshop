@@ -33,7 +33,7 @@ namespace Annytab.Webshop.Controllers
             // Check if the customer is signed in
             if (currentCustomer == null)
             {
-                return RedirectToAction("index", "home");
+                return RedirectToAction("login", "customer");
             }
 
             // Get the translated texts
@@ -490,7 +490,7 @@ namespace Annytab.Webshop.Controllers
             // Check if there is a signed in customer
             if (currentCustomer == null)
             {
-                return RedirectToAction("index", "home");
+                return RedirectToAction("login", "customer");
             }
 
             // Get the translated texts
@@ -531,7 +531,7 @@ namespace Annytab.Webshop.Controllers
             // Check if there is a signed in customer
             if (currentCustomer == null)
             {
-                return RedirectToAction("index", "home");
+                return RedirectToAction("login", "customer");
             }
 
             // Get the translated texts
@@ -861,7 +861,7 @@ namespace Annytab.Webshop.Controllers
             // Check if the post request is valid
             if (customer == null || collection == null)
             {
-                return RedirectToAction("index", "home");
+                return RedirectToAction("login", "customer");
             }
 
             // Get the form data
@@ -912,7 +912,7 @@ namespace Annytab.Webshop.Controllers
             // Check if the post request is valid
             if (customer == null)
             {
-                return RedirectToAction("index", "home");
+                return RedirectToAction("login", "customer");
             }
 
             // Get the current domain
@@ -969,7 +969,7 @@ namespace Annytab.Webshop.Controllers
             // Check if the post request is valid
             if (customer == null)
             {
-                return RedirectToAction("index", "home");
+                return RedirectToAction("login", "customer");
             }
 
             // Get the current domain
@@ -1004,7 +1004,7 @@ namespace Annytab.Webshop.Controllers
             // Check if the post request is valid
             if (customer == null)
             {
-                return RedirectToAction("index", "home");
+                return RedirectToAction("login", "customer");
             }
 
             // Get form values
