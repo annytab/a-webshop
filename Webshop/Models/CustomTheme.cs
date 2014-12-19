@@ -264,7 +264,7 @@ public class CustomTheme
         }
         if (templates.ContainsKey("annytab.default-functions.js") == false) // 33
         {
-            CustomThemeTemplate.Add(new CustomThemeTemplate(id, "annytab.default-functions.js", "/Scripts/annytab_front/annytab.annytab.default-functions.js",
+            CustomThemeTemplate.Add(new CustomThemeTemplate(id, "annytab.default-functions.js", "/Scripts/annytab_front/annytab.default-functions.js",
                 CustomThemeTemplate.GetMasterFileContent("/Scripts/annytab_front/annytab.default-functions.js"), "Functions that apply to the entire website, both standard and mobile."));
         }
         if (templates.ContainsKey("annytab.home-functions.js") == false) // 34
