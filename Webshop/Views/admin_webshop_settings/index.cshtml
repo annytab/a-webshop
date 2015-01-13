@@ -20,7 +20,7 @@
 @*Main form*@
 @using (Html.BeginForm("index", "admin_webshop_settings", FormMethod.Post))
 {
-    <!-- EMAIL -->
+    @*EMAIL*@
     <div style="font-size:14px;font-weight:bold;margin:10px 0px 0px 0px;line-height:20px;">EMAIL</div>
     <table style="clear:both;width:100%;border:1px solid #cccccc;background-color:#eae9e9;border-radius:4px;">
         <tr>
@@ -40,6 +40,10 @@
             <td class="input"><input name="SEND-EMAIL-PASSWORD" type="password" class="formTextbox" value="@webshopSettings.Get("SEND-EMAIL-PASSWORD")" /></td>
         </tr>
         <tr>
+            <td class="label">SEND-EMAIL-USE-SSL (true/false)</td>
+            <td class="input"><input name="SEND-EMAIL-USE-SSL" class="formTextbox" value="@webshopSettings.Get("SEND-EMAIL-USE-SSL")" /></td>
+        </tr>
+        <tr>
             <td class="label">ORDER-EMAIL</td>
             <td class="input"><input name="ORDER-EMAIL" type="text" class="formTextbox" value="@webshopSettings.Get("ORDER-EMAIL")" /></td>
         </tr>
@@ -52,7 +56,7 @@
             <td class="input"><input name="CONTACT-US-EMAIL" type="text" class="formTextbox" value="@webshopSettings.Get("CONTACT-US-EMAIL")" /></td>
         </tr>
     </table>
-    
+
     <!-- PAYPAL -->
     <div style="font-size:14px;font-weight:bold;margin:10px 0px 0px 0px;line-height:20px;">PAYPAL</div>
     <table style="clear:both;width:100%;border:1px solid #cccccc;background-color:#eae9e9;border-radius:4px;">
@@ -170,6 +174,15 @@
         <tr>
             <td class="label">SVEA-FI-INVOICE-CLIENT-NUMBER</td>
             <td class="input"><input name="SVEA-FI-INVOICE-CLIENT-NUMBER" type="text" class="formTextbox" value="@webshopSettings.Get("SVEA-FI-INVOICE-CLIENT-NUMBER")" /></td>
+        </tr>
+    </table>
+    
+     @*OTHER SETTINGS*@
+    <div style="font-size:14px;font-weight:bold;margin:10px 0px 0px 0px;line-height:20px;">OTHER SETTINGS</div>
+    <table style="clear:both;width:100%;border:1px solid #cccccc;background-color:#eae9e9;border-radius:4px;">
+        <tr>
+            <td class="label">REDIRECT-HTTPS (true/false)</td>
+            <td class="input"><input name="REDIRECT-HTTPS" type="text" class="formTextbox" value="@webshopSettings.Get("REDIRECT-HTTPS")" /></td>
         </tr>
     </table>
 

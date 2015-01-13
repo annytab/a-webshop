@@ -158,6 +158,10 @@ namespace Annytab.Webshop.Controllers
             string facebookName = facebookUser.ContainsKey("name") == true ? facebookUser["name"].ToString() : "";
             string facebookEmail = facebookId + "_facebook";
 
+            // Get webshop settings
+            KeyStringList webshopSettings = WebshopSetting.GetAllFromCache();
+            string redirectHttps = webshopSettings.Get("REDIRECT-HTTPS");
+
             // Get the signed in customer
             Customer customer = Customer.GetSignedInCustomer();
 
@@ -200,6 +204,8 @@ namespace Annytab.Webshop.Controllers
                     HttpCookie customerCookie = new HttpCookie("CustomerCookie");
                     customerCookie.Value = Tools.ProtectCookieValue(insertId.ToString(), "CustomerLogin");
                     customerCookie.Expires = DateTime.Now.AddDays(1);
+                    customerCookie.HttpOnly = true;
+                    customerCookie.Secure = redirectHttps.ToLower() == "true" ? true : false;
                     Response.Cookies.Add(customerCookie);
 
                     // Redirect the user to the edit customer data method
@@ -211,6 +217,8 @@ namespace Annytab.Webshop.Controllers
                     HttpCookie customerCookie = new HttpCookie("CustomerCookie");
                     customerCookie.Value = Tools.ProtectCookieValue(customer.id.ToString(), "CustomerLogin");
                     customerCookie.Expires = DateTime.Now.AddDays(1);
+                    customerCookie.HttpOnly = true;
+                    customerCookie.Secure = redirectHttps.ToLower() == "true" ? true : false;
                     Response.Cookies.Add(customerCookie);
 
                     // Redirect the user to the check out
@@ -293,6 +301,10 @@ namespace Annytab.Webshop.Controllers
             string googleId = googleUser.ContainsKey("id") == true ? googleUser["id"].ToString() : "";
             string googleName = googleUser.ContainsKey("displayName") == true ? googleUser["displayName"].ToString() : "";
 
+            // Get webshop settings
+            KeyStringList webshopSettings = WebshopSetting.GetAllFromCache();
+            string redirectHttps = webshopSettings.Get("REDIRECT-HTTPS");
+
             // Get the signed in customer
             Customer customer = Customer.GetSignedInCustomer();
 
@@ -335,6 +347,8 @@ namespace Annytab.Webshop.Controllers
                     HttpCookie customerCookie = new HttpCookie("CustomerCookie");
                     customerCookie.Value = Tools.ProtectCookieValue(insertId.ToString(), "CustomerLogin");
                     customerCookie.Expires = DateTime.Now.AddDays(1);
+                    customerCookie.HttpOnly = true;
+                    customerCookie.Secure = redirectHttps.ToLower() == "true" ? true : false;
                     Response.Cookies.Add(customerCookie);
 
                     // Redirect the user to the edit company page
@@ -346,6 +360,8 @@ namespace Annytab.Webshop.Controllers
                     HttpCookie customerCookie = new HttpCookie("CustomerCookie");
                     customerCookie.Value = Tools.ProtectCookieValue(customer.id.ToString(), "CustomerLogin");
                     customerCookie.Expires = DateTime.Now.AddDays(1);
+                    customerCookie.HttpOnly = true;
+                    customerCookie.Secure = redirectHttps.ToLower() == "true" ? true : false;
                     Response.Cookies.Add(customerCookie);
 
                     // Redirect the user to the check out
@@ -657,10 +673,16 @@ namespace Annytab.Webshop.Controllers
                     Int32 insertId = (Int32)Customer.Add(customer);
                     Customer.UpdatePassword(insertId, PasswordHash.CreateHash(password));
 
+                    // Get webshop settings
+                    KeyStringList webshopSettings = WebshopSetting.GetAllFromCache();
+                    string redirectHttps = webshopSettings.Get("REDIRECT-HTTPS");
+
                     // Create the customer cookie
                     HttpCookie customerCookie = new HttpCookie("CustomerCookie");
                     customerCookie.Value = Tools.ProtectCookieValue(customer.id.ToString(), "CustomerLogin");
                     customerCookie.Expires = DateTime.Now.AddDays(1);
+                    customerCookie.HttpOnly = true;
+                    customerCookie.Secure = redirectHttps.ToLower() == "true" ? true : false;
                     Response.Cookies.Add(customerCookie);
                 }
                 else
@@ -798,10 +820,16 @@ namespace Annytab.Webshop.Controllers
                     Int32 insertId = (Int32)Customer.Add(customer);
                     Customer.UpdatePassword(insertId, PasswordHash.CreateHash(password));
 
+                    // Get webshop settings
+                    KeyStringList webshopSettings = WebshopSetting.GetAllFromCache();
+                    string redirectHttps = webshopSettings.Get("REDIRECT-HTTPS");
+
                     // Create the customer cookie
                     HttpCookie customerCookie = new HttpCookie("CustomerCookie");
                     customerCookie.Value = Tools.ProtectCookieValue(customer.id.ToString(), "CustomerLogin");
                     customerCookie.Expires = DateTime.Now.AddDays(1);
+                    customerCookie.HttpOnly = true;
+                    customerCookie.Secure = redirectHttps.ToLower() == "true" ? true : false;
                     Response.Cookies.Add(customerCookie);
                 }
                 else
@@ -959,9 +987,9 @@ namespace Annytab.Webshop.Controllers
         } // End of the edit_review method
 
         // Delete a review
-        // POST: /customer/delete_review
+        // POST: /customer/delete_review/1
         [HttpGet]
-        public ActionResult delete_review(int id = 0)
+        public ActionResult delete_review(Int32 id = 0)
         {
             // Get the signed in customer
             Customer customer = Customer.GetSignedInCustomer();
@@ -1061,10 +1089,16 @@ namespace Annytab.Webshop.Controllers
             // Check if the customer exists and if the password is correct
             if (customer != null && Customer.ValidatePassword(email, password) == true)
             {
+                // Get webshop settings
+                KeyStringList webshopSettings = WebshopSetting.GetAllFromCache();
+                string redirectHttps = webshopSettings.Get("REDIRECT-HTTPS");
+
                 // Create the customer cookie
                 HttpCookie customerCookie = new HttpCookie("CustomerCookie");
                 customerCookie.Value = Tools.ProtectCookieValue(customer.id.ToString(), "CustomerLogin");
                 customerCookie.Expires = DateTime.Now.AddDays(1);
+                customerCookie.HttpOnly = true;
+                customerCookie.Secure = redirectHttps.ToLower() == "true" ? true : false;
                 Response.Cookies.Add(customerCookie);
 
                 // Redirect the user to the checkout page

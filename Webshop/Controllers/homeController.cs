@@ -693,9 +693,14 @@ namespace Annytab.Webshop.Controllers
             HttpCookie aCookie = new HttpCookie("LayoutType");
             aCookie.Value = id;
 
+            // Get webshop settings
+            KeyStringList webshopSettings = WebshopSetting.GetAllFromCache();
+            string redirectHttps = webshopSettings.Get("REDIRECT-HTTPS");
+
             // Set the expiration and add the cookie
             aCookie.Expires = DateTime.Now.AddDays(1);
             aCookie.HttpOnly = true;
+            aCookie.Secure = redirectHttps.ToLower() == "true" ? true : false;
             Response.Cookies.Add(aCookie);
 
             // Redirect the user to the new url

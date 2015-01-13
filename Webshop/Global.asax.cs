@@ -43,6 +43,10 @@ namespace Annytab.Webshop
         /// </summary>
         protected void Session_Start()
         {
+            // Get webshop settings
+            KeyStringList webshopSettings = WebshopSetting.GetAllFromCache();
+            string redirectHttps = webshopSettings.Get("REDIRECT-HTTPS");
+
             // Create a new cookie
             HttpCookie aCookie = new HttpCookie("LayoutType");
 
@@ -67,6 +71,7 @@ namespace Annytab.Webshop
                 // Set the expiration and add the cookie
                 aCookie.Expires = DateTime.Now.AddDays(1);
                 aCookie.HttpOnly = true;
+                aCookie.Secure = redirectHttps.ToLower() == "true" ? true : false;
                 Response.Cookies.Add(aCookie);
             }
 

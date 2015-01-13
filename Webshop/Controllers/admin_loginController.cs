@@ -60,11 +60,16 @@ namespace Annytab.Webshop.Controllers
             // Check if the user name exists and if the password is correct
             if (administrator != null && Administrator.ValidatePassword(userName, passWord) == true)
             {
+                // Get webshop settings
+                KeyStringList webshopSettings = WebshopSetting.GetAllFromCache();
+                string redirectHttps = webshopSettings.Get("REDIRECT-HTTPS");
+
                 // Create the administrator cookie
                 HttpCookie adminCookie = new HttpCookie("Administrator");
                 adminCookie.Value = Tools.ProtectCookieValue(administrator.id.ToString(), "Administration");
                 adminCookie.Expires = DateTime.Now.AddDays(1);
                 adminCookie.HttpOnly = true;
+                adminCookie.Secure = redirectHttps.ToLower() == "true" ? true : false;
                 Response.Cookies.Add(adminCookie);
 
                 // Redirect the user to the default admin page

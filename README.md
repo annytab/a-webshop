@@ -14,7 +14,7 @@ Set up a website and a MS SQL database on your server. The connection string to 
 
 <pre>&lt;?xml version=&quot;1.0&quot; encoding=&quot;utf-8&quot; ?&gt;
 &lt;appSettings&gt;
-&lt;add key=&quot;ConnectionString&quot; value=&quot;Server=XXXXXXXXXXXXXXXXXXX&quot; /&gt;
+&lt;add key=&quot;ConnectionString&quot; value=&quot;XXXXXXXXXXXXXXXXXXX&quot; /&gt;
 &lt;/appSettings&gt;</pre>
 
 When you have deployed the website, go to ~/admin_default and sign in with Master as the username and an empty password field. The next thing to do is to go to Domains and change the domain name and the webaddress for the first post in the list. The domain name should be stated without http://wwww or https://www, it should just be the domain name. The webaddress is the full webaddress to the website.

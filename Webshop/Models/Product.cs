@@ -594,8 +594,8 @@ public class Product
     {
         // Create the connection and the sql statement
         string connection = Tools.GetConnectionString();
-        string sql = "UPDATE dbo.products_detail SET rating = (SELECT (SUM(rating) / COUNT(id)) AS rating "
-            + "FROM dbo.product_reviews WHERE product_id = @product_id AND language_id = @language_id) "
+        string sql = "UPDATE dbo.products_detail SET rating = ISNULL((SELECT (SUM(rating) / COUNT(id)) AS rating "
+            + "FROM dbo.product_reviews WHERE product_id = @product_id AND language_id = @language_id),0) "
             + "WHERE product_id = @product_id AND language_id = @language_id;";
 
         // The using block is used to call dispose automatically even if there are an exception.

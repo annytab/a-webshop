@@ -88,7 +88,7 @@
         using (Html.BeginForm("edit_review", "customer", FormMethod.Post))
         {
             @* Get the product *@
-            Product product = Product.GetOneById(reviews[i].product_id, domain.front_end_language);
+            Product product = Product.GetOneById(reviews[i].product_id, reviews[i].language_id);
             
             @* Hidden data *@
             <input name="hiddenId" type="hidden" value="@reviews[i].id" />

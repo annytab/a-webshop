@@ -169,6 +169,7 @@ public static class Tools
         string emailAddress = webshopSettings.Get("SEND-EMAIL-ADDRESS");
         string password = webshopSettings.Get("SEND-EMAIL-PASSWORD");
         string toAddress = webshopSettings.Get("CONTACT-US-EMAIL");
+        string useSSL = webshopSettings.Get("SEND-EMAIL-USE-SSL");
 
         // Get the customer email
         MailAddress copyAddress = AnnytabDataValidation.IsEmailAddressValid(customerAddress);
@@ -176,6 +177,12 @@ public static class Tools
         // Create the SmtpClient instance
         SmtpClient smtp = new SmtpClient(host, port);
         smtp.Credentials = new NetworkCredential(emailAddress, password);
+
+        // Check if we should enable SSL
+        if(useSSL.ToLower() == "true")
+        {
+            smtp.EnableSsl = true;
+        }
 
         // Try to send the mail message
         try
@@ -230,6 +237,7 @@ public static class Tools
         string emailAddress = webshopSettings.Get("SEND-EMAIL-ADDRESS");
         string password = webshopSettings.Get("SEND-EMAIL-PASSWORD");
         string toAddress = webshopSettings.Get("CUSTOMER-SERVICE-EMAIL");
+        string useSSL = webshopSettings.Get("SEND-EMAIL-USE-SSL");
 
         // Get the customer email
         MailAddress copyAddress = AnnytabDataValidation.IsEmailAddressValid(customerAddress);
@@ -237,6 +245,12 @@ public static class Tools
         // Create the SmtpClient instance
         SmtpClient smtp = new SmtpClient(host, port);
         smtp.Credentials = new NetworkCredential(emailAddress, password);
+
+        // Check if we should enable SSL
+        if (useSSL.ToLower() == "true")
+        {
+            smtp.EnableSsl = true;
+        }
 
         // Try to send the mail message
         try
@@ -290,10 +304,17 @@ public static class Tools
         Int32.TryParse(webshopSettings.Get("SEND-EMAIL-PORT"), out port);
         string emailAddress = webshopSettings.Get("SEND-EMAIL-ADDRESS");
         string password = webshopSettings.Get("SEND-EMAIL-PASSWORD");
+        string useSSL = webshopSettings.Get("SEND-EMAIL-USE-SSL");
 
         // Create the SmtpClient instance
         SmtpClient smtp = new SmtpClient(host, port);
         smtp.Credentials = new NetworkCredential(emailAddress, password);
+
+        // Check if we should enable SSL
+        if (useSSL.ToLower() == "true")
+        {
+            smtp.EnableSsl = true;
+        }
 
         // Try to send the mail message
         try
@@ -343,6 +364,7 @@ public static class Tools
         string emailAddress = webshopSettings.Get("SEND-EMAIL-ADDRESS");
         string password = webshopSettings.Get("SEND-EMAIL-PASSWORD");
         string contactUsEmail = webshopSettings.Get("CONTACT-US-EMAIL");
+        string useSSL = webshopSettings.Get("SEND-EMAIL-USE-SSL");
 
         // Replace semicolon with comma
         toAddresses = toAddresses.Replace(";", ",");
@@ -350,6 +372,12 @@ public static class Tools
         // Create the SmtpClient instance
         SmtpClient smtp = new SmtpClient(host, port);
         smtp.Credentials = new NetworkCredential(emailAddress, password);
+
+        // Check if we should enable SSL
+        if (useSSL.ToLower() == "true")
+        {
+            smtp.EnableSsl = true;
+        }
 
         // Try to send the mail message
         try
@@ -398,6 +426,7 @@ public static class Tools
         Int32.TryParse(webshopSettings.Get("SEND-EMAIL-PORT"), out port);
         string emailAddress = webshopSettings.Get("SEND-EMAIL-ADDRESS");
         string password = webshopSettings.Get("SEND-EMAIL-PASSWORD");
+        string useSSL = webshopSettings.Get("SEND-EMAIL-USE-SSL");
 
         // Order email
         string orderEmail = webshopSettings.Get("ORDER-EMAIL");
@@ -405,6 +434,12 @@ public static class Tools
         // Create the SmtpClient instance
         SmtpClient smtp = new SmtpClient(host, port);
         smtp.Credentials = new NetworkCredential(emailAddress, password);
+
+        // Check if we should enable SSL
+        if (useSSL.ToLower() == "true")
+        {
+            smtp.EnableSsl = true;
+        }
 
         // Try to send the mail message
         try
