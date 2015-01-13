@@ -52,7 +52,7 @@ public class AnnytabRequireHttpsAttribute : RequireHttpsAttribute
             UriBuilder uriBuilder = new UriBuilder(filterContext.HttpContext.Request.Url);
             uriBuilder.Scheme = "https";
             uriBuilder.Host = domain.web_address.Contains("www.") == true && uriBuilder.Host.Contains("www.") == false ? "www." + uriBuilder.Host : uriBuilder.Host;
-            //uriBuilder.Port = 443;
+            uriBuilder.Port = 443;
 
             // Redirect to the https add
             filterContext.HttpContext.Response.StatusCode = 301;
