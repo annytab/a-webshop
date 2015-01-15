@@ -48,7 +48,6 @@ function start()
 // Change the product price and the code
 function changeProductPriceAndCode()
 {
-
     // Get default values
     var defaultPrice = parseFloat($("#hiddenProductPrice").val());
     var defaultProductCode = $("#hiddenProductCode").val();
@@ -60,6 +59,7 @@ function changeProductPriceAndCode()
     var pricesIncludesVat = $("#hiddenPriceIncludesVat").val().toLowerCase();
     var variantImageDirectory = $("#hiddenVariantImageDirectory").val();
     var variantImageUrl = $("#hiddenVariantImageFileName").val();
+    var localeCode = $("#hiddenCultureCode").val();
 
     // Get all the options
     var selectedProductOptions = $("#productOptions").find("option:selected");
@@ -96,10 +96,10 @@ function changeProductPriceAndCode()
         easing: 'swing', // can be anything
         step: function () {
             this.value = Math.round(this.value * decimalMultiplier) / decimalMultiplier;
-            productPrice.text(this.value.toLocaleString());
+            productPrice.text(this.value.toLocaleString(localeCode));
         },
         complete: function () {
-            productPrice.text(defaultPrice.toLocaleString());
+            productPrice.text(defaultPrice.toLocaleString(localeCode));
         }
     });
 

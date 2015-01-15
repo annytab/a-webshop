@@ -125,6 +125,7 @@
         <input id="hiddenPriceIncludesVat" type="hidden" value="@pricesIncludesVat" />
         <input id="hiddenVariantImageDirectory" type="hidden" value="@("/Content/products/" + (product.id / 100).ToString() + "/" + product.id.ToString() + "/" + languageId + "/other_images/")" />
         <input id="hiddenVariantImageFileName" type="hidden" value="@(product.variant_image_filename)" />
+        <input id="hiddenCultureCode" type="hidden" value="@cultureInfo.Name" />
 
         @* Product image and description *@
         <div style="display:block;">

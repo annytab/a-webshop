@@ -121,6 +121,7 @@ function calculateAndSetTotalSumsInCart(vatCode)
     // Get the data that we need
     var decimalMultiplier = parseInt($("#hiddenDecimalMultiplier").val());
     var productUnitValues = $("#divTable").find("input[data-id='unitValues']");
+    var localeCode = $("#hiddenCultureCode").val();
 
     // Declare sum variables
     var priceSum = 0;
@@ -194,11 +195,11 @@ function calculateAndSetTotalSumsInCart(vatCode)
 
     // Set values for controls
     hiddenVatCode.val(vatCode);
-    netSumControl.text(priceSum.toLocaleString());
-    freightSumControl.text(freightSum.toLocaleString());
-    vatSumControl.text(vatSum.toLocaleString());
-    roundingSumControl.text(roundingSum.toLocaleString());
-    totalSumControl.text(totalSum.toLocaleString());
+    netSumControl.text(priceSum.toLocaleString(localeCode));
+    freightSumControl.text(freightSum.toLocaleString(localeCode));
+    vatSumControl.text(vatSum.toLocaleString(localeCode));
+    roundingSumControl.text(roundingSum.toLocaleString(localeCode));
+    totalSumControl.text(totalSum.toLocaleString(localeCode));
 
 } // End of the calculateAndSetTotalSumsInCart method
 

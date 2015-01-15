@@ -98,6 +98,9 @@
 
 @* Error message container *@
 <div class="annytab-form-errorbox" style="@(error_message != "" ? "display:block;" : "display:none;")">@Html.Raw(error_message)</div>
+
+@* Hidden data *@
+<input id="hiddenCultureCode" type="hidden" value="@cultureInfo.Name" />
     
 @* Shopping cart *@
 <div class="annytab-step-heading">
