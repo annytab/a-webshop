@@ -31,7 +31,7 @@
     Int32 decimalMultiplier = (Int32)Math.Pow(10, currency.decimals);
      
     // Count the number of posts
-    Int32 count = DisplayItem.GetCount(0, domain.front_end_language);
+    Int32 count = DisplayItem.GetCount(category.id, domain.front_end_language);
 
     // Get the page size
     Int32 pageSize = Int32.Parse(userSettings["page_size"]);

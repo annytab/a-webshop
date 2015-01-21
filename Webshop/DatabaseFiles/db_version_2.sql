@@ -1,8 +1,14 @@
 ﻿BEGIN TRANSACTION;
 
 /* WEBSHOP SETTINGS */
-INSERT INTO dbo.webshop_settings (id, value) VALUES ('SEND-EMAIL-USE-SSL','false');
-INSERT INTO dbo.webshop_settings (id, value) VALUES ('REDIRECT-HTTPS','false');
+IF NOT EXISTS (SELECT * FROM dbo.webshop_settings WHERE id = 'SEND-EMAIL-USE-SSL')
+BEGIN
+INSERT INTO dbo.webshop_settings (id, value) VALUES ('SEND-EMAIL-USE-SSL','false')
+END;
+IF NOT EXISTS (SELECT * FROM dbo.webshop_settings WHERE id = 'REDIRECT-HTTPS')
+BEGIN
+INSERT INTO dbo.webshop_settings (id, value) VALUES ('REDIRECT-HTTPS','false')
+END;
 
 /* EXCECUTE THE TRANSACTION */
 COMMIT;

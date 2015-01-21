@@ -34,7 +34,7 @@
     ViewBag.OgImageUrl = domain.web_address + Tools.GetCategoryMainImageUrl(category.id, domain.front_end_language, category.use_local_images);
 
     // Set paging data
-    ViewBag.NavigateUrl = "/home/category/" + category.page_name + "&qp={0}";
+    ViewBag.NavigateUrl = "/home/category/" + category.page_name + "?qp={0}";
     ViewBag.UserSettings = userSettings;
 
     // Get translated texts
