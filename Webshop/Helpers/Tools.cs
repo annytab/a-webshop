@@ -65,6 +65,7 @@ public static class Tools
             domain.facebook_app_secret = "";
             domain.google_app_id = "";
             domain.google_app_secret = "";
+            domain.noindex = true;
         }
 
         // Return the current front end language id

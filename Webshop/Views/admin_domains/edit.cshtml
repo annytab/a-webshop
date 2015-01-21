@@ -40,6 +40,7 @@
     string excluding_vat_tt = tt.Get("excluding_vat");
     string including_vat_tt = tt.Get("including_vat");
     string analytics_tracking_id_tt = tt.Get("analytics_tracking_id");
+    string do_not_index_tt = tt.Get("do_not_index");
     string save_tt = tt.Get("save");
     string cancel_tt = tt.Get("cancel");
 
@@ -215,6 +216,10 @@
         <tr>
             <td class="label">@("Google app secret: ")</td>
             <td class="input"><input name="txtGoogleAppSecret" type="text" class="formTextbox" value="@domain.google_app_secret" /></td>
+        </tr>
+        <tr>
+            <td class="label">@(do_not_index_tt + ":")</td>
+            <td class="input"><input name="cbNoindex" type="checkbox" value="true" @(domain != null && domain.noindex == true ? Html.Raw("checked='checked'") : Html.Raw("")) /></td>
         </tr>
     </table>
 

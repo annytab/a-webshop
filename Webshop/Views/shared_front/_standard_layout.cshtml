@@ -60,7 +60,7 @@
     <meta name="description" content="@ViewBag.MetaDescription" />
     <meta name="keywords" content="@ViewBag.MetaKeywords" />
     <meta name="canonical" content="@ViewBag.MetaCanonical" />
-    <meta name="robots" content="@ViewBag.MetaRobots" />
+    <meta name="robots" content="@(domain.noindex == true ? "noindex, nofollow" : ViewBag.MetaRobots)" />
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, height=device-height, user-scalable=yes" />
     <meta name="google" content="notranslate">
