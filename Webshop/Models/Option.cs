@@ -14,7 +14,7 @@ public class Option
     public Int32 id;
     public string title;
     public string product_code_suffix;
-    public Int32 sort_order;
+    public Int16 sort_order;
     public Int32 option_type_id;
 
     #endregion
@@ -44,7 +44,7 @@ public class Option
         this.id = Convert.ToInt32(reader["id"]);
         this.title = reader["title"].ToString();
         this.product_code_suffix = reader["product_code_suffix"].ToString();
-        this.sort_order = Convert.ToInt32(reader["sort_order"]);
+        this.sort_order = Convert.ToInt16(reader["sort_order"]);
         this.option_type_id = Convert.ToInt32(reader["option_type_id"]);
 
     } // End of the constructor

@@ -251,7 +251,7 @@ namespace Annytab.Webshop.Controllers
                     option.id = Convert.ToInt32(optionIds[i]);
                     option.title = optionTitles[i];
                     option.product_code_suffix = optionSuffix[i];
-                    option.sort_order = i;
+                    option.sort_order = Convert.ToInt16(i);
                     option.option_type_id = optionType.id;
 
                     // Add the option to the list
