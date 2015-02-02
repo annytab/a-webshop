@@ -1,7 +1,7 @@
 ﻿@charset "UTF-8";
 /* General css */
 body{padding:0px;margin:0px;text-align:left;font-family:Arial, "Helvetica Neue", Helvetica, sans-serif;font-size:12px;background-color:transparent;}
-h1 {font-size:24px;line-height:28px;margin:0px 0px 10px 0px;}
+h1 {font-size:24px;line-height:24px;margin:0px 0px 10px 0px;}
 h2 {font-size:20px;line-height:20px;margin:0px 0px 10px 0px;}
 h3 {font-size:16px;line-height:16px;margin:0px 0px 10px 0px;}
 p {padding:0px;margin:0px;}

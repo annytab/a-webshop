@@ -56,10 +56,9 @@
 <head>
     @* Title and meta tags *@
     <title>@ViewBag.Title</title>
-    <meta name="title" content="@ViewBag.MetaTitle" />
     <meta name="description" content="@ViewBag.MetaDescription" />
     <meta name="keywords" content="@ViewBag.MetaKeywords" />
-    <meta name="canonical" content="@ViewBag.MetaCanonical" />
+    <link rel="canonical" href="@ViewBag.MetaCanonical" />
     <meta name="robots" content="@(domain.noindex == true ? "noindex, nofollow" : ViewBag.MetaRobots)" />
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, height=device-height, user-scalable=yes" />
