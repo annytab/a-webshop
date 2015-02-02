@@ -54,7 +54,7 @@
 }
 
 <!DOCTYPE html>
-<html lang="@(language.language_code.ToLower() + "-" + language.country_code.ToUpper())" xmlns:og="http://ogp.me/ns#">
+<html lang="@(language.language_code.ToLower() + "-" + language.country_code.ToUpper())" prefix="og: http://ogp.me/ns#">
 <head>
     @* Title and meta tags *@
     <title>@ViewBag.Title</title>
@@ -220,6 +220,6 @@
     @Scripts.Render(domain.custom_theme_id == 0 ? "/Scripts/annytab_front/annytab.default-functions.js" : "/Scripts/theme/annytab.default-functions.js")
     @Scripts.Render(domain.custom_theme_id == 0 ? "/Scripts/annytab_front/annytab.mobile-layout-functions.js" : "/Scripts/theme/annytab.mobile-layout-functions.js")
     @RenderSection("scripts", required: false)
-    
+
 </body>
 </html>

@@ -99,7 +99,7 @@ li li {padding-left:2px;}
 .annytab-image-radio{width:28px;height:23px;}
 
 /* Shopping cart */
-.annytab-step-heading{margin-bottom:6px;font-size:18px;font-weight:bold;line-height:28px;border-bottom: 1px solid #207298;}
+.annytab-step-heading{margin-bottom:6px;font-size:18px;font-weight:bold;line-height:28px;border-bottom:1px solid #207298;}
 .annytab-step-circle{float:left;margin-right:2px;color:#ffffff;font-size:14px;text-align:center;background-image:url('/Content/images/annytab_design/circle.png');width:28px;height:28px;background-size:28px,28px;}
 .annytab-cart-image{width:64px;height:64px;}
 .annytab-cart-container{display:block;width:100%;margin:0px;overflow:auto;}

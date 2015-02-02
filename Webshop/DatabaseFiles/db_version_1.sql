@@ -54,7 +54,7 @@ INSERT INTO dbo.units (id, unit_code_si, erp_code) VALUES (9,'bo','fls');
 INSERT INTO dbo.units (id, unit_code_si, erp_code) VALUES (10,'bx','box');
 INSERT INTO dbo.units (id, unit_code_si, erp_code) VALUES (11,'ca','brk');
 INSERT INTO dbo.units (id, unit_code_si, erp_code) VALUES (12,'ct','krt');
-INSERT INTO dbo.units (id, unit_code_si, erp_code) VALUES (13,'d','dag');
+INSERT INTO dbo.units (id, unit_code_si, erp_code) VALUES (13,'d','dgr');
 INSERT INTO dbo.units (id, unit_code_si, erp_code) VALUES (14,'h','tim');
 INSERT INTO dbo.units (id, unit_code_si, erp_code) VALUES (15,'kg','kg');
 INSERT INTO dbo.units (id, unit_code_si, erp_code) VALUES (16,'lm','lm');
@@ -79,7 +79,7 @@ INSERT INTO dbo.units_detail (unit_id, language_id, unit_code, name) VALUES (9,1
 INSERT INTO dbo.units_detail (unit_id, language_id, unit_code, name) VALUES (10,1,'box','Boxar');
 INSERT INTO dbo.units_detail (unit_id, language_id, unit_code, name) VALUES (11,1,'burk','Burkar');
 INSERT INTO dbo.units_detail (unit_id, language_id, unit_code, name) VALUES (12,1,'krt','Kartonger');
-INSERT INTO dbo.units_detail (unit_id, language_id, unit_code, name) VALUES (13,1,'dag','Dagar');
+INSERT INTO dbo.units_detail (unit_id, language_id, unit_code, name) VALUES (13,1,'dgr','Dagar');
 INSERT INTO dbo.units_detail (unit_id, language_id, unit_code, name) VALUES (14,1,'tim','Timmar');
 INSERT INTO dbo.units_detail (unit_id, language_id, unit_code, name) VALUES (15,1,'kg','Kilogram');
 INSERT INTO dbo.units_detail (unit_id, language_id, unit_code, name) VALUES (16,1,'lm','Löpmeter');
@@ -242,7 +242,7 @@ INSERT INTO dbo.static_texts (id, language_id, value) VALUES ('copy_invoice_addr
 INSERT INTO dbo.static_texts (id, language_id, value) VALUES ('copyright_information',1,'&copy; 2013');
 INSERT INTO dbo.static_texts (id, language_id, value) VALUES ('countries',1,'Länder');
 INSERT INTO dbo.static_texts (id, language_id, value) VALUES ('country',1,'Land');
-INSERT INTO dbo.static_texts (id, language_id, value) VALUES ('country_code',1,'Landskod (ISO 3166)');
+INSERT INTO dbo.static_texts (id, language_id, value) VALUES ('country_code',1,'Landskod (ISO 3166-1)');
 INSERT INTO dbo.static_texts (id, language_id, value) VALUES ('country_code_short',1,'Landskod');
 INSERT INTO dbo.static_texts (id, language_id, value) VALUES ('create_order',1,'Skapa order');
 INSERT INTO dbo.static_texts (id, language_id, value) VALUES ('currencies',1,'Valutor');
@@ -519,7 +519,7 @@ INSERT INTO dbo.static_texts (id, language_id, value) VALUES ('web_address',1,'W
 INSERT INTO dbo.static_texts (id, language_id, value) VALUES ('week',1,'Vecka');
 INSERT INTO dbo.static_texts (id, language_id, value) VALUES ('year',1,'År');
 INSERT INTO dbo.static_texts (id, language_id, value) VALUES ('your',1,'Din');
-INSERT INTO dbo.static_texts (id, language_id, value) VALUES ('accessories',2,'Accessory');
+INSERT INTO dbo.static_texts (id, language_id, value) VALUES ('accessories',2,'Accessories');
 INSERT INTO dbo.static_texts (id, language_id, value) VALUES ('account_code',2,'Accounting code');
 INSERT INTO dbo.static_texts (id, language_id, value) VALUES ('add',2,'Add');
 INSERT INTO dbo.static_texts (id, language_id, value) VALUES ('add_images',2,'Add images');
@@ -585,7 +585,7 @@ INSERT INTO dbo.static_texts (id, language_id, value) VALUES ('copy_invoice_addr
 INSERT INTO dbo.static_texts (id, language_id, value) VALUES ('copyright_information',2,'&copy; 2013');
 INSERT INTO dbo.static_texts (id, language_id, value) VALUES ('countries',2,'Countries');
 INSERT INTO dbo.static_texts (id, language_id, value) VALUES ('country',2,'Country');
-INSERT INTO dbo.static_texts (id, language_id, value) VALUES ('country_code',2,'Country code (ISO 3166)');
+INSERT INTO dbo.static_texts (id, language_id, value) VALUES ('country_code',2,'Country code (ISO 3166-1)');
 INSERT INTO dbo.static_texts (id, language_id, value) VALUES ('country_code_short',2,'Country code');
 INSERT INTO dbo.static_texts (id, language_id, value) VALUES ('create_order',2,'Create order');
 INSERT INTO dbo.static_texts (id, language_id, value) VALUES ('currencies',2,'Currencies');
@@ -776,7 +776,7 @@ INSERT INTO dbo.static_texts (id, language_id, value) VALUES ('price_based_on_mo
 INSERT INTO dbo.static_texts (id, language_id, value) VALUES ('prices',2,'Prices');
 INSERT INTO dbo.static_texts (id, language_id, value) VALUES ('print',2,'Print');
 INSERT INTO dbo.static_texts (id, language_id, value) VALUES ('priority',2,'Priority');
-INSERT INTO dbo.static_texts (id, language_id, value) VALUES ('private_person',2,'Private person');
+INSERT INTO dbo.static_texts (id, language_id, value) VALUES ('private_person',2,'Person');
 INSERT INTO dbo.static_texts (id, language_id, value) VALUES ('product',2,'Product');
 INSERT INTO dbo.static_texts (id, language_id, value) VALUES ('product_code',2,'Product code');
 INSERT INTO dbo.static_texts (id, language_id, value) VALUES ('product_code_short',2,'Product code');
@@ -851,8 +851,8 @@ INSERT INTO dbo.static_texts (id, language_id, value) VALUES ('value_added_tax',
 INSERT INTO dbo.static_texts (id, language_id, value) VALUES ('value_added_tax_rates',2,'Value added tax rate');
 INSERT INTO dbo.static_texts (id, language_id, value) VALUES ('variant_image_filename',2,'Variant image filename');
 INSERT INTO dbo.static_texts (id, language_id, value) VALUES ('vat_code',2,'VAT-code');
-INSERT INTO dbo.static_texts (id, language_id, value) VALUES ('vat_code_domestic',2,'Domestic sale');
-INSERT INTO dbo.static_texts (id, language_id, value) VALUES ('vat_code_eu',2,'EU-sale');
+INSERT INTO dbo.static_texts (id, language_id, value) VALUES ('vat_code_domestic',2,'Domestic');
+INSERT INTO dbo.static_texts (id, language_id, value) VALUES ('vat_code_eu',2,'EU');
 INSERT INTO dbo.static_texts (id, language_id, value) VALUES ('vat_code_export',2,'Export');
 INSERT INTO dbo.static_texts (id, language_id, value) VALUES ('vat_number',2,'VAT-number');
 INSERT INTO dbo.static_texts (id, language_id, value) VALUES ('version',2,'Version');
@@ -875,15 +875,15 @@ SET IDENTITY_INSERT dbo.static_pages OFF;
 INSERT INTO dbo.static_pages_detail (static_page_id, language_id, link_name, title, main_content, meta_description, meta_keywords, page_name, inactive) VALUES (1,1,'Startsidan','Välkommen till a-webshop.se','Det här är a-webshop.se, en e-handelsplattform med ett administrationsgränssnitt och en fullt anpassningsbar design.','Det här är a-webshop.se, en e-handelsplattform med ett administrationsgränssnitt och en fullt anpassningsbar design.','start, hem','default',0);
 INSERT INTO dbo.static_pages_detail (static_page_id, language_id, link_name, title, main_content, meta_description, meta_keywords, page_name, inactive) VALUES (2,1,'Köpvillkor','Köp- och leveransvillkor','Här hittar du våra köpvillkor och leveransvillkor.<br /><br /><i>Senast ändrad: 2014-03-21</i>','Här hittar du våra köpvillkor och leveransvillkor.','köpvillkor, leveransvillkor','kopvillkor',0);
 INSERT INTO dbo.static_pages_detail (static_page_id, language_id, link_name, title, main_content, meta_description, meta_keywords, page_name, inactive) VALUES (3,1,'Generellt fel','Generellt fel','Det har inträffat ett generellt fel på webbplatsen. Kontakta oss gärna så att vi kan åtgärda det här felet.','Det har inträffat ett generellt fel på webbplatsen. Kontakta oss gärna så att vi kan åtgärda det här felet.','generellt fel','error',0);
-INSERT INTO dbo.static_pages_detail (static_page_id, language_id, link_name, title, main_content, meta_description, meta_keywords, page_name, inactive) VALUES (4,1,'Otillåten indata','Otillåten indata','Du har har angivit otillåtna tecken i en textruta. Det är inte tillåtet att ange html, scripts eller annan kod i textrutor på den här webbplatsen. Gå tillbaka i webbläsaren för att fortsätta fylla i det formulär som du jobbade med.','Du har har angivit otillåtna tecken i en textruta. Det är inte tillåtet att ange html, scripts eller annan kod i textrutor på den här webbplatsen.','otillåten indata','invalid_input',0);
+INSERT INTO dbo.static_pages_detail (static_page_id, language_id, link_name, title, main_content, meta_description, meta_keywords, page_name, inactive) VALUES (4,1,'Otillåten indata','Otillåten indata','Du har har angivit otillåtna tecken i en textruta. Det är inte tillåtet att ange html, scripts eller annan kod i textrutor på den här webbplatsen. Gå tillbaka i webbläsaren för att fortsätta fylla i det formulär som du jobbade med.','Du har har angivit otillåtna tecken i en textruta. Det är inte tillåtet att ange html, scripts eller annan kod i textrutor på den här webbplatsen.','otillåten indata','ogiltig-indata',0);
 INSERT INTO dbo.static_pages_detail (static_page_id, language_id, link_name, title, main_content, meta_description, meta_keywords, page_name, inactive) VALUES (5,1,'404','Sidan hittades inte (404)','Den sida som du försökte nå kunde inte hittas.','Den sida som du försökte nå kunde inte hittas.','404','404',0);
 INSERT INTO dbo.static_pages_detail (static_page_id, language_id, link_name, title, main_content, meta_description, meta_keywords, page_name, inactive) VALUES (6,1,'Sekretess','Sekretess','Allmän beskrivning av sekretesspolicyn.','Allmän beskrivning av sekretesspolicyn.','sekretess','sekretess',0);
 INSERT INTO dbo.static_pages_detail (static_page_id, language_id, link_name, title, main_content, meta_description, meta_keywords, page_name, inactive) VALUES (1,2,'Startpage','Welcome to a-webshop.com','This is a-webshop.com, an e-commerce platform with an administration interface and a fully customizable design.','This is a-webshop.com, an e-commerce platform with an administration interface and a fully customizable design.','start, home','default',0);
-INSERT INTO dbo.static_pages_detail (static_page_id, language_id, link_name, title, main_content, meta_description, meta_keywords, page_name, inactive) VALUES (2,2,'Terms Of Purchase','Terms Of Purchase and Delivery ','This is our Terms and Conditions.<br /><br /><i>Last modified: 2014-03-21</i>','This is our Terms and Conditions.','terms, purchase, delivery','terms_and_conditions',0);
+INSERT INTO dbo.static_pages_detail (static_page_id, language_id, link_name, title, main_content, meta_description, meta_keywords, page_name, inactive) VALUES (2,2,'Terms Of Purchase','Terms Of Purchase and Delivery ','This is our Terms and Conditions.<br /><br /><i>Last modified: 2014-03-21</i>','This is our Terms and Conditions.','terms, purchase, delivery','terms-and-conditions',0);
 INSERT INTO dbo.static_pages_detail (static_page_id, language_id, link_name, title, main_content, meta_description, meta_keywords, page_name, inactive) VALUES (3,2,'General error','General error','There has been a general error on the site. Please contact us so we can fix this error.','There has been a general error on the site. Please contact us so we can fix this error.','general error','error',0);
-INSERT INTO dbo.static_pages_detail (static_page_id, language_id, link_name, title, main_content, meta_description, meta_keywords, page_name, inactive) VALUES (4,2,'Invalid input','Invalid input','You have entered invalid characters in a textbox. It is not allowed to enter html, scripts or other code in the textboxes on this site. Go back in your browser to continue filling out the form you were working on.','You have entered invalid characters in a textbox. It is not allowed to enter html, scripts or other code in the textboxes on this site.','invalid input','invalid_input',0);
+INSERT INTO dbo.static_pages_detail (static_page_id, language_id, link_name, title, main_content, meta_description, meta_keywords, page_name, inactive) VALUES (4,2,'Invalid input','Invalid input','You have entered invalid characters in a textbox. It is not allowed to enter html, scripts or other code in the textboxes on this site. Go back in your browser to continue filling out the form you were working on.','You have entered invalid characters in a textbox. It is not allowed to enter html, scripts or other code in the textboxes on this site.','invalid input','invalid-input',0);
 INSERT INTO dbo.static_pages_detail (static_page_id, language_id, link_name, title, main_content, meta_description, meta_keywords, page_name, inactive) VALUES (5,2,'404','Page not found (404)','The page that you were trying to reach could not be found.','The page that you were trying to reach could not be found.','404','404',0);
-INSERT INTO dbo.static_pages_detail (static_page_id, language_id, link_name, title, main_content, meta_description, meta_keywords, page_name, inactive) VALUES (6,2,'Privacy Policy','Privacy Policy','General description of the privacy policy.','General description of the privacy policy.','privacy policy','privacy_policy',0);
+INSERT INTO dbo.static_pages_detail (static_page_id, language_id, link_name, title, main_content, meta_description, meta_keywords, page_name, inactive) VALUES (6,2,'Privacy Policy','Privacy Policy','General description of the privacy policy.','General description of the privacy policy.','privacy policy','privacy-policy',0);
 
 /* EXCECUTE THE TRANSACTION */
 COMMIT;

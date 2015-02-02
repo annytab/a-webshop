@@ -34,6 +34,7 @@ public class Product
     public bool adult_only;
     public decimal unit_pricing_measure;
     public Int32 unit_pricing_base_measure;
+    public Int32 comparison_unit_id;
     public string energy_efficiency_class;
     public bool downloadable_files;
     public DateTime date_added;
@@ -57,7 +58,7 @@ public class Product
     public string size_type;
     public string size_system;
     public bool inactive;
-
+    
     #endregion
 
     #region Constructors
@@ -91,6 +92,7 @@ public class Product
         this.adult_only = false;
         this.unit_pricing_measure = 0;
         this.unit_pricing_base_measure = 0;
+        this.comparison_unit_id = 0;
         this.energy_efficiency_class = "";
         this.downloadable_files = false;
         this.date_added = DateTime.Now;
@@ -147,6 +149,7 @@ public class Product
         this.adult_only = Convert.ToBoolean(reader["adult_only"]);
         this.unit_pricing_measure = Convert.ToDecimal(reader["unit_pricing_measure"]);
         this.unit_pricing_base_measure = Convert.ToInt32(reader["unit_pricing_base_measure"]);
+        this.comparison_unit_id = Convert.ToInt32(reader["comparison_unit_id"]);
         this.energy_efficiency_class = reader["energy_efficiency_class"].ToString();
         this.downloadable_files = Convert.ToBoolean(reader["downloadable_files"]);
         this.date_added = Convert.ToDateTime(reader["date_added"]);
@@ -190,12 +193,12 @@ public class Product
         string connection = Tools.GetConnectionString();
         string sql = "INSERT INTO dbo.products (product_code, manufacturer_code, gtin, unit_price, unit_freight, unit_id, "
             + "mount_time_hours, from_price, category_id, brand, supplier_erp_id, meta_robots, page_views, buys, added_in_basket, condition, "
-            + "variant_image_filename, gender, age_group, adult_only, unit_pricing_measure, unit_pricing_base_measure, " 
+            + "variant_image_filename, gender, age_group, adult_only, unit_pricing_measure, unit_pricing_base_measure, comparison_unit_id, " 
             + "energy_efficiency_class, downloadable_files, date_added) "
             + "VALUES (@product_code, @manufacturer_code, @gtin, @unit_price, @unit_freight, @unit_id, @mount_time_hours, @from_price, "
             + "@category_id, @brand, @supplier_erp_id, @meta_robots, @page_views, @buys, @added_in_basket, "
             + "@condition, @variant_image_filename, @gender, @age_group, @adult_only, @unit_pricing_measure, @unit_pricing_base_measure, "
-            + "@energy_efficiency_class, @downloadable_files, @date_added);SELECT SCOPE_IDENTITY();";
+            + "@comparison_unit_id, @energy_efficiency_class, @downloadable_files, @date_added);SELECT SCOPE_IDENTITY();";
 
         // The using block is used to call dispose automatically even if there are an exception.
         using (SqlConnection cn = new SqlConnection(connection))
@@ -225,7 +228,8 @@ public class Product
                 cmd.Parameters.AddWithValue("@age_group", post.age_group);
                 cmd.Parameters.AddWithValue("@adult_only", post.adult_only);
                 cmd.Parameters.AddWithValue("@unit_pricing_measure", post.unit_pricing_measure);
-                cmd.Parameters.AddWithValue("@unit_pricing_base_measure", post.unit_pricing_base_measure);               
+                cmd.Parameters.AddWithValue("@unit_pricing_base_measure", post.unit_pricing_base_measure);
+                cmd.Parameters.AddWithValue("@comparison_unit_id", post.comparison_unit_id);
                 cmd.Parameters.AddWithValue("@energy_efficiency_class", post.energy_efficiency_class);
                 cmd.Parameters.AddWithValue("@downloadable_files", post.downloadable_files);
                 cmd.Parameters.AddWithValue("@date_added", post.date_added);
@@ -339,8 +343,9 @@ public class Product
             + "supplier_erp_id = @supplier_erp_id, meta_robots = @meta_robots, page_views = @page_views, buys = @buys, "
             + "added_in_basket = @added_in_basket, condition = @condition, variant_image_filename = @variant_image_filename, "
             + "gender = @gender, age_group = @age_group, adult_only = @adult_only, unit_pricing_measure = @unit_pricing_measure, "
-            + "unit_pricing_base_measure = @unit_pricing_base_measure, energy_efficiency_class = @energy_efficiency_class, " 
-            + "downloadable_files = @downloadable_files, date_added = @date_added WHERE id = @id;";
+            + "unit_pricing_base_measure = @unit_pricing_base_measure, comparison_unit_id = @comparison_unit_id, "
+            + "energy_efficiency_class = @energy_efficiency_class, downloadable_files = @downloadable_files, " 
+            + "date_added = @date_added WHERE id = @id;";
 
         // The using block is used to call dispose automatically even if there are an exception.
         using (SqlConnection cn = new SqlConnection(connection))
@@ -372,6 +377,7 @@ public class Product
                 cmd.Parameters.AddWithValue("@adult_only", post.adult_only);
                 cmd.Parameters.AddWithValue("@unit_pricing_measure", post.unit_pricing_measure);
                 cmd.Parameters.AddWithValue("@unit_pricing_base_measure", post.unit_pricing_base_measure);
+                cmd.Parameters.AddWithValue("@comparison_unit_id", post.comparison_unit_id);
                 cmd.Parameters.AddWithValue("@energy_efficiency_class", post.energy_efficiency_class);
                 cmd.Parameters.AddWithValue("@downloadable_files", post.downloadable_files);
                 cmd.Parameters.AddWithValue("@date_added", post.date_added);

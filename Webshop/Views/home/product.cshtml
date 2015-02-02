@@ -21,6 +21,7 @@
     Unit unit = ViewBag.Unit;
     Decimal productPrice = ViewBag.ProductPrice;
     Decimal comparisonPrice = ViewBag.ComparisonPrice;
+    Unit comparisonUnit = Unit.GetOneById(product.comparison_unit_id, domain.front_end_language);
     string productCode = ViewBag.ProductCode;
     string manufacturerCode = ViewBag.ManufacturerCode;
     string languageId = product.use_local_images == true ? domain.front_end_language.ToString() : "0";
@@ -106,7 +107,7 @@
         <div class="annytab-share-button"><div class="fb-like" data-layout="button" data-action="like" data-show-faces="false" data-share="true" data-href="@ViewBag.MetaCanonical"></div></div>
         <div class="annytab-share-button"><a href="https://twitter.com/share" data-count="none" class="twitter-share-button" data-href="@ViewBag.MetaCanonical" data-lang="@language.language_code.ToLower()">Tweet</a></div>
         <div class="annytab-share-button"><div class="g-plusone" data-annotation="none" data-size="medium" data-href="@ViewBag.MetaCanonical"></div></div>
-        <div class="annytab-share-button"><a href="//se.pinterest.com/pin/create/button/" data-pin-do="buttonBookmark" data-pin-color="red"><img src="//assets.pinterest.com/images/pidgets/pinit_fg_en_rect_red_20.png" /></a></div>
+        <div class="annytab-share-button"><a href="//se.pinterest.com/pin/create/button/" data-pin-do="buttonBookmark" data-pin-color="red"><img src="//assets.pinterest.com/images/pidgets/pinit_fg_en_rect_red_20.png" alt="Pinterest" /></a></div>
         <div class="annytab-share-button"><script type="IN/Share" data-url="@ViewBag.MetaCanonical"></script></div>
     </div> 
 
@@ -228,7 +229,7 @@
             </div>
             <div style="@(comparisonPrice != 0 ? "display:table-row;" : "display:none;")">
                 <div class="annytab-fact-cell-heading">@(comparison_price_tt + ": ")</div>
-                <div class="annytab-fact-cell-text"><span>@(comparisonPrice.ToString("##,0.##", cultureInfo) + " " + currency.currency_code + " / " + product.unit_pricing_base_measure.ToString() + " " + unit.unit_code)</span></div>
+                <div class="annytab-fact-cell-text"><span>@(comparisonPrice.ToString("##,0.##", cultureInfo) + " " + currency.currency_code + " / " + product.unit_pricing_base_measure.ToString() + " " + (comparisonUnit != null ? comparisonUnit.unit_code : "?"))</span></div>
             </div>
             <div style="@(product.brand != "" ? "display:table-row;" : "display:none;")">
                 <div class="annytab-fact-cell-heading">@(brand_tt + ": ")</div>

@@ -75,6 +75,7 @@
     string availability_date_tt = tt.Get("availability_date");
     string unit_pricing_measure_tt = tt.Get("unit_pricing_measure");
     string unit_pricing_base_measure_tt = tt.Get("unit_pricing_base_measure");
+    string comparison_unit_tt = tt.Get("comparison_unit");
     string energy_efficiency_class_tt = tt.Get("energy_efficiency_class");
     string size_system_tt = tt.Get("size_system");
     string size_type_tt = tt.Get("size_type");
@@ -270,6 +271,18 @@
         <tr>
             <td class="label">@(unit_pricing_base_measure_tt + ":")</td>
             <td class="input"><input name="txtUnitPricingBaseMeasure" type="number" class="formTextbox" step="1" value="@product.unit_pricing_base_measure.ToString()" /></td>
+        </tr>
+        <tr>
+            <td class="label">@(comparison_unit_tt + ":")</td>
+            <td class="input">
+                <select name="selectComparisonUnit" class="formSelect">
+                    <option value="0" @(product.comparison_unit_id == 0 ? Html.Raw("selected='selected'") : Html.Raw(""))>@("-- " + no_choice_tt + " --")</option>
+                    @foreach (Unit unit in units)
+                    {
+                        <option value="@unit.id.ToString()" @(product.comparison_unit_id == unit.id ? Html.Raw("selected='selected'") : Html.Raw(""))>@(unit.name + " (" + unit.unit_code + ")")</option>
+                    }
+                </select>
+            </td>
         </tr>
         <tr>
             <td class="label">@(google_category_tt + ":")</td>

@@ -96,7 +96,7 @@ namespace Annytab.Webshop
             if(error is HttpRequestValidationException)
             {
                 // Invalid input html or scripts
-                Response.Redirect("/home/error/invalid_input");
+                Response.Redirect("/home/error/invalid-input");
             }
             else if(code == 404)
             {

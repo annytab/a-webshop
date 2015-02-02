@@ -197,6 +197,10 @@ public static class GoogleShopping
         // Get the unit
         Unit unit = Unit.GetOneById(product.unit_id, domain.front_end_language);
 
+        // Get the comparison unit
+        Unit comparisonUnit = Unit.GetOneById(product.comparison_unit_id, domain.front_end_language);
+        string comparison_unit_code = comparisonUnit != null ? comparisonUnit.unit_code_si : "na";
+
         // Get the category
         Category category = Category.GetOneById(product.category_id, domain.front_end_language);
 
@@ -219,8 +223,10 @@ public static class GoogleShopping
         writer.WriteStartElement("item");
 
         // Remove html from the title and the main content
-        string title = StringHtmlExtensions.TruncateHtml(product.title, 150);
-        string main_content = StringHtmlExtensions.TruncateHtml(product.main_content, 5000);
+        string title = StringHtmlExtensions.StripHtml(product.title);
+        title = AnnytabDataValidation.TruncateString(title, 150);
+        string main_content = StringHtmlExtensions.StripHtml(product.main_content);
+        main_content = AnnytabDataValidation.TruncateString(main_content, 5000);
 
         // Write item base information
         writer.WriteStartElement("g:id");
@@ -233,10 +239,10 @@ public static class GoogleShopping
         writer.WriteString(main_content);
         writer.WriteEndElement();
         writer.WriteStartElement("g:google_product_category");
-        writer.WriteString(HttpUtility.HtmlEncode(product.google_category));
+        writer.WriteString(product.google_category);
         writer.WriteEndElement();
         writer.WriteStartElement("g:product_type");
-        writer.WriteString(HttpUtility.HtmlEncode(categoryString));
+        writer.WriteString(categoryString);
         writer.WriteEndElement();
         writer.WriteStartElement("link");
         writer.WriteString(domain.web_address + "/home/product/" + product.page_name);
@@ -280,7 +286,7 @@ public static class GoogleShopping
         if(product.availability_status == "availability_to_order")
         {
             writer.WriteStartElement("g:availability_date");
-            writer.WriteString(product.availability_date.ToString());
+            writer.WriteString(product.availability_date.ToString("s"));
             writer.WriteEndElement();   
         }
 
@@ -361,10 +367,10 @@ public static class GoogleShopping
         if(product.unit_pricing_measure > 0 && product.unit_pricing_base_measure > 0)
         {
             writer.WriteStartElement("g:unit_pricing_measure");
-            writer.WriteString(product.unit_pricing_measure.ToString() + unit.unit_code_si);
+            writer.WriteString(product.unit_pricing_measure.ToString() + comparison_unit_code);
             writer.WriteEndElement();
             writer.WriteStartElement("g:unit_pricing_base_measure");
-            writer.WriteString(product.unit_pricing_base_measure.ToString() + unit.unit_code_si);
+            writer.WriteString(product.unit_pricing_base_measure.ToString() + comparison_unit_code);
             writer.WriteEndElement();  
         }
 

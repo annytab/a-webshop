@@ -52,7 +52,7 @@
 }
 
 <!DOCTYPE html>
-<html lang="@(language.language_code.ToLower() + "-" + language.country_code.ToUpper())" xmlns:og="http://ogp.me/ns#">
+<html lang="@(language.language_code.ToLower() + "-" + language.country_code.ToUpper())" prefix="og: http://ogp.me/ns#">
 <head>
     @* Title and meta tags *@
     <title>@ViewBag.Title</title>
@@ -82,7 +82,7 @@
 <body>
     @* The background image *@
     <img src="@imageUrls.Get("background_image")" class="annytab-background-image" alt="@background_image_tt" />
-    
+
     @* Master outer container *@
     <div class="annytab-layout-outer-container">
 
@@ -191,7 +191,7 @@
             <div class="annytab-layout-footer">
                 <div style="padding:10px 10px 10px 10px">
                     <span>@Html.Raw(copyright_information_tt + " | ")</span><a href="/home/layout/mobile" style="color:#ffffff;text-decoration:underline;">@mobile_tt</a>
-                    @if(pricesIncludesVat == true)
+                    @if (pricesIncludesVat == true)
                     {
                         @(" | ")<a href="/home/prices_includes_vat/false" style="color:#ffffff;text-decoration:underline;">@company_tt</a>
                     }

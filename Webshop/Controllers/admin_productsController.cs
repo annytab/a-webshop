@@ -519,6 +519,7 @@ namespace Annytab.Webshop.Controllers
             decimal.TryParse(collection["txtUnitPricingMeasure"].Replace(",", "."), NumberStyles.Any, CultureInfo.InvariantCulture, out unit_pricing_measure);
             Int32 unit_pricing_base_measure = 0;
             Int32.TryParse(collection["txtUnitPricingBaseMeasure"].Replace(",", "."), out unit_pricing_base_measure);
+            Int32 comparison_unit = Convert.ToInt32(collection["selectComparisonUnit"]);
             string energy_efficiency_class = collection["selectEnergyClass"];
             bool downloadable_files = Convert.ToBoolean(collection["cbDownloadableFiles"]);
             string deliveryTime = collection["txtDeliveryTime"];
@@ -628,6 +629,7 @@ namespace Annytab.Webshop.Controllers
             product.adult_only = adult_only;
             product.unit_pricing_measure = unit_pricing_measure;
             product.unit_pricing_base_measure = unit_pricing_base_measure;
+            product.comparison_unit_id = comparison_unit;
             product.size_type = size_type;
             product.size_system = size_system;
             product.energy_efficiency_class = energy_efficiency_class;

@@ -72,7 +72,7 @@
     <div class="annytab-share-button"><div class="fb-like" data-layout="button" data-action="like" data-show-faces="false" data-share="true" data-href="@ViewBag.MetaCanonical"></div></div>
     <div class="annytab-share-button"><a href="https://twitter.com/share" data-count="none" class="twitter-share-button" data-href="@ViewBag.MetaCanonical" data-lang="@language.language_code.ToLower()">Tweet</a></div>
     <div class="annytab-share-button"><div class="g-plusone" data-annotation="none" data-size="medium" data-href="@ViewBag.MetaCanonical"></div></div>
-    <div class="annytab-share-button"><a href="//se.pinterest.com/pin/create/button/" data-pin-do="buttonBookmark" data-pin-color="red"><img src="//assets.pinterest.com/images/pidgets/pinit_fg_en_rect_red_20.png" /></a></div>
+    <div class="annytab-share-button"><a href="//se.pinterest.com/pin/create/button/" data-pin-do="buttonBookmark" data-pin-color="red"><img src="//assets.pinterest.com/images/pidgets/pinit_fg_en_rect_red_20.png" alt="Pinterest" /></a></div>
     <div class="annytab-share-button"><script type="IN/Share" data-url="@ViewBag.MetaCanonical"></script></div>
 </div> 
 
@@ -81,12 +81,12 @@
 
 @* Image slideshow *@
 <div id="imageSlideShow" class="annytab-slideshow-container">
-    <img id="leftArrow" src="/Content/images/annytab_design/left_arrow.png" class="annytab-slideshow-left-arrow" />
+    <img id="leftArrow" src="/Content/images/annytab_design/left_arrow.png" class="annytab-slideshow-left-arrow" alt="Slideshow left arrow" />
     @for (int i = 0; i < environmentImages.Count; i++)
     {
         @:<img data-img="@i.ToString()" src="@environmentImages[i]" alt="@(category.title + " " + image_tt.ToLower())" class="annytab-slideshow-image" />
     }
-    <img id="rightArrow" src="/Content/images/annytab_design/right_arrow.png" class="annytab-slideshow-right-arrow" />
+    <img id="rightArrow" src="/Content/images/annytab_design/right_arrow.png" class="annytab-slideshow-right-arrow" alt="Slideshow right arrow" />
 </div>
 
 <div class="annytab-basic-space"></div>

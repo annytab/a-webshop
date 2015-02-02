@@ -105,7 +105,7 @@ namespace Annytab.Webshop.ControllersApi
         // GET api/product_option_types/get_by_product_id/1?languageId=1
         [ApiAuthorize(Roles = "API_FULL_TRUST,API_MEDIUM_TRUST,API_MINIMAL_TRUST")]
         [HttpGet]
-        public List<ProductOptionType> get_by_product_id(Int32 id, Int32 languageId)
+        public List<ProductOptionType> get_by_product_id(Int32 id = 0, Int32 languageId = 0)
         {
             // Create the list to return
             List<ProductOptionType> posts = ProductOptionType.GetByProductId(id, languageId);
@@ -119,7 +119,7 @@ namespace Annytab.Webshop.ControllersApi
         // GET api/product_option_types/get_all?languageId=1
         [ApiAuthorize(Roles = "API_FULL_TRUST,API_MEDIUM_TRUST,API_MINIMAL_TRUST")]
         [HttpGet]
-        public List<ProductOptionType> get_all(Int32 languageId)
+        public List<ProductOptionType> get_all(Int32 languageId = 0)
         {
             // Create the list to return
             List<ProductOptionType> posts = ProductOptionType.GetAll(languageId);
