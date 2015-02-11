@@ -82,10 +82,16 @@ namespace Annytab.Webshop
         /// </summary>
         protected void Application_Error() 
         {
-            //// Just return if debugging is enabled
-            //if (HttpContext.Current.IsDebuggingEnabled == true)
-            //    return;
-            
+            // Just return if debugging is enabled
+            if (HttpContext.Current.IsDebuggingEnabled == true)
+            {
+                return;
+            }
+            else
+            {
+                return;
+            }
+                
             // Get the last exception
             Exception error = Server.GetLastError();
 
@@ -93,15 +99,13 @@ namespace Annytab.Webshop
             Int32 code = (error is HttpException) ? (error as HttpException).GetHttpCode() : 500;
 
             // Redirect the user based on the error
-            if(error.GetBaseException() is HttpRequestValidationException)
+            if (error is HttpRequestValidationException)
             {
                 // Invalid input html or scripts
-                Response.Clear();
-                Response.StatusCode = 200;
                 Response.Redirect("/home/error/invalid-input");
                 Response.End();
             }
-            else if(code == 404)
+            else if (code == 404)
             {
                 try
                 {
@@ -112,20 +116,16 @@ namespace Annytab.Webshop
                     Response.Write(Tools.GetHttpNotFoundPage());
                     Response.End();
                 }
-                catch(Exception ex)
+                catch (Exception ex)
                 {
                     string exMessage = ex.Message;
-                    Response.Clear();
-                    Response.StatusCode = 200;
                     Response.Redirect("/home/error/general");
                     Response.End();
-                }   
+                }
             }
             else
             {
                 // A general error
-                Response.Clear();
-                Response.StatusCode = 200;
                 Response.Redirect("/home/error/general");
                 Response.End();
             }
