@@ -167,7 +167,7 @@
             </td>
         </tr>
         <tr>
-            <td class="label">@(availability_date_tt + ":")</td>
+            <td class="label">@(availability_date_tt + " (yyyy-mm-dd):")</td>
             <td class="input"><input id="txtAvailabilityDate" name="txtAvailabilityDate" type="text" class="formTextbox" value="@(translatedProduct != null ? translatedProduct.availability_date.ToString("yyyy-MM-dd") : "2000-01-01")" @(languageId == 0 ? Html.Raw("readonly='readonly'") : Html.Raw("")) /></td>
         </tr>
         <tr>

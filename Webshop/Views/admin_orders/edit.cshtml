@@ -109,8 +109,8 @@
             <td class="input"><input name="txtMobilePhoneNumber" type="text" class="formTextbox" value="@order.customer_mobile_phone" /></td>
         </tr>
         <tr>
-            <td class="label">@(desired_date_of_delivery_tt + ":")</td>
-            <td class="input"><input id="txtDesiredDateOfDelivery" name="txtDesiredDateOfDelivery" type="text" class="formTextbox" value="@order.desired_date_of_delivery.ToString("d", cultureInfo)" /></td>
+            <td class="label">@(desired_date_of_delivery_tt + " (yyyy-mm-dd):")</td>
+            <td class="input"><input id="txtDesiredDateOfDelivery" name="txtDesiredDateOfDelivery" type="text" class="formTextbox" value="@order.desired_date_of_delivery.ToString("yyyy-MM-dd")" /></td>
         </tr>
         <tr><td colspan="2">&nbsp;</td></tr>
         <tr>

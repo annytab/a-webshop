@@ -96,6 +96,8 @@ namespace Annytab.Webshop
             if(error is HttpRequestValidationException)
             {
                 // Invalid input html or scripts
+                Response.Clear();
+                Response.StatusCode = 200;
                 Response.Redirect("/home/error/invalid-input");
             }
             else if(code == 404)
@@ -103,6 +105,7 @@ namespace Annytab.Webshop
                 try
                 {
                     // Page not found 404
+                    Response.Clear();
                     Response.StatusCode = 404;
                     Response.Status = "404 Not Found";
                     Response.Write(Tools.GetHttpNotFoundPage());
@@ -110,12 +113,16 @@ namespace Annytab.Webshop
                 catch(Exception ex)
                 {
                     string exMessage = ex.Message;
+                    Response.Clear();
+                    Response.StatusCode = 200;
                     Response.Redirect("/home/error/general");
                 }   
             }
             else
             {
                 // A general error
+                Response.Clear();
+                Response.StatusCode = 200;
                 Response.Redirect("/home/error/general");
             }
 

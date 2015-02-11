@@ -643,7 +643,7 @@ INSERT INTO dbo.static_texts (id, language_id, value) VALUES ('error_send_email'
 INSERT INTO dbo.static_texts (id, language_id, value) VALUES ('excluding_vat',2,'Excl. VAT');
 INSERT INTO dbo.static_texts (id, language_id, value) VALUES ('export_email_addresses',2,'Export e-mail addresses');
 INSERT INTO dbo.static_texts (id, language_id, value) VALUES ('export_to_zip',2,'Export all files to a zip file');
-INSERT INTO dbo.static_texts (id, language_id, value) VALUES ('exported_to_erp',2,'Exported Erp-software');
+INSERT INTO dbo.static_texts (id, language_id, value) VALUES ('exported_to_erp',2,'Exported to ERP-software');
 INSERT INTO dbo.static_texts (id, language_id, value) VALUES ('extras',2,'Extras');
 INSERT INTO dbo.static_texts (id, language_id, value) VALUES ('facts',2,'Facts');
 INSERT INTO dbo.static_texts (id, language_id, value) VALUES ('fee',2,'Fee');

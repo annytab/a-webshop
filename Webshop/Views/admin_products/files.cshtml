@@ -63,7 +63,7 @@
             <td class="input"><input name="cbDownloadableFiles" type="checkbox" value="true" checked="checked" /></td>
         </tr>
         <tr>
-            <td class="label">@(version_tt + ":")</td>
+            <td class="label">@(version_tt + " (yyyy-mm-dd):")</td>
             <td class="input"><input id="txtVersionDate" name="txtVersionDate" type="text" class="formTextbox" value="@DateTime.Now.ToString("yyyy-MM-dd")" /></td>
         </tr>
         <tr><td colspan="2">&nbsp;</td></tr>
@@ -99,6 +99,7 @@
 
 
 @section scripts {
+    <link href="~/Content/jquery_css/jquery-ui.min.css" rel="stylesheet" />
     <script type="text/javascript">
         $("#selectLanguage").focus();
         $("#txtVersionDate").datepicker({ dateFormat: 'yy-mm-dd' });
