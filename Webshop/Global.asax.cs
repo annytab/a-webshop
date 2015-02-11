@@ -87,11 +87,7 @@ namespace Annytab.Webshop
             {
                 return;
             }
-            else
-            {
-                return;
-            }
-                
+
             // Get the last exception
             Exception error = Server.GetLastError();
 
