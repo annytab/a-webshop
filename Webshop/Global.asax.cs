@@ -82,9 +82,9 @@ namespace Annytab.Webshop
         /// </summary>
         protected void Application_Error() 
         {
-            // Just return if debugging is enabled
-            if (HttpContext.Current.IsDebuggingEnabled == true)
-                return;
+            //// Just return if debugging is enabled
+            //if (HttpContext.Current.IsDebuggingEnabled == true)
+            //    return;
             
             // Get the last exception
             Exception error = Server.GetLastError();
@@ -93,12 +93,13 @@ namespace Annytab.Webshop
             Int32 code = (error is HttpException) ? (error as HttpException).GetHttpCode() : 500;
 
             // Redirect the user based on the error
-            if(error is HttpRequestValidationException)
+            if(error.GetBaseException() is HttpRequestValidationException)
             {
                 // Invalid input html or scripts
                 Response.Clear();
                 Response.StatusCode = 200;
                 Response.Redirect("/home/error/invalid-input");
+                Response.End();
             }
             else if(code == 404)
             {
@@ -109,6 +110,7 @@ namespace Annytab.Webshop
                     Response.StatusCode = 404;
                     Response.Status = "404 Not Found";
                     Response.Write(Tools.GetHttpNotFoundPage());
+                    Response.End();
                 }
                 catch(Exception ex)
                 {
@@ -116,6 +118,7 @@ namespace Annytab.Webshop
                     Response.Clear();
                     Response.StatusCode = 200;
                     Response.Redirect("/home/error/general");
+                    Response.End();
                 }   
             }
             else
@@ -124,6 +127,7 @@ namespace Annytab.Webshop
                 Response.Clear();
                 Response.StatusCode = 200;
                 Response.Redirect("/home/error/general");
+                Response.End();
             }
 
             // Clear all the errors on the server
