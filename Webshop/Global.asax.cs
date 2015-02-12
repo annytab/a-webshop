@@ -82,11 +82,11 @@ namespace Annytab.Webshop
         /// </summary>
         protected void Application_Error() 
         {
-            //// Just return if debugging is enabled
-            //if (HttpContext.Current.IsDebuggingEnabled == true)
-            //{
-            //    return;
-            //}
+            // Just return if debugging is enabled
+            if (HttpContext.Current.IsDebuggingEnabled == true)
+            {
+                return;
+            }
 
             // Get the last exception
             Exception error = Server.GetLastError();
