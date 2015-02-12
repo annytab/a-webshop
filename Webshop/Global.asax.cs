@@ -82,11 +82,11 @@ namespace Annytab.Webshop
         /// </summary>
         protected void Application_Error() 
         {
-            // Just return if debugging is enabled
-            if (HttpContext.Current.IsDebuggingEnabled == true)
-            {
-                return;
-            }
+            //// Just return if debugging is enabled
+            //if (HttpContext.Current.IsDebuggingEnabled == true)
+            //{
+            //    return;
+            //}
 
             // Get the last exception
             Exception error = Server.GetLastError();
@@ -99,7 +99,6 @@ namespace Annytab.Webshop
             {
                 // Invalid input html or scripts
                 Response.Redirect("/home/error/invalid-input");
-                Response.End();
             }
             else if (code == 404)
             {
@@ -110,20 +109,17 @@ namespace Annytab.Webshop
                     Response.StatusCode = 404;
                     Response.Status = "404 Not Found";
                     Response.Write(Tools.GetHttpNotFoundPage());
-                    Response.End();
                 }
                 catch (Exception ex)
                 {
                     string exMessage = ex.Message;
                     Response.Redirect("/home/error/general");
-                    Response.End();
                 }
             }
             else
             {
                 // A general error
                 Response.Redirect("/home/error/general");
-                Response.End();
             }
 
             // Clear all the errors on the server
