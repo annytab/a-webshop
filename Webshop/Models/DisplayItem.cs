@@ -15,6 +15,7 @@ public class DisplayItem
     public string title;
     public string description;
     public decimal unit_price;
+    public decimal discount;
     public Int32 value_added_tax_id;
     public string page_name;
     public bool use_local_images;
@@ -39,6 +40,7 @@ public class DisplayItem
         this.title = "";
         this.description = "";
         this.unit_price = 0;
+        this.discount = 0;
         this.value_added_tax_id = 0;
         this.page_name = "";
         this.use_local_images = false;
@@ -62,6 +64,7 @@ public class DisplayItem
         this.title = reader["title"].ToString();
         this.description = reader["main_content"].ToString();
         this.unit_price = Convert.ToDecimal(reader["unit_price"]);
+        this.discount = Convert.ToDecimal(reader["discount"]);
         this.value_added_tax_id = Convert.ToInt32(reader["value_added_tax_id"]);
         this.page_name = reader["page_name"].ToString();
         this.use_local_images = Convert.ToBoolean(reader["use_local_images"]);
@@ -158,12 +161,12 @@ public class DisplayItem
 
         // Create the connection string and the sql statement.
         string connection = Tools.GetConnectionString();
-        string sql = "SELECT C.id AS id, D.title AS title, D.main_content AS main_content, 0 AS unit_price, 0 AS value_added_tax_id, D.page_name AS page_name, "
+        string sql = "SELECT C.id AS id, D.title AS title, D.main_content AS main_content, 0 AS unit_price, 0 AS discount, 0 AS value_added_tax_id, D.page_name AS page_name, "
             + "D.use_local_images AS use_local_images, C.date_added AS date_added, 0 AS rating, C.page_views AS page_views, 0 AS buys, 0 AS from_price, "
             + "0 AS type_code FROM dbo.categories_detail AS D INNER JOIN dbo.categories AS C ON D.category_id = C.id "
             + "WHERE C.parent_category_id = @category_id AND D.language_id = @language_id AND D.inactive = 0 "
             + "UNION ALL "
-            + "SELECT P.id AS id, D.title AS title, D.main_content AS main_content, P.unit_price AS unit_price, D.value_added_tax_id AS value_added_tax_id, "
+            + "SELECT P.id AS id, D.title AS title, D.main_content AS main_content, P.unit_price AS unit_price, P.discount AS discount, D.value_added_tax_id AS value_added_tax_id, "
             + "D.page_name AS page_name, D.use_local_images AS use_local_images, P.date_added AS date_added, D.rating AS rating, P.page_views AS page_views, "
             + "P.buys AS buys, P.from_price AS from_price, 1 AS type_code FROM dbo.products_detail AS D INNER JOIN dbo.products AS P ON D.product_id = P.id "
             + "WHERE P.category_id = @category_id AND D.language_id = @language_id AND D.inactive = 0 "
@@ -172,16 +175,31 @@ public class DisplayItem
         // Sort with prices that includes vat
         if(sortField.ToLower() == "unit_price" && pricesIncludesVat == true)
         {
-            sql += "SELECT C.id AS id, D.title AS title, D.main_content AS main_content, 0 AS unit_price, 0 AS unit_price_with_vat, 0 AS value_added_tax_id, "
+            sql = "SELECT C.id AS id, D.title AS title, D.main_content AS main_content, 0 AS unit_price, 0 AS discount, 0 AS unit_price_with_vat, 0 AS value_added_tax_id, "
             + "D.page_name AS page_name, D.use_local_images AS use_local_images, C.date_added AS date_added, 0 AS rating, C.page_views AS page_views, 0 AS buys, "
             + "0 AS from_price, 0 AS type_code FROM dbo.categories_detail AS D INNER JOIN dbo.categories AS C ON D.category_id = C.id "
             + "WHERE C.parent_category_id = @category_id AND D.language_id = @language_id AND D.inactive = 0 "
             + "UNION ALL "
-            + "SELECT P.id AS id, D.title AS title, D.main_content AS main_content, P.unit_price AS unit_price, (P.unit_price * (1 + V.value)) AS unit_price_with_vat, "
+            + "SELECT P.id AS id, D.title AS title, D.main_content AS main_content, P.unit_price AS unit_price, P.discount AS discount, (P.unit_price * (1 - P.discount) * (1 + V.value)) AS unit_price_with_vat, "
             + "D.value_added_tax_id AS value_added_tax_id, D.page_name AS page_name, D.use_local_images AS use_local_images, P.date_added AS date_added, "
             + "D.rating AS rating, P.page_views AS page_views, P.buys AS buys, P.from_price AS from_price, 1 AS type_code FROM dbo.products_detail AS D INNER JOIN dbo.products AS P "
             + "ON D.product_id = P.id INNER JOIN dbo.value_added_taxes AS V ON D.value_added_tax_id = V.id WHERE P.category_id = @category_id "
             + "AND D.language_id = @language_id AND D.inactive = 0 ORDER BY unit_price_with_vat " + sortOrder + " OFFSET @pageNumber ROWS FETCH NEXT @pageSize ROWS ONLY;";
+        }
+
+        // Sort with discount prices
+        if (sortField.ToLower() == "unit_price" && pricesIncludesVat == false)
+        {
+            sql = "SELECT C.id AS id, D.title AS title, D.main_content AS main_content, 0 AS unit_price, 0 AS discount, 0 AS discount_price, 0 AS value_added_tax_id, D.page_name AS page_name, "
+            + "D.use_local_images AS use_local_images, C.date_added AS date_added, 0 AS rating, C.page_views AS page_views, 0 AS buys, 0 AS from_price, "
+            + "0 AS type_code FROM dbo.categories_detail AS D INNER JOIN dbo.categories AS C ON D.category_id = C.id "
+            + "WHERE C.parent_category_id = @category_id AND D.language_id = @language_id AND D.inactive = 0 "
+            + "UNION ALL "
+            + "SELECT P.id AS id, D.title AS title, D.main_content AS main_content, P.unit_price AS unit_price, P.discount AS discount, (P.unit_price * (1 - P.discount)) AS discount_price, "
+            + "D.value_added_tax_id AS value_added_tax_id, D.page_name AS page_name, D.use_local_images AS use_local_images, P.date_added AS date_added, D.rating AS rating, "
+            + "P.page_views AS page_views, P.buys AS buys, P.from_price AS from_price, 1 AS type_code FROM dbo.products_detail AS D INNER JOIN dbo.products AS P ON D.product_id = P.id "
+            + "WHERE P.category_id = @category_id AND D.language_id = @language_id AND D.inactive = 0 "
+            + "ORDER BY discount_price " + sortOrder + " OFFSET @pageNumber ROWS FETCH NEXT @pageSize ROWS ONLY;";
         }
         
         // The using block is used to call dispose automatically even if there is a exception.

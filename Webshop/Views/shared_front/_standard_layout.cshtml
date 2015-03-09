@@ -169,7 +169,7 @@
                     @* Campaigns left *@
                     @foreach (Campaign campaign in leftCampaigns)
                     {
-                        @:<div><a href="@campaign.link_url"><img src="@Tools.GetCampaignImageUrl(campaign.image_name)" alt="@campaign.name" style="width:100%;vertical-align:middle;" /></a></div>
+                        @:<div><a href="@("/home/campaign_tracker/" + campaign.id)"><img src="@Tools.GetCampaignImageUrl(campaign.image_name)" alt="@campaign.name" style="width:100%;vertical-align:middle;" /></a></div>
                     }
                     <div class="annytab-basic-space"></div>
 
@@ -209,7 +209,7 @@
                 @* Campaigns right *@
                 @foreach (Campaign campaign in rightCampaigns)
                 {
-                    @:<div><a href="@campaign.link_url"><img src="@Tools.GetCampaignImageUrl(campaign.image_name)" alt="@campaign.name" style="width:100%;vertical-align:middle;" /></a></div>
+                    @:<div><a href="@("/home/campaign_tracker/" + campaign.id)"><img src="@Tools.GetCampaignImageUrl(campaign.image_name)" alt="@campaign.name" style="width:100%;vertical-align:middle;" /></a></div>
                 }
                 <div class="annytab-basic-space"></div>
 

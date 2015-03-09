@@ -86,7 +86,7 @@
     <img id="leftArrow" src="/Content/images/annytab_design/left_arrow.png" class="annytab-slideshow-left-arrow" alt="Slideshow left arrow" />
     @for (int i = 0; i < slideShowCampaigns.Count; i++)
     {
-        @:<a href="@slideShowCampaigns[i].link_url"><img data-img="@i.ToString()" src="@Tools.GetCampaignImageUrl(slideShowCampaigns[i].image_name)" alt="@slideShowCampaigns[i].name" class="annytab-slideshow-image" /></a>
+        @:<a href="@("/home/campaign_tracker/" + slideShowCampaigns[i].id)"><img data-img="@i.ToString()" src="@Tools.GetCampaignImageUrl(slideShowCampaigns[i].image_name)" alt="@slideShowCampaigns[i].name" class="annytab-slideshow-image" /></a>
     }
     <img id="rightArrow" src="/Content/images/annytab_design/right_arrow.png" class="annytab-slideshow-right-arrow" alt="Slideshow right arrow" />
 </div>

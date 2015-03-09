@@ -228,6 +228,51 @@ namespace Annytab.Webshop.Controllers
 
         } // End of the translate method
 
+        // Reset statistics for all categories or a specific category, set the id to 0 if you want to reset statistics for all categories
+        // GET: /admin_categories/reset_statistics/1?returnUrl=?kw=df&so=ASC
+        [HttpGet]
+        public ActionResult reset_statistics(Int32 id = 0, string returnUrl = "")
+        {
+            // Get the current domain
+            Domain currentDomain = Tools.GetCurrentDomain();
+            ViewBag.CurrentDomain = currentDomain;
+
+            // Get query parameters
+            ViewBag.QueryParams = new QueryParams(returnUrl);
+
+            // Check if the administrator is authorized
+            if (Administrator.IsAuthorized(new string[] { "Administrator", "Editor" }) == true)
+            {
+                ViewBag.AdminSession = true;
+            }
+            else if (Administrator.IsAuthorized(Administrator.GetAllAdminRoles()) == true)
+            {
+                ViewBag.AdminSession = true;
+                ViewBag.AdminErrorCode = 1;
+                ViewBag.TranslatedTexts = StaticText.GetAll(currentDomain.back_end_language, "id", "ASC");
+                return View("index");
+            }
+            else
+            {
+                // Redirect the user to the start page
+                return RedirectToAction("index", "admin_login");
+            }
+
+            // Reset statistics for all categories or just one category
+            if (id == 0)
+            {
+                Category.ResetStatistics();
+            }
+            else
+            {
+                Category.UpdatePageviews(id, 0);
+            }
+
+            // Return the index view
+            return Redirect("/admin_categories" + returnUrl);
+
+        } // End of the reset_statistics method
+
         #endregion
 
         #region Post methods

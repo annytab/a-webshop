@@ -18,7 +18,7 @@
     string cancel_tt = tt.Get("cancel");
 
     // Set the title for the page
-    if (staticText.id == string.Empty)
+    if (staticText.id == "")
     {
         ViewBag.Title = static_text_tt + " - " + new_tt.ToLower();
     }
@@ -36,7 +36,7 @@
 @using (Html.BeginForm("edit", "admin_static_texts", FormMethod.Post))
 {
     <input name="returnUrl" type="hidden" value="@returnUrl" />
-    <div id="divErrors" class="formErrorMessage" style="@(error_message != "" ? "display:block;" : "display:none;")">@Html.Raw(error_message)</div>
+    <div class="formErrorMessage" style="@(error_message != "" ? "display:block;" : "display:none;")">@Html.Raw(error_message)</div>
     <table style="width:100%;">
         <tr>
             <td class="label">@(id_tt + ":")</td>
@@ -52,8 +52,7 @@
     <div style="display:block;border:1px solid #cccccc;margin:20px 0px 0px 0px;border-radius:4px;">
         <input id="btnSave" type="submit" value="@save_tt" />
         <input type="button" value="@cancel_tt" onclick="@Html.Raw("location.href='/admin_static_texts" + returnUrl + "'")" />
-    </div>
-    
+    </div>    
 }
 
 @section scripts {

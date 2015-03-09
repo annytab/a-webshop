@@ -37,6 +37,8 @@
     string adjust_tt = tt.Get("adjust");
     string prices_tt = tt.Get("prices");
     string freight_prices_tt = tt.Get("freight_prices");
+    string reset_tt = tt.Get("reset");
+    string statistics_tt = tt.Get("statistics");
     string id_tt = tt.Get("id");
     string product_code_short_tt = tt.Get("product_code_short");
     string title_tt = tt.Get("title");
@@ -77,16 +79,19 @@
     @using (Html.BeginForm("adjust_unit_freights", "admin_products", FormMethod.Post))
     {
         <input name="returnUrl" type="hidden" value="@queryString" />
-        <div style="padding:2px;background-color:#f0f0f0;">
+        <div style="padding:2px;margin-bottom:4px;background-color:#f0f0f0;">
             <input name="priceMultiplier" type="number" min="1" max="200" step="1" value="100" />@("% ")
             <input type="submit" value="@(adjust_tt + " " + freight_prices_tt.ToLower())" />
         </div>
     }
+    <div style="padding:2px;background-color:#f0f0f0;">
+        <input type="button" value="@(reset_tt + " " + statistics_tt.ToLower())" onclick="location.href='@Url.Action("reset_statistics", "admin_products", new { id = 0, returnUrl = queryString })'" />
+    </div>
 </div>
 
 @*List of products*@
 <div class="listContainer">
-    <table class="listTable" style="width:1500px;">
+    <table class="listTable" style="width:1600px;">
         <tr>
             <th class="listTh" style="text-align:center;width:100px;">@id_tt</th>
             <th class="listTh" style="text-align:left;width:100px;">@product_code_short_tt</th>
@@ -101,6 +106,7 @@
             <th class="listTh" style="text-align:center;width:100px;">@bundle_structure_tt</th>
             <th class="listTh" style="text-align:center;width:100px;">@translate_tt</th>
             <th class="listTh" style="text-align:center;width:100px;">@files_tt</th>
+            <th class="listTh" style="text-align:center;width:100px;">@statistics_tt</th>
             <th class="listTh" style="text-align:center;width:100px;">@delete_tt</th>
         </tr>
 
@@ -129,6 +135,7 @@
             @:<td style="text-align:center;"><input type="button" value="@bundle_structure_tt" onclick="location.href='@Url.Action("bundle_structure", "admin_products", new { id = products[i].id, returnUrl = queryString })'" /></td>
             @:<td style="text-align:center;"><input type="button" value="@translate_tt" onclick="location.href='@Url.Action("translate", "admin_products", new { id = products[i].id, returnUrl = queryString })'" /></td>
             @:<td style="text-align:center;"><input type="button" value="@files_tt" onclick="location.href='@Url.Action("files", "admin_products", new { id = products[i].id, returnUrl = queryString })'" /></td>
+            @:<td style="text-align:center;"><input type="button" value="@reset_tt" onclick="location.href='@Url.Action("reset_statistics", "admin_products", new { id = products[i].id, returnUrl = queryString })'" /></td>
             @:<td style="text-align:center;"><input data-id="deletePost" type="button" value="@delete_tt" @(Html.Raw("data-url='/admin_products/delete/" + products[i].id + "?returnUrl=" + Server.UrlEncode(queryString) + "'")) /></td>
             @:</tr>
         }

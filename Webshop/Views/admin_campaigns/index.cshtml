@@ -29,6 +29,9 @@
     string id_tt = tt.Get("id");
     string name_tt = tt.Get("name");
     string category_tt = tt.Get("category");
+    string click_count_tt = tt.Get("click_count");
+    string statistics_tt = tt.Get("statistics");
+    string reset_tt = tt.Get("reset");
     string edit_tt = tt.Get("edit");
     string delete_tt = tt.Get("delete");
 
@@ -44,14 +47,23 @@
 <h1>@ViewBag.Title</h1>
 @Html.Partial("~/Views/admin_campaigns/_form_menu.cshtml")
 
-@*List of static texts*@
+@*Action menu bar*@
+<div class="formMenuBar">
+    <div style="padding:2px;background-color:#f0f0f0;">
+        <input type="button" value="@(reset_tt + " " + statistics_tt.ToLower())" onclick="location.href='@Url.Action("reset_statistics", "admin_campaigns", new { id = 0, returnUrl = queryString })'" />
+    </div>
+</div>
+
+@*List of campaigns*@
 <div class="listContainer">
-    <table class="listTable" style="width:600px;">
+    <table class="listTable" style="width:800px;">
         <tr>
             <th class="listTh" style="text-align:center;width:100px;">@id_tt</th>
             <th class="listTh" style="text-align:left;width:200px;">@name_tt</th>
             <th class="listTh" style="text-align:left;width:100px;">@category_tt</th>
+            <th class="listTh" style="text-align:center;width:100px;">@click_count_tt</th>
             <th class="listTh" style="text-align:center;width:100px;">@edit_tt</th>
+            <th class="listTh" style="text-align:center;width:100px;">@statistics_tt</th>
             <th class="listTh" style="text-align:center;width:100px;">@delete_tt</th>
         </tr>
 
@@ -70,7 +82,9 @@
             @:<td style="text-align:center;">@campaigns[i].id.ToString()</td>
             @:<td style="text-align:left;">@campaigns[i].name</td>
             @:<td style="text-align:left;">@campaigns[i].category_name</td>
+            @:<td style="text-align:center;">@campaigns[i].click_count</td>
             @:<td style="text-align:center;"><input type="button" value="@edit_tt" onclick="location.href='@Url.Action("edit", "admin_campaigns", new { id = campaigns[i].id, returnUrl = queryString })'" /></td>
+            @:<td style="text-align:center;"><input type="button" value="@reset_tt" onclick="location.href='@Url.Action("reset_statistics", "admin_campaigns", new { id = campaigns[i].id, returnUrl = queryString })'" /></td>
             @:<td style="text-align:center;"><input data-id="deletePost" type="button" value="@delete_tt" @(Html.Raw("data-url='/admin_campaigns/delete/" + campaigns[i].id + "?returnUrl=" + Server.UrlEncode(queryString) + "'")) /></td>
             @:</tr>
         }

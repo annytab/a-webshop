@@ -314,6 +314,44 @@ public class Category
 
     } // End of the UpdatePageviews method
 
+    /// <summary>
+    /// Reset statistics for all categories
+    /// </summary>
+    public static void ResetStatistics()
+    {
+        // Create the connection and the sql statement
+        string connection = Tools.GetConnectionString();
+        string sql = "UPDATE dbo.categories SET page_views = @page_views;";
+
+        // The using block is used to call dispose automatically even if there are an exception.
+        using (SqlConnection cn = new SqlConnection(connection))
+        {
+            // The using block is used to call dispose automatically even if there are an exception.
+            using (SqlCommand cmd = new SqlCommand(sql, cn))
+            {
+                // Add parameters
+                cmd.Parameters.AddWithValue("@page_views", 0);
+
+                // The Try/Catch/Finally statement is used to handle unusual exceptions in the code to
+                // avoid having our application crash in such cases.
+                try
+                {
+                    // Open the connection.
+                    cn.Open();
+
+                    // Execute the update
+                    cmd.ExecuteNonQuery();
+
+                }
+                catch (Exception e)
+                {
+                    throw e;
+                }
+            }
+        }
+
+    } // End of the ResetStatistics method
+
     #endregion
 
     #region Count methods

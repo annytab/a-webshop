@@ -34,6 +34,8 @@
     string category_tt = tt.Get("category");
     string list_tt = tt.Get("list");
     string id_tt = tt.Get("id");
+    string reset_tt = tt.Get("reset");
+    string statistics_tt = tt.Get("statistics");
     string title_tt = tt.Get("title");
     string parent_tt = tt.Get("parent");
     string page_views_tt = tt.Get("page_views");
@@ -54,9 +56,17 @@
 <h1>@ViewBag.Title</h1>
 @Html.Partial("~/Views/admin_categories/_form_menu.cshtml")
 
+@*Action menu bar*@
+<div class="formMenuBar">
+    <div style="padding:2px;background-color:#f0f0f0;">
+        <input type="button" value="@(reset_tt + " " + statistics_tt.ToLower())" onclick="location.href='@Url.Action("reset_statistics", "admin_categories", new { id = 0, returnUrl = queryString })'" />
+    </div>
+</div>
+
+
 @*List of products*@
 <div class="listContainer">
-    <table class="listTable" style="width:900px;">
+    <table class="listTable" style="width:1000px;">
         <tr>
             <th class="listTh" style="text-align:center;width:100px;">@id_tt</th>
             <th class="listTh" style="text-align:left;width:200px;">@title_tt</th>
@@ -65,6 +75,7 @@
             <th class="listTh" style="text-align:center;width:100px;">@edit_tt</th>
             <th class="listTh" style="text-align:center;width:100px;">@images_tt</th>
             <th class="listTh" style="text-align:center;width:100px;">@translate_tt</th>
+            <th class="listTh" style="text-align:center;width:100px;">@statistics_tt</th>
             <th class="listTh" style="text-align:center;width:100px;">@delete_tt</th>
         </tr>
 
@@ -87,6 +98,7 @@
             @:<td style="text-align:center;"><input type="button" value="@edit_tt" onclick="location.href='@Url.Action("edit", "admin_categories", new { id = categories[i].id, returnUrl = queryString })'" /></td>
             @:<td style="text-align:center;"><input type="button" value="@images_tt" onclick="location.href='@Url.Action("images", "admin_categories", new { id = categories[i].id, returnUrl = queryString })'" /></td>
             @:<td style="text-align:center;"><input type="button" value="@translate_tt" onclick="location.href='@Url.Action("translate", "admin_categories", new { id = categories[i].id, returnUrl = queryString })'" /></td>
+            @:<td style="text-align:center;"><input type="button" value="@reset_tt" onclick="location.href='@Url.Action("reset_statistics", "admin_categories", new { id = categories[i].id, returnUrl = queryString })'" /></td>
             @:<td style="text-align:center;"><input data-id="deletePost" type="button" value="@delete_tt" @(Html.Raw("data-url='/admin_categories/delete/" + categories[i].id + "?returnUrl=" + Server.UrlEncode(queryString) + "'")) /></td>
             @:</tr>
         }

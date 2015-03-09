@@ -101,6 +101,15 @@ public class CartItem
         // Get the shopping cart
         Dictionary<string, CartItem> shoppingCart = (Dictionary<string, CartItem>)HttpContext.Current.Session["ShoppingCart"];
 
+        // Clear the shopping cart if a discount code is applied
+        if (HttpContext.Current.Session["DiscountCodeId"] != null)
+        {
+            HttpContext.Current.Session.Remove("DiscountCodeId");
+            HttpContext.Current.Session.Remove("ShoppingCart");
+            HttpContext.Current.Session["DiscountCodeError"] = "invalid_discount_code";
+            return;
+        }
+
         // Make sure that the session not is null
         if (shoppingCart != null)
         {
@@ -134,6 +143,15 @@ public class CartItem
         // Get the shopping cart
         Dictionary<string, CartItem> shoppingCart = (Dictionary<string, CartItem>)HttpContext.Current.Session["ShoppingCart"];
 
+        // Clear the shopping cart if a discount code is applied
+        if(HttpContext.Current.Session["DiscountCodeId"] != null)
+        {
+            HttpContext.Current.Session.Remove("DiscountCodeId");
+            HttpContext.Current.Session.Remove("ShoppingCart");
+            HttpContext.Current.Session["DiscountCodeError"] = "invalid_discount_code";
+            return;
+        }
+
         // Make sure that the session not is null
         if (shoppingCart != null)
         {
@@ -156,8 +174,130 @@ public class CartItem
     {
         // Delete the shopping cart session post
         HttpContext.Current.Session.Remove("ShoppingCart");
+        HttpContext.Current.Session.Remove("DiscountCodeId");
 
     } // End of the ClearShoppingCart method
+
+    /// <summary>
+    /// Set the discount code and modify the shopping cart
+    /// </summary>
+    /// <param name="discountCodeId">The discount code id as a string</param>
+    public static void SetDiscountCode(string discountCodeId)
+    {
+        // Get the current domain
+        Domain domain = Tools.GetCurrentDomain();
+
+        // Get the discount code
+        DiscountCode discountCode = DiscountCode.GetOneById(discountCodeId);
+        
+        // Get the currency
+        Currency currency = Currency.GetOneById(domain.currency);
+
+        // Calculate the decimal multiplier
+        Int32 decimalMultiplier = (Int32)Math.Pow(10, currency.decimals);
+
+        // Check if there is errors with the discount code
+        if(discountCode == null)
+        {
+            // The discount code does not exist
+            HttpContext.Current.Session["DiscountCodeError"] = "invalid_discount_code";
+            return;
+        }
+        else if (DateTime.Now > discountCode.end_date)
+        {
+            // The discount code is not valid anymore
+            HttpContext.Current.Session["DiscountCodeError"] = "invalid_discount_code";
+            return;
+        }
+        else if(discountCode.language_id != domain.front_end_language)
+        {
+            // The discount code is not valid for the language
+            HttpContext.Current.Session["DiscountCodeError"] = "invalid_discount_code";
+            return;
+        }
+        else if(discountCode.currency_code != currency.currency_code)
+        {
+            // The discount code is not valid for the currency
+            HttpContext.Current.Session["DiscountCodeError"] = "invalid_discount_code";
+            return;
+        }
+        else
+        {
+            // Get the signed-in customer
+            Customer customer = Customer.GetSignedInCustomer();
+
+            // Check if the discount code already is used by the customer
+            if(discountCode.once_per_customer == true && customer == null)
+            {
+                // The discount code does not exist
+                HttpContext.Current.Session["DiscountCodeError"] = "customer_not_signed_in";
+                return;
+            }
+            else if (discountCode.once_per_customer == true && Order.GetOneByDiscountCodeAndCustomerId(discountCodeId, customer.id) != null)
+            {
+                // The discount code is already used
+                HttpContext.Current.Session["DiscountCodeError"] = "invalid_discount_code";
+                return;
+            }
+
+            // Get the shopping cart
+            Dictionary<string, CartItem> shoppingCart = (Dictionary<string, CartItem>)HttpContext.Current.Session["ShoppingCart"];
+
+            // Make sure that the shopping cart not is null
+            if(shoppingCart == null)
+            {
+                // Shopping cart is empty
+                HttpContext.Current.Session["DiscountCodeError"] = "empty_shopping_cart";
+                return;
+            }
+
+            // Calculate the order sum
+            decimal net_sum = 0;
+            foreach (KeyValuePair<string, CartItem> post in shoppingCart)
+            {
+                // Get the cart item
+                CartItem itemInCart = post.Value;
+
+                // Add to the net sum
+                net_sum += itemInCart.quantity * itemInCart.unit_price;
+            }
+
+            // Check the order minimum
+            if(net_sum < discountCode.minimum_order_value)
+            {
+                HttpContext.Current.Session["DiscountCodeError"] = "invalid_discount_code";
+                return;
+            }
+
+            // Loop the shopping cart
+            foreach (KeyValuePair<string, CartItem> post in shoppingCart)
+            {
+                // Get the cart item
+                CartItem itemInCart = post.Value;
+
+                // Check if we should remove the freight
+                if (discountCode.free_freight == true)
+                {
+                    // Remove the freight
+                    itemInCart.unit_freight = 0;
+                }
+
+                // Get the product
+                Product product = Product.GetOneById(itemInCart.product_id, domain.front_end_language);
+
+                // Apply the discount
+                if (discountCode.exclude_products_on_sale == false || (discountCode.exclude_products_on_sale == true && product.discount <= 0M))
+                {
+                    itemInCart.unit_price = Math.Round(itemInCart.unit_price * (1 - discountCode.discount_value) * decimalMultiplier, MidpointRounding.AwayFromZero) / decimalMultiplier;
+                }
+            }
+
+            // Set the discount code
+            HttpContext.Current.Session["DiscountCodeId"] = discountCodeId;
+            HttpContext.Current.Session.Remove("DiscountCodeError");
+        }
+
+    } // End of the SetDiscountCode method
 
     #endregion
 

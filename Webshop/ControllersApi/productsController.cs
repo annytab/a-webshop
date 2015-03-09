@@ -77,6 +77,7 @@ namespace Annytab.Webshop.ControllersApi
             post.size_system = AnnytabDataValidation.TruncateString(post.size_system, 10);
             post.energy_efficiency_class = AnnytabDataValidation.TruncateString(post.energy_efficiency_class, 10);
             post.date_added = AnnytabDataValidation.TruncateDateTime(post.date_added);
+            post.discount = AnnytabDataValidation.TruncateDecimal(post.discount, 0, 9.999M);
 
             // Get a product on page name
             Product productOnPageName = Product.GetOneByPageName(post.page_name, languageId);
@@ -161,6 +162,7 @@ namespace Annytab.Webshop.ControllersApi
             post.size_system = AnnytabDataValidation.TruncateString(post.size_system, 10);
             post.energy_efficiency_class = AnnytabDataValidation.TruncateString(post.energy_efficiency_class, 10);
             post.date_added = AnnytabDataValidation.TruncateDateTime(post.date_added);
+            post.discount = AnnytabDataValidation.TruncateDecimal(post.discount, 0, 9.999M);
 
             // Get the saved post
             Product savedPost = Product.GetOneById(post.id, languageId);

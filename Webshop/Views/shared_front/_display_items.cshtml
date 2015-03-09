@@ -52,6 +52,8 @@
     string product_tt = tt.Get("product");
     string category_tt = tt.Get("category");
     string from_short_tt = tt.Get("from_short");
+    string regular_price_short_tt = tt.Get("regular_price_short");
+    string discount_tt = tt.Get("discount");
 
     // A counter for columns
     Int32 columnCounter = 0;
@@ -69,6 +71,8 @@
     string link_text = "";
     string short_link_text = show_tt;
     string price = "";
+    string ordinary_price = "";
+    string discount_percent = "";
 
     @* Set post data *@
     if (displayItems[i].type_code == 0)
@@ -83,9 +87,11 @@
         ValueAddedTax valueAddedTax = ValueAddedTax.GetOneById(displayItems[i].value_added_tax_id);
         decimal productPrice = displayItems[i].unit_price;
         productPrice *= (currency.currency_base / currency.conversion_rate);
-        productPrice = Math.Round(productPrice * decimalMultiplier, MidpointRounding.AwayFromZero) / decimalMultiplier;
+        decimal ordinaryPrice = Math.Round(productPrice * decimalMultiplier, MidpointRounding.AwayFromZero) / decimalMultiplier;
+        productPrice = Math.Round(productPrice * (1 - displayItems[i].discount) * decimalMultiplier, MidpointRounding.AwayFromZero) / decimalMultiplier;
         if (pricesIncludesVat == true)
         {
+            ordinaryPrice += Math.Round(ordinaryPrice * valueAddedTax.value * decimalMultiplier, MidpointRounding.AwayFromZero) / decimalMultiplier;
             productPrice += Math.Round(productPrice * valueAddedTax.value * decimalMultiplier, MidpointRounding.AwayFromZero) / decimalMultiplier;
         }
         
@@ -94,6 +100,10 @@
         link_text = show_tt + " " + product_tt.ToLower();
         price = displayItems[i].from_price == true ? from_short_tt.ToLower() + " " : "";
         price += productPrice.ToString("##,0.##", cultureInfo) + " " + domain.currency;
+        ordinary_price = " (" + regular_price_short_tt + " ";
+        ordinary_price += displayItems[i].from_price == true ? from_short_tt.ToLower() + " " : "";
+        ordinary_price += ordinaryPrice.ToString("##,0.##", cultureInfo) + " " + domain.currency + ") ";
+        discount_percent = (displayItems[i].discount * 100).ToString("##,0", cultureInfo) + "% " + discount_tt.ToUpper();
     }
 
     @* The item post *@
@@ -105,7 +115,10 @@
             </div>
             <div class="annytab-view0-right">
                 <a href="@url" class="annytab-view0-title">@title</a><br />
-                <div class="annytab-price-tag-small" style="margin:8px 0px 8px 0px;">@Html.Raw(price)</div>
+                <div class="annytab-price-tag-small" style="margin:5px 0px 5px 0px;">@Html.Raw(price)</div>
+                <div style="@(displayItems[i].discount > 0.000M ? "display:block;" : "display:none;")vertical-align:middle;margin-bottom:5px;font-size:12px;line-height:12px;">
+                    <span style="color:#a30909;">@discount_percent</span><span>@ordinary_price</span>
+                </div>
                 <div class="annytab-basic-bread-text">@Html.Raw(description)</div>
             </div>
         </div>
@@ -122,7 +135,11 @@
             <div class="annytab-view1-title"><a href="@url">@title</a></div>
             <a href="@url"><img class="annytab-view1-image" alt="@title" src="@src" /></a>
             <div style="position:absolute;left:10px;bottom:10px;right:10px;">
-                <div class="annytab-price-tag-small" style="margin-bottom:10px;">@Html.Raw(price)</div>
+                <div class="annytab-price-tag-small" style="margin-bottom:5px;">@Html.Raw(price)</div>
+                <div style="@(displayItems[i].discount > 0.000M ? "display:block;" : "display:none;")vertical-align:middle;margin-bottom:5px;font-size:12px;line-height:12px;">
+                    <div style="color:#a30909;margin-bottom:5px;">@discount_percent</div>
+                    <div>@ordinary_price</div>
+                </div>
                 <a class="annytab-basic-button" style="display:block;padding:10px;" href="@url">@link_text</a>
             </div>
             <div style="margin-top:76px;"></div>
@@ -156,7 +173,11 @@
             <div class="annytab-view1-title"><a href="@url">@title</a></div>
             <a href="@url"><img class="annytab-view1-image" alt="@title" src="@src" /></a>
             <div style="position:absolute;left:10px;bottom:10px;right:10px;">
-                <div class="annytab-price-tag-small" style="margin-bottom:10px;">@Html.Raw(price)</div>
+                <div class="annytab-price-tag-small" style="margin-bottom:5px;">@Html.Raw(price)</div>
+                <div style="@(displayItems[i].discount > 0.000M ? "display:block;" : "display:none;")vertical-align:middle;margin-bottom:5px;font-size:12px;line-height:12px;">
+                    <div style="color:#a30909;margin-bottom:5px;">@discount_percent</div>
+                    <div>@ordinary_price</div>
+                </div>
                 <a class="annytab-basic-button" style="display:block;padding:10px;" href="@url">@link_text</a>
             </div>
             <div style="margin-top:76px;"></div>
@@ -190,7 +211,11 @@
             <div class="annytab-view1-title"><a href="@url">@title</a></div>
             <a href="@url"><img class="annytab-view1-image" alt="@title" src="@src" /></a>
             <div style="position:absolute;left:10px;bottom:10px;right:10px;">
-                <div class="annytab-price-tag-small" style="margin-bottom:10px;">@Html.Raw(price)</div>
+                <div class="annytab-price-tag-small" style="margin-bottom:5px;">@Html.Raw(price)</div>
+                <div style="@(displayItems[i].discount > 0.000M ? "display:block;" : "display:none;")vertical-align:middle;margin-bottom:5px;font-size:12px;line-height:12px;">
+                    <div style="color:#a30909;margin-bottom:5px;">@discount_percent</div>
+                    <div>@ordinary_price</div>
+                </div>
                 <a class="annytab-basic-button" style="display:block;padding:10px;" href="@url">@short_link_text</a>
             </div>
             <div style="margin-top:76px;"></div>
@@ -215,7 +240,7 @@
     }
 }
 
-    <div class="annytab-basic-space"></div>
+<div class="annytab-basic-space"></div>
 
-    @* Paging menu *@
-    @Html.Partial(domain.custom_theme_id == 0 ? "/Views/shared_front/_paging_menu.cshtml" : "/Views/theme/front_paging_menu.cshtml")
+@* Paging menu *@
+@Html.Partial(domain.custom_theme_id == 0 ? "/Views/shared_front/_paging_menu.cshtml" : "/Views/theme/front_paging_menu.cshtml")

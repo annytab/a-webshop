@@ -25,6 +25,7 @@
     CultureInfo cultureInfo = ViewBag.CultureInfo;
     bool pricesIncludesVat = ViewBag.PricesIncludesVat;
     DateTime desiredDateOfDelivery = ViewBag.DesiredDateOfDelivery;
+    string discount_code_id = ViewBag.DiscountCodeId;
 
     // Get translated texts
     string check_out_tt = tt.Get("check_out");
@@ -73,7 +74,10 @@
     string create_order_tt = tt.Get("create_order");
     string send_request_tt = tt.Get("send") + " " + tt.Get("request").ToLower();
     string desired_date_of_delivery_tt = tt.Get("desired_date_of_delivery");
-
+    string discount_code_tt = tt.Get("discount_code");
+    string invalid_discount_code_tt = tt.Get("invalid_discount_code");
+    string add_tt = tt.Get("add");
+    
     // Set meta data
     ViewBag.Title = check_out_tt;
     ViewBag.MetaTitle = check_out_tt;
@@ -101,11 +105,22 @@
 
 @* Hidden data *@
 <input id="hiddenCultureCode" type="hidden" value="@cultureInfo.Name" />
-    
+ 
 @* Shopping cart *@
 <div class="annytab-step-heading">
-    <div class="annytab-step-circle">1</div><span>@shopping_cart_tt</span>
+    <div class="annytab-step-circle">1</div><span>@shopping_cart_tt</span> : 
+    <span id="btnShowDiscountCode" class="annytab-basic-linkbutton" style="@(discount_code_id == "" ? "display:inline;" : "display:none;")">@discount_code_tt</span>
+    <span style="@(discount_code_id != "" ? "display:inline;" : "display:none;")">@discount_code_id</span>
 </div>
+
+@* Discount code *@
+@using (Html.BeginForm("set_discount_code", "order", FormMethod.Post))
+{
+    <div id="discountCodeContainer" class="annytab-basic-container" style="display:none;margin-bottom:6px;">
+        <input name="txtDiscountCode" type="text" class="annytab-form-textbox" value="" />
+        <input name="btnSetDiscountCode" type="submit" class="annytab-form-button" value="@add_tt" />
+    </div>
+}
     
 <div class="annytab-cart-container">
     <div id="divTable" class="annytab-cart-table">
@@ -233,6 +248,7 @@
     <input id="hiddenCustomerType" name="hiddenCustomerType" type="hidden" tabindex="-1" value="@customer.customer_type" />
     <input id="hiddenVatCode" name="hiddenVatCode" type="hidden" tabindex="-1" value="@vatCode" />
     <input id="hiddenDecimalMultiplier" type="hidden" tabindex="-1" value="@decimalMultiplier" />
+    <input name="hiddenDiscountCodeId" type="hidden" tabindex="-1" value="@discount_code_id" />
     
     if (customer.id != 0)
     {

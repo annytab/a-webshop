@@ -449,6 +449,51 @@ namespace Annytab.Webshop.Controllers
 
         } // End of the files method
 
+        // Reset statistics for all products or a specific product, set the id to 0 if you want to reset statistics for all products
+        // GET: /admin_products/reset_statistics/1?returnUrl=?kw=df&so=ASC
+        [HttpGet]
+        public ActionResult reset_statistics(Int32 id = 0, string returnUrl = "")
+        {
+            // Get the current domain
+            Domain currentDomain = Tools.GetCurrentDomain();
+            ViewBag.CurrentDomain = currentDomain;
+
+            // Get query parameters
+            ViewBag.QueryParams = new QueryParams(returnUrl);
+
+            // Check if the administrator is authorized
+            if (Administrator.IsAuthorized(new string[] { "Administrator", "Editor" }) == true)
+            {
+                ViewBag.AdminSession = true;
+            }
+            else if (Administrator.IsAuthorized(Administrator.GetAllAdminRoles()) == true)
+            {
+                ViewBag.AdminSession = true;
+                ViewBag.AdminErrorCode = 1;
+                ViewBag.TranslatedTexts = StaticText.GetAll(currentDomain.back_end_language, "id", "ASC");
+                return View("index");
+            }
+            else
+            {
+                // Redirect the user to the start page
+                return RedirectToAction("index", "admin_login");
+            }
+
+            // Reset statistics for all products or just one product
+            if (id == 0)
+            {
+                Product.ResetStatistics();
+            }
+            else
+            {
+                Product.ResetStatistics(id);
+            }
+
+            // Return the index view
+            return Redirect("/admin_products" + returnUrl);
+
+        } // End of the reset_statistics method
+
         #endregion
 
         #region Post methods
@@ -496,6 +541,8 @@ namespace Annytab.Webshop.Controllers
             decimal freight = 0;
             decimal.TryParse(collection["txtFreight"].Replace(",", "."), NumberStyles.Any, CultureInfo.InvariantCulture, out freight);
             Int32 unitId = Convert.ToInt32(collection["selectUnit"]);
+            decimal discount = 0;
+            decimal.TryParse(collection["txtDiscount"].Replace(",", "."), NumberStyles.Any, CultureInfo.InvariantCulture, out discount);
             decimal mountTimeHours = 0;
             decimal.TryParse(collection["txtMountTimeHours"].Replace(",", "."), NumberStyles.Any, CultureInfo.InvariantCulture, out mountTimeHours);
             bool from_price = Convert.ToBoolean(collection["cbFromPrice"]);
@@ -612,6 +659,7 @@ namespace Annytab.Webshop.Controllers
             product.unit_price = price;
             product.unit_freight = freight;
             product.unit_id = unitId;
+            product.discount = discount;
             product.mount_time_hours = mountTimeHours;
             product.from_price = from_price;
             product.brand = brand;
@@ -764,6 +812,10 @@ namespace Annytab.Webshop.Controllers
             if (product.toll_freight_addition < 0 || product.toll_freight_addition > 9999999999.99M)
             {
                 errorMessage += "&#149; " + String.Format(tt.Get("error_field_range"), tt.Get("toll_freight_addition"), "9 999 999 999.99") + "<br/>";
+            }
+            if (product.discount < 0 || product.discount > 9.999M)
+            {
+                errorMessage += "&#149; " + String.Format(tt.Get("error_field_range"), tt.Get("discount"), "9.999") + "<br/>";
             }
             if (product.title.Length > 200)
             {

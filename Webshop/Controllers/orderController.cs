@@ -64,8 +64,32 @@ namespace Annytab.Webshop.Controllers
             breadCrumbs.Add(new BreadCrumb(tt.Get("start_page"), "/"));
             breadCrumbs.Add(new BreadCrumb(tt.Get("check_out"), "/order"));
 
+            // Get the discount code and the discount code error
+            string discountCodeId = Session["DiscountCodeId"] != null ? Session["DiscountCodeId"].ToString() : "";
+            string discountCodeError = Session["DiscountCodeError"] != null ? Session["DiscountCodeError"].ToString() : "";
+
+            // Create a error message
+            string errorMessage = "";
+
+            if (discountCodeError == "empty_shopping_cart")
+            {
+                errorMessage += "&#149; " + tt.Get("error_cart_empty") + "<br/>";
+            }
+            if (discountCodeError == "customer_not_signed_in")
+            {
+                errorMessage += "&#149; " + tt.Get("log_in") + "<br/>";
+            }
+            if (discountCodeError == "invalid_discount_code")
+            {
+                errorMessage += "&#149; " + tt.Get("invalid_discount_code") + "<br/>";
+            }
+
+            // Remove the discount code error
+            Session.Remove("DiscountCodeError");
+
             // Set form values
             ViewBag.BreadCrumbs = breadCrumbs;
+            ViewBag.ErrorMessage = errorMessage;
             ViewBag.CurrentDomain = currentDomain;
             ViewBag.TranslatedTexts = tt;
             ViewBag.CurrentLanguage = Language.GetOneById(currentDomain.front_end_language);
@@ -80,6 +104,7 @@ namespace Annytab.Webshop.Controllers
             ViewBag.PricesIncludesVat = Session["PricesIncludesVat"] != null ? Convert.ToBoolean(Session["PricesIncludesVat"]) : currentDomain.prices_includes_vat;
             ViewBag.CultureInfo = Tools.GetCultureInfo(ViewBag.CurrentLanguage);
             ViewBag.DesiredDateOfDelivery = DateTime.Now;
+            ViewBag.DiscountCodeId = discountCodeId;
 
             // Return the view
             return currentDomain.custom_theme_id == 0 ? View() : View("/Views/theme/checkout.cshtml");
@@ -214,6 +239,7 @@ namespace Annytab.Webshop.Controllers
             Country deliveryCountry = Country.GetOneById(deliveryCountryId, currentDomain.front_end_language);
             DateTime desired_date_of_delivery = DateTime.MinValue;
             DateTime.TryParse(collection["txtDesiredDateOfDelivery"], out desired_date_of_delivery);
+            string discount_code_id = collection["hiddenDiscountCodeId"];
 
             // Set values depending of the customer type, 0: Company
             if(customerType == 0)
@@ -279,6 +305,7 @@ namespace Annytab.Webshop.Controllers
             order.exported_to_erp = false;
             order.order_status = "order_status_pending";
             order.desired_date_of_delivery = AnnytabDataValidation.TruncateDateTime(desired_date_of_delivery);
+            order.discount_code = discount_code_id;
 
             // Calculate the decimal multiplier
             Int32 decimalMultiplier = (Int32)Math.Pow(10, currency.decimals);
@@ -503,6 +530,7 @@ namespace Annytab.Webshop.Controllers
                 ViewBag.PricesIncludesVat = Session["PricesIncludesVat"] != null ? Convert.ToBoolean(Session["PricesIncludesVat"]) : currentDomain.prices_includes_vat;
                 ViewBag.CultureInfo = Tools.GetCultureInfo(ViewBag.CurrentLanguage);
                 ViewBag.DesiredDateOfDelivery = order.desired_date_of_delivery;
+                ViewBag.DiscountCodeId = order.discount_code;
 
                 // Return the index view
                 return currentDomain.custom_theme_id == 0 ? View("index") : View("/Views/theme/checkout.cshtml");
@@ -565,6 +593,22 @@ namespace Annytab.Webshop.Controllers
             return RedirectToAction("index", "home", new { cu = "true" });
 
         } // End of the clear method
+
+        // Set a discount code for the order
+        // POST: /order/index
+        [HttpPost]
+        public ActionResult set_discount_code(FormCollection collection)
+        {
+            // Get all the form values
+            string discount_code = collection["txtDiscountCode"];
+
+            // Set the discount code and modify the shopping cart
+            CartItem.SetDiscountCode(discount_code);
+
+            // Redirect the user to the start page
+            return RedirectToAction("index", "order", new { cu = "true" });
+
+        } // End of the set_discount_code method
 
         #endregion
 
@@ -781,7 +825,7 @@ namespace Annytab.Webshop.Controllers
                     transaction.item_list.items.Add(roundingItem);
                 }
                 
-                // Set the transaction amoung
+                // Set the transaction amount
                 transaction.amount = amount;
                 List<PayPal.Api.Payments.Transaction> transactions = new List<PayPal.Api.Payments.Transaction>();
                 transactions.Add(transaction);

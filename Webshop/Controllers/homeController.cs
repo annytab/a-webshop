@@ -180,7 +180,8 @@ namespace Annytab.Webshop.Controllers
 
             // Round the price to the minor unit for the currency
             Int32 decimalMultiplier = (Int32)Math.Pow(10, currency.decimals);
-            productPrice = Math.Round(productPrice * decimalMultiplier, MidpointRounding.AwayFromZero) / decimalMultiplier;
+            decimal ordinaryPrice = Math.Round(productPrice * decimalMultiplier, MidpointRounding.AwayFromZero) / decimalMultiplier;
+            productPrice = Math.Round(productPrice * (1 - currentProduct.discount) * decimalMultiplier, MidpointRounding.AwayFromZero) / decimalMultiplier;
 
             // Check if prices should include vat
             bool pricesIncludesVat = Session["PricesIncludesVat"] != null ? Convert.ToBoolean(Session["PricesIncludesVat"]) : currentDomain.prices_includes_vat;
@@ -188,6 +189,7 @@ namespace Annytab.Webshop.Controllers
             // Add vat if prices should include vat
             if (pricesIncludesVat == true)
             {
+                ordinaryPrice += Math.Round(ordinaryPrice * valueAddedTax.value * decimalMultiplier, MidpointRounding.AwayFromZero) / decimalMultiplier;
                 productPrice += Math.Round(productPrice * valueAddedTax.value * decimalMultiplier, MidpointRounding.AwayFromZero) / decimalMultiplier;
             }
 
@@ -235,6 +237,7 @@ namespace Annytab.Webshop.Controllers
             ViewBag.ProductOptionTypes = productOptionTypes;
             ViewBag.ProductOptions = productOptions;
             ViewBag.ProductPrice = productPrice;
+            ViewBag.OrdinaryPrice = ordinaryPrice;
             ViewBag.ComparisonPrice = comparisonPrice;
             ViewBag.Unit = unit != null ? unit : new Unit();
             ViewBag.ProductCode = productCode;
@@ -404,6 +407,34 @@ namespace Annytab.Webshop.Controllers
 
         } // End of the error method
 
+        // Update the click count and redirect the user to the campaign url
+        // GET: /home/campaign_tracker/2
+        [HttpGet]
+        public ActionResult campaign_tracker(Int32 id = 0)
+        {
+            // Get the campaign
+            Campaign campaign = Campaign.GetOneById(id);
+
+            // Make sure that the campaign not is null
+            if (campaign == null)
+            {
+                Response.StatusCode = 404;
+                Response.Status = "404 Not Found";
+                Response.Write(Tools.GetHttpNotFoundPage());
+                return new EmptyResult();
+            }
+
+            // Calculate the new click count
+            Int32 count = campaign.click_count + 1;
+
+            // Update the count
+            Campaign.UpdateClickCount(campaign.id, count);
+
+            // Redirect the user to the campaign url
+            return Redirect(campaign.link_url);
+
+        } // End of the campaign_tracker method
+
         #endregion
 
         #region Post methods
@@ -509,7 +540,7 @@ namespace Annytab.Webshop.Controllers
 
             // Round the price to the minor unit for the currency
             Int32 decimalMultiplier = (Int32)Math.Pow(10, currency.decimals);
-            unitPrice = Math.Round(unitPrice * decimalMultiplier, MidpointRounding.AwayFromZero) / decimalMultiplier;
+            unitPrice = Math.Round(unitPrice * (1 - product.discount) * decimalMultiplier, MidpointRounding.AwayFromZero) / decimalMultiplier;
             unitFreight = Math.Round(unitFreight * decimalMultiplier, MidpointRounding.AwayFromZero) / decimalMultiplier;
 
             // Get the value added tax

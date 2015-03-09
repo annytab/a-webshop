@@ -76,6 +76,7 @@ namespace Annytab.Webshop.ControllersApi
             post.payment_status = AnnytabDataValidation.TruncateString(post.payment_status, 50);
             post.order_status = AnnytabDataValidation.TruncateString(post.order_status, 50);
             post.desired_date_of_delivery = AnnytabDataValidation.TruncateDateTime(post.desired_date_of_delivery);
+            post.discount_code = AnnytabDataValidation.TruncateString(post.discount_code, 50);
 
             // Add the post
             Order.Add(post);
@@ -151,6 +152,7 @@ namespace Annytab.Webshop.ControllersApi
             post.payment_status = AnnytabDataValidation.TruncateString(post.payment_status, 50);
             post.order_status = AnnytabDataValidation.TruncateString(post.order_status, 50);
             post.desired_date_of_delivery = AnnytabDataValidation.TruncateDateTime(post.desired_date_of_delivery);
+            post.discount_code = AnnytabDataValidation.TruncateString(post.discount_code, 50);
 
             // Get the saved post
             Order savedPost = Order.GetOneById(post.id);
@@ -213,6 +215,34 @@ namespace Annytab.Webshop.ControllersApi
 
         } // End of the get_count_by_search method
 
+        // Get the count of posts by customer id
+        // GET api/orders/get_count_by_customer_id/5
+        [ApiAuthorize(Roles = "API_FULL_TRUST,API_MEDIUM_TRUST,API_MINIMAL_TRUST")]
+        [HttpGet]
+        public Int32 get_count_by_customer_id(Int32 id = 0)
+        {
+            // Get the count
+            Int32 count = Order.GetCountByCustomerId(id);
+
+            // Return the count
+            return count;
+
+        } // End of the get_count_by_customer_id method
+
+        // Get the count of posts by a discount code id
+        // GET api/orders/get_count_by_discount_code/SSSWWWW
+        [ApiAuthorize(Roles = "API_FULL_TRUST,API_MEDIUM_TRUST,API_MINIMAL_TRUST")]
+        [HttpGet]
+        public Int32 get_count_by_discount_code(string id = "")
+        {
+            // Get the count
+            Int32 count = Order.GetCountByDiscountCode(id);
+
+            // Return the count
+            return count;
+
+        } // End of the get_count_by_discount_code method
+
         #endregion
 
         #region Get methods
@@ -231,17 +261,28 @@ namespace Annytab.Webshop.ControllersApi
 
         } // End of the get_by_id method
 
+        // Get one order by discount code and customer id
+        // GET api/orders/get_by_discount_code_and_customer/SSSWWW?customerId=5
+        [ApiAuthorize(Roles = "API_FULL_TRUST,API_MEDIUM_TRUST,API_MINIMAL_TRUST")]
+        [HttpGet]
+        public Order get_by_discount_code_and_customer(string id = "", Int32 customerId = 0)
+        {
+            // Create the post to return
+            Order post = Order.GetOneByDiscountCodeAndCustomerId(id, customerId);
+
+            // Return the post
+            return post;
+
+        } // End of the get_by_discount_code_and_customer method
+
         // Get all the orders that not are exported
         // GET api/orders/get_not_exported
         [ApiAuthorize(Roles = "API_FULL_TRUST,API_MEDIUM_TRUST,API_MINIMAL_TRUST")]
         [HttpGet]
         public List<Order> get_not_exported(string sortField = "", string sortOrder = "")
         {
-            // Create the list to return
-            List<Order> posts = new List<Order>(10);
-
             // Get all the posts
-            posts = Order.GetNotExportedToErp(sortField, sortOrder);
+            List<Order> posts = Order.GetNotExportedToErp(sortField, sortOrder);
 
             // Return the list
             return posts;
@@ -254,11 +295,8 @@ namespace Annytab.Webshop.ControllersApi
         [HttpGet]
         public List<Order> get_not_exported_by_company_id(Int32 id = 0, string sortField = "", string sortOrder = "")
         {
-            // Create the list to return
-            List<Order> posts = new List<Order>(10);
-
             // Get all the posts
-            posts = Order.GetNotExportedToErp(id, sortField, sortOrder);
+            List<Order> posts = Order.GetNotExportedToErp(id, sortField, sortOrder);
 
             // Return the list
             return posts;
@@ -271,11 +309,8 @@ namespace Annytab.Webshop.ControllersApi
         [HttpGet]
         public List<Order> get_all(string sortField = "", string sortOrder = "")
         {
-            // Create the list to return
-            List<Order> posts = new List<Order>(10);
-
             // Get all the posts
-            posts = Order.GetAll(sortField, sortOrder);
+            List<Order> posts = Order.GetAll(sortField, sortOrder);
 
             // Return the list
             return posts;
@@ -305,6 +340,36 @@ namespace Annytab.Webshop.ControllersApi
             return posts;
 
         } // End of the get_by_search method
+
+        // Get orders by customer id
+        // GET api/orders/get_by_customer_id/5?pageSize=10&pageNumber=2&sortField=id&sortOrder=ASC
+        [ApiAuthorize(Roles = "API_FULL_TRUST,API_MEDIUM_TRUST,API_MINIMAL_TRUST")]
+        [HttpGet]
+        public List<Order> get_by_customer_id(Int32 id = 0, Int32 pageSize = 0, Int32 pageNumber = 0,
+            string sortField = "", string sortOrder = "")
+        {
+            // Get all the posts
+            List<Order> posts = Order.GetByCustomerId(id, pageSize, pageNumber, sortField, sortOrder);
+
+            // Return the list
+            return posts;
+
+        } // End of the get_by_customer_id method
+
+        // Get orders by discount code
+        // GET api/orders/get_by_discount_code/SSSWWWW?pageSize=10&pageNumber=2&sortField=id&sortOrder=ASC
+        [ApiAuthorize(Roles = "API_FULL_TRUST,API_MEDIUM_TRUST,API_MINIMAL_TRUST")]
+        [HttpGet]
+        public List<Order> get_by_discount_code(string id = "", Int32 pageSize = 0, Int32 pageNumber = 0,
+            string sortField = "", string sortOrder = "")
+        {
+            // Get all the posts
+            List<Order> posts = Order.GetByDiscountCode(id, pageSize, pageNumber, sortField, sortOrder);
+
+            // Return the list
+            return posts;
+
+        } // End of the get_by_discount_code method
 
         #endregion
 

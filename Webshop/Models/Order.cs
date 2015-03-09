@@ -50,6 +50,7 @@ public class Order
     public bool exported_to_erp;
     public string order_status;
     public DateTime desired_date_of_delivery;
+    public string discount_code;
 
     #endregion
 
@@ -100,6 +101,7 @@ public class Order
         this.exported_to_erp = false;
         this.order_status = "";
         this.desired_date_of_delivery = DateTime.Now;
+        this.discount_code = "";
 
     } // End of the constructor
 
@@ -149,6 +151,7 @@ public class Order
         this.exported_to_erp = Convert.ToBoolean(reader["exported_to_erp"]);
         this.order_status = reader["order_status"].ToString();
         this.desired_date_of_delivery = Convert.ToDateTime(reader["desired_date_of_delivery"]);
+        this.discount_code = reader["discount_code"].ToString();
 
     } // End of the constructor
 
@@ -172,12 +175,12 @@ public class Order
             + "invoice_address_1, invoice_address_2, invoice_post_code, invoice_city, invoice_country_id, "
             + "delivery_name, delivery_address_1, delivery_address_2, delivery_post_code, delivery_city, "
             + "delivery_country_id, net_sum, vat_sum, rounding_sum, total_sum, vat_code, payment_option, payment_token, payment_status, exported_to_erp, "
-            + "order_status, desired_date_of_delivery) "
+            + "order_status, desired_date_of_delivery, discount_code) "
             + "VALUES (@document_type, @order_date, @company_id, @country_code, @language_code, @currency_code, @conversion_rate, @customer_id, @customer_type, "
             + "@customer_org_number, @customer_vat_number, @customer_name, @customer_phone, @customer_mobile_phone, @customer_email, @invoice_name, @invoice_address_1, "
             + "@invoice_address_2, @invoice_post_code, @invoice_city, @invoice_country_id, @delivery_name, @delivery_address_1, "
             + "@delivery_address_2, @delivery_post_code, @delivery_city, @delivery_country_id, @net_sum, @vat_sum, @rounding_sum, @total_sum, @vat_code, "
-            + "@payment_option, @payment_token, @payment_status, @exported_to_erp, @order_status, @desired_date_of_delivery);SELECT SCOPE_IDENTITY();";
+            + "@payment_option, @payment_token, @payment_status, @exported_to_erp, @order_status, @desired_date_of_delivery, @discount_code);SELECT SCOPE_IDENTITY();";
 
         // The using block is used to call dispose automatically even if there are an exception.
         using (SqlConnection cn = new SqlConnection(connection))
@@ -224,6 +227,7 @@ public class Order
                 cmd.Parameters.AddWithValue("@exported_to_erp", post.exported_to_erp);
                 cmd.Parameters.AddWithValue("@order_status", post.order_status);
                 cmd.Parameters.AddWithValue("@desired_date_of_delivery", post.desired_date_of_delivery);
+                cmd.Parameters.AddWithValue("@discount_code", post.discount_code);
 
                 // The Try/Catch/Finally statement is used to handle unusual exceptions in the code to
                 // avoid having our application crash in such cases
@@ -270,7 +274,7 @@ public class Order
             + "delivery_city = @delivery_city, delivery_country_id = @delivery_country_id, net_sum = @net_sum, vat_sum = @vat_sum, "
             + "rounding_sum = @rounding_sum, total_sum = @total_sum, vat_code = @vat_code, payment_option = @payment_option, "
             + "payment_token = @payment_token, payment_status = @payment_status, exported_to_erp = @exported_to_erp, order_status = @order_status, "
-            + "desired_date_of_delivery = @desired_date_of_delivery WHERE id = @id;";
+            + "desired_date_of_delivery = @desired_date_of_delivery, discount_code = @discount_code WHERE id = @id;";
 
         // The using block is used to call dispose automatically even if there are an exception.
         using (SqlConnection cn = new SqlConnection(connection))
@@ -318,6 +322,7 @@ public class Order
                 cmd.Parameters.AddWithValue("@exported_to_erp", post.exported_to_erp);
                 cmd.Parameters.AddWithValue("@order_status", post.order_status);
                 cmd.Parameters.AddWithValue("@desired_date_of_delivery", post.desired_date_of_delivery);
+                cmd.Parameters.AddWithValue("@discount_code", post.discount_code);
 
                 // The Try/Catch/Finally statement is used to handle unusual exceptions in the code to
                 // avoid having our application crash in such cases.
@@ -346,7 +351,6 @@ public class Order
     /// <param name="statusCode">The status code</param>
     public static void UpdatePaymentStatus(Int32 orderId, string statusCode)
     {
-
         // Create the connection and the sql statement
         string connection = Tools.GetConnectionString();
         string sql = "UPDATE dbo.orders SET payment_status = @payment_status WHERE id = @id;";
@@ -388,7 +392,6 @@ public class Order
     /// <param name="statusCode">The status code</param>
     public static void UpdateOrderStatus(Int32 orderId, string statusCode)
     {
-
         // Create the connection and the sql statement
         string connection = Tools.GetConnectionString();
         string sql = "UPDATE dbo.orders SET order_status = @order_status WHERE id = @id;";
@@ -843,6 +846,52 @@ public class Order
 
     } // End of the GetCountByDay method
 
+    /// <summary>
+    /// Count the number of orders by discount code
+    /// </summary>
+    /// <param name="discountCodeId">The id of the discount code</param>
+    /// <returns>The number of orders as an int</returns>
+    public static Int32 GetCountByDiscountCode(string discountCodeId)
+    {
+        // Create the variable to return
+        Int32 count = 0;
+
+        // Create the connection string and the select statement
+        string connection = Tools.GetConnectionString();
+        string sql = "SELECT COUNT(id) AS count FROM dbo.orders WHERE discount_code = @discount_code;";
+
+        // The using block is used to call dispose automatically even if there are an exception.
+        using (SqlConnection cn = new SqlConnection(connection))
+        {
+            // The using block is used to call dispose automatically even if there are an exception.
+            using (SqlCommand cmd = new SqlCommand(sql, cn))
+            {
+                // Add parameters
+                cmd.Parameters.AddWithValue("@discount_code", discountCodeId);
+
+                // The Try/Catch/Finally statement is used to handle unusual exceptions in the code to
+                // avoid having our application crash in such cases.
+                try
+                {
+                    // Open the connection
+                    cn.Open();
+
+                    // Execute the select statment
+                    count = Convert.ToInt32(cmd.ExecuteScalar());
+
+                }
+                catch (Exception e)
+                {
+                    throw e;
+                }
+            }
+        }
+
+        // Return the count
+        return count;
+
+    } // End of the GetCountByDiscountCode method
+
     #endregion
 
     #region Get methods
@@ -952,6 +1001,68 @@ public class Order
         return post;
 
     } // End of the GetOneById method
+
+    /// <summary>
+    /// Get one order based on discount code and customer id
+    /// </summary>
+    /// <param name="discountCodeId">The id of a discount code</param>
+    /// <param name="customerId">The id of a customer</param>
+    /// <returns>A reference to a order post</returns>
+    public static Order GetOneByDiscountCodeAndCustomerId(string discountCodeId, Int32 customerId)
+    {
+        // Create the post to return
+        Order post = null;
+
+        // Create the connection and the sql statement
+        string connection = Tools.GetConnectionString();
+        string sql = "SELECT * FROM dbo.orders WHERE discount_code = @discount_code AND customer_id = @customer_id;";
+
+        // The using block is used to call dispose automatically even if there is a exception
+        using (SqlConnection cn = new SqlConnection(connection))
+        {
+            // The using block is used to call dispose automatically even if there is a exception
+            using (SqlCommand cmd = new SqlCommand(sql, cn))
+            {
+                // Add parameters
+                cmd.Parameters.AddWithValue("@discount_code", discountCodeId);
+                cmd.Parameters.AddWithValue("@customer_id", customerId);
+
+                // Create a reader
+                SqlDataReader reader = null;
+
+                // The Try/Catch/Finally statement is used to handle unusual exceptions in the code to
+                // avoid having our application crash in such cases
+                try
+                {
+                    // Open the connection.
+                    cn.Open();
+
+                    // Fill the reader with one row of data.
+                    reader = cmd.ExecuteReader();
+
+                    // Loop through the reader as long as there is something to read and add values
+                    while (reader.Read())
+                    {
+                        post = new Order(reader);
+                    }
+                }
+                catch (Exception e)
+                {
+                    throw e;
+                }
+                finally
+                {
+                    // Call Close when done reading to avoid memory leakage.
+                    if (reader != null)
+                        reader.Close();
+                }
+            }
+        }
+
+        // Return the post
+        return post;
+
+    } // End of the GetOneByDiscountCodeAndCustomerId method
 
     /// <summary>
     /// Get all the orders
@@ -1311,6 +1422,79 @@ public class Order
         return posts;
 
     } // End of the GetByCustomerId method
+
+    /// <summary>
+    /// Get orders by discount code
+    /// </summary>
+    /// <param name="discountCodeId">The id of the discount code</param>
+    /// <param name="pageSize">The number of pages on one page</param>
+    /// <param name="pageNumber">The page number of a page from 1 and above</param>
+    /// <param name="sortField">The field to sort on</param>
+    /// <param name="sortOrder">The sort order</param>
+    /// <returns>A list of orders</returns>
+    public static List<Order> GetByDiscountCode(string discountCodeId, Int32 pageSize, Int32 pageNumber, string sortField, string sortOrder)
+    {
+        // Make sure that sort variables are valid
+        sortField = GetValidSortField(sortField);
+        sortOrder = GetValidSortOrder(sortOrder);
+
+        // Create the list to return
+        List<Order> posts = new List<Order>(pageSize);
+
+        // Create the connection string and the select statement
+        string connection = Tools.GetConnectionString();
+        string sql = "SELECT * FROM dbo.orders WHERE discount_code = @discount_code ORDER BY " + sortField + " "
+            + sortOrder + " " + "OFFSET @pageNumber ROWS FETCH NEXT @pageSize ROWS ONLY;";
+
+        // The using block is used to call dispose automatically even if there are an exception.
+        using (SqlConnection cn = new SqlConnection(connection))
+        {
+            // The using block is used to call dispose automatically even if there are an exception.
+            using (SqlCommand cmd = new SqlCommand(sql, cn))
+            {
+
+                // Add parameters
+                cmd.Parameters.AddWithValue("@discount_code", discountCodeId);
+                cmd.Parameters.AddWithValue("@pageNumber", (pageNumber - 1) * pageSize);
+                cmd.Parameters.AddWithValue("@pageSize", pageSize);
+
+                // Create a reader
+                SqlDataReader reader = null;
+
+                // The Try/Catch/Finally statement is used to handle unusual exceptions in the code to
+                // avoid having our application crash in such cases.
+                try
+                {
+                    // Open the connection.
+                    cn.Open();
+
+                    // Fill the reader with data from the select command.
+                    reader = cmd.ExecuteReader();
+
+                    // Loop through the reader as long as there is something to read.
+                    while (reader.Read())
+                    {
+                        posts.Add(new Order(reader));
+                    }
+
+                }
+                catch (Exception e)
+                {
+                    throw e;
+                }
+                finally
+                {
+                    // Call Close when done reading to avoid memory leakage.
+                    if (reader != null)
+                        reader.Close();
+                }
+            }
+        }
+
+        // Return the list of posts
+        return posts;
+
+    } // End of the GetByDiscountCode method
 
     /// <summary>
     /// Get all orders for a year
@@ -1718,7 +1902,7 @@ public class Order
     /// </summary>
     /// <param name="id">The id number for the order</param>
     /// <returns>An error code</returns>
-    public static Int32 DeleteOnId(int id)
+    public static Int32 DeleteOnId(Int32 id)
     {
         // Create the connection and the sql statement
         string connection = Tools.GetConnectionString();

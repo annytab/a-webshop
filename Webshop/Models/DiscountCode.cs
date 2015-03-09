@@ -5,57 +5,60 @@ using System.Web;
 using System.Data.SqlClient;
 
 /// <summary>
-/// This class represent a campaign
+/// This class represent a discount code
 /// </summary>
-public class Campaign
+public class DiscountCode
 {
     #region Variables
 
-    public Int32 id;
+    public string id;
     public Int32 language_id;
-    public string name;
-    public string category_name;
-    public string image_name;
-    public string link_url;
-    public bool inactive;
-    public Int32 click_count;
+    public string currency_code;
+    public decimal discount_value;
+    public bool free_freight;
+    public DateTime end_date;
+    public bool once_per_customer;
+    public bool exclude_products_on_sale;
+    public decimal minimum_order_value;
 
     #endregion
 
     #region Constructors
 
     /// <summary>
-    /// Create a new campaign with default properties
+    /// Create a new discount code with default properties
     /// </summary>
-    public Campaign()
+    public DiscountCode()
     {
         // Set values for instance variables
-        this.id = 0;
+        this.id = "";
         this.language_id = 0;
-        this.name = "";
-        this.category_name = "";
-        this.image_name = "";
-        this.link_url = "";
-        this.inactive = false;
-        this.click_count = 0;
+        this.currency_code = "";
+        this.discount_value = 0;
+        this.free_freight = false;
+        this.end_date = DateTime.Now;
+        this.once_per_customer = false;
+        this.exclude_products_on_sale = false;
+        this.minimum_order_value = 0;
 
     } // End of the constructor
 
     /// <summary>
-    /// Create a new campaign from a reader
+    /// Create a new discount code from a reader
     /// </summary>
     /// <param name="reader">A reference to a reader</param>
-    public Campaign(SqlDataReader reader)
+    public DiscountCode(SqlDataReader reader)
     {
         // Set values for instance variables
-        this.id = Convert.ToInt32(reader["id"]);
+        this.id = reader["id"].ToString();
         this.language_id = Convert.ToInt32(reader["language_id"]);
-        this.name = reader["name"].ToString();
-        this.category_name = reader["category_name"].ToString();
-        this.image_name = reader["image_name"].ToString();
-        this.link_url = reader["link_url"].ToString();
-        this.inactive = Convert.ToBoolean(reader["inactive"]);
-        this.click_count = Convert.ToInt32(reader["click_count"]);
+        this.currency_code = reader["currency_code"].ToString();
+        this.discount_value = Convert.ToDecimal(reader["discount_value"]);
+        this.free_freight = Convert.ToBoolean(reader["free_freight"]);
+        this.end_date = Convert.ToDateTime(reader["end_date"]);
+        this.once_per_customer = Convert.ToBoolean(reader["once_per_customer"]);
+        this.exclude_products_on_sale = Convert.ToBoolean(reader["exclude_products_on_sale"]);
+        this.minimum_order_value = Convert.ToDecimal(reader["minimum_order_value"]);
 
     } // End of the constructor
 
@@ -64,18 +67,17 @@ public class Campaign
     #region Insert methods
 
     /// <summary>
-    /// Add one campaign
+    /// Add one discount code
     /// </summary>
-    /// <param name="post">A reference to a campaign post</param>
-    public static long Add(Campaign post)
+    /// <param name="post">A reference to a discount code post</param>
+    public static void Add(DiscountCode post)
     {
-        // Create the long to return
-        long idOfInsert = 0;
-
         // Create the connection and the sql statement
         string connection = Tools.GetConnectionString();
-        string sql = "INSERT INTO dbo.campaigns (language_id, name, category_name, image_name, link_url, inactive, click_count) "
-            + "VALUES (@language_id, @name, @category_name, @image_name, @link_url, @inactive, @click_count);SELECT SCOPE_IDENTITY();";
+        string sql = "INSERT INTO dbo.discount_codes (id, language_id, currency_code, discount_value, free_freight, end_date, "
+            + "once_per_customer, exclude_products_on_sale, minimum_order_value) "
+            + "VALUES (@id, @language_id, @currency_code, @discount_value, @free_freight, @end_date, @once_per_customer, "
+            + "@exclude_products_on_sale, @minimum_order_value);";
 
         // The using block is used to call dispose automatically even if there is a exception.
         using (SqlConnection cn = new SqlConnection(connection))
@@ -84,13 +86,15 @@ public class Campaign
             using (SqlCommand cmd = new SqlCommand(sql, cn))
             {
                 // Add parameters
+                cmd.Parameters.AddWithValue("@id", post.id);
                 cmd.Parameters.AddWithValue("@language_id", post.language_id);
-                cmd.Parameters.AddWithValue("@category_name", post.category_name);
-                cmd.Parameters.AddWithValue("@name", post.name);
-                cmd.Parameters.AddWithValue("@image_name", post.image_name);
-                cmd.Parameters.AddWithValue("@link_url", post.link_url);
-                cmd.Parameters.AddWithValue("@inactive", post.inactive);
-                cmd.Parameters.AddWithValue("@click_count", post.click_count);
+                cmd.Parameters.AddWithValue("@currency_code", post.currency_code);
+                cmd.Parameters.AddWithValue("@discount_value", post.discount_value);
+                cmd.Parameters.AddWithValue("@free_freight", post.free_freight);
+                cmd.Parameters.AddWithValue("@end_date", post.end_date);
+                cmd.Parameters.AddWithValue("@once_per_customer", post.once_per_customer);
+                cmd.Parameters.AddWithValue("@exclude_products_on_sale", post.exclude_products_on_sale);
+                cmd.Parameters.AddWithValue("@minimum_order_value", post.minimum_order_value);
 
                 // The Try/Catch/Finally statement is used to handle unusual exceptions in the code to
                 // avoid having our application crash in such cases
@@ -100,7 +104,7 @@ public class Campaign
                     cn.Open();
 
                     // Execute the insert
-                    idOfInsert = Convert.ToInt64(cmd.ExecuteScalar());
+                    cmd.ExecuteNonQuery();
 
                 }
                 catch (Exception e)
@@ -110,9 +114,6 @@ public class Campaign
             }
         }
 
-        // Return the id of the inserted item
-        return idOfInsert;
-
     } // End of the Add method
 
     #endregion
@@ -120,31 +121,33 @@ public class Campaign
     #region Update methods
 
     /// <summary>
-    /// Update a campaign post
+    /// Update a discount code
     /// </summary>
-    /// <param name="post">A reference to a campaign post</param>
-    public static void Update(Campaign post)
+    /// <param name="post">A reference to a discount code post</param>
+    public static void Update(DiscountCode post)
     {
         // Create the connection and the sql statement
         string connection = Tools.GetConnectionString();
-        string sql = "UPDATE dbo.campaigns SET language_id = @language_id, name = @name, category_name = @category_name, "
-            + "image_name = @image_name, link_url = @link_url, inactive = @inactive, click_count = @click_count WHERE id = @id;";
+        string sql = "UPDATE dbo.discount_codes SET language_id = @language_id, currency_code = @currency_code, discount_value = @discount_value, "
+            + "free_freight = @free_freight, end_date = @end_date, once_per_customer = @once_per_customer, exclude_products_on_sale = @exclude_products_on_sale, "
+            + "minimum_order_value = @minimum_order_value WHERE id = @id;";
 
         // The using block is used to call dispose automatically even if there are an exception.
         using (SqlConnection cn = new SqlConnection(connection))
         {
-            // The Using block is used to call dispose automatically even if there are an exception.
+            // The using block is used to call dispose automatically even if there are an exception.
             using (SqlCommand cmd = new SqlCommand(sql, cn))
             {
                 // Add parameters
                 cmd.Parameters.AddWithValue("@id", post.id);
                 cmd.Parameters.AddWithValue("@language_id", post.language_id);
-                cmd.Parameters.AddWithValue("@name", post.name);
-                cmd.Parameters.AddWithValue("@category_name", post.category_name);
-                cmd.Parameters.AddWithValue("@image_name", post.image_name);
-                cmd.Parameters.AddWithValue("@link_url", post.link_url);
-                cmd.Parameters.AddWithValue("@inactive", post.inactive);
-                cmd.Parameters.AddWithValue("@click_count", post.click_count);
+                cmd.Parameters.AddWithValue("@currency_code", post.currency_code);
+                cmd.Parameters.AddWithValue("@discount_value", post.discount_value);
+                cmd.Parameters.AddWithValue("@free_freight", post.free_freight);
+                cmd.Parameters.AddWithValue("@end_date", post.end_date);
+                cmd.Parameters.AddWithValue("@once_per_customer", post.once_per_customer);
+                cmd.Parameters.AddWithValue("@exclude_products_on_sale", post.exclude_products_on_sale);
+                cmd.Parameters.AddWithValue("@minimum_order_value", post.minimum_order_value);
 
                 // The Try/Catch/Finally statement is used to handle unusual exceptions in the code to
                 // avoid having our application crash in such cases.
@@ -166,94 +169,15 @@ public class Campaign
 
     } // End of the Update method
 
-    /// <summary>
-    /// Update the click count for a campaign
-    /// </summary>
-    /// <param name="id">The id for the campaign</param>
-    /// <param name="clickCount">The total number of clicks</param>
-    public static void UpdateClickCount(Int32 id, Int32 clickCount)
-    {
-        // Create the connection and the sql statement
-        string connection = Tools.GetConnectionString();
-        string sql = "UPDATE dbo.campaigns SET click_count = @click_count WHERE id = @id;";
-
-        // The using block is used to call dispose automatically even if there are an exception.
-        using (SqlConnection cn = new SqlConnection(connection))
-        {
-            // The using block is used to call dispose automatically even if there are an exception.
-            using (SqlCommand cmd = new SqlCommand(sql, cn))
-            {
-                // Add parameters
-                cmd.Parameters.AddWithValue("@id", id);
-                cmd.Parameters.AddWithValue("@click_count", clickCount);
-
-                // The Try/Catch/Finally statement is used to handle unusual exceptions in the code to
-                // avoid having our application crash in such cases.
-                try
-                {
-                    // Open the connection.
-                    cn.Open();
-
-                    // Execute the update
-                    cmd.ExecuteNonQuery();
-
-                }
-                catch (Exception e)
-                {
-                    throw e;
-                }
-            }
-        }
-
-    } // End of the UpdateClickCount method
-
-    /// <summary>
-    /// Reset statistics for all campaigns
-    /// </summary>
-    public static void ResetStatistics()
-    {
-        // Create the connection and the sql statement
-        string connection = Tools.GetConnectionString();
-        string sql = "UPDATE dbo.campaigns SET click_count = @click_count;";
-
-        // The using block is used to call dispose automatically even if there are an exception.
-        using (SqlConnection cn = new SqlConnection(connection))
-        {
-            // The using block is used to call dispose automatically even if there are an exception.
-            using (SqlCommand cmd = new SqlCommand(sql, cn))
-            {
-                // Add parameters
-                cmd.Parameters.AddWithValue("@click_count", 0);
-
-                // The Try/Catch/Finally statement is used to handle unusual exceptions in the code to
-                // avoid having our application crash in such cases.
-                try
-                {
-                    // Open the connection.
-                    cn.Open();
-
-                    // Execute the update
-                    cmd.ExecuteNonQuery();
-
-                }
-                catch (Exception e)
-                {
-                    throw e;
-                }
-            }
-        }
-
-    } // End of the ResetStatistics method
-
     #endregion
 
     #region Count methods
 
     /// <summary>
-    /// Count the number of campaigns by search keywords
+    /// Count the number of discount codes by search keywords
     /// </summary>
     /// <param name="keywords">An array of keywords</param>
-    /// <returns>The number of campaigns as an int</returns>
+    /// <returns>The number of discount codes as an int</returns>
     public static Int32 GetCountBySearch(string[] keywords)
     {
         // Create the variable to return
@@ -261,13 +185,12 @@ public class Campaign
 
         // Create the connection string and the select statement
         string connection = Tools.GetConnectionString();
-        string sql = "SELECT COUNT(id) AS count FROM dbo.campaigns WHERE 1 = 1";
+        string sql = "SELECT COUNT(id) AS count FROM dbo.discount_codes WHERE 1 = 1";
 
         // Append keywords to the sql string
         for (int i = 0; i < keywords.Length; i++)
         {
-            sql += " AND (CAST(id AS nvarchar(20)) LIKE @keyword_" + i.ToString() + " OR name LIKE @keyword_" + i.ToString()
-               + " OR category_name LIKE @keyword_" + i.ToString() + " OR image_name LIKE @keyword_" + i.ToString() + ")";
+            sql += " AND (id LIKE @keyword_" + i.ToString() + " OR CAST(language_id AS nvarchar(20)) LIKE @keyword_" + i.ToString() + ")";
         }
 
         // Add the final touch to the sql string
@@ -316,16 +239,16 @@ public class Campaign
     /// <summary>
     /// Check if a master post exists
     /// </summary>
-    /// <param name="id">The id</param>
+    /// <param name="id">The id for the discount code</param>
     /// <returns>A boolean that indicates if the post exists</returns>
-    public static bool MasterPostExists(Int32 id)
+    public static bool MasterPostExists(string id)
     {
         // Create the boolean to return
         bool postExists = false;
 
         // Create the connection and the sql statement
         string connection = Tools.GetConnectionString();
-        string sql = "SELECT COUNT(id) AS COUNT FROM dbo.campaigns WHERE id = @id;";
+        string sql = "SELECT COUNT(id) AS COUNT FROM dbo.discount_codes WHERE id = @id;";
 
         // The using block is used to call dispose automatically even if there is a exception.
         using (SqlConnection cn = new SqlConnection(connection))
@@ -333,7 +256,7 @@ public class Campaign
             // The using block is used to call dispose automatically even if there is a exception.
             using (SqlCommand cmd = new SqlCommand(sql, cn))
             {
-                // Add a parameters
+                // Add parameters
                 cmd.Parameters.AddWithValue("@id", id);
 
                 // The Try/Catch/Finally statement is used to handle unusual exceptions in the code to
@@ -360,18 +283,18 @@ public class Campaign
     } // End of the MasterPostExists method
 
     /// <summary>
-    /// Get one campaign based on id
+    /// Get one discount code based on id
     /// </summary>
     /// <param name="id">The id for the post</param>
-    /// <returns>A reference to a campaign post</returns>
-    public static Campaign GetOneById(Int32 id)
+    /// <returns>A reference to a discount code post</returns>
+    public static DiscountCode GetOneById(string id)
     {
         // Create the post to return
-        Campaign post = null;
+        DiscountCode post = null;
 
         // Create the connection and the sql statement
         string connection = Tools.GetConnectionString();
-        string sql = "SELECT * FROM dbo.campaigns WHERE id = @id;";
+        string sql = "SELECT * FROM dbo.discount_codes WHERE id = @id;";
 
         // The using block is used to call dispose automatically even if there are an exception.
         using (SqlConnection cn = new SqlConnection(connection))
@@ -398,7 +321,7 @@ public class Campaign
                     // Loop through the reader as long as there is something to read and add values
                     while (reader.Read())
                     {
-                        post = new Campaign(reader);
+                        post = new DiscountCode(reader);
                     }
                 }
                 catch (Exception e)
@@ -420,23 +343,23 @@ public class Campaign
     } // End of the GetOneById method
 
     /// <summary>
-    /// Get all campaigns
+    /// Get all discount codes
     /// </summary>
     /// <param name="sortField">The field to sort on</param>
     /// <param name="sortOrder">The sort order</param>
-    /// <returns>A list of campaigns</returns>
-    public static List<Campaign> GetAll(string sortField, string sortOrder)
+    /// <returns>A list of discount codes</returns>
+    public static List<DiscountCode> GetAll(string sortField, string sortOrder)
     {
         // Make sure that sort variables are valid
         sortField = GetValidSortField(sortField);
         sortOrder = GetValidSortOrder(sortOrder);
 
         // Create the list to return
-        List<Campaign> posts = new List<Campaign>();
+        List<DiscountCode> posts = new List<DiscountCode>();
 
         // Create the connection string and the select statement
         string connection = Tools.GetConnectionString();
-        string sql = "SELECT * FROM dbo.campaigns ORDER BY " + sortField + " " + sortOrder + ";";
+        string sql = "SELECT * FROM dbo.discount_codes ORDER BY " + sortField + " " + sortOrder + ";";
 
         // The using block is used to call dispose automatically even if there are an exception.
         using (SqlConnection cn = new SqlConnection(connection))
@@ -460,7 +383,7 @@ public class Campaign
                     // Loop through the reader as long as there is something to read.
                     while (reader.Read())
                     {
-                        posts.Add(new Campaign(reader));
+                        posts.Add(new DiscountCode(reader));
                     }
 
                 }
@@ -483,168 +406,31 @@ public class Campaign
     } // End of the GetAll method
 
     /// <summary>
-    /// Get campaigns based on language id
-    /// </summary>
-    /// <param name="languageId">The language id</param>
-    /// <param name="sortField">The field to sort on</param>
-    /// <param name="sortOrder">The sort order</param>
-    /// <returns>A list of campaign posts</returns>
-    public static List<Campaign> GetByLanguageId(Int32 languageId, string sortField, string sortOrder)
-    {
-        // Make sure that sort variables are valid
-        sortField = GetValidSortField(sortField);
-        sortOrder = GetValidSortOrder(sortOrder);
-
-        // Create the list to return
-        List<Campaign> posts = new List<Campaign>(10);
-
-        // Create the connection and the sql statement
-        string connection = Tools.GetConnectionString();
-        string sql = "SELECT * FROM dbo.campaigns WHERE language_id = @language_id ORDER BY " + sortField + " " + sortOrder + ";";
-
-        // The using block is used to call dispose automatically even if there are an exception.
-        using (SqlConnection cn = new SqlConnection(connection))
-        {
-            // The using block is used to call dispose automatically even if there are an exception.
-            using (SqlCommand cmd = new SqlCommand(sql, cn))
-            {
-                // Add parameters
-                cmd.Parameters.AddWithValue("@language_id", languageId);
-
-                // Create a MySqlDataReader
-                SqlDataReader reader = null;
-
-                // The Try/Catch/Finally statement is used to handle unusual exceptions in the code to
-                // avoid having our application crash in such cases.
-                try
-                {
-                    // Open the connection.
-                    cn.Open();
-
-                    // Fill the reader with one row of data.
-                    reader = cmd.ExecuteReader();
-
-                    // Loop through the reader as long as there is something to read and add values
-                    while (reader.Read())
-                    {
-                        posts.Add(new Campaign(reader));
-                    }
-                }
-                catch (Exception e)
-                {
-                    throw e;
-                }
-                finally
-                {
-                    // Call Close when done reading to avoid memory leakage.
-                    if (reader != null)
-                        reader.Close();
-                }
-            }
-        }
-
-        // Return the list of posts
-        return posts;
-
-    } // End of the GetByLanguageId method
-
-    /// <summary>
-    /// Get campaigns based on category name and language
-    /// </summary>
-    /// <param name="categoryName">The category name for the post</param>
-    /// <param name="languageId">The language id</param>
-    /// <param name="sortField">The field to sort on</param>
-    /// <param name="sortOrder">The sort order</param>
-    /// <returns>A list of campaign posts</returns>
-    public static List<Campaign> GetByCategoryName(string categoryName, Int32 languageId, string sortField, string sortOrder)
-    {
-        // Make sure that sort variables are valid
-        sortField = GetValidSortField(sortField);
-        sortOrder = GetValidSortOrder(sortOrder);
-
-        // Create the list to return
-        List<Campaign> posts = new List<Campaign>(10);
-
-        // Create the connection and the sql statement
-        string connection = Tools.GetConnectionString();
-        string sql = "SELECT * FROM dbo.campaigns WHERE language_id = @language_id AND category_name = "
-            + "@category_name AND inactive = @inactive ORDER BY " + sortField + " " + sortOrder + ";";
-
-        // The using block is used to call dispose automatically even if there are an exception.
-        using (SqlConnection cn = new SqlConnection(connection))
-        {
-            // The using block is used to call dispose automatically even if there are an exception.
-            using (SqlCommand cmd = new SqlCommand(sql, cn))
-            {
-                // Add parameters
-                cmd.Parameters.AddWithValue("@language_id", languageId);
-                cmd.Parameters.AddWithValue("@category_name", categoryName);
-                cmd.Parameters.AddWithValue("@inactive", 0);
-
-                // Create a MySqlDataReader
-                SqlDataReader reader = null;
-
-                // The Try/Catch/Finally statement is used to handle unusual exceptions in the code to
-                // avoid having our application crash in such cases.
-                try
-                {
-                    // Open the connection.
-                    cn.Open();
-
-                    // Fill the reader with one row of data.
-                    reader = cmd.ExecuteReader();
-
-                    // Loop through the reader as long as there is something to read and add values
-                    while (reader.Read())
-                    {
-                        posts.Add(new Campaign(reader));
-                    }
-                }
-                catch (Exception e)
-                {
-                    throw e;
-                }
-                finally
-                {
-                    // Call Close when done reading to avoid memory leakage.
-                    if (reader != null)
-                        reader.Close();
-                }
-            }
-        }
-
-        // Return the list of posts
-        return posts;
-
-    } // End of the GetByCategoryName method
-
-    /// <summary>
-    /// Get campaigns by search keywords
+    /// Get discount codes by search keywords
     /// </summary>
     /// <param name="keywords">An array of keywords</param>
     /// <param name="pageSize">The number of pages on one page</param>
     /// <param name="pageNumber">The page number of a page from 1 and above</param>
     /// <param name="sortField">The field to sort on</param>
     /// <param name="sortOrder">The sort order</param>
-    /// <returns>A list of campaigns</returns>
-    public static List<Campaign> GetBySearch(string[] keywords, Int32 pageSize, Int32 pageNumber, string sortField, string sortOrder)
+    /// <returns>A list of discount codes</returns>
+    public static List<DiscountCode> GetBySearch(string[] keywords, Int32 pageSize, Int32 pageNumber, string sortField, string sortOrder)
     {
         // Make sure that sort variables are valid
         sortField = GetValidSortField(sortField);
         sortOrder = GetValidSortOrder(sortOrder);
 
         // Create the list to return
-        List<Campaign> posts = new List<Campaign>(pageSize);
+        List<DiscountCode> posts = new List<DiscountCode>(pageSize);
 
         // Create the connection string and the select statement
         string connection = Tools.GetConnectionString();
-        string sql = "SELECT * FROM dbo.campaigns WHERE 1 = 1";
+        string sql = "SELECT * FROM dbo.discount_codes WHERE 1 = 1";
 
         // Append keywords to the sql string
         for (int i = 0; i < keywords.Length; i++)
         {
-            sql += " AND (CAST(id AS nvarchar(20)) LIKE @keyword_" + i.ToString() + " OR name LIKE @keyword_" + i.ToString()
-               + " OR category_name LIKE @keyword_" + i.ToString() + " OR image_name LIKE @keyword_" + i.ToString() + ")";
+            sql += " AND (id LIKE @keyword_" + i.ToString() + " OR CAST(language_id AS nvarchar(20)) LIKE @keyword_" + i.ToString() + ")";
         }
 
         // Add the final touch to the select string
@@ -682,7 +468,7 @@ public class Campaign
                     // Loop through the reader as long as there is something to read.
                     while (reader.Read())
                     {
-                        posts.Add(new Campaign(reader));
+                        posts.Add(new DiscountCode(reader));
                     }
 
                 }
@@ -709,15 +495,15 @@ public class Campaign
     #region Delete methods
 
     /// <summary>
-    /// Delete a campaign post on id
+    /// Delete a discount code post on id
     /// </summary>
-    /// <param name="id">The id of the campaign post</param>
+    /// <param name="id">The id of the discount code post</param>
     /// <returns>An error code</returns>
-    public static Int32 DeleteOnId(Int32 id)
+    public static Int32 DeleteOnId(string id)
     {
         // Create the connection and the sql statement
         string connection = Tools.GetConnectionString();
-        string sql = "DELETE FROM dbo.campaigns WHERE id = @id;";
+        string sql = "DELETE FROM dbo.discount_codes WHERE id = @id;";
 
         // The using block is used to call dispose automatically even if there is a exception.
         using (SqlConnection cn = new SqlConnection(connection))
@@ -775,7 +561,7 @@ public class Campaign
     public static string GetValidSortField(string sortField)
     {
         // Make sure that the sort field is valid
-        if (sortField != "id" && sortField != "name" && sortField != "category_name" && sortField != "image_name")
+        if (sortField != "id" && sortField != "language_id" && sortField != "discount_value")
         {
             sortField = "id";
         }

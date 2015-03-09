@@ -24,7 +24,7 @@ li li {padding-left:2px;}
 .annytab-basic-bread-text{font-size:12px;line-height:16px;margin:0px;}
 .annytab-basic-button{display:inline;font-size:14px;line-height:14px;background-image:url('/Content/images/annytab_design/blue_button.png');color:#ffffff;font-weight:bold;border-radius:4px;vertical-align:middle;padding:7px 20px 7px 20px;margin:2px 2px 2px 2px;text-decoration:none;cursor:pointer;border:0px;text-shadow:0px -1px 3px #000000;}
 .annytab-basic-button:hover{background-image:url('/Content/images/annytab_design/blue_button_hover.png');text-decoration:none;}
-.annytab-basic-linkbutton{border:0px;background-color:transparent;color:#207298;line-height:22px;text-decoration:none;margin:0px;padding:0px;cursor:pointer;}
+.annytab-basic-linkbutton{border:0px;background-color:transparent;color:#207298;text-decoration:none;margin:0px;padding:0px;cursor:pointer;}
 .annytab-basic-linkbutton:hover{text-decoration:underline;outline:none;}
 .annytab-basic-linkbutton:focus{text-decoration:underline;outline:none;}
 .annytab-basic-divider{display:inline-block;width:2px;height:100%;background-color:#003F65;border-right:2px solid #4698BE;}
@@ -99,8 +99,8 @@ li li {padding-left:2px;}
 .annytab-image-radio{width:28px;height:23px;}
 
 /* Shopping cart */
-.annytab-step-heading{margin-bottom:6px;font-size:18px;font-weight:bold;line-height:28px;border-bottom:1px solid #207298;}
-.annytab-step-circle{float:left;margin-right:2px;color:#ffffff;font-size:14px;text-align:center;background-image:url('/Content/images/annytab_design/circle.png');width:28px;height:28px;background-size:28px,28px;}
+.annytab-step-heading{margin:4px 0px 6px 0px;font-size:18px;font-weight:bold;line-height:24px;border-bottom:1px solid #207298;}
+.annytab-step-circle{background-color:#207298;border-radius:4px;text-align:center;color:#ffffff;width:24px;height:24px;margin:0px 6px 2px 0px;display:inline-block;}
 .annytab-cart-image{width:64px;height:64px;}
 .annytab-cart-container{display:block;width:100%;margin:0px;overflow:auto;}
 .annytab-cart-table{display:table;width:680px;min-width:100%;}

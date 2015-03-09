@@ -160,6 +160,7 @@
     <Compile Include="ControllersApi\currenciesController.cs" />
     <Compile Include="ControllersApi\customersController.cs" />
     <Compile Include="ControllersApi\custom_designController.cs" />
+    <Compile Include="ControllersApi\discount_codesController.cs" />
     <Compile Include="ControllersApi\domainsController.cs" />
     <Compile Include="ControllersApi\languagesController.cs" />
     <Compile Include="ControllersApi\newslettersController.cs" />
@@ -184,6 +185,7 @@
     <Compile Include="Controllers\admin_campaignsController.cs" />
     <Compile Include="Controllers\admin_categoriesController.cs" />
     <Compile Include="Controllers\admin_companiesController.cs" />
+    <Compile Include="Controllers\admin_discount_codesController.cs" />
     <Compile Include="Controllers\admin_newslettersController.cs" />
     <Compile Include="Controllers\admin_webshop_settingsController.cs" />
     <Compile Include="Controllers\admin_countriesController.cs" />
@@ -225,6 +227,7 @@
     <Compile Include="Helpers\SqlSessionStateProvider.cs" />
     <Compile Include="Helpers\StringHtmlExtensions.cs" />
     <Compile Include="Helpers\SveaSettings.cs" />
+    <Compile Include="Models\DiscountCode.cs" />
     <Compile Include="Models\WebshopSession.cs" />
     <Compile Include="Models\AdditionalService.cs" />
     <Compile Include="Models\Administrator.cs" />
@@ -322,7 +325,6 @@
     <Content Include="Content\images\annytab_design\list_arrow_down.png" />
     <Content Include="Content\images\annytab_design\list_arrow_left.png" />
     <Content Include="Content\images\annytab_design\menu_icon.png" />
-    <Content Include="Content\images\annytab_design\message_box_header.png" />
     <Content Include="Content\images\annytab_design\star.gif" />
     <Content Include="Content\images\annytab_design\transparent_background.png" />
     <None Include="DeveloperFiles\db_alter_column.sql" />
@@ -330,6 +332,7 @@
     <Content Include="DatabaseFiles\db_version_0.sql" />
     <None Include="DeveloperFiles\db_drop_statements.sql" />
     <None Include="DeveloperFiles\db_update_settings.sql" />
+    <Content Include="DatabaseFiles\db_version_5.sql" />
     <Content Include="DatabaseFiles\db_version_4.sql" />
     <Content Include="DatabaseFiles\db_version_3.sql" />
     <Content Include="DatabaseFiles\db_version_2.sql" />
@@ -519,6 +522,9 @@
     <Content Include="Views\admin_customers\files.cshtml" />
     <Content Include="Views\admin_custom_design\edit_theme.cshtml" />
     <Content Include="Views\customer\_menu.cshtml" />
+    <Content Include="Views\admin_discount_codes\index.cshtml" />
+    <Content Include="Views\admin_discount_codes\_form_menu.cshtml" />
+    <Content Include="Views\admin_discount_codes\edit.cshtml" />
     <None Include="Web References\Payex.Production\pxorder.wsdl" />
     <Content Include="Web References\Payex.Production\Reference.map">
       <Generator>MSDiscoCodeGenerator</Generator>

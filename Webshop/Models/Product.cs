@@ -38,6 +38,7 @@ public class Product
     public string energy_efficiency_class;
     public bool downloadable_files;
     public DateTime date_added;
+    public decimal discount;
     public string title;
     public string main_content;
     public string extra_content;
@@ -96,6 +97,7 @@ public class Product
         this.energy_efficiency_class = "";
         this.downloadable_files = false;
         this.date_added = DateTime.Now;
+        this.discount = 0;
         this.title = "";
         this.main_content = "";
         this.extra_content = "";
@@ -153,6 +155,7 @@ public class Product
         this.energy_efficiency_class = reader["energy_efficiency_class"].ToString();
         this.downloadable_files = Convert.ToBoolean(reader["downloadable_files"]);
         this.date_added = Convert.ToDateTime(reader["date_added"]);
+        this.discount = Convert.ToDecimal(reader["discount"]);
         this.title = reader["title"].ToString();
         this.main_content = reader["main_content"].ToString();
         this.extra_content = reader["extra_content"].ToString();
@@ -194,11 +197,11 @@ public class Product
         string sql = "INSERT INTO dbo.products (product_code, manufacturer_code, gtin, unit_price, unit_freight, unit_id, "
             + "mount_time_hours, from_price, category_id, brand, supplier_erp_id, meta_robots, page_views, buys, added_in_basket, condition, "
             + "variant_image_filename, gender, age_group, adult_only, unit_pricing_measure, unit_pricing_base_measure, comparison_unit_id, " 
-            + "energy_efficiency_class, downloadable_files, date_added) "
+            + "energy_efficiency_class, downloadable_files, date_added, discount) "
             + "VALUES (@product_code, @manufacturer_code, @gtin, @unit_price, @unit_freight, @unit_id, @mount_time_hours, @from_price, "
             + "@category_id, @brand, @supplier_erp_id, @meta_robots, @page_views, @buys, @added_in_basket, "
             + "@condition, @variant_image_filename, @gender, @age_group, @adult_only, @unit_pricing_measure, @unit_pricing_base_measure, "
-            + "@comparison_unit_id, @energy_efficiency_class, @downloadable_files, @date_added);SELECT SCOPE_IDENTITY();";
+            + "@comparison_unit_id, @energy_efficiency_class, @downloadable_files, @date_added, @discount);SELECT SCOPE_IDENTITY();";
 
         // The using block is used to call dispose automatically even if there are an exception.
         using (SqlConnection cn = new SqlConnection(connection))
@@ -233,6 +236,7 @@ public class Product
                 cmd.Parameters.AddWithValue("@energy_efficiency_class", post.energy_efficiency_class);
                 cmd.Parameters.AddWithValue("@downloadable_files", post.downloadable_files);
                 cmd.Parameters.AddWithValue("@date_added", post.date_added);
+                cmd.Parameters.AddWithValue("@discount", post.discount);
 
                 // The Try/Catch/Finally statement is used to handle unusual exceptions in the code to
                 // avoid having our application crash in such cases
@@ -345,7 +349,7 @@ public class Product
             + "gender = @gender, age_group = @age_group, adult_only = @adult_only, unit_pricing_measure = @unit_pricing_measure, "
             + "unit_pricing_base_measure = @unit_pricing_base_measure, comparison_unit_id = @comparison_unit_id, "
             + "energy_efficiency_class = @energy_efficiency_class, downloadable_files = @downloadable_files, " 
-            + "date_added = @date_added WHERE id = @id;";
+            + "date_added = @date_added, discount = @discount WHERE id = @id;";
 
         // The using block is used to call dispose automatically even if there are an exception.
         using (SqlConnection cn = new SqlConnection(connection))
@@ -381,6 +385,7 @@ public class Product
                 cmd.Parameters.AddWithValue("@energy_efficiency_class", post.energy_efficiency_class);
                 cmd.Parameters.AddWithValue("@downloadable_files", post.downloadable_files);
                 cmd.Parameters.AddWithValue("@date_added", post.date_added);
+                cmd.Parameters.AddWithValue("@discount", post.discount);
 
                 // The Try/Catch/Finally statement is used to handle unusual exceptions in the code to
                 // avoid having our application crash in such cases.
@@ -590,6 +595,88 @@ public class Product
         }
 
     } // End of the UpdateBuys method
+
+    /// <summary>
+    /// Reset statistics for all products
+    /// </summary>
+    public static void ResetStatistics()
+    {
+        // Create the connection and the sql statement
+        string connection = Tools.GetConnectionString();
+        string sql = "UPDATE dbo.products SET page_views = @page_views, added_in_basket = @added_in_basket, buys = @buys;";
+
+        // The using block is used to call dispose automatically even if there is an exception.
+        using (SqlConnection cn = new SqlConnection(connection))
+        {
+            // The using block is used to call dispose automatically even if there is an exception.
+            using (SqlCommand cmd = new SqlCommand(sql, cn))
+            {
+                // Add parameters
+                cmd.Parameters.AddWithValue("@page_views", 0);
+                cmd.Parameters.AddWithValue("@added_in_basket", 0);
+                cmd.Parameters.AddWithValue("@buys", 0);
+
+                // The Try/Catch/Finally statement is used to handle unusual exceptions in the code to
+                // avoid having our application crash in such cases.
+                try
+                {
+                    // Open the connection.
+                    cn.Open();
+
+                    // Execute the update
+                    cmd.ExecuteNonQuery();
+
+                }
+                catch (Exception e)
+                {
+                    throw e;
+                }
+            }
+        }
+
+    } // End of the ResetStatistics method
+
+    /// <summary>
+    /// Reset statistics for a product
+    /// </summary>
+    /// <param name="id">The product id</param>
+    public static void ResetStatistics(Int32 id)
+    {
+        // Create the connection and the sql statement
+        string connection = Tools.GetConnectionString();
+        string sql = "UPDATE dbo.products SET page_views = @page_views, added_in_basket = @added_in_basket, buys = @buys WHERE id = @id;";
+
+        // The using block is used to call dispose automatically even if there is an exception.
+        using (SqlConnection cn = new SqlConnection(connection))
+        {
+            // The using block is used to call dispose automatically even if there is an exception.
+            using (SqlCommand cmd = new SqlCommand(sql, cn))
+            {
+                // Add parameters
+                cmd.Parameters.AddWithValue("@id", id);
+                cmd.Parameters.AddWithValue("@page_views", 0);
+                cmd.Parameters.AddWithValue("@added_in_basket", 0);
+                cmd.Parameters.AddWithValue("@buys", 0);
+
+                // The Try/Catch/Finally statement is used to handle unusual exceptions in the code to
+                // avoid having our application crash in such cases.
+                try
+                {
+                    // Open the connection.
+                    cn.Open();
+
+                    // Execute the update
+                    cmd.ExecuteNonQuery();
+
+                }
+                catch (Exception e)
+                {
+                    throw e;
+                }
+            }
+        }
+
+    } // End of the ResetStatistics method
 
     /// <summary>
     /// Update the rating for the product
@@ -1544,7 +1631,7 @@ public class Product
         // Sort with prices that includes vat
         if (sortField.ToLower() == "unit_price" && pricesIncludesVat == true)
         {
-            sql = "SELECT *, (P.unit_price * (1 + V.value)) AS unit_price_with_vat FROM dbo.products_detail AS D INNER JOIN dbo.products AS P ON D.product_id = P.id "
+            sql = "SELECT *, (P.unit_price * (1 - P.discount) * (1 + V.value)) AS unit_price_with_vat FROM dbo.products_detail AS D INNER JOIN dbo.products AS P ON D.product_id = P.id "
             + "INNER JOIN dbo.value_added_taxes AS V ON D.value_added_tax_id = V.id WHERE D.language_id = @language_id ";
 
             // Append keywords to the sql string
@@ -1556,6 +1643,23 @@ public class Product
 
             // Add the final touch to the sql string
             sql += "ORDER BY unit_price_with_vat " + sortOrder + " OFFSET @pageNumber ROWS FETCH NEXT @pageSize ROWS ONLY;";
+        }
+
+        // Sort with discount prices
+        if (sortField.ToLower() == "unit_price" && pricesIncludesVat == false)
+        {
+            sql = "SELECT *, (P.unit_price * (1 - P.discount)) AS discount_price FROM dbo.products_detail AS D INNER JOIN dbo.products AS P ON D.product_id = P.id "
+            + "WHERE D.language_id = @language_id AND D.inactive = 0 ";
+
+            // Append keywords to the sql string
+            for (int i = 0; i < keywords.Length; i++)
+            {
+                sql += "AND (P.brand LIKE @keyword_" + i.ToString() + " OR D.title LIKE @keyword_" + i.ToString()
+                    + " OR D.meta_description LIKE @keyword_" + i.ToString() + " OR D.meta_keywords LIKE @keyword_" + i.ToString() + ") ";
+            }
+
+            // Add the final touch to the sql string
+            sql += "ORDER BY discount_price " + sortOrder + " OFFSET @pageNumber ROWS FETCH NEXT @pageSize ROWS ONLY;";
         }
 
         // The using block is used to call dispose automatically even if there are an exception.

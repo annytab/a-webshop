@@ -50,6 +50,7 @@ function changeProductPriceAndCode()
 {
     // Get default values
     var defaultPrice = parseFloat($("#hiddenProductPrice").val());
+    var discount = parseFloat($("#hiddenDiscount").val());
     var defaultProductCode = $("#hiddenProductCode").val();
     var defaultManufacturerCode = $("#hiddenManufacturerCode").val();
     var conversionRate = parseFloat($("#hiddenConversionRate").val());
@@ -79,11 +80,13 @@ function changeProductPriceAndCode()
     defaultPrice *= (currencyBase / conversionRate);
 
     // Round the price to a maximum of 2 decimals
-    defaultPrice = Math.round(defaultPrice * decimalMultiplier) / decimalMultiplier;
+    var ordinaryPrice = Math.round(defaultPrice * decimalMultiplier) / decimalMultiplier;
+    defaultPrice = Math.round(defaultPrice * (1 - discount) * decimalMultiplier) / decimalMultiplier;
 
     // Add vat if prices should include vat
     if (pricesIncludesVat == "true")
     {
+        ordinaryPrice += Math.round((ordinaryPrice * valueAddedTaxPercent) * decimalMultiplier) / decimalMultiplier;
         defaultPrice += Math.round((defaultPrice * valueAddedTaxPercent) * decimalMultiplier) / decimalMultiplier;
     }
 
@@ -102,6 +105,9 @@ function changeProductPriceAndCode()
             productPrice.text(defaultPrice.toLocaleString(localeCode));
         }
     });
+
+    // Update the ordinary price
+    $("#txtOrdinaryPrice").fadeOut(500, function () { $(this).text(ordinaryPrice.toLocaleString(localeCode)).fadeIn(500); });
 
     // Update product codes
     $("#txtProductCode").fadeOut(500, function () { $(this).text(defaultProductCode).fadeIn(500); });

@@ -31,6 +31,7 @@
     string price_tt = tt.Get("price");
     string freight_tt = tt.Get("freight");
     string unit_tt = tt.Get("unit");
+    string discount_tt = tt.Get("discount");
     string mount_time_hours_tt = tt.Get("mount_time_hours");
     string show_tt = tt.Get("show");
     string as_tt = tt.Get("as");
@@ -162,6 +163,10 @@
                     }
                 </select>
             </td>
+        </tr>
+        <tr>
+            <td class="label">@(discount_tt + ":")</td>
+            <td class="input"><input name="txtDiscount" type="number" step="any" class="formTextbox" value="@product.discount.ToString(CultureInfo.InvariantCulture)" /></td>
         </tr>
         <tr>
             <td class="label">@(mount_time_hours_tt + ":")</td>

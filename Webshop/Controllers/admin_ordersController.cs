@@ -222,18 +222,16 @@ namespace Annytab.Webshop.Controllers
             bool exported_to_erp = Convert.ToBoolean(collection["cbExportedToErp"]);
             DateTime desired_date_of_delivery = DateTime.MinValue;
             DateTime.TryParse(collection["txtDesiredDateOfDelivery"], out desired_date_of_delivery);
-
-            // Get the default admin language id
-            Int32 adminLanguageId = currentDomain.back_end_language;
+            string discount_code = collection["txtDiscountCode"];
 
             // Get translated texts
-            KeyStringList tt = StaticText.GetAll(adminLanguageId, "id", "ASC");
+            KeyStringList tt = StaticText.GetAll(currentDomain.back_end_language, "id", "ASC");
 
             // Get the saved order
             Order order = Order.GetOneById(id);
 
             // Get the payment option
-            PaymentOption paymentOption = PaymentOption.GetOneById(order.payment_option, adminLanguageId);
+            PaymentOption paymentOption = PaymentOption.GetOneById(order.payment_option, currentDomain.back_end_language);
 
             // Create the error message string
             string error_message = "";
@@ -275,6 +273,7 @@ namespace Annytab.Webshop.Controllers
             order.order_status = order_status;
             order.exported_to_erp = exported_to_erp;
             order.desired_date_of_delivery = AnnytabDataValidation.TruncateDateTime(desired_date_of_delivery);
+            order.discount_code = AnnytabDataValidation.TruncateString(discount_code, 50);
 
             // Check if there is any errors
             if(error_message == "")

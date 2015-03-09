@@ -19,8 +19,9 @@
     List<string> otherProductImageUrls = Tools.GetOtherProductImageUrls(product.id, domain.front_end_language, product.use_local_images);
     ValueAddedTax valueAddedTax = ViewBag.ValueAddedTax;
     Unit unit = ViewBag.Unit;
-    Decimal productPrice = ViewBag.ProductPrice;
-    Decimal comparisonPrice = ViewBag.ComparisonPrice;
+    decimal productPrice = ViewBag.ProductPrice;
+    decimal ordinaryPrice = ViewBag.OrdinaryPrice;
+    decimal comparisonPrice = ViewBag.ComparisonPrice;
     Unit comparisonUnit = Unit.GetOneById(product.comparison_unit_id, domain.front_end_language);
     string productCode = ViewBag.ProductCode;
     string manufacturerCode = ViewBag.ManufacturerCode;
@@ -45,6 +46,8 @@
     // Get translated texts
     string product_tt = tt.Get("product");
     string price_tt = tt.Get("price");
+    string regular_price_short_tt = tt.Get("regular_price_short");
+    string discount_tt = tt.Get("discount");
     string excluding_vat_tt = tt.Get("excluding_vat");
     string including_vat_tt = tt.Get("including_vat");
     string product_code_tt = tt.Get("product_code");
@@ -68,7 +71,7 @@
     string size_type_tt = tt.Get("size_type");
     string size_system_tt = tt.Get("size_system");
     string energy_efficiency_class_tt = tt.Get("energy_efficiency_class");
-    
+
     // Set the buy button text
     string buy_button_text = buy_tt.ToUpper();
     if(product.affiliate_link != "")
@@ -117,13 +120,14 @@
         @* Hidden data *@
         <input name="hiddenProductId" type="hidden" value="@product.id.ToString()" />
         <input id="hiddenProductPrice" type="hidden" value="@product.unit_price.ToString(CultureInfo.InvariantCulture)" />
+        <input id="hiddenDiscount" type="hidden" value="@product.discount.ToString(CultureInfo.InvariantCulture)" />
         <input id="hiddenProductCode" type="hidden" value="@product.product_code" />
         <input id="hiddenManufacturerCode" type="hidden" value="@product.manufacturer_code" />
         <input id="hiddenConversionRate" type="hidden" value="@currency.conversion_rate.ToString(CultureInfo.InvariantCulture)" />
         <input id="hiddenCurrencyBase" type="hidden" value="@currency.currency_base.ToString(CultureInfo.InvariantCulture)" />
         <input id="hiddenDecimalMultiplier" type="hidden" value="@Convert.ToInt32(Math.Pow(10, currency.decimals))" />
         <input id="hiddenValueAddedTaxPercent" type="hidden" value="@valueAddedTax.value.ToString(CultureInfo.InvariantCulture)" />
-        <input id="hiddenPriceIncludesVat" type="hidden" value="@pricesIncludesVat" />
+        <input id="hiddenPriceIncludesVat" type="hidden" value="@pricesIncludesVat.ToString()" />
         <input id="hiddenVariantImageDirectory" type="hidden" value="@("/Content/products/" + (product.id / 100).ToString() + "/" + product.id.ToString() + "/" + languageId + "/other_images/")" />
         <input id="hiddenVariantImageFileName" type="hidden" value="@(product.variant_image_filename)" />
         <input id="hiddenCultureCode" type="hidden" value="@cultureInfo.Name" />
@@ -197,6 +201,14 @@
             <span id="txtProductPrice" itemprop="price" class="annytab-price-tag">@productPrice.ToString("##,0.##", cultureInfo)</span>
             &nbsp;<span itemprop="priceCurrency" class="annytab-price-tag">@(currency.currency_code)</span>
             <span style="font-size:14px;color:#808080;vertical-align:middle;">@(pricesIncludesVat == true ? " (" + including_vat_tt.ToLower() + ")" : " (" + excluding_vat_tt.ToLower() + ")")</span>
+        </div>
+        
+        @* Discount and ordinary price *@
+        <div style="@(product.discount > 0.000M ? "display:block;" : "display:none;")margin:5px 0px 5px 0px;font-size:16px;line-height:16px;">
+            <span style="color:#a30909;">@((product.discount * 100).ToString("##,0", cultureInfo) + "% " + discount_tt.ToUpper())</span>
+            <span>@(" (" + regular_price_short_tt + " ")</span>
+            <span id="txtOrdinaryPrice">@ordinaryPrice.ToString("##,0.##", cultureInfo)</span>
+            <span>@(" " + currency.currency_code + ")")</span>
         </div>
 
         <div class="annytab-basic-space"></div>

@@ -5,6 +5,7 @@ $(document).ready(start);
 function start()
 {
     // Register events
+    $(document).on("click", "#btnShowDiscountCode", toggleDiscountCode);
     $(document).on("click", "#copyInvoiceAddress", copyInvoiceAddress);
     $(document).on("change", "select[data-id='selectCountry']", changeTotalSumInCart);
     $("#txtVatNumber").on("change", changeTotalSumInCart);
@@ -221,3 +222,14 @@ function printDocument()
     printWindow.document.close();
 
 } // End of the printDocument method
+
+// Toggle the visibility for the discount code container
+function toggleDiscountCode()
+{
+    // Get the discount code container
+    var discountCodeContainer = $("#discountCodeContainer");
+
+    // Toggle the visibility for the container
+    discountCodeContainer.slideToggle(500);
+
+} // End of the toggleDiscountCode method

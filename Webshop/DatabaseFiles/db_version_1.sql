@@ -184,7 +184,7 @@ INSERT INTO dbo.static_texts (id, language_id, value) VALUES ('added',1,'Tillagd
 INSERT INTO dbo.static_texts (id, language_id, value) VALUES ('additional_service',1,'Tilläggstjänst');
 INSERT INTO dbo.static_texts (id, language_id, value) VALUES ('additional_services',1,'Tilläggstjänster');
 INSERT INTO dbo.static_texts (id, language_id, value) VALUES ('adjust',1,'Justera');
-INSERT INTO dbo.static_texts (id, language_id, value) VALUES ('address',1,'Address');
+INSERT INTO dbo.static_texts (id, language_id, value) VALUES ('address',1,'Adress');
 INSERT INTO dbo.static_texts (id, language_id, value) VALUES ('address_information',1,'Adressuppgifter');
 INSERT INTO dbo.static_texts (id, language_id, value) VALUES ('admin_role',1,'Roll');
 INSERT INTO dbo.static_texts (id, language_id, value) VALUES ('administrator',1,'Administratör');
@@ -282,7 +282,7 @@ INSERT INTO dbo.static_texts (id, language_id, value) VALUES ('error_404',1,'Fel
 INSERT INTO dbo.static_texts (id, language_id, value) VALUES ('error_cart_empty',1,'Din varukorg är tom!');
 INSERT INTO dbo.static_texts (id, language_id, value) VALUES ('error_customer_exists',1,'Det finns ingen kund som matchar angivna uppgifter!');
 INSERT INTO dbo.static_texts (id, language_id, value) VALUES ('error_domain_name',1,'Domännamnet får inte inkludera http://, https:// eller www. och får inte vara mer än 100 tecken!');
-INSERT INTO dbo.static_texts (id, language_id, value) VALUES ('error_email_unique',1,'Angiven e-post finns redan sparad i databasen, ange en annan address!');
+INSERT INTO dbo.static_texts (id, language_id, value) VALUES ('error_email_unique',1,'Angiven e-post finns redan sparad i databasen, ange en annan adress!');
 INSERT INTO dbo.static_texts (id, language_id, value) VALUES ('error_email_valid',1,'Angiven e-post är inte en giltig adress!');
 INSERT INTO dbo.static_texts (id, language_id, value) VALUES ('error_field_bad_chars',1,'{0}: består av felaktiga tecken!');
 INSERT INTO dbo.static_texts (id, language_id, value) VALUES ('error_field_certain_length',1,'{0}: måste bestå av minst {1} tecken och maximalt av {2} tecken!');

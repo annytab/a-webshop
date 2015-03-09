@@ -50,6 +50,7 @@
     string payment_status_paid_tt = tt.Get("payment_status_paid");
     string exported_to_erp_tt = tt.Get("exported_to_erp");
     string desired_date_of_delivery_tt = tt.Get("desired_date_of_delivery");
+    string discount_code_tt = tt.Get("discount_code");
     string update_tt = tt.Get("update");
     string cancel_tt = tt.Get("cancel");
 
@@ -111,6 +112,10 @@
         <tr>
             <td class="label">@(desired_date_of_delivery_tt + " (yyyy-mm-dd):")</td>
             <td class="input"><input id="txtDesiredDateOfDelivery" name="txtDesiredDateOfDelivery" type="text" class="formTextbox" value="@order.desired_date_of_delivery.ToString("yyyy-MM-dd")" /></td>
+        </tr>
+        <tr>
+            <td class="label">@(discount_code_tt + ":")</td>
+            <td class="input"><input name="txtDiscountCode" type="text" class="formTextbox" tabindex="-1" readonly="readonly" value="@order.discount_code"></td>
         </tr>
         <tr><td colspan="2">&nbsp;</td></tr>
         <tr>
