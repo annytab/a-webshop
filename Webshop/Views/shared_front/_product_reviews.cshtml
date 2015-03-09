@@ -107,6 +107,15 @@
             </div>
             <div style="clear:both;margin:4px 0px 0px 0px;">
                 <input id="btnLogin" type="submit" value="@log_in_tt" class="annytab-basic-button" />
+                @* External login *@
+                @if (domain.facebook_app_id != "")
+                {
+                    <button type="button" class="annytab-facebook-button" onclick="location.href='@Url.Action("facebook_login", "customer")'"><img src="~/Content/images/annytab_design/facebook_logo.png" alt="Facebook logo" style="height:16px;vertical-align:top;" />&nbsp;&nbsp;@log_in_tt</button>
+                }
+                @if (domain.google_app_id != "")
+                {
+                    <button type="button" class="annytab-google-button" onclick="location.href='@Url.Action("google_login", "customer")'"><img src="~/Content/images/annytab_design/google_plus.png" alt="Google plus" style="height:24px;" />&nbsp;@log_in_tt</button>
+                }
             </div>
         </div>
     }
