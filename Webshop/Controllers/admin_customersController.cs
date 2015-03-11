@@ -319,11 +319,11 @@ namespace Annytab.Webshop.Controllers
             }
             if (customer.invoice_country == 0)
             {
-                errorMessage += "&#149; " + String.Format(tt.Get("error_select_value"), tt.Get("country").ToLower()) + "<br/>";
+                errorMessage += "&#149; " + String.Format(tt.Get("error_select_value"), tt.Get("invoice_address") + ":" + tt.Get("country").ToLower()) + "<br/>";
             }
             if (customer.delivery_country == 0)
             {
-                errorMessage += "&#149; " + String.Format(tt.Get("error_select_value"), tt.Get("country").ToLower()) + "<br/>";
+                errorMessage += "&#149; " + String.Format(tt.Get("error_select_value"), tt.Get("delivery_address") + ":" + tt.Get("country").ToLower()) + "<br/>";
             }
             if (customerOnEmail != null && customer.id != customerOnEmail.id)
             {

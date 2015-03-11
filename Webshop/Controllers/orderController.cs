@@ -416,15 +416,15 @@ namespace Annytab.Webshop.Controllers
             }
             if(order.invoice_country_id == 0)
             {
-                errorMessage += "&#149; " + String.Format(translatedTexts.Get("error_select_value"), translatedTexts.Get("country").ToLower()) + "<br/>";
+                errorMessage += "&#149; " + String.Format(translatedTexts.Get("error_select_value"), translatedTexts.Get("invoice_address") + ":" + translatedTexts.Get("country").ToLower()) + "<br/>";
             }
             if (order.delivery_country_id == 0)
             {
-                errorMessage += "&#149; " + String.Format(translatedTexts.Get("error_select_value"), translatedTexts.Get("country").ToLower()) + "<br/>";
+                errorMessage += "&#149; " + String.Format(translatedTexts.Get("error_select_value"), translatedTexts.Get("delivery_address") + ":" + translatedTexts.Get("country").ToLower()) + "<br/>";
             }
 
             // Check if there is errors
-            if (errorMessage == string.Empty)
+            if (errorMessage == "")
             {
                 // Get the order sums and add them to the order
                 Dictionary<string, decimal> orderAmounts = Order.GetOrderAmounts(orderRows, order.vat_code, decimalMultiplier);

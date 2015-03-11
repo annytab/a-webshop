@@ -590,10 +590,14 @@ namespace Annytab.Webshop.Controllers
             string[] optionTypeSelectedInput = collection.GetValues("optionTypeSelected");
             string[] optionTypeTitles = collection.GetValues("optionTypeTitle");
 
+            // Get counts
+            Int32 optionTypeIdsCount = optionTypeIds != null ? optionTypeIds.Length : 0;
+            Int32 optionTypeSelectedInputCount = optionTypeSelectedInput != null ? optionTypeSelectedInput.Length : 0;
+
             // Get option type selected input
-            List<string> optionTypeSelected = new List<string>(optionTypeIds.Length);
+            List<string> optionTypeSelected = new List<string>(optionTypeIdsCount);
             int counter = 0;
-            while (counter < optionTypeSelectedInput.Length)
+            while (counter < optionTypeSelectedInputCount)
             {
                 if (optionTypeSelectedInput[counter] == "true")
                 {
@@ -617,10 +621,14 @@ namespace Annytab.Webshop.Controllers
             string[] optionPriceAdditions = collection.GetValues("optionPriceAddition");
             string[] optionFreightAdditions = collection.GetValues("optionFreightAddition");
 
+            // Get counts
+            Int32 keyOptionTypeIdsCount = keyOptionTypeIds != null ? keyOptionTypeIds.Length : 0;
+            Int32 optionSelectedInputCount = optionSelectedInput != null ? optionSelectedInput.Length : 0;
+
             // Get option selected input
-            List<string> optionSelected = new List<string>(keyOptionTypeIds.Length);
+            List<string> optionSelected = new List<string>(keyOptionTypeIdsCount);
             counter = 0;
-            while (counter < optionSelectedInput.Length)
+            while (counter < optionSelectedInputCount)
             {
                 if (optionSelectedInput[counter] == "true")
                 {

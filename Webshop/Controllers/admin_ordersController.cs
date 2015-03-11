@@ -236,14 +236,32 @@ namespace Annytab.Webshop.Controllers
             // Create the error message string
             string error_message = "";
 
-            // Check if payment status has been updated on a order
+            // Check for errors
+            if (invoice_country_id == "0")
+            {
+                error_message += "&#149; " + String.Format(tt.Get("error_select_value"), tt.Get("invoice_address") + ":" + tt.Get("country").ToLower()) + "<br/>";
+            }
+            else
+            {
+                order.invoice_country_id = Convert.ToInt32(invoice_country_id);
+            }
+            if (delivery_country_id == "0")
+            {
+                error_message += "&#149; " + String.Format(tt.Get("error_select_value"), tt.Get("delivery_address") + ":" + tt.Get("country").ToLower()) + "<br/>";
+            }
+            else
+            {
+                order.delivery_country_id = Convert.ToInt32(delivery_country_id);
+            }
+
+            // Check if the payment status has been updated on the order
             if(order.document_type == 1 && order.payment_status != payment_status)
             {
                 // Respond to the updated payment status
                 error_message += UpdatePaymentStatus(order, payment_status);
             }
 
-            // Check if the order status has been updated on a order
+            // Check if the order status has been updated on the order
             if (order.document_type == 1 && order.order_status != order_status)
             {
                 // Respond to the updated order status
@@ -262,13 +280,11 @@ namespace Annytab.Webshop.Controllers
             order.invoice_address_2 = AnnytabDataValidation.TruncateString(invoice_address_2, 100);
             order.invoice_post_code = AnnytabDataValidation.TruncateString(invoice_post_code, 100);
             order.invoice_city = AnnytabDataValidation.TruncateString(invoice_city, 100);
-            order.invoice_country_id = Convert.ToInt32(invoice_country_id);
             order.delivery_name = AnnytabDataValidation.TruncateString(delivery_name, 100);
             order.delivery_address_1 = AnnytabDataValidation.TruncateString(delivery_address_1, 100);
             order.delivery_address_2 = AnnytabDataValidation.TruncateString(delivery_address_2, 100);
             order.delivery_post_code = AnnytabDataValidation.TruncateString(delivery_post_code, 100);
             order.delivery_city = AnnytabDataValidation.TruncateString(delivery_city, 100);
-            order.delivery_country_id = Convert.ToInt32(delivery_country_id);
             order.payment_status = payment_status;
             order.order_status = order_status;
             order.exported_to_erp = exported_to_erp;
@@ -648,7 +664,6 @@ namespace Annytab.Webshop.Controllers
                         error_message += "&#149; " + "Svea code: " + closeOrderResponse.ResultCode.ToString() + "<br/>";
                         error_message += "&#149; " + "Svea message: " + closeOrderResponse.ErrorMessage + "<br/>";
                     }
-
                 }
                 else if(paymentOption.connection >= 400 && paymentOption.connection <= 499) // Payex
                 {

@@ -442,7 +442,9 @@ namespace Annytab.Webshop.Controllers
             if (ViewBag.Customer == null)
             {
                 // Add data to the view
-                ViewBag.Customer = new Customer();
+                Customer customer = new Customer();
+                customer.customer_type = 0;
+                ViewBag.Customer = customer;
             }
 
             // Return the view
@@ -484,7 +486,9 @@ namespace Annytab.Webshop.Controllers
             if (ViewBag.Customer == null)
             {
                 // Add data to the view
-                ViewBag.Customer = new Customer();
+                Customer customer = new Customer();
+                customer.customer_type = 1;
+                ViewBag.Customer = customer;
             }
 
             // Return the view
@@ -583,7 +587,6 @@ namespace Annytab.Webshop.Controllers
         [HttpPost]
         public ActionResult edit_company(FormCollection collection)
         {
-
             // Get all the form values
             Int32 id = Convert.ToInt32(collection["txtId"]);
             byte customerType = Convert.ToByte(collection["customerType"]);
@@ -612,7 +615,7 @@ namespace Annytab.Webshop.Controllers
             Domain currentDomain = Tools.GetCurrentDomain();
 
             // Get translated texts
-            KeyStringList translatedTexts = StaticText.GetAll(currentDomain.front_end_language, "id", "ASC");
+            KeyStringList tt = StaticText.GetAll(currentDomain.front_end_language, "id", "ASC");
 
             // Get the customer
             Customer customer = Customer.GetOneById(id);
@@ -653,18 +656,26 @@ namespace Annytab.Webshop.Controllers
             // Get the customer on email
             Customer customerOnEmail = Customer.GetOneByEmail(customer.email);
 
-            // Check for errors in the email address
+            // Check for errors
             if (customerOnEmail != null && customer.id != customerOnEmail.id)
             {
-                errorMessage += "&#149; " + translatedTexts.Get("error_email_unique") + "<br/>";
+                errorMessage += "&#149; " + tt.Get("error_email_unique") + "<br/>";
             }
             if (AnnytabDataValidation.IsEmailAddressValid(customer.email) == null)
             {
-                errorMessage += "&#149; " + translatedTexts.Get("error_email_valid") + "<br/>";
+                errorMessage += "&#149; " + tt.Get("error_email_valid") + "<br/>";
+            }
+            if (customer.invoice_country == 0)
+            {
+                errorMessage += "&#149; " + String.Format(tt.Get("error_select_value"), tt.Get("invoice_address") + ":" + tt.Get("country").ToLower()) + "<br/>";
+            }
+            if (customer.delivery_country == 0)
+            {
+                errorMessage += "&#149; " + String.Format(tt.Get("error_select_value"), tt.Get("delivery_address") + ":" + tt.Get("country").ToLower()) + "<br/>";
             }
 
             // Check if there is errors
-            if (errorMessage == string.Empty)
+            if (errorMessage == "")
             {
                 // Check if we should add or update the customer
                 if (customer.id == 0)
@@ -705,9 +716,9 @@ namespace Annytab.Webshop.Controllers
 
                 // Create the bread crumb list
                 List<BreadCrumb> breadCrumbs = new List<BreadCrumb>(2);
-                breadCrumbs.Add(new BreadCrumb(translatedTexts.Get("start_page"), "/"));
-                breadCrumbs.Add(new BreadCrumb(translatedTexts.Get("my_pages"), "/customer"));
-                breadCrumbs.Add(new BreadCrumb(translatedTexts.Get("edit") + " " + translatedTexts.Get("address_information").ToLower(), "/customer/edit_company"));
+                breadCrumbs.Add(new BreadCrumb(tt.Get("start_page"), "/"));
+                breadCrumbs.Add(new BreadCrumb(tt.Get("my_pages"), "/customer"));
+                breadCrumbs.Add(new BreadCrumb(tt.Get("edit") + " " + tt.Get("address_information").ToLower(), "/customer/edit_company"));
 
                 // Set form values
                 ViewBag.BreadCrumbs = breadCrumbs;
@@ -715,7 +726,7 @@ namespace Annytab.Webshop.Controllers
                 ViewBag.CurrentCategory = new Category();
                 ViewBag.CurrentDomain = currentDomain;
                 ViewBag.CurrentLanguage = Language.GetOneById(currentDomain.front_end_language);
-                ViewBag.TranslatedTexts = translatedTexts;
+                ViewBag.TranslatedTexts = tt;
                 ViewBag.Customer = customer;
                 ViewBag.PricesIncludesVat = Session["PricesIncludesVat"] != null ? Convert.ToBoolean(Session["PricesIncludesVat"]) : currentDomain.prices_includes_vat;
                 ViewBag.CultureInfo = Tools.GetCultureInfo(ViewBag.CurrentLanguage);
@@ -726,7 +737,7 @@ namespace Annytab.Webshop.Controllers
 
         } // End of the edit_company method
 
-        // Update the privet person customer
+        // Update a person customer
         // POST: /customer/edit_person
         [HttpPost]
         public ActionResult edit_person(FormCollection collection)
@@ -759,7 +770,7 @@ namespace Annytab.Webshop.Controllers
             Domain currentDomain = Tools.GetCurrentDomain();
 
             // Get translated texts
-            KeyStringList translatedTexts = StaticText.GetAll(currentDomain.front_end_language, "id", "ASC");
+            KeyStringList tt = StaticText.GetAll(currentDomain.front_end_language, "id", "ASC");
 
             // Get the customer
             Customer customer = Customer.GetOneById(id);
@@ -800,14 +811,22 @@ namespace Annytab.Webshop.Controllers
             // Get the customer on email
             Customer customerOnEmail = Customer.GetOneByEmail(customer.email);
 
-            // Check for errors in the email address
+            // Check for errors
             if (customerOnEmail != null && customer.id != customerOnEmail.id)
             {
-                errorMessage += "&#149; " + translatedTexts.Get("error_email_unique") + "<br/>";
+                errorMessage += "&#149; " + tt.Get("error_email_unique") + "<br/>";
             }
             if (AnnytabDataValidation.IsEmailAddressValid(customer.email) == null)
             {
-                errorMessage += "&#149; " + translatedTexts.Get("error_email_valid") + "<br/>";
+                errorMessage += "&#149; " + tt.Get("error_email_valid") + "<br/>";
+            }
+            if (customer.invoice_country == 0)
+            {
+                errorMessage += "&#149; " + String.Format(tt.Get("error_select_value"), tt.Get("invoice_address") + ":" + tt.Get("country").ToLower()) + "<br/>";
+            }
+            if (customer.delivery_country == 0)
+            {
+                errorMessage += "&#149; " + String.Format(tt.Get("error_select_value"), tt.Get("delivery_address") + ":" + tt.Get("country").ToLower()) + "<br/>";
             }
 
             // Check if there is errors
@@ -851,9 +870,9 @@ namespace Annytab.Webshop.Controllers
             {
                 // Create the bread crumb list
                 List<BreadCrumb> breadCrumbs = new List<BreadCrumb>(2);
-                breadCrumbs.Add(new BreadCrumb(translatedTexts.Get("start_page"), "/"));
-                breadCrumbs.Add(new BreadCrumb(translatedTexts.Get("my_pages"), "/customer"));
-                breadCrumbs.Add(new BreadCrumb(translatedTexts.Get("edit") + " " + translatedTexts.Get("address_information").ToLower(), "/customer/edit_person"));
+                breadCrumbs.Add(new BreadCrumb(tt.Get("start_page"), "/"));
+                breadCrumbs.Add(new BreadCrumb(tt.Get("my_pages"), "/customer"));
+                breadCrumbs.Add(new BreadCrumb(tt.Get("edit") + " " + tt.Get("address_information").ToLower(), "/customer/edit_person"));
 
                 // Set form values
                 ViewBag.BreadCrumbs = breadCrumbs;
@@ -861,7 +880,7 @@ namespace Annytab.Webshop.Controllers
                 ViewBag.CurrentCategory = new Category();
                 ViewBag.CurrentDomain = currentDomain;
                 ViewBag.CurrentLanguage = Language.GetOneById(currentDomain.front_end_language);
-                ViewBag.TranslatedTexts = translatedTexts;
+                ViewBag.TranslatedTexts = tt;
                 ViewBag.Customer = customer;
                 ViewBag.PricesIncludesVat = Session["PricesIncludesVat"] != null ? Convert.ToBoolean(Session["PricesIncludesVat"]) : currentDomain.prices_includes_vat;
                 ViewBag.CultureInfo = Tools.GetCultureInfo(ViewBag.CurrentLanguage);
