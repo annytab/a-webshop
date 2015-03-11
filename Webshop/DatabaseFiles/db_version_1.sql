@@ -657,7 +657,7 @@ INSERT INTO dbo.static_texts (id, language_id, value) VALUES ('freight_addition'
 INSERT INTO dbo.static_texts (id, language_id, value) VALUES ('freight_prices',2,'Freight prices');
 INSERT INTO dbo.static_texts (id, language_id, value) VALUES ('from',2,'From');
 INSERT INTO dbo.static_texts (id, language_id, value) VALUES ('from_short',2,'Fr.');
-INSERT INTO dbo.static_texts (id, language_id, value) VALUES ('front_end_language',2,'Front-end language');
+INSERT INTO dbo.static_texts (id, language_id, value) VALUES ('front_end_language',2,'Frontend language');
 INSERT INTO dbo.static_texts (id, language_id, value) VALUES ('get',2,'Get');
 INSERT INTO dbo.static_texts (id, language_id, value) VALUES ('gender',2,'Gender');
 INSERT INTO dbo.static_texts (id, language_id, value) VALUES ('google_category',2,'Google category');

@@ -255,13 +255,18 @@ public static class GoogleShopping
         writer.WriteEndElement();
 
         // Calculate the price
-        decimal price = product.unit_price * (currency.currency_base / currency.conversion_rate);
-        price = Math.Round(price * decimalMultiplier, MidpointRounding.AwayFromZero) / decimalMultiplier;
+        decimal basePrice = product.unit_price * (currency.currency_base / currency.conversion_rate);
+        decimal regularPrice = Math.Round(basePrice * decimalMultiplier, MidpointRounding.AwayFromZero) / decimalMultiplier;
+        decimal salePrice = Math.Round(basePrice * (1 - product.discount) * decimalMultiplier, MidpointRounding.AwayFromZero) / decimalMultiplier;
+
+        // Get the country code as upper case letters
+        string countryCodeUpperCase = country.country_code.ToUpper();
 
         // Add value added tax to the price
-        if(country.country_code != "US" && country.country_code != "CA" && country.country_code != "IN")
+        if (countryCodeUpperCase != "US" && countryCodeUpperCase != "CA" && countryCodeUpperCase != "IN")
         {
-            price += Math.Round(price * valueAddedTax.value * decimalMultiplier, MidpointRounding.AwayFromZero) / decimalMultiplier;
+            regularPrice += Math.Round(regularPrice * valueAddedTax.value * decimalMultiplier, MidpointRounding.AwayFromZero) / decimalMultiplier;
+            salePrice += Math.Round(salePrice * valueAddedTax.value * decimalMultiplier, MidpointRounding.AwayFromZero) / decimalMultiplier;
         }
 
         // Calculate the freight
@@ -269,7 +274,7 @@ public static class GoogleShopping
         freight = Math.Round(freight * decimalMultiplier, MidpointRounding.AwayFromZero) / decimalMultiplier;
 
         // Add value added tax to the freight
-        if (country.country_code != "US" && country.country_code != "CA" && country.country_code != "IN")
+        if (countryCodeUpperCase != "US" && countryCodeUpperCase != "CA" && countryCodeUpperCase != "IN")
         {
             freight += Math.Round(freight * valueAddedTax.value * decimalMultiplier, MidpointRounding.AwayFromZero) / decimalMultiplier;
         }
@@ -279,8 +284,16 @@ public static class GoogleShopping
         writer.WriteString(GetGoogleAvailabilityStatus(product.availability_status));
         writer.WriteEndElement();
         writer.WriteStartElement("g:price");
-        writer.WriteString(price.ToString(CultureInfo.InvariantCulture) + " " + currency.currency_code);
+        writer.WriteString(regularPrice.ToString(CultureInfo.InvariantCulture) + " " + currency.currency_code);
         writer.WriteEndElement();
+
+        // Set the sale price if the product has a discount
+        if(product.discount > 0M)
+        {
+            writer.WriteStartElement("g:sale_price");
+            writer.WriteString(salePrice.ToString(CultureInfo.InvariantCulture) + " " + currency.currency_code);
+            writer.WriteEndElement();
+        }
 
         // Set the availability date
         if(product.availability_status == "availability_to_order")
