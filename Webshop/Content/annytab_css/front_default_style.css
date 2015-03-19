@@ -66,6 +66,9 @@ li li {padding-left:2px;}
 .annytab-slideshow-left-arrow{z-index:1;position:absolute;left:10px;top:50%;margin-top:-16px;cursor:pointer;width:32px;height:32px;display:none;}
 .annytab-slideshow-right-arrow{z-index:1;position:absolute;right:10px;top:50%;margin-top:-16px;cursor:pointer;width:32px;height:32px;display:none;}
 
+/* Code container (google prettify) */
+.annytab-code-container{overflow:auto;border:1px solid #cccccc;border-radius:4px;margin:0px;padding:0px;}
+
 /* Social content */
 .annytab-share-container{margin:6px 0px 6px 0px;}
 .annytab-share-button{display:inline-block;vertical-align:top;margin:0px;padding:0px;z-index:2;}

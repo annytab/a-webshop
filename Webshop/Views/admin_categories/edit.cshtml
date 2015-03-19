@@ -51,15 +51,28 @@
 @*Main form*@
 @using (Html.BeginForm("edit", "admin_categories", FormMethod.Post))
 {
+    @*Hidden data*@
     <input name="returnUrl" type="hidden" value="@returnUrl" />
     <div class="annytab-form-error-message" style="@(error_message != "" ? "display:block;" : "display:none;")">@Html.Raw(error_message)</div>
+
+    @*Title and content*@
+    <div class="annytab-form-input-container">
+        <div class="annytab-form-title">@(title_tt)</div>
+        <div><input id="txtTitle" name="txtTitle" type="text" class="annytab-form-textbox" style="max-width:100%;" value="@category.title" /></div>
+        <div class="annytab-basic-space-half"></div>
+        <div class="annytab-form-title">@(description_tt)</div>
+        <div class="annytab-form-html-button-panel" data-textarea="txtDescription"></div>
+        <div><textarea id="txtDescription" name="txtDescription" class="annytab-form-textarea" contenteditable="true" spellcheck="false" style="max-width:100%;" rows="10">@category.main_content</textarea></div>
+    </div>
     
+    <div class="annytab-basic-line"></div>
+
     @*Input form table*@
     <div class="annytab-input-form-table">
         <div class="annytab-input-form-row">
             <div class="annytab-input-form-column-label">@(main_category_tt + ":")</div>
             <div class="annytab-input-form-column-input">
-                <select id="selectCategory" name="selectCategory" class="annytab-form-select">
+                <select name="selectCategory" class="annytab-form-select">
                     <option value="0" @(category.parent_category_id == 0 ? Html.Raw("selected='selected'") : Html.Raw(""))>@("-- " + no_choice_tt + " --")</option>
                     @CreateChildOptions(0, mainCategories, category.parent_category_id, domain.back_end_language)
                 </select>
@@ -68,14 +81,6 @@
         <div class="annytab-input-form-row" style="@(category.id != 0 ? "display:table-row;" : "display:none;")">
             <div class="annytab-input-form-column-label">@(id_tt + ":")</div>
             <div class="annytab-input-form-column-input"><input name="txtId" type="text" class="annytab-form-textbox" tabindex="-1" readonly="readonly" value="@category.id" /></div>
-        </div>
-        <div class="annytab-input-form-row">
-            <div class="annytab-input-form-column-label">@(title_tt + ":")</div>
-            <div class="annytab-input-form-column-input"><input name="txtTitle" type="text" class="annytab-form-textbox" value="@category.title" /></div>
-        </div>
-        <div class="annytab-input-form-row">
-            <div class="annytab-input-form-column-label">@(description_tt + ":")</div>
-            <div class="annytab-input-form-column-input"><textarea name="txtDescription" class="annytab-form-textarea" rows="6">@category.main_content</textarea></div>
         </div>
         <div class="annytab-input-form-row">
             <div class="annytab-input-form-column-label">@(meta_description_tt + ":")</div>
@@ -123,7 +128,13 @@
 
 @section scripts {
     <link href="/Content/jquery_css/jquery-ui.min.css" rel="stylesheet" />
-    <script type="text/javascript">$("#selectCategory").focus();$("#txtDateAdded").datepicker({ dateFormat: 'yy-mm-dd' });</script>
+    <script src="/Scripts/rangyinputs-jquery.js"></script>
+    <script src="/Scripts/annytab_admin/annytab.html-button-panel.js"></script>
+    <script type="text/javascript">
+        $("#txtTitle").focus();
+        $("#txtDateAdded").datepicker({ dateFormat: 'yy-mm-dd' });
+        $(".annytab-form-html-button-panel").htmlButtonPanel({ buttonClass: "annytab-form-button" });
+    </script>
 }
 
 @helper CreateChildOptions(Int32 level, List<Category> categories, Int32 categoryId, Int32 languageId)

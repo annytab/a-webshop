@@ -55,6 +55,18 @@
     <input name="returnUrl" type="hidden" value="@returnUrl" />
     <div class="annytab-form-error-message" style="@(error_message != "" ? "display:block;" : "display:none;")">@Html.Raw(error_message)</div>
     
+    @*Title and content*@
+    <div class="annytab-form-input-container">
+        <div class="annytab-form-title">@(title_tt)</div>
+        <div><input id="txtTitle" name="txtTitle" type="text" class="annytab-form-textbox" style="max-width:100%;" value="@staticPage.title" /></div>
+        <div class="annytab-basic-space-half"></div>
+        <div class="annytab-form-title">@(description_tt)</div>
+        <div class="annytab-form-html-button-panel" data-textarea="txtDescription"></div>
+        <div><textarea id="txtDescription" name="txtDescription" class="annytab-form-textarea" contenteditable="true" spellcheck="false" style="max-width:100%;" rows="10">@staticPage.main_content</textarea></div>
+    </div>
+    
+    <div class="annytab-basic-line"></div>
+
     @*Input data form*@
     <div class="annytab-input-form-table">
         <div class="annytab-input-form-row" style="@(staticPage.id != 0 ? "display:table-row;" : "display:none;")">
@@ -62,16 +74,8 @@
             <div class="annytab-input-form-column-input"><input name="txtId" type="text" class="annytab-form-textbox" tabindex="-1" readonly="readonly" value="@staticPage.id" /></div>
         </div>
         <div class="annytab-input-form-row">
-            <div class="annytab-input-form-column-label">@(title_tt + ":")</div>
-            <div class="annytab-input-form-column-input"><input id="txtTitle" name="txtTitle" type="text" class="annytab-form-textbox" value="@staticPage.title" /></div>
-        </div>
-        <div class="annytab-input-form-row">
             <div class="annytab-input-form-column-label">@(linkname_tt + ":")</div>
             <div class="annytab-input-form-column-input"><input name="txtLinkname" type="text" class="annytab-form-textbox" value="@staticPage.link_name" /></div>
-        </div>
-        <div class="annytab-input-form-row">
-            <div class="annytab-input-form-column-label">@(description_tt + ":")</div>
-            <div class="annytab-input-form-column-input"><textarea name="txtDescription" class="annytab-form-textarea" rows="6">@staticPage.main_content</textarea></div>
         </div>
         <div class="annytab-input-form-row">
             <div class="annytab-input-form-column-label">@(meta_description_tt + ":")</div>
@@ -123,6 +127,11 @@
 }
 
 @section scripts {
-    <script type="text/javascript">$("#txtTitle").focus();</script>
+    <script src="/Scripts/rangyinputs-jquery.js"></script>
+    <script src="/Scripts/annytab_admin/annytab.html-button-panel.js"></script>
+    <script type="text/javascript">
+        $("#txtTitle").focus();
+        $(".annytab-form-html-button-panel").htmlButtonPanel({ buttonClass: "annytab-form-button" });
+    </script>
 }
 

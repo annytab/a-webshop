@@ -67,48 +67,41 @@
     <div class="annytab-form-error-message" style="@(error_message != "" ? "display:block;" : "display:none;")">@Html.Raw(error_message)</div>
     <input type="hidden" name="hiddenProductId" value="@standardProduct.id" />
     
+    @* Select language *@
+    <div class="annytab-form-input-container">
+        <div class="annytab-form-title">@(language_tt)</div>
+        <select id="selectLanguage" name="selectLanguage" class="annytab-form-select" style="max-width:100%;">
+            <option value="0" data-url="@("/admin_products/translate/" + standardProduct.id.ToString() + "?returnUrl=" + Server.UrlEncode(returnUrl))" @(languageId == 0 ? Html.Raw("selected='selected'") : Html.Raw(""))>@("-- " + no_choice_tt + " --")</option>
+            @foreach (Language language in languages)
+            {
+                <option value="@language.id" data-url="@("/admin_products/translate/" + standardProduct.id.ToString() + "?returnUrl=" + Server.UrlEncode(returnUrl) + "&lang=" + language.id.ToString())" @(language.id == languageId ? Html.Raw("selected='selected'") : Html.Raw(""))>@language.name</option>
+            }
+        </select>
+    </div>
+
+    <div class="annytab-basic-line"></div>
+
+    @*Title and content*@
+    <div class="annytab-form-input-container">
+        <div class="annytab-form-title">@(title_tt)</div>
+        <div><input name="txtStandardTitle" type="text" class="annytab-form-textbox" style="max-width:100%;" tabindex="-1" readonly="readonly" value="@standardProduct.title" /></div>
+        <div><input name="txtTranslatedTitle" type="text" class="annytab-form-textbox" style="max-width:100%" value="@(translatedProduct != null ? translatedProduct.title : "")" @(languageId == 0 ? Html.Raw("readonly='readonly'") : Html.Raw("")) /></div>
+        <div class="annytab-basic-space-half"></div>
+        <div class="annytab-form-title">@(description_tt)</div>
+        <textarea name="txtStandardDescription" class="annytab-form-textarea" style="max-width:100%;" tabindex="-1" rows="10" readonly="readonly">@standardProduct.main_content</textarea>
+        <div class="annytab-form-html-button-panel" data-textarea="txtTranslatedDescription"></div>
+        <div><textarea id="txtTranslatedDescription" name="txtTranslatedDescription" class="annytab-form-textarea" style="max-width:100%;" rows="10" @(languageId == 0 ? Html.Raw("readonly='readonly'") : Html.Raw(""))>@(translatedProduct != null ? translatedProduct.main_content : "")</textarea></div>
+        <div class="annytab-basic-space-half"></div>
+        <div class="annytab-form-title">@(extras_tt)</div>
+        <textarea name="txtStandardExtraContent" class="annytab-form-textarea" style="max-width:100%;" tabindex="-1" rows="10" readonly="readonly">@standardProduct.extra_content</textarea>
+        <div class="annytab-form-html-button-panel" data-textarea="txtTranslatedExtraContent"></div>
+        <div><textarea id="txtTranslatedExtraContent" name="txtTranslatedExtraContent" class="annytab-form-textarea" style="max-width:100%;" rows="10" @(languageId == 0 ? Html.Raw("readonly='readonly'") : Html.Raw(""))>@(translatedProduct != null ? translatedProduct.extra_content : "")</textarea></div>
+    </div>
+
+    <div class="annytab-basic-line"></div>
+
     @*Input form table*@
     <div class="annytab-input-form-table">
-        <div class="annytab-input-form-row">
-            <div class="annytab-input-form-column-label">@(language_tt + ":")</div>
-            <div class="annytab-input-form-column-input">
-                <select id="selectLanguage" name="selectLanguage" class="annytab-form-select">
-                    <option value="0" data-url="@("/admin_products/translate/" + standardProduct.id.ToString() + "?returnUrl=" + Server.UrlEncode(returnUrl))" @(languageId == 0 ? Html.Raw("selected='selected'") : Html.Raw(""))>@("-- " + no_choice_tt + " --")</option>
-                    @foreach (Language language in languages)
-                    {
-                        <option value="@language.id" data-url="@("/admin_products/translate/" + standardProduct.id.ToString() + "?returnUrl=" + Server.UrlEncode(returnUrl) + "&lang=" + language.id.ToString())" @(language.id == languageId ? Html.Raw("selected='selected'") : Html.Raw(""))>@language.name</option>
-                    }
-                </select>
-            </div>
-        </div>
-        <div class="annytab-input-form-row">
-            <div class="annytab-input-form-column-label"><div class="annytab-basic-space"></div></div>
-            <div class="annytab-input-form-column-input"><div class="annytab-basic-space"></div></div>
-        </div> 
-        <div class="annytab-input-form-row">
-            <div class="annytab-input-form-column-label">@(title_tt + ":")</div>
-            <div class="annytab-input-form-column-input"><input name="txtStandardTitle" type="text" class="annytab-form-textbox" tabindex="-1" readonly="readonly" value="@standardProduct.title" /></div>
-        </div>
-        <div class="annytab-input-form-row">
-            <div class="annytab-input-form-column-label">&nbsp;</div>
-            <div class="annytab-input-form-column-input"><input name="txtTranslatedTitle" type="text" class="annytab-form-textbox" value="@(translatedProduct != null ? translatedProduct.title : "")" @(languageId == 0 ? Html.Raw("readonly='readonly'") : Html.Raw("")) /></div>
-        </div>
-        <div class="annytab-input-form-row">
-            <div class="annytab-input-form-column-label">@(description_tt + ":")</div>
-            <div class="annytab-input-form-column-input"><textarea name="txtStandardDescription" class="annytab-form-textarea" tabindex="-1" rows="6" readonly="readonly">@standardProduct.main_content</textarea></div>
-        </div>
-        <div class="annytab-input-form-row">
-            <div class="annytab-input-form-column-label">&nbsp;</div>
-            <div class="annytab-input-form-column-input"><textarea name="txtTranslatedDescription" class="annytab-form-textarea" rows="6" @(languageId == 0 ? Html.Raw("readonly='readonly'") : Html.Raw(""))>@(translatedProduct != null ? translatedProduct.main_content : "")</textarea></div>
-        </div>
-        <div class="annytab-input-form-row">
-            <div class="annytab-input-form-column-label">@(extras_tt + ":")</div>
-            <div class="annytab-input-form-column-input"><textarea name="txtStandardExtraContent" class="annytab-form-textarea" tabindex="-1" rows="6" readonly="readonly">@standardProduct.extra_content</textarea></div>
-        </div>
-        <div class="annytab-input-form-row">
-            <div class="annytab-input-form-column-label">&nbsp;</div>
-            <div class="annytab-input-form-column-input"><textarea name="txtTranslatedExtraContent" class="annytab-form-textarea" rows="6" @(languageId == 0 ? Html.Raw("readonly='readonly'") : Html.Raw(""))>@(translatedProduct != null ? translatedProduct.extra_content : "")</textarea></div>
-        </div>
         <div class="annytab-input-form-row">
             <div class="annytab-input-form-column-label">@(meta_description_tt + ":")</div>
             <div class="annytab-input-form-column-input"><textarea name="txtStandardMetadescription" class="annytab-form-textarea" tabindex="-1" rows="4" readonly="readonly">@standardProduct.meta_description</textarea></div>
@@ -240,10 +233,13 @@
 
 @section scripts {
     <link href="~/Content/jquery_css/jquery-ui.min.css" rel="stylesheet" />
+    <script src="/Scripts/rangyinputs-jquery.js"></script>
+    <script src="/Scripts/annytab_admin/annytab.html-button-panel.js"></script>
     <script type="text/javascript">
         $("#selectLanguage").focus();
         $("#txtAvailabilityDate").datepicker({ dateFormat: 'yy-mm-dd' });
         $("#selectLanguage").on("change", function () { $(location).attr("href", $(this).find(":selected").attr("data-url")); });
+        $(".annytab-form-html-button-panel").htmlButtonPanel({ buttonClass: "annytab-form-button" });
     </script>
 }
 

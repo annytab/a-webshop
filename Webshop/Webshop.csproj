@@ -347,6 +347,7 @@
       <SubType>Designer</SubType>
     </None>
     <Content Include="robots.txt" />
+    <Content Include="Scripts\annytab_admin\annytab.html-button-panel.js" />
     <Content Include="Scripts\annytab_front\annytab.home-functions.js" />
     <Content Include="Scripts\annytab_front\annytab.mobile-layout-functions.js" />
     <Content Include="Scripts\annytab_front\annytab.standard-layout-functions.js" />
@@ -394,6 +395,7 @@
     <Content Include="Scripts\codemirror\xml.js" />
     <Content Include="Content\annytab_css\rateit.css" />
     <Content Include="Scripts\jquery.spin.js" />
+    <Content Include="Scripts\rangyinputs-jquery.js" />
     <Content Include="Scripts\spin.min.js" />
     <Content Include="Scripts\theme\readme.txt" />
     <Content Include="Scripts\_references.js" />

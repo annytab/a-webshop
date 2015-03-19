@@ -41,22 +41,22 @@
     <input name="hiddenId" type="hidden" value="@newsletter.id" />
     
     @*Input form*@
-    <div style="font-size:16px;line-height:24px;font-weight:bold;">@language_tt</div>
-    <select id="selectLanguage" name="selectLanguage" class="annytab-form-select">
+    <div class="annytab-form-title">@language_tt</div>
+    <select id="selectLanguage" name="selectLanguage" class="annytab-form-select" style="max-width:100%;">
         <option value="0" @(newsletter.language_id == 0 ? Html.Raw("selected='selected'") : Html.Raw(""))>@("-- " + no_choice_tt + " --")</option>
         @foreach (Language language in languages)
         {
             <option value="@language.id" @(language.id == newsletter.language_id ? Html.Raw("selected='selected'") : Html.Raw(""))>@language.name</option>
         }
     </select>
-    <div class="annytab-basic-space"></div>
-    <div style="font-size:16px;line-height:24px;font-weight:bold;">@(title_tt)</div>
-    <input name="txtTitle" type="text" class="annytab-form-textbox" value="@newsletter.title" />
-    <div class="annytab-basic-space"></div>
-    <div>
-        <span style="font-size:16px;line-height:24px;font-weight:bold;">@message_tt</span>
-        <textarea id="txtContent" name="txtContent" style="height:400px;">@Html.Raw(messageText)</textarea>
+    <div class="annytab-basic-space-half"></div>
+    <div style="display:block;padding-right:5px;">
+        <div class="annytab-form-title">@(title_tt)</div>
+        <input name="txtTitle" type="text" class="annytab-form-textbox" style="max-width:100%;margin-right:5px;" value="@newsletter.title" />
+        <div class="annytab-basic-space-half"></div>
     </div>
+    <div class="annytab-form-title">@message_tt</div>
+    <textarea id="txtContent" name="txtContent" style="height:400px;">@Html.Raw(messageText)</textarea>
 
     @*Button panel*@
     <div style="display:block;border:1px solid #cccccc;margin:20px 0px 0px 0px;border-radius:4px;">
@@ -67,7 +67,6 @@
 }
 
 @section scripts {
-
     <link rel="stylesheet" href="/Scripts/codemirror/codemirror.css">
     <script src="/Scripts/codemirror/codemirror.js"></script>
     <script src="/Scripts/codemirror/xml.js"></script>
@@ -75,7 +74,6 @@
     <script type="text/javascript">
         $("#selectLanguage").focus();
         var editor = CodeMirror.fromTextArea(document.getElementById("txtContent"), { lineNumbers: true, htmlMode: true, mode: "text/html", autofocus: false, indentUnit: 0, tabSize: 4 });
-
         $("#btnPreview").click(previewNewsletter);
 
         function previewNewsletter()

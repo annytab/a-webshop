@@ -227,6 +227,7 @@
 
     @* Scripts *@
     @Scripts.Render("~/bundles/jquery")
+    @Scripts.Render("https://google-code-prettify.googlecode.com/svn/loader/run_prettify.js")
     @Scripts.Render(domain.custom_theme_id == 0 ? "/Scripts/annytab_front/annytab.default-functions.js" : "/Scripts/theme/annytab.default-functions.js")
     @Scripts.Render(domain.custom_theme_id == 0 ? "/Scripts/annytab_front/annytab.standard-layout-functions.js" : "/Scripts/theme/annytab.standard-layout-functions.js")
     @RenderSection("scripts", required: false)
