@@ -15,6 +15,7 @@
     ViewBag.Title = settings_tt;
 }
 
+@*Title*@
 <h1>@ViewBag.Title</h1>
 
 @*Main form*@
@@ -22,177 +23,189 @@
 {
     @*EMAIL*@
     <div style="font-size:14px;font-weight:bold;margin:10px 0px 0px 0px;line-height:20px;">EMAIL</div>
-    <table style="clear:both;width:100%;border:1px solid #cccccc;background-color:#eae9e9;border-radius:4px;">
-        <tr>
-            <td class="label">SEND-EMAIL-HOST</td>
-            <td class="input"><input name="SEND-EMAIL-HOST" type="text" class="formTextbox" value="@webshopSettings.Get("SEND-EMAIL-HOST")" /></td>
-        </tr>
-        <tr>
-            <td class="label">SEND-EMAIL-PORT</td>
-            <td class="input"><input name="SEND-EMAIL-PORT" type="text" class="formTextbox" value="@webshopSettings.Get("SEND-EMAIL-PORT")" /></td>
-        </tr>
-        <tr>
-            <td class="label">SEND-EMAIL-ADDRESS</td>
-            <td class="input"><input name="SEND-EMAIL-ADDRESS" type="text" class="formTextbox" value="@webshopSettings.Get("SEND-EMAIL-ADDRESS")" /></td>
-        </tr>
-        <tr>
-            <td class="label">SEND-EMAIL-PASSWORD</td>
-            <td class="input"><input name="SEND-EMAIL-PASSWORD" type="password" class="formTextbox" value="@webshopSettings.Get("SEND-EMAIL-PASSWORD")" /></td>
-        </tr>
-        <tr>
-            <td class="label">SEND-EMAIL-USE-SSL (true/false)</td>
-            <td class="input"><input name="SEND-EMAIL-USE-SSL" class="formTextbox" value="@webshopSettings.Get("SEND-EMAIL-USE-SSL")" /></td>
-        </tr>
-        <tr>
-            <td class="label">ORDER-EMAIL</td>
-            <td class="input"><input name="ORDER-EMAIL" type="text" class="formTextbox" value="@webshopSettings.Get("ORDER-EMAIL")" /></td>
-        </tr>
-        <tr>
-            <td class="label">CUSTOMER-SERVICE-EMAIL</td>
-            <td class="input"><input name="CUSTOMER-SERVICE-EMAIL" type="text" class="formTextbox" value="@webshopSettings.Get("CUSTOMER-SERVICE-EMAIL")" /></td>
-        </tr>
-        <tr>
-            <td class="label">CONTACT-US-EMAIL</td>
-            <td class="input"><input name="CONTACT-US-EMAIL" type="text" class="formTextbox" value="@webshopSettings.Get("CONTACT-US-EMAIL")" /></td>
-        </tr>
-    </table>
+    <div style="border:1px solid #cccccc;padding:2px;background-color:#eae9e9;border-radius:4px;">
+        <div class="annytab-input-form-table">
+            <div class="annytab-input-form-row">
+                <div class="annytab-input-form-column-label">SEND-EMAIL-HOST</div>
+                <div class="annytab-input-form-column-input"><input id="txtSendEmailHost" name="SEND-EMAIL-HOST" type="text" class="annytab-form-textbox" value="@webshopSettings.Get("SEND-EMAIL-HOST")" /></div>
+            </div>
+            <div class="annytab-input-form-row">
+                <div class="annytab-input-form-column-label">SEND-EMAIL-PORT</div>
+                <div class="annytab-input-form-column-input"><input name="SEND-EMAIL-PORT" type="text" class="annytab-form-textbox" value="@webshopSettings.Get("SEND-EMAIL-PORT")" /></div>
+            </div>
+            <div class="annytab-input-form-row">
+                <div class="annytab-input-form-column-label">SEND-EMAIL-ADDRESS</div>
+                <div class="annytab-input-form-column-input"><input name="SEND-EMAIL-ADDRESS" type="text" class="annytab-form-textbox" value="@webshopSettings.Get("SEND-EMAIL-ADDRESS")" /></div>
+            </div>
+            <div class="annytab-input-form-row">
+                <div class="annytab-input-form-column-label">SEND-EMAIL-PASSWORD</div>
+                <div class="annytab-input-form-column-input"><input name="SEND-EMAIL-PASSWORD" type="password" class="annytab-form-textbox" value="@webshopSettings.Get("SEND-EMAIL-PASSWORD")" /></div>
+            </div>
+            <div class="annytab-input-form-row">
+                <div class="annytab-input-form-column-label">SEND-EMAIL-USE-SSL (true/false)</div>
+                <div class="annytab-input-form-column-input"><input name="SEND-EMAIL-USE-SSL" class="annytab-form-textbox" value="@webshopSettings.Get("SEND-EMAIL-USE-SSL")" /></div>
+            </div>
+            <div class="annytab-input-form-row">
+                <div class="annytab-input-form-column-label">ORDER-EMAIL</div>
+                <div class="annytab-input-form-column-input"><input name="ORDER-EMAIL" type="text" class="annytab-form-textbox" value="@webshopSettings.Get("ORDER-EMAIL")" /></div>
+            </div>
+            <div class="annytab-input-form-row">
+                <div class="annytab-input-form-column-label">CUSTOMER-SERVICE-EMAIL</div>
+                <div class="annytab-input-form-column-input"><input name="CUSTOMER-SERVICE-EMAIL" type="text" class="annytab-form-textbox" value="@webshopSettings.Get("CUSTOMER-SERVICE-EMAIL")" /></div>
+            </div>
+            <div class="annytab-input-form-row">
+                <div class="annytab-input-form-column-label">CONTACT-US-EMAIL</div>
+                <div class="annytab-input-form-column-input"><input name="CONTACT-US-EMAIL" type="text" class="annytab-form-textbox" value="@webshopSettings.Get("CONTACT-US-EMAIL")" /></div>
+            </div>
+        </div>
+    </div>
 
-    <!-- PAYPAL -->
+    @*PAYPAL*@
     <div style="font-size:14px;font-weight:bold;margin:10px 0px 0px 0px;line-height:20px;">PAYPAL</div>
-    <table style="clear:both;width:100%;border:1px solid #cccccc;background-color:#eae9e9;border-radius:4px;">
-        <tr>
-            <td class="label">PAYPAL-CLIENT-ID</td>
-            <td class="input"><input name="PAYPAL-CLIENT-ID" type="text" class="formTextbox" value="@webshopSettings.Get("PAYPAL-CLIENT-ID")" /></td>
-        </tr>
-        <tr>
-            <td class="label">PAYPAL-CLIENT-SECRET</td>
-            <td class="input"><input name="PAYPAL-CLIENT-SECRET" type="text" class="formTextbox" value="@webshopSettings.Get("PAYPAL-CLIENT-SECRET")" /></td>
-        </tr>
-        <tr>
-            <td class="label">PAYPAL-MODE (sandbox/live)</td>
-            <td class="input"><input name="PAYPAL-MODE" type="text" class="formTextbox" value="@webshopSettings.Get("PAYPAL-MODE")" /></td>
-        </tr>
-    </table>
-    
-    <!-- PAYSON -->
+    <div style="border:1px solid #cccccc;padding:2px;background-color:#eae9e9;border-radius:4px;">
+        <div class="annytab-input-form-table">
+            <div class="annytab-input-form-row">
+                <div class="annytab-input-form-column-label">PAYPAL-CLIENT-ID</div>
+                <div class="annytab-input-form-column-input"><input name="PAYPAL-CLIENT-ID" type="text" class="annytab-form-textbox" value="@webshopSettings.Get("PAYPAL-CLIENT-ID")" /></div>
+            </div>
+            <div class="annytab-input-form-row">
+                <div class="annytab-input-form-column-label">PAYPAL-CLIENT-SECRET</div>
+                <div class="annytab-input-form-column-input"><input name="PAYPAL-CLIENT-SECRET" type="text" class="annytab-form-textbox" value="@webshopSettings.Get("PAYPAL-CLIENT-SECRET")" /></div>
+            </div>
+            <div class="annytab-input-form-row">
+                <div class="annytab-input-form-column-label">PAYPAL-MODE (sandbox/live)</div>
+                <div class="annytab-input-form-column-input"><input name="PAYPAL-MODE" type="text" class="annytab-form-textbox" value="@webshopSettings.Get("PAYPAL-MODE")" /></div>
+            </div>
+        </div>  
+    </div>
+
+    @*PAYSON*@
     <div style="font-size:14px;font-weight:bold;margin:10px 0px 0px 0px;line-height:20px;">PAYSON</div>
-    <table style="clear:both;width:100%;border:1px solid #cccccc;background-color:#eae9e9;border-radius:4px;">
-        <tr>
-            <td class="label">PAYSON-EMAIL</td>
-            <td class="input"><input name="PAYSON-EMAIL" type="text" class="formTextbox" value="@webshopSettings.Get("PAYSON-EMAIL")" /></td>
-        </tr>
-        <tr>
-            <td class="label">PAYSON-AGENT-ID</td>
-            <td class="input"><input name="PAYSON-AGENT-ID" type="text" class="formTextbox" value="@webshopSettings.Get("PAYSON-AGENT-ID")" /></td>
-        </tr>
-        <tr>
-            <td class="label">PAYSON-MD5-KEY</td>
-            <td class="input"><input name="PAYSON-MD5-KEY" type="text" class="formTextbox" value="@webshopSettings.Get("PAYSON-MD5-KEY")" /></td>
-        </tr>
-        <tr>
-            <td class="label">PAYSON-TEST (true/false)</td>
-            <td class="input"><input name="PAYSON-TEST" type="text" class="formTextbox" value="@webshopSettings.Get("PAYSON-TEST")" /></td>
-        </tr>
-    </table>
+    <div style="border:1px solid #cccccc;padding:2px;background-color:#eae9e9;border-radius:4px;">
+        <div class="annytab-input-form-table">
+            <div class="annytab-input-form-row">
+                <div class="annytab-input-form-column-label">PAYSON-EMAIL</div>
+                <div class="annytab-input-form-column-input"><input name="PAYSON-EMAIL" type="text" class="annytab-form-textbox" value="@webshopSettings.Get("PAYSON-EMAIL")" /></div>
+            </div>
+            <div class="annytab-input-form-row">
+                <div class="annytab-input-form-column-label">PAYSON-AGENT-ID</div>
+                <div class="annytab-input-form-column-input"><input name="PAYSON-AGENT-ID" type="text" class="annytab-form-textbox" value="@webshopSettings.Get("PAYSON-AGENT-ID")" /></div>
+            </div>
+            <div class="annytab-input-form-row">
+                <div class="annytab-input-form-column-label">PAYSON-MD5-KEY</div>
+                <div class="annytab-input-form-column-input"><input name="PAYSON-MD5-KEY" type="text" class="annytab-form-textbox" value="@webshopSettings.Get("PAYSON-MD5-KEY")" /></div>
+            </div>
+            <div class="annytab-input-form-row">
+                <div class="annytab-input-form-column-label">PAYSON-TEST (true/false)</div>
+                <div class="annytab-input-form-column-input"><input name="PAYSON-TEST" type="text" class="annytab-form-textbox" value="@webshopSettings.Get("PAYSON-TEST")" /></div>
+            </div>
+        </div>
+    </div>
 
-    <!-- PAYEX -->
+    @*PAYEX*@
     <div style="font-size:14px;font-weight:bold;margin:10px 0px 0px 0px;line-height:20px;">PAYEX</div>
-    <table style="clear:both;width:100%;border:1px solid #cccccc;background-color:#eae9e9;border-radius:4px;">
-        <tr>
-            <td class="label">PAYEX-ACCOUNT-NUMBER</td>
-            <td class="input"><input name="PAYEX-ACCOUNT-NUMBER" type="text" class="formTextbox" value="@webshopSettings.Get("PAYEX-ACCOUNT-NUMBER")" /></td>
-        </tr>
-        <tr>
-            <td class="label">PAYEX-ENCRYPTION-KEY</td>
-            <td class="input"><input name="PAYEX-ENCRYPTION-KEY" type="text" class="formTextbox" value="@webshopSettings.Get("PAYEX-ENCRYPTION-KEY")" /></td>
-        </tr>
-        <tr>
-            <td class="label">PAYEX-TEST (true/false)</td>
-            <td class="input"><input name="PAYEX-TEST" type="text" class="formTextbox" value="@webshopSettings.Get("PAYEX-TEST")" /></td>
-        </tr>
-    </table>
+    <div style="border:1px solid #cccccc;padding:2px;background-color:#eae9e9;border-radius:4px;">
+        <div class="annytab-input-form-table">
+            <div class="annytab-input-form-row">
+                <div class="annytab-input-form-column-label">PAYEX-ACCOUNT-NUMBER</div>
+                <div class="annytab-input-form-column-input"><input name="PAYEX-ACCOUNT-NUMBER" type="text" class="annytab-form-textbox" value="@webshopSettings.Get("PAYEX-ACCOUNT-NUMBER")" /></div>
+            </div>
+            <div class="annytab-input-form-row">
+                <div class="annytab-input-form-column-label">PAYEX-ENCRYPTION-KEY</div>
+                <div class="annytab-input-form-column-input"><input name="PAYEX-ENCRYPTION-KEY" type="text" class="annytab-form-textbox" value="@webshopSettings.Get("PAYEX-ENCRYPTION-KEY")" /></div>
+            </div>
+            <div class="annytab-input-form-row">
+                <div class="annytab-input-form-column-label">PAYEX-TEST (true/false)</div>
+                <div class="annytab-input-form-column-input"><input name="PAYEX-TEST" type="text" class="annytab-form-textbox" value="@webshopSettings.Get("PAYEX-TEST")" /></div>
+            </div>
+        </div>
+    </div>
 
-    <!-- SVEA -->
+    @*SVEA*@
     <div style="font-size:14px;font-weight:bold;margin:10px 0px 0px 0px;line-height:20px;">SVEA</div>
-    <table style="clear:both;width:100%;border:1px solid #cccccc;background-color:#eae9e9;border-radius:4px;">
-        <tr>
-            <td class="label">SVEA-MERCHANT-ID</td>
-            <td class="input"><input name="SVEA-MERCHANT-ID" type="text" class="formTextbox" value="@webshopSettings.Get("SVEA-MERCHANT-ID")" /></td>
-        </tr>
-        <tr>
-            <td class="label">SVEA-SECRET-WORD</td>
-            <td class="input"><input name="SVEA-SECRET-WORD" type="text" class="formTextbox" value="@webshopSettings.Get("SVEA-SECRET-WORD")" /></td>
-        </tr>
-        <tr>
-            <td class="label">SVEA-TEST (true/false)</td>
-            <td class="input"><input name="SVEA-TEST" type="text" class="formTextbox" value="@webshopSettings.Get("SVEA-TEST")" /></td>
-        </tr>
-        <tr>
-            <td class="label">SVEA-SE-USER-NAME</td>
-            <td class="input"><input name="SVEA-SE-USER-NAME" type="text" class="formTextbox" value="@webshopSettings.Get("SVEA-SE-USER-NAME")" /></td>
-        </tr>
-        <tr>
-            <td class="label">SVEA-SE-PASSWORD</td>
-            <td class="input"><input name="SVEA-SE-PASSWORD" type="text" class="formTextbox" value="@webshopSettings.Get("SVEA-SE-PASSWORD")" /></td>
-        </tr>
-        <tr>
-            <td class="label">SVEA-SE-INVOICE-CLIENT-NUMBER</td>
-            <td class="input"><input name="SVEA-SE-INVOICE-CLIENT-NUMBER" type="text" class="formTextbox" value="@webshopSettings.Get("SVEA-SE-INVOICE-CLIENT-NUMBER")" /></td>
-        </tr>
-        <tr>
-            <td class="label">SVEA-DK-USER-NAME</td>
-            <td class="input"><input name="SVEA-DK-USER-NAME" type="text" class="formTextbox" value="@webshopSettings.Get("SVEA-DK-USER-NAME")" /></td>
-        </tr>
-        <tr>
-            <td class="label">SVEA-DK-PASSWORD</td>
-            <td class="input"><input name="SVEA-DK-PASSWORD" type="text" class="formTextbox" value="@webshopSettings.Get("SVEA-DK-PASSWORD")" /></td>
-        </tr>
-        <tr>
-            <td class="label">SVEA-DK-INVOICE-CLIENT-NUMBER</td>
-            <td class="input"><input name="SVEA-DK-INVOICE-CLIENT-NUMBER" type="text" class="formTextbox" value="@webshopSettings.Get("SVEA-DK-INVOICE-CLIENT-NUMBER")" /></td>
-        </tr>
-        <tr>
-            <td class="label">SVEA-NO-USER-NAME</td>
-            <td class="input"><input name="SVEA-NO-USER-NAME" type="text" class="formTextbox" value="@webshopSettings.Get("SVEA-NO-USER-NAME")" /></td>
-        </tr>
-        <tr>
-            <td class="label">SVEA-NO-PASSWORD</td>
-            <td class="input"><input name="SVEA-NO-PASSWORD" type="text" class="formTextbox" value="@webshopSettings.Get("SVEA-NO-PASSWORD")" /></td>
-        </tr>
-        <tr>
-            <td class="label">SVEA-NO-INVOICE-CLIENT-NUMBER</td>
-            <td class="input"><input name="SVEA-NO-INVOICE-CLIENT-NUMBER" type="text" class="formTextbox" value="@webshopSettings.Get("SVEA-NO-INVOICE-CLIENT-NUMBER")" /></td>
-        </tr>
-        <tr>
-            <td class="label">SVEA-FI-USER-NAME</td>
-            <td class="input"><input name="SVEA-FI-USER-NAME" type="text" class="formTextbox" value="@webshopSettings.Get("SVEA-FI-USER-NAME")" /></td>
-        </tr>
-        <tr>
-            <td class="label">SVEA-FI-PASSWORD</td>
-            <td class="input"><input name="SVEA-FI-PASSWORD" type="text" class="formTextbox" value="@webshopSettings.Get("SVEA-FI-PASSWORD")" /></td>
-        </tr>
-        <tr>
-            <td class="label">SVEA-FI-INVOICE-CLIENT-NUMBER</td>
-            <td class="input"><input name="SVEA-FI-INVOICE-CLIENT-NUMBER" type="text" class="formTextbox" value="@webshopSettings.Get("SVEA-FI-INVOICE-CLIENT-NUMBER")" /></td>
-        </tr>
-    </table>
-    
-     @*OTHER SETTINGS*@
-    <div style="font-size:14px;font-weight:bold;margin:10px 0px 0px 0px;line-height:20px;">OTHER SETTINGS</div>
-    <table style="clear:both;width:100%;border:1px solid #cccccc;background-color:#eae9e9;border-radius:4px;">
-        <tr>
-            <td class="label">REDIRECT-HTTPS (true/false)</td>
-            <td class="input"><input name="REDIRECT-HTTPS" type="text" class="formTextbox" value="@webshopSettings.Get("REDIRECT-HTTPS")" /></td>
-        </tr>
-    </table>
+    <div style="border:1px solid #cccccc;padding:2px;background-color:#eae9e9;border-radius:4px;">
+        <div class="annytab-input-form-table">
+            <div class="annytab-input-form-row">
+                <div class="annytab-input-form-column-label">SVEA-MERCHANT-ID</div>
+                <div class="annytab-input-form-column-input"><input name="SVEA-MERCHANT-ID" type="text" class="annytab-form-textbox" value="@webshopSettings.Get("SVEA-MERCHANT-ID")" /></div>
+            </div>
+            <div class="annytab-input-form-row">
+                <div class="annytab-input-form-column-label">SVEA-SECRET-WORD</div>
+                <div class="annytab-input-form-column-input"><input name="SVEA-SECRET-WORD" type="text" class="annytab-form-textbox" value="@webshopSettings.Get("SVEA-SECRET-WORD")" /></div>
+            </div>
+            <div class="annytab-input-form-row">
+                <div class="annytab-input-form-column-label">SVEA-TEST (true/false)</div>
+                <div class="annytab-input-form-column-input"><input name="SVEA-TEST" type="text" class="annytab-form-textbox" value="@webshopSettings.Get("SVEA-TEST")" /></div>
+            </div>
+            <div class="annytab-input-form-row">
+                <div class="annytab-input-form-column-label">SVEA-SE-USER-NAME</div>
+                <div class="annytab-input-form-column-input"><input name="SVEA-SE-USER-NAME" type="text" class="annytab-form-textbox" value="@webshopSettings.Get("SVEA-SE-USER-NAME")" /></div>
+            </div>
+            <div class="annytab-input-form-row">
+                <div class="annytab-input-form-column-label">SVEA-SE-PASSWORD</div>
+                <div class="annytab-input-form-column-input"><input name="SVEA-SE-PASSWORD" type="text" class="annytab-form-textbox" value="@webshopSettings.Get("SVEA-SE-PASSWORD")" /></div>
+            </div>
+            <div class="annytab-input-form-row">
+                <div class="annytab-input-form-column-label">SVEA-SE-INVOICE-CLIENT-NUMBER</div>
+                <div class="annytab-input-form-column-input"><input name="SVEA-SE-INVOICE-CLIENT-NUMBER" type="text" class="annytab-form-textbox" value="@webshopSettings.Get("SVEA-SE-INVOICE-CLIENT-NUMBER")" /></div>
+            </div>
+            <div class="annytab-input-form-row">
+                <div class="annytab-input-form-column-label">SVEA-DK-USER-NAME</div>
+                <div class="annytab-input-form-column-input"><input name="SVEA-DK-USER-NAME" type="text" class="annytab-form-textbox" value="@webshopSettings.Get("SVEA-DK-USER-NAME")" /></div>
+            </div>
+            <div class="annytab-input-form-row">
+                <div class="annytab-input-form-column-label">SVEA-DK-PASSWORD</div>
+                <div class="annytab-input-form-column-input"><input name="SVEA-DK-PASSWORD" type="text" class="annytab-form-textbox" value="@webshopSettings.Get("SVEA-DK-PASSWORD")" /></div>
+            </div>
+            <div class="annytab-input-form-row">
+                <div class="annytab-input-form-column-label">SVEA-DK-INVOICE-CLIENT-NUMBER</div>
+                <div class="annytab-input-form-column-input"><input name="SVEA-DK-INVOICE-CLIENT-NUMBER" type="text" class="annytab-form-textbox" value="@webshopSettings.Get("SVEA-DK-INVOICE-CLIENT-NUMBER")" /></div>
+            </div>
+            <div class="annytab-input-form-row">
+                <div class="annytab-input-form-column-label">SVEA-NO-USER-NAME</div>
+                <div class="annytab-input-form-column-input"><input name="SVEA-NO-USER-NAME" type="text" class="annytab-form-textbox" value="@webshopSettings.Get("SVEA-NO-USER-NAME")" /></div>
+            </div>
+            <div class="annytab-input-form-row">
+                <div class="annytab-input-form-column-label">SVEA-NO-PASSWORD</div>
+                <div class="annytab-input-form-column-input"><input name="SVEA-NO-PASSWORD" type="text" class="annytab-form-textbox" value="@webshopSettings.Get("SVEA-NO-PASSWORD")" /></div>
+            </div>
+            <div class="annytab-input-form-row">
+                <div class="annytab-input-form-column-label">SVEA-NO-INVOICE-CLIENT-NUMBER</div>
+                <div class="annytab-input-form-column-input"><input name="SVEA-NO-INVOICE-CLIENT-NUMBER" type="text" class="annytab-form-textbox" value="@webshopSettings.Get("SVEA-NO-INVOICE-CLIENT-NUMBER")" /></div>
+            </div>
+            <div class="annytab-input-form-row">
+                <div class="annytab-input-form-column-label">SVEA-FI-USER-NAME</div>
+                <div class="annytab-input-form-column-input"><input name="SVEA-FI-USER-NAME" type="text" class="annytab-form-textbox" value="@webshopSettings.Get("SVEA-FI-USER-NAME")" /></div>
+            </div>
+            <div class="annytab-input-form-row">
+                <div class="annytab-input-form-column-label">SVEA-FI-PASSWORD</div>
+                <div class="annytab-input-form-column-input"><input name="SVEA-FI-PASSWORD" type="text" class="annytab-form-textbox" value="@webshopSettings.Get("SVEA-FI-PASSWORD")" /></div>
+            </div>
+            <div class="annytab-input-form-row">
+                <div class="annytab-input-form-column-label">SVEA-FI-INVOICE-CLIENT-NUMBER</div>
+                <div class="annytab-input-form-column-input"><input name="SVEA-FI-INVOICE-CLIENT-NUMBER" type="text" class="annytab-form-textbox" value="@webshopSettings.Get("SVEA-FI-INVOICE-CLIENT-NUMBER")" /></div>
+            </div>
+        </div>
+    </div>
 
-    <!-- Button panel -->
-    <div style="display:block;border: 1px solid #cccccc;margin:20px 0px 0px 0px;border-radius: 4px;">
-        <input id="btnSave" type="submit" value="@save_tt" />
-        <input type="button" value="@cancel_tt" onclick="location.href='@Url.Action("index", "admin_default")'" />
+    @*OTHER SETTINGS*@
+    <div style="font-size:14px;font-weight:bold;margin:10px 0px 0px 0px;line-height:20px;">OTHER SETTINGS</div>
+    <div style="border:1px solid #cccccc;padding:2px;background-color:#eae9e9;border-radius:4px;">
+        <div class="annytab-input-form-table">
+            <div class="annytab-input-form-row">
+                <div class="annytab-input-form-column-label">REDIRECT-HTTPS (true/false)</div>
+                <div class="annytab-input-form-column-input"><input name="REDIRECT-HTTPS" type="text" class="annytab-form-textbox" value="@webshopSettings.Get("REDIRECT-HTTPS")" /></div>
+            </div>
+        </div>
+    </div>
+
+    @*Button panel*@
+    <div style="display:block;border: 1px solid #cccccc;margin:20px 0px 0px 0px;border-radius:4px;">
+        <input id="btnSave" type="submit" class="annytab-form-button" value="@save_tt" />
+        <input type="button" class="annytab-form-button" value="@cancel_tt" onclick="location.href='@Url.Action("index", "admin_default")'" />
     </div>
 }
 
 @section scripts {
-    <script>$("#txtApiUserName").focus();</script>
+    <script type="text/javascript">$("#txtSendEmailHost").focus();</script>
 }

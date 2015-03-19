@@ -1,16 +1,15 @@
 ﻿@using System.Globalization
-
 @{
     // Set the layout for the page
     Layout = "/Views/shared_admin/_standard_layout.cshtml";
 
     // Get values
     ValueAddedTax valueAddedTax = ViewBag.ValueAddedTax;
+    KeyStringList tt = ViewBag.TranslatedTexts;
     string returnUrl = ViewBag.ReturnUrl;
     string error_message = ViewBag.ErrorMessage != null ? ViewBag.ErrorMessage : string.Empty;
 
     // Get translated texts
-    KeyStringList tt = ViewBag.TranslatedTexts;
     string value_added_tax_tt = tt.Get("value_added_tax");
     string new_tt = tt.Get("new");
     string edit_tt = tt.Get("edit");
@@ -30,34 +29,39 @@
     }
 }
 
+@*Title*@
 <h1>@ViewBag.Title</h1>
+
 @*Menu*@
 @Html.Partial("~/Views/admin_value_added_taxes/_form_menu.cshtml")
 
 @*Main form*@
 @using (Html.BeginForm("edit", "admin_value_added_taxes", FormMethod.Post))
 {
+    @*Hidden data*@
     <input name="returnUrl" type="hidden" value="@returnUrl" />
-    <div id="divErrors" class="formErrorMessage" style="@(error_message != "" ? "display:block;" : "display:none;")">@Html.Raw(error_message)</div>
-    <table style="width:100%;">
-        <tr style="@(valueAddedTax.id != 0 ? "display:table-row;" : "display:none;")">
-            <td class="label">@(id_tt + ":")</td>
-            <td class="input"><input name="txtId" type="text" class="formTextbox" tabindex="-1" readonly="readonly" value="@valueAddedTax.id" /></td>
-        </tr>
-        <tr>
-            <td class="label">@(percent_tt + ":")</td>
-            <td class="input"><input id="txtPercent" name="txtPercent" type="number" step="any" class="formTextbox" value="@valueAddedTax.value.ToString(CultureInfo.InvariantCulture)" /></td>
-        </tr>
-    </table>
+    <div class="annytab-form-error-message" style="@(error_message != "" ? "display:block;" : "display:none;")">@Html.Raw(error_message)</div>
+    
+    @*Input form table*@
+    <div class="annytab-input-form-table">
+        <div class="annytab-input-form-row" style="@(valueAddedTax.id != 0 ? "display:table-row;" : "display:none;")">
+            <div class="annytab-input-form-column-label">@(id_tt + ":")</div>
+            <div class="annytab-input-form-column-input"><input name="txtId" type="text" class="annytab-form-textbox" tabindex="-1" readonly="readonly" value="@valueAddedTax.id" /></div>
+        </div>
+        <div class="annytab-input-form-row">
+            <div class="annytab-input-form-column-label">@(percent_tt + ":")</div>
+            <div class="annytab-input-form-column-input"><input id="txtPercent" name="txtPercent" type="number" class="annytab-form-textbox" step="any" value="@valueAddedTax.value.ToString(CultureInfo.InvariantCulture)" /></div>
+        </div>
+    </div>
 
-    // Save form button
+    @*Button panel*@
     <div style="display:block;border:1px solid #cccccc;margin:20px 0px 0px 0px;border-radius:4px;">
-        <input id="btnSave" type="submit" value="@save_tt" />
-        <input type="button" value="@cancel_tt" onclick="@Html.Raw("location.href='/admin_value_added_taxes" + returnUrl + "'")" />
+        <input id="btnSave" type="submit" class="annytab-form-button" value="@save_tt" />
+        <input type="button" class="annytab-form-button" value="@cancel_tt" onclick="@Html.Raw("location.href='/admin_value_added_taxes" + returnUrl + "'")" />
     </div>
 }
 
 @section scripts {
-    <script>$("#txtPercent").focus();</script>
+    <script type="text/javascript">$("#txtPercent").focus();</script>
 }
 

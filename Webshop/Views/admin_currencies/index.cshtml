@@ -10,6 +10,7 @@
     CultureInfo cultureInfo = Tools.GetCultureInfo(currentLanguage);
     QueryParams parameters = ViewBag.QueryParams;
     string queryString = QueryParams.GetQueryString(parameters);
+    KeyStringList tt = ViewBag.TranslatedTexts;
 
     // Create a clean string with keywords
     string cleanKeywords = parameters.keywords.Replace("+", "");
@@ -28,7 +29,6 @@
     List<Currency> currencies = Currency.GetBySearch(words, parameters.page_size, parameters.current_page, parameters.sort_field, parameters.sort_order);
 
     // Get translated texts
-    KeyStringList tt = ViewBag.TranslatedTexts;
     string currency_tt = tt.Get("currency");
     string list_tt = tt.Get("list");
     string currency_code_tt = tt.Get("currency_code");
@@ -46,46 +46,40 @@
     ViewBag.Title = currency_tt + " - " + list_tt.ToLower();
 }
 
+@*Title*@
 <h1>@ViewBag.Title</h1>
+
+@*Menu*@
 @Html.Partial("~/Views/admin_currencies/_form_menu.cshtml")
 
-@*List of static texts*@
-<div class="listContainer">
-    <table class="listTable" style="width:650px;">
-        <tr>
-            <th class="listTh" style="text-align:left;width:150px;">@currency_code_tt</th>
-            <th class="listTh" style="text-align:left;width:150px; ">@conversion_rate_tt</th>
-            <th class="listTh" style="text-align:left;width:150px; ">@currency_base_tt</th>
-            <th class="listTh" style="text-align:center;width:100px;">@edit_tt</th>
-            <th class="listTh" style="text-align:center;width:100px;">@delete_tt</th>
-        </tr>
+@*List of currencies*@
+<div class="annytab-list-container">
+    <div class="annytab-list-table" style="width:690px;">
+        <div class="annytab-list-row">
+            <div class="annytab-list-column-head" style="text-align:left;width:150px;">@currency_code_tt</div>
+            <div class="annytab-list-column-head" style="text-align:left;width:150px; ">@conversion_rate_tt</div>
+            <div class="annytab-list-column-head" style="text-align:left;width:150px; ">@currency_base_tt</div>
+            <div class="annytab-list-column-head" style="text-align:center;width:100px;">@edit_tt</div>
+            <div class="annytab-list-column-head" style="text-align:center;width:100px;">@delete_tt</div>
+        </div>
 
         @for (int i = 0; i < currencies.Count; i++)
         {
-            if (i % 2 != 0)
-            {
-                @:<tr class="annytab-list-main-row">
-            }
-            else
-            {
-                @:<tr class="annytab-list-alt-row">
-            }
-
-            @*Columns*@
-            @:<td style="text-align:left;">@currencies[i].currency_code.ToString()</td>
-            @:<td style="text-align:left;">@currencies[i].conversion_rate.ToString("##,0.##", cultureInfo)</td>
-            @:<td style="text-align:left;">@currencies[i].currency_base.ToString("##,0.##", cultureInfo)</td>
-            @:<td style="text-align:center;"><input type="button" value="@edit_tt" onclick="location.href='@Url.Action("edit", "admin_currencies", new { id = currencies[i].currency_code, returnUrl = queryString })'" /></td>
-            @:<td style="text-align:center;"><input data-id="deletePost" type="button" value="@delete_tt" @(Html.Raw("data-url='/admin_currencies/delete/" + currencies[i].currency_code + "?returnUrl=" + Server.UrlEncode(queryString) + "'")) /></td>
-            @:</tr>
+            @:<div class="@(i % 2 != 0 ? "annytab-list-row-main" : "annytab-list-row-alt")">
+            @:<div class="annytab-list-column" style="text-align:left;width:150px;">@currencies[i].currency_code.ToString()</div>
+            @:<div class="annytab-list-column" style="text-align:left;width:150px;">@currencies[i].conversion_rate.ToString("##,0.##", cultureInfo)</div>
+            @:<div class="annytab-list-column" style="text-align:left;width:150px;">@currencies[i].currency_base.ToString("##,0.##", cultureInfo)</div>
+            @:<div class="annytab-list-column" style="text-align:center;width:100px;"><input type="button" class="annytab-form-button" value="@edit_tt" onclick="location.href='@Url.Action("edit", "admin_currencies", new { id = currencies[i].currency_code, returnUrl = queryString })'" /></div>
+            @:<div class="annytab-list-column" style="text-align:center;width:100px;"><input data-id="deletePost" type="button" class="annytab-form-button" value="@delete_tt" @(Html.Raw("data-url='/admin_currencies/delete/" + currencies[i].currency_code + "?returnUrl=" + Server.UrlEncode(queryString) + "'")) /></div>
+            @:</div>
         }
-    </table>
+    </div>
 </div>
 
-@* Paging menu *@
+@*Paging menu*@
 @Html.Partial("/Views/shared_admin/_paging_menu.cshtml")
 
 @section scripts {
-    <script>$("#txtSearch").focus();</script>
+    <script type="text/javascript">$("#txtSearch").focus();</script>
 }
 

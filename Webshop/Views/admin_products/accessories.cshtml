@@ -33,6 +33,9 @@
     Domain domain = ViewBag.CurrentDomain;
     Language currentLanguage = Language.GetOneById(domain.back_end_language);
     CultureInfo cultureInfo = Tools.GetCultureInfo(currentLanguage);
+    Int32 mainProductId = ViewBag.MainProductId;
+    List<Product> accessories = ViewBag.Accessories;
+    KeyStringList tt = ViewBag.TranslatedTexts;
     string returnUrl = ViewBag.ReturnUrl;
 
     // Create a clean string with keywords
@@ -52,12 +55,7 @@
 
     // Get products by keywords in search
     List<Product> products = Product.GetBySearch(steamWords, domain.back_end_language, pageSize, page, "title", "ASC");
-    
-    // Get form data
-    Int32 mainProductId = ViewBag.MainProductId;
-    List<Product> accessories = ViewBag.Accessories;
-    KeyStringList tt = ViewBag.TranslatedTexts;
-    
+
     // Get translated texts
     string accessories_tt = tt.Get("accessories");
     string search_tt = tt.Get("search");
@@ -72,20 +70,21 @@
     // Set paging data
     ViewBag.CurrentPage = page;
     ViewBag.NumberOfPages = numberOfPages;
-    ViewBag.NavigateUrl = "/admin_products/accessories?kw=" + Server.UrlEncode(keywords) + "&qp={0}";
+    ViewBag.NavigateUrl = "/admin_products/accessories/" + mainProductId.ToString() + "?returnUrl=" + Server.UrlEncode(returnUrl) + "&kw=" + Server.UrlEncode(keywords) + "&qp={0}";
 
     // Set the page title
     ViewBag.Title = accessories_tt;
 }
 
+@*Title*@
 <h1>@ViewBag.Title</h1>
 
 @*Menu*@
 @Html.Partial("~/Views/admin_products/_form_menu.cshtml")
 
-<!-- List of accessories -->
-<div class="listContainer">
-    <table class="listTable" style="width:100%;">
+@*List of accessories*@
+<div class="annytab-list-container">
+    <div class="annytab-list-table" style="display:table;width:100%;padding-top:1px;">
         @for (int i = 0; i < accessories.Count; i++)
         {
             // Create the product string
@@ -94,34 +93,35 @@
             productString += product_code_short_tt + ": " + accessories[i].product_code.ToString() + "<br />";
             productString += price_tt + ": " + accessories[i].unit_price.ToString("##,0.##", cultureInfo) + "<br />";
 
-            @:<tr style="background-color:#ffffff;border-bottom:1px solid #cccccc;">
-                @:<td style="text-align:left;width:64px;"><img style="width:64px;" alt="@accessories[i].title" src="@Tools.GetProductMainImageUrl(accessories[i].id, domain.back_end_language, "", accessories[i].use_local_images)" /></td>
-                @:<td style="text-align:left;vertical-align:top;padding:2px;width:500px;">@Html.Raw(productString)</td>
-                @:<td style="text-align:center;width:100px;"><input type="button" value="@delete_tt" onclick="location.href='@Url.Action("delete_accessory", "admin_products", new { productId = mainProductId, accessoryId = accessories[i].id, returnUrl = returnUrl })'" /></td>
-            @:</tr>
+            @:<div class="annytab-list-row" style="background-color:#ffffff;">
+            @:<div class="annytab-list-column" style="text-align:left;width:64px;border-bottom:1px solid #cccccc;"><img style="width:64px;" alt="@accessories[i].title" src="@Tools.GetProductMainImageUrl(accessories[i].id, domain.back_end_language, "", accessories[i].use_local_images)" /></div>
+            @:<div class="annytab-list-column" style="text-align:left;vertical-align:top;width:500px;border-bottom:1px solid #cccccc;">@Html.Raw(productString)</div>
+            @:<div class="annytab-list-column" style="text-align:center;width:100px;border-bottom:1px solid #cccccc;"><input type="button" class="annytab-form-button" value="@delete_tt" onclick="location.href='@Url.Action("delete_accessory", "admin_products", new { productId = mainProductId, accessoryId = accessories[i].id, returnUrl = returnUrl })'" /></div>
+            @:</div>
         }
-    </table>
+    </div>
 </div>
 
-<div style="display:block;margin-bottom:20px;"></div>
+<div class="annytab-basic-space"></div>
 
-<!-- List of products -->
-<div class="listContainer">
-    <table class="listTable" style="width:100%;">
-        <tr>
-            <th class="listTh" colspan="3" style="text-align:left;padding-left:0px;">
-                @using (Html.BeginForm("search", "admin_products", FormMethod.Post))
-                {
-                    <input name="returnUrl" type="hidden" value="@returnUrl" />
-                    <input name="view" type="hidden" value="accessories" />
-                    <input name="hiddenMainProductId" type="hidden" value="@mainProductId" />
-                    <span>@(products_tt + ": ")</span>
-                    <input id="txtSearch" name="txtSearch" type="text" class="textbox" />
-                    <input type="submit" value="@search_tt" />
-                }
-            </th>
-        </tr>
+@*List of products*@
+<div class="annytab-list-container">
 
+    @*Search box*@
+    <div style="text-align:left;padding:0px;margin-bottom:5px;">
+        @using (Html.BeginForm("search", "admin_products", FormMethod.Post))
+        {
+            <input name="returnUrl" type="hidden" value="@returnUrl" />
+            <input name="view" type="hidden" value="accessories" />
+            <input name="hiddenMainProductId" type="hidden" value="@mainProductId" />
+            <span>@(products_tt + ": ")</span>
+            <input id="txtSearch" name="txtSearch" type="text" class="annytab-form-textbox" />
+            <input type="submit" class="annytab-form-button" value="@search_tt" />
+        }
+    </div>
+
+    @*Products*@
+    <div class="annytab-list-table" style="display:table;width:100%;padding-top:1px;">
         @for (int i = 0; i < products.Count; i++)
         {
             // Create the product string
@@ -130,20 +130,18 @@
             productString += product_code_short_tt + ": " + products[i].product_code.ToString() + "<br />";
             productString += price_tt + ": " + products[i].unit_price.ToString("##,0.##", cultureInfo) + "<br />";
 
-            @*Columns*@
-            @:<tr style="background-color:#ffffff;border-bottom:1px solid #cccccc;">
-                @:<td style="text-align:left;width:64px;"><img style="width:64px;" alt="@products[i].title" src="@Tools.GetProductMainImageUrl(products[i].id, domain.back_end_language, "", products[i].use_local_images)" /></td>
-                @:<td style="text-align:left;width:500px;vertical-align:top;padding:2px;">@Html.Raw(productString)</td>
-                @:<td style="text-align:center;width:100px;"><input type="button" value="@add_tt" onclick="location.href='@Url.Action("add_accessory", "admin_products", new { productId = mainProductId, accessoryId = products[i].id, returnUrl = returnUrl })'" /></td>
-            @:</tr>
+            @:<div class="annytab-list-row" style="background-color:#ffffff;">
+                @:<div class="annytab-list-column" style="text-align:left;width:64px;border-bottom:1px solid #cccccc;"><img style="width:64px;" alt="@products[i].title" src="@Tools.GetProductMainImageUrl(products[i].id, domain.back_end_language, "", products[i].use_local_images)" /></div>
+                @:<div class="annytab-list-column" style="text-align:left;width:500px;vertical-align:top;border-bottom:1px solid #cccccc;">@Html.Raw(productString)</div>
+                @:<div class="annytab-list-column" style="text-align:center;width:100px;border-bottom:1px solid #cccccc;"><input type="button" class="annytab-form-button" value="@add_tt" onclick="location.href='@Url.Action("add_accessory", "admin_products", new { productId = mainProductId, accessoryId = products[i].id, returnUrl = returnUrl })'" /></div>
+            @:</div>
         }
-
-    </table>
+    </div>
 </div>
 
-@* Paging menu *@
+@*Paging menu*@
 @Html.Partial("/Views/shared_admin/_paging_menu.cshtml")
 
 @section scripts {
-    <script>$("#txtSearch").focus();</script>
+    <script type="text/javascript">$("#txtSearch").focus();</script>
 }

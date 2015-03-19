@@ -41,6 +41,7 @@
     }
 }
 
+@*Title*@
 <h1>@ViewBag.Title</h1>
 
 @*Menu*@
@@ -49,67 +50,70 @@
 @*Main form*@
 @using (Html.BeginForm("edit", "admin_discount_codes", FormMethod.Post))
 {
+    @*Hidden data*@
     <input name="returnUrl" type="hidden" value="@returnUrl" />
-    <div class="formErrorMessage" style="@(error_message != "" ? "display:block;" : "display:none;")">@Html.Raw(error_message)</div>
-    <table style="clear:both;width:100%;">
-        <tr>
-            <td class="label">@(id_tt + ":")</td>
-            <td class="input"><input id="txtId" name="txtId" type="text" class="formTextbox" value="@discountCode.id" /></td>
-        </tr>
-        <tr>
-            <td class="label">@(language_tt + ":")</td>
-            <td class="input">
-                <select name="selectLanguage" class="formSelect">
+    <div class="annytab-form-error-message" style="@(error_message != "" ? "display:block;" : "display:none;")">@Html.Raw(error_message)</div>
+    
+    @*Input form table*@
+    <div class="annytab-input-form-table">
+        <div class="annytab-input-form-row">
+            <div class="annytab-input-form-column-label">@(id_tt + ":")</div>
+            <div class="annytab-input-form-column-input"><input id="txtId" name="txtId" type="text" class="annytab-form-textbox" value="@discountCode.id" /></div>
+        </div>
+        <div class="annytab-input-form-row">
+            <div class="annytab-input-form-column-label">@(language_tt + ":")</div>
+            <div class="annytab-input-form-column-input">
+                <select name="selectLanguage" class="annytab-form-select">
                     <option value="0" @(discountCode.language_id == 0 ? Html.Raw("selected='selected'") : Html.Raw(""))>@("-- " + no_choice_tt + " --")</option>
                     @foreach (Language language in languages)
                     {
                         <option value="@language.id" @(language.id == discountCode.language_id ? Html.Raw("selected='selected'") : Html.Raw(""))>@language.name</option>
                     }
                 </select>
-            </td>
-        </tr>
-        <tr>
-            <td class="label">@(currency_tt + ":")</td>
-            <td class="input">
-                <select name="selectCurrency" class="formSelect">
+            </div>
+        </div>
+        <div class="annytab-input-form-row">
+            <div class="annytab-input-form-column-label">@(currency_tt + ":")</div>
+            <div class="annytab-input-form-column-input">
+                <select name="selectCurrency" class="annytab-form-select">
                     <option value="" @(discountCode.currency_code == "" ? Html.Raw("selected='selected'") : Html.Raw(""))>@("-- " + no_choice_tt + " --")</option>
                     @foreach (Currency currency in currencies)
                     {
                         <option value="@currency.currency_code" @(currency.currency_code == discountCode.currency_code ? Html.Raw("selected='selected'") : Html.Raw(""))>@currency.currency_code</option>
                     }
                 </select>
-            </td>
-        </tr>
-        <tr>
-            <td class="label">@(discount_tt + ":")</td>
-            <td class="input"><input name="txtDiscountValue" type="number" step="any" class="formTextbox" value="@discountCode.discount_value.ToString(CultureInfo.InvariantCulture)" /></td>
-        </tr>
-        <tr>
-            <td class="label">@(free_freight_tt + ":")</td>
-            <td class="input"><input name="cbFreeFreight" type="checkbox" value="true" @(discountCode != null && discountCode.free_freight == true ? Html.Raw("checked='checked'") : Html.Raw("")) /></td>
-        </tr>
-        <tr>
-            <td class="label">@(once_per_customer_tt + ":")</td>
-            <td class="input"><input name="cbOncePerCustomer" type="checkbox" value="true" @(discountCode != null && discountCode.once_per_customer == true ? Html.Raw("checked='checked'") : Html.Raw("")) /></td>
-        </tr>
-        <tr>
-            <td class="label">@(exclude_products_on_sale_tt + ":")</td>
-            <td class="input"><input name="cbExcludeProductsOnSale" type="checkbox" value="true" @(discountCode != null && discountCode.exclude_products_on_sale == true ? Html.Raw("checked='checked'") : Html.Raw("")) /></td>
-        </tr>
-        <tr>
-            <td class="label">@(end_date_tt + ":")</td>
-            <td class="input"><input id="txtEndDate" name="txtEndDate" type="text" class="formTextbox" value="@discountCode.end_date.ToString("yyyy-MM-dd")" /></td>
-        </tr>
-        <tr>
-            <td class="label">@(minimum_order_value_tt + ":")</td>
-            <td class="input"><input name="txtMinimumOrderValue" type="number" step="any" class="formTextbox" value="@discountCode.minimum_order_value.ToString(CultureInfo.InvariantCulture)" /></td>
-        </tr>
-    </table>
+            </div>
+        </div>
+        <div class="annytab-input-form-row">
+            <div class="annytab-input-form-column-label">@(discount_tt + ":")</div>
+            <div class="annytab-input-form-column-input"><input name="txtDiscountValue" type="number" step="any" class="annytab-form-textbox" value="@discountCode.discount_value.ToString(CultureInfo.InvariantCulture)" /></div>
+        </div>
+        <div class="annytab-input-form-row">
+            <div class="annytab-input-form-column-label">@(free_freight_tt + ":")</div>
+            <div class="annytab-input-form-column-input"><input name="cbFreeFreight" type="checkbox" class="annytab-form-checkbox" value="true" @(discountCode != null && discountCode.free_freight == true ? Html.Raw("checked='checked'") : Html.Raw("")) /></div>
+        </div>
+        <div class="annytab-input-form-row">
+            <div class="annytab-input-form-column-label">@(once_per_customer_tt + ":")</div>
+            <div class="annytab-input-form-column-input"><input name="cbOncePerCustomer" type="checkbox" class="annytab-form-checkbox" value="true" @(discountCode != null && discountCode.once_per_customer == true ? Html.Raw("checked='checked'") : Html.Raw("")) /></div>
+        </div>
+        <div class="annytab-input-form-row">
+            <div class="annytab-input-form-column-label">@(exclude_products_on_sale_tt + ":")</div>
+            <div class="annytab-input-form-column-input"><input name="cbExcludeProductsOnSale" type="checkbox" class="annytab-form-checkbox" value="true" @(discountCode != null && discountCode.exclude_products_on_sale == true ? Html.Raw("checked='checked'") : Html.Raw("")) /></div>
+        </div>
+        <div class="annytab-input-form-row">
+            <div class="annytab-input-form-column-label">@(end_date_tt + ":")</div>
+            <div class="annytab-input-form-column-input"><input id="txtEndDate" name="txtEndDate" type="text" class="annytab-form-textbox" value="@discountCode.end_date.ToString("yyyy-MM-dd")" /></div>
+        </div>
+        <div class="annytab-input-form-row">
+            <div class="annytab-input-form-column-label">@(minimum_order_value_tt + ":")</div>
+            <div class="annytab-input-form-column-input"><input name="txtMinimumOrderValue" type="number" step="any" class="annytab-form-textbox" value="@discountCode.minimum_order_value.ToString(CultureInfo.InvariantCulture)" /></div>
+        </div>
+    </div>
 
-    // Save form button
+    @*Button panel*@
     <div style="display:block;border:1px solid #cccccc;margin:20px 0px 0px 0px;border-radius:4px;">
-        <input id="btnSave" type="submit" value="@save_tt" />
-        <input type="button" value="@cancel_tt" onclick="@Html.Raw("location.href='/admin_discount_codes" + returnUrl + "'")" />
+        <input id="btnSave" type="submit" class="annytab-form-button" value="@save_tt" />
+        <input type="button" class="annytab-form-button" value="@cancel_tt" onclick="@Html.Raw("location.href='/admin_discount_codes" + returnUrl + "'")" />
     </div>
 }
 

@@ -73,6 +73,7 @@
     Domain domain = ViewBag.CurrentDomain;
     Language currentLanguage = Language.GetOneById(domain.back_end_language);
     CultureInfo cultureInfo = Tools.GetCultureInfo(currentLanguage);
+    KeyStringList tt = ViewBag.TranslatedTexts;
 
     // Count the number of posts and get them
     Int32 count = 0;
@@ -103,7 +104,6 @@
     numberOfPages = numberOfPages == 0 ? 1 : numberOfPages;
 
     // Get translated texts
-    KeyStringList tt = ViewBag.TranslatedTexts;
     string orders_tt = tt.Get("orders");
     string order_statistics_tt = tt.Get("order_statistics");
     string order_number_tt = tt.Get("order_number");
@@ -128,46 +128,41 @@
     ViewBag.Title = orders_tt + " " + period;
 }
 
+@*Title*@
 <h1>@ViewBag.Title</h1>
-<div id="menu" class="formMenuBar">
-    <input type="button" value="@order_statistics_tt" onclick="location.href='@Url.Action("index", "admin_default", new {cc = countryCode, gb = groupBy, pz = pageSize})'" />
+
+@*Menu*@
+<div class="annytab-form-menubar">
+    <input type="button" class="annytab-form-button" value="@order_statistics_tt" onclick="location.href='@Url.Action("index", "admin_default", new {cc = countryCode, gb = groupBy, pz = pageSize})'" />
 </div>
 
-<div class="listContainer">
-    <table class="listTable" style="width:1000px;">
-        <tr>
-            <th class="listTh" style="text-align:center;width:150px;">@order_number_tt</th>
-            <th class="listTh" style="text-align:left;width:200px;">@name_tt</th>
-            <th class="listTh" style="text-align:left;width:100px;">@order_date_tt</th>
-            <th class="listTh" style="text-align:right;width:150px;">@sum_tt</th>
-            <th class="listTh" style="text-align:right;width:150px;">@value_added_tax_tt</th>
-            <th class="listTh" style="text-align:right;width:150px;">@total_sum_tt</th>
-            <th class="listTh" style="text-align:center;width:100px;">@print_tt</th>
-        </tr>
+@*List of orders*@
+<div class="annytab-list-container">
+    <div class="annytab-list-table" style="width:1056px;">
+        <div class="annytab-list-row">
+            <div class="annytab-list-column-head" style="text-align:center;width:150px;">@order_number_tt</div>
+            <div class="annytab-list-column-head" style="text-align:left;width:200px;">@name_tt</div>
+            <div class="annytab-list-column-head" style="text-align:left;width:100px;">@order_date_tt</div>
+            <div class="annytab-list-column-head" style="text-align:right;width:150px;">@sum_tt</div>
+            <div class="annytab-list-column-head" style="text-align:right;width:150px;">@value_added_tax_tt</div>
+            <div class="annytab-list-column-head" style="text-align:right;width:150px;">@total_sum_tt</div>
+            <div class="annytab-list-column-head" style="text-align:center;width:100px;">@print_tt</div>
+        </div>
 
         @for (int i = 0; i < orders.Count; i++)
         {
-            if (i % 2 != 0)
-            {
-                @:<tr class="annytab-list-main-row">
-            }
-            else
-            {
-                @:<tr class="annytab-list-alt-row">
-            }
-
-            @*Columns*@
-            @:<td style="text-align:center;">@orders[i].id</td>
-            @:<td style="text-align:left;">@orders[i].invoice_name</td>
-            @:<td style="text-align:left;">@orders[i].order_date.ToString("d", cultureInfo)</td>
-            @:<td style="text-align:right;">@orders[i].net_sum.ToString("##,0.##", cultureInfo)</td>
-            @:<td style="text-align:right;">@orders[i].vat_sum.ToString("##,0.##", cultureInfo)</td>
-            @:<td style="text-align:right;">@orders[i].total_sum.ToString("##,0.##", cultureInfo)</td>
-            @:<td style="text-align:center;"><input data-id="printOrder" type="button" value="@print_tt" data-order="@orders[i].id" /></td>
-            @:</tr>
+            @:<div class="@(i % 2 != 0 ? "annytab-list-row-main" : "annytab-list-row-alt")">
+            @:<div class="annytab-list-column" style="text-align:center;width:150px;">@orders[i].id</div>
+            @:<div class="annytab-list-column" style="text-align:left;width:200px;">@orders[i].invoice_name</div>
+            @:<div class="annytab-list-column" style="text-align:left;width:100px;">@orders[i].order_date.ToString("d", cultureInfo)</div>
+            @:<div class="annytab-list-column" style="text-align:right;width:150px;">@orders[i].net_sum.ToString("##,0.##", cultureInfo)</div>
+            @:<div class="annytab-list-column" style="text-align:right;width:150px;">@orders[i].vat_sum.ToString("##,0.##", cultureInfo)</div>
+            @:<div class="annytab-list-column" style="text-align:right;width:150px;">@orders[i].total_sum.ToString("##,0.##", cultureInfo)</div>
+            @:<div class="annytab-list-column" style="text-align:center;width:100px;"><input data-id="printOrder" type="button" class="annytab-form-button" value="@print_tt" data-order="@orders[i].id" /></div>
+            @:</div>
         }
-    </table>
+    </div>
 </div>
 
-@* Paging menu *@
+@*Paging menu*@
 @Html.Partial("/Views/shared_admin/_paging_menu.cshtml")

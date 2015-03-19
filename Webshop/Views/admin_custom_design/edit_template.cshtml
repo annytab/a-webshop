@@ -22,34 +22,34 @@
     ViewBag.Title = edit_tt + " " + template_tt.ToLower();
 }
 
+@*Title*@
 <h1>@ViewBag.Title</h1>
 
-@*The menu bar*@
+@*Menu*@
 @Html.Partial("~/Views/admin_custom_design/_form_menu.cshtml")
 
 @using (Html.BeginForm("edit_template", "admin_custom_design", FormMethod.Post))
 {
+    @*Hidden data*@
     <input name="returnUrl" type="hidden" value="@returnUrl" />
+    
+    @*Input form*@
     <div style="font-size:16px;line-height:24px;font-weight:bold;">@(id_tt)</div>
-    <input name="txtId" type="text" class="formTextbox" readonly="readonly" tabindex="-1" value="@template.custom_theme_id.ToString()" />
-
+    <input name="txtId" type="text" class="annytab-form-textbox" readonly="readonly" tabindex="-1" value="@template.custom_theme_id.ToString()" />
     <div style="font-size:16px;line-height:24px;font-weight:bold;">@(file_name_tt)</div>
-    <input id="txtUserFileName" name="txtUserFileName" type="text" class="formTextbox" value="@template.user_file_name" />
-
+    <input id="txtUserFileName" name="txtUserFileName" type="text" class="annytab-form-textbox" value="@template.user_file_name" />
     <div style="font-size:16px;line-height:24px;font-weight:bold;">@(comment_tt)</div>
-    <textarea name="txtComment" class="formTextarea" rows="3">@template.comment</textarea>
-
-    <div style="margin-bottom:20px;"></div>
-
+    <textarea name="txtComment" class="annytab-form-textarea" rows="3">@template.comment</textarea>
+    <div class="annytab-basic-space"></div>
     <div style="text-align:right;font-weight:bold;">@(tt.Get("toggle_fullscreen") + ": F11, ESC")</div>
     <div id="view"></div>
     <textarea id="txtContent" name="txtContent" style="display:none;">@template.user_file_content</textarea>
     <textarea id="txtMasterDesign" style="display:none;">@masterDesign</textarea>
     
-    // Save form button
+    @*Button panel*@
     <div style="display:block;border:1px solid #cccccc;margin:20px 0px 0px 0px;border-radius:4px;">
-        <input id="btnSave" type="submit" value="@save_tt" />
-        <input type="button" value="@cancel_tt" onclick="location.href='@Url.Action("edit_theme", "admin_custom_design", new { id = template.custom_theme_id, returnUrl = returnUrl })'" />
+        <input id="btnSave" type="submit" class="annytab-form-button" value="@save_tt" />
+        <input type="button" class="annytab-form-button" value="@cancel_tt" onclick="location.href='@Url.Action("edit_theme", "admin_custom_design", new { id = template.custom_theme_id, returnUrl = returnUrl })'" />
     </div>
 }
 

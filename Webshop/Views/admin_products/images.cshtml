@@ -8,10 +8,10 @@
     Product product = ViewBag.Product;
     string mainImageUrl = ViewBag.MainImageUrl;
     List<string> otherImages = ViewBag.OtherImages;
+    KeyStringList tt = ViewBag.TranslatedTexts;
     string returnUrl = ViewBag.ReturnUrl;
 
     // Get translated texts
-    KeyStringList tt = ViewBag.TranslatedTexts;
     string product_tt = tt.Get("product");
     string images_tt = tt.Get("images");
     string image_tt = tt.Get("image");
@@ -31,6 +31,7 @@
     ViewBag.Title = product_tt + " - " + images_tt.ToLower();
 }
 
+@*Title*@
 <h1>@ViewBag.Title</h1>
 
 @*Menu*@
@@ -39,60 +40,63 @@
 @*Main form*@
 @using (Html.BeginForm("images", "admin_products", FormMethod.Post, new { enctype = "multipart/form-data" }))
 {
+    @*Hidden data*@
     <input name="returnUrl" type="hidden" value="@returnUrl" />
-    <table style="width:100%;">
-        <tr>
-            <td class="label">@(language_tt + ":")</td>
-            <td class="input">
-                <select id="selectLanguage" name="selectLanguage" class="formSelect">
+    
+    @*Input form table*@
+    <div class="annytab-input-form-table">
+        <div class="annytab-input-form-row">
+            <div class="annytab-input-form-column-label">@(language_tt + ":")</div>
+            <div class="annytab-input-form-column-input">
+                <select id="selectLanguage" name="selectLanguage" class="annytab-form-select">
                     <option value="0" data-url="@("/admin_products/images/" + product.id.ToString() + "?returnUrl=" + Server.UrlEncode(returnUrl))" @(languageId == 0 ? Html.Raw("selected='selected'") : Html.Raw(""))>@(default_tt)</option>
                     @foreach (Language language in languages)
                     {
                         <option value="@language.id" data-url="@("/admin_products/images/" + product.id.ToString() + "?returnUrl=" + Server.UrlEncode(returnUrl) + "&lang=" + language.id.ToString())" @(language.id == languageId ? Html.Raw("selected='selected'") : Html.Raw(""))>@language.name</option>
                     }
                 </select>
-            </td>
-        </tr>
-        <tr><td colspan="2">&nbsp;</td></tr>
-        <tr>
-            <td class="label">@(id_tt + ":")</td>
-            <td class="input"><input name="txtId" type="text" class="formTextbox" tabindex="-1" readonly="readonly" value="@product.id" /></td>
-        </tr>
-        <tr>
-            <td class="label">@(title_tt + ":")</td>
-            <td class="input"><input name="txtTitle" type="text" class="formTextbox" tabindex="-1" readonly="readonly" value="@product.title" /></td>
-        </tr>
-        <tr>
-            <td class="label">@(product_code_tt + ":")</td>
-            <td class="input"><input name="txtProductCode" type="text" class="formTextbox" tabindex="-1" readonly="readonly" value="@product.product_code" /></td>
-        </tr>
-        <tr>
-            <td class="label">@(main_image_tt + ", max 1 mb, jpg|jpeg (1:1):")</td>
-            <td class="input"><img id="mainImage" src="@Url.Content(mainImageUrl)" alt="@image_tt" style="max-width:300px;margin:0px 2px 0px 2px;padding:1px;border:1px solid #cccccc;" /><br /><input id="uploadMainImage" type="file" name="uploadMainImage" class="formUpload" accept="image/jpeg" /></td>
-        </tr>
-    </table>
+            </div>
+        </div>
+        <div class="annytab-basic-space"></div>
+        <div class="annytab-input-form-row">
+            <div class="annytab-input-form-column-label">@(id_tt + ":")</div>
+            <div class="annytab-input-form-column-input"><input name="txtId" type="text" class="annytab-form-textbox" tabindex="-1" readonly="readonly" value="@product.id" /></div>
+        </div>
+        <div class="annytab-input-form-row">
+            <div class="annytab-input-form-column-label">@(title_tt + ":")</div>
+            <div class="annytab-input-form-column-input"><input name="txtTitle" type="text" class="annytab-form-textbox" tabindex="-1" readonly="readonly" value="@product.title" /></div>
+        </div>
+        <div class="annytab-input-form-row">
+            <div class="annytab-input-form-column-label">@(product_code_tt + ":")</div>
+            <div class="annytab-input-form-column-input"><input name="txtProductCode" type="text" class="annytab-form-textbox" tabindex="-1" readonly="readonly" value="@product.product_code" /></div>
+        </div>
+        <div class="annytab-input-form-row">
+            <div class="annytab-input-form-column-label">@(main_image_tt + ", max 1 mb, jpg|jpeg (1:1):")</div>
+            <div class="annytab-input-form-column-input"><img id="mainImage" src="@Url.Content(mainImageUrl)" alt="@image_tt" style="max-width:300px;margin:0px 2px 0px 2px;padding:1px;border:1px solid #cccccc;" /><br /><input id="uploadMainImage" type="file" name="uploadMainImage" class="annytab-form-upload" accept="image/jpeg" /></div>
+        </div>
+    </div>
 
-    // Other product images
+    @*Other product images*@
     <h2 style="margin: 20px 0px 5px 0px;border-bottom:1px solid #cccccc;">@other_product_images_title_tt</h2>
-    <div style="padding:0px 0px 5px 0px;margin:0px 0px 2px 0px;">@(add_images_tt + ", max 4 mb (1:1): ")<input id="uploadOtherImages" name="uploadOtherImages" type="file" class="formUpload" accept="image/jpeg" multiple /><button id="clearFileUpload">@undo_tt</button></div>
-    <div id="divTableOuterContainer" class="divTableOuterContainer" style="clear:both;margin:0px;border:1px solid #cccccc;border-radius:4px;overflow:auto;">
-        <div id="divOtherImagesContainer" style="clear:both;display:block;position:relative;margin:0px;padding:4px;height:300px;">
+    <div style="padding:0px 0px 5px 0px;margin:0px 0px 2px 0px;">@(add_images_tt + ", max 4 mb (1:1): ")<input id="uploadOtherImages" name="uploadOtherImages" type="file" class="annytab-form-upload" accept="image/jpeg" multiple /><button id="clearFileUpload" class="annytab-form-button">@undo_tt</button></div>
+    <div id="divTableOuterContainer" class="annytab-image-outer-container">
+        <div id="divOtherImagesContainer" class="annytab-image-inner-container">
             @for (int i = 0; i < otherImages.Count; i++)
             {
-                @:<div data-id="otherImageContainer" class="annytab-other-image-square">
-                    @:<img src="@otherImages[i]" alt="@image_tt" style="max-width:128px;" />
-                    @:<input name="otherImageUrl" type="hidden" value="@otherImages[i]" />
-                    @:<img data-id="deleteOtherImage" alt="@image_tt" class="annytab-other-image-delete" src="/Content/images/annytab_design/black_circle_cross.png" />
-                    @:<div>@Path.GetFileName(otherImages[i])</div>
-                @:</div>        
+                @:<div data-id="otherImageContainer" class="annytab-image-container">
+                @:<img src="@otherImages[i]" alt="@image_tt" style="max-width:128px;" />
+                @:<input name="otherImageUrl" type="hidden" value="@otherImages[i]" />
+                @:<img data-id="deleteOtherImage" alt="@image_tt" class="annytab-image-delete" src="/Content/images/annytab_design/black_circle_cross.png" />
+                @:<div>@Path.GetFileName(otherImages[i])</div>
+                @:</div>
             }
         </div>
     </div>
 
-    // Save form button
+    @*Button panel*@
     <div style="display:block;border:1px solid #cccccc;margin:20px 0px 0px 0px;border-radius:4px;">
-        <input id="btnSave" type="submit" value="@save_tt" />
-        <input type="button" value="@cancel_tt" onclick="@Html.Raw("location.href='/admin_products" + returnUrl + "'")" />
+        <input id="btnSave" type="submit" class="annytab-form-button" value="@save_tt" />
+        <input type="button" class="annytab-form-button" value="@cancel_tt" onclick="@Html.Raw("location.href='/admin_products" + returnUrl + "'")" />
     </div>
 }
 

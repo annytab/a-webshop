@@ -27,6 +27,7 @@
     ViewBag.Title = product_tt + " - " + files_tt.ToLower();
 }
 
+@*Title*@
 <h1>@ViewBag.Title</h1>
 
 @*Menu*@
@@ -35,66 +36,71 @@
 @*Main form*@
 @using (Html.BeginForm("add_files", "admin_products", FormMethod.Post, new { enctype = "multipart/form-data" }))
 {
+    @*Hidden data*@
     <input name="returnUrl" type="hidden" value="@returnUrl" />
-    <table style="width:100%;">
-        <tr>
-            <td class="label">@(language_tt + ":")</td>
-            <td class="input">
-                <select id="selectLanguage" name="selectLanguage" class="formSelect">
+    
+    @*Input form table*@
+    <div class="annytab-input-form-table">
+        <div class="annytab-input-form-row">
+            <div class="annytab-input-form-column-label">@(language_tt + ":")</div>
+            <div class="annytab-input-form-column-input">
+                <select id="selectLanguage" name="selectLanguage" class="annytab-form-select">
                     <option value="0" data-url="@("/admin_products/files/" + product.id.ToString() + "?returnUrl=" + Server.UrlEncode(returnUrl))" @(languageId == 0 ? Html.Raw("selected='selected'") : Html.Raw(""))>@(default_tt)</option>
                     @foreach (Language language in languages)
                     {
                         <option value="@language.id" data-url="@("/admin_products/files/" + product.id.ToString() + "?returnUrl=" + Server.UrlEncode(returnUrl) + "&lang=" + language.id.ToString())" @(language.id == languageId ? Html.Raw("selected='selected'") : Html.Raw(""))>@language.name</option>
                     }
                 </select>
-            </td>
-        </tr>
-        <tr><td colspan="2">&nbsp;</td></tr>
-        <tr>
-            <td class="label">@(id_tt + ":")</td>
-            <td class="input"><input name="txtId" type="text" class="formTextbox" tabindex="-1" readonly="readonly" value="@product.id" /></td>
-        </tr>
-        <tr>
-            <td class="label">@(title_tt + ":")</td>
-            <td class="input"><input name="txtTitle" type="text" class="formTextbox" tabindex="-1" readonly="readonly" value="@product.title" /></td>
-        </tr>
-        <tr>
-            <td class="label">@(downloadable_files_tt + ":")</td>
-            <td class="input"><input name="cbDownloadableFiles" type="checkbox" value="true" checked="checked" /></td>
-        </tr>
-        <tr>
-            <td class="label">@(version_tt + " (yyyy-mm-dd):")</td>
-            <td class="input"><input id="txtVersionDate" name="txtVersionDate" type="text" class="formTextbox" value="@DateTime.Now.ToString("yyyy-MM-dd")" /></td>
-        </tr>
-        <tr><td colspan="2">&nbsp;</td></tr>
-        <tr>
-            <td colspan="2">
-                <span>@(upload_files_tt + ": ")</span>
-                <input id="uploadFiles" name="uploadFiles" type="file" class="formUpload" multiple />
-                <input type="submit" value="@upload_files_tt" />
-                <input type="button" value="@cancel_tt" onclick="@Html.Raw("location.href='/admin_products" + returnUrl + "'")" />
-            </td>
-        </tr>
-        <tr><td colspan="2">&nbsp;</td></tr>
-    </table>
+            </div>
+        </div>
+        <div class="annytab-basic-space"></div>
+        <div class="annytab-input-form-row">
+            <div class="annytab-input-form-column-label">@(id_tt + ":")</div>
+            <div class="annytab-input-form-column-input"><input name="txtId" type="text" class="annytab-form-textbox" tabindex="-1" readonly="readonly" value="@product.id" /></div>
+        </div>
+        <div class="annytab-input-form-row">
+            <div class="annytab-input-form-column-label">@(title_tt + ":")</div>
+            <div class="annytab-input-form-column-input"><input name="txtTitle" type="text" class="annytab-form-textbox" tabindex="-1" readonly="readonly" value="@product.title" /></div>
+        </div>
+        <div class="annytab-input-form-row">
+            <div class="annytab-input-form-column-label">@(downloadable_files_tt + ":")</div>
+            <div class="annytab-input-form-column-input"><input name="cbDownloadableFiles" type="checkbox" class="annytab-form-checkbox" value="true" checked="checked" /></div>
+        </div>
+        <div class="annytab-input-form-row">
+            <div class="annytab-input-form-column-label">@(version_tt + " (yyyy-mm-dd):")</div>
+            <div class="annytab-input-form-column-input"><input id="txtVersionDate" name="txtVersionDate" type="text" class="annytab-form-textbox" value="@DateTime.Now.ToString("yyyy-MM-dd")" /></div>
+        </div>
+        <div class="annytab-input-form-row">
+            <div class="annytab-input-form-column-label">@(upload_files_tt + ": ")</div>
+            <div class="annytab-input-form-column-input"><input id="uploadFiles" name="uploadFiles" type="file" class="annytab-form-upload" multiple /></div>
+        </div>
+    </div>
+
+    @*Button panel*@
+    <div style="display:block;border:1px solid #cccccc;margin:20px 0px 0px 0px;border-radius:4px;">
+        <input type="submit" class="annytab-form-button " value="@upload_files_tt" />
+        <input type="button" class="annytab-form-button" value="@cancel_tt" onclick="@Html.Raw("location.href='/admin_products" + returnUrl + "'")" />
+    </div>
 }
+
+<div class="annytab-basic-space"></div>
     
-<!-- Downloadable files -->
-<div class="listContainer">
-    <table class="listTable" style="width:100%;">
+@*Downloadable files*@
+<div class="annytab-list-container">
+    <div class="annytab-list-table" style="display:table;width:100%;">
         @for (int i = 0; i < files.Count; i++)
         {
             using(Html.BeginForm("delete_file", "admin_products", FormMethod.Post))
             { 
-                @:<tr style="background-color:#ffffff;border-bottom:1px solid #cccccc;">
-                    @:<td style="display:none;"><input name="hiddenProductId" type="hidden" value="@product.id" /><input name="hiddenLanguageId" type="hidden" value="@languageId" /><input name="hiddenFileName" type="hidden" value="@Path.GetFileName(files[i])" /><input name="returnUrl" type="hidden" value="@returnUrl" /></td>
-                    @:<td style="width:400px;padding:2px;">@Path.GetFileName(files[i])</td>
-                    @:<td style="width:100px;padding:2px;">@Product.GetFileVersionDate(Server.MapPath(files[i])).ToString("yyyy-MM-dd")</td>
-                    @:<td style="text-align:center;width:100px;"><input type="submit" value="@delete_tt" /></td>
-                @:</tr>
+                @:<div class="annytab-list-row" style="background-color:#ffffff;">
+                    @:<div style="display:none;"><input name="hiddenProductId" type="hidden" value="@product.id" /><input name="hiddenLanguageId" type="hidden" value="@languageId" /><input name="hiddenFileName" type="hidden" value="@Path.GetFileName(files[i])" /><input name="returnUrl" type="hidden" value="@returnUrl" /></div>
+                    @:<div class="annytab-list-column" style="width:400px;padding:2px;border-bottom:1px solid #cccccc;">@Path.GetFileName(files[i])</div>
+                    @:<div class="annytab-list-column" style="width:100px;padding:2px;border-bottom:1px solid #cccccc;">@Product.GetFileVersionDate(Server.MapPath(files[i])).ToString("yyyy-MM-dd")</div>
+                    @:<div class="annytab-list-column" style="text-align:center;width:100px;border-bottom:1px solid #cccccc;"><input type="submit" class="annytab-form-button" value="@delete_tt" /></div>
+                @:</div>
             } 
         }
-    </table>
+    </div>
 </div>
 
 

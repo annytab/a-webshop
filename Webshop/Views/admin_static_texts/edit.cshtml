@@ -4,11 +4,11 @@
 
     // Get values
     StaticText staticText = ViewBag.StaticText;
+    KeyStringList tt = ViewBag.TranslatedTexts;
     string returnUrl = ViewBag.ReturnUrl;
     string error_message = ViewBag.ErrorMessage != null ? ViewBag.ErrorMessage : string.Empty;
 
     // Get translated texts
-    KeyStringList tt = ViewBag.TranslatedTexts;
     string static_text_tt = tt.Get("static_text");
     string new_tt = tt.Get("new");
     string edit_tt = tt.Get("edit");
@@ -28,34 +28,39 @@
     }
 }
 
+@*Title*@
 <h1>@ViewBag.Title</h1>
+
 @*Menu*@
 @Html.Partial("~/Views/admin_static_texts/_form_menu.cshtml")
 
 @*Main form*@
 @using (Html.BeginForm("edit", "admin_static_texts", FormMethod.Post))
 {
+    @*Hidden data*@
     <input name="returnUrl" type="hidden" value="@returnUrl" />
-    <div class="formErrorMessage" style="@(error_message != "" ? "display:block;" : "display:none;")">@Html.Raw(error_message)</div>
-    <table style="width:100%;">
-        <tr>
-            <td class="label">@(id_tt + ":")</td>
-            <td class="input"><input id="txtId" name="txtId" type="text" class="formTextbox" value="@staticText.id" /></td>
-        </tr>
-        <tr>
-            <td class="label">@(text_tt + ":")</td>
-            <td class="input"><textarea id="txtText" name="txtText" class="formTextarea" rows="4">@staticText.value</textarea></td>
-        </tr>
-    </table>
+    <div class="annytab-form-error-message" style="@(error_message != "" ? "display:block;" : "display:none;")">@Html.Raw(error_message)</div>
+    
+    @*Input form table*@
+    <div class="annytab-input-form-table">
+        <div class="annytab-input-form-row">
+            <div class="annytab-input-form-column-label">@(id_tt + ":")</div>
+            <div class="annytab-input-form-column-input"><input id="txtId" name="txtId" type="text" class="annytab-form-textbox" value="@staticText.id" /></div>
+        </div>
+        <div class="annytab-input-form-row">
+            <div class="annytab-input-form-column-label">@(text_tt + ":")</div>
+            <div class="annytab-input-form-column-input"><textarea id="txtText" name="txtText" class="annytab-form-textarea" rows="4">@staticText.value</textarea></div>
+        </div>
+    </div>
 
-    // Save form button
+    @*Button panel*@
     <div style="display:block;border:1px solid #cccccc;margin:20px 0px 0px 0px;border-radius:4px;">
-        <input id="btnSave" type="submit" value="@save_tt" />
-        <input type="button" value="@cancel_tt" onclick="@Html.Raw("location.href='/admin_static_texts" + returnUrl + "'")" />
+        <input id="btnSave" type="submit" class="annytab-form-button" value="@save_tt" />
+        <input type="button" class="annytab-form-button" value="@cancel_tt" onclick="@Html.Raw("location.href='/admin_static_texts" + returnUrl + "'")" />
     </div>    
 }
 
 @section scripts {
-    <script>$("#txtId").val() == "" ? $("#txtId").focus() : $("#txtText").focus();</script>
+    <script type="text/javascript">$("#txtId").val() == "" ? $("#txtId").focus() : $("#txtText").focus();</script>
 }
 

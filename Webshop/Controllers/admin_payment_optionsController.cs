@@ -270,7 +270,7 @@ namespace Annytab.Webshop.Controllers
             }
 
             // Check if there is errors
-            if (errorMessage == string.Empty)
+            if (errorMessage == "")
             {
                 // Check if we should add or update the payment option
                 if (paymentOption.id == 0)
@@ -365,6 +365,10 @@ namespace Annytab.Webshop.Controllers
             if (translatedPaymentOption.name.Length > 100)
             {
                 errorMessage += "&#149; " + String.Format(tt.Get("error_field_length"), tt.Get("name"), "100") + "<br/>";
+            }
+            if (translatedPaymentOption.account_code.Length > 10)
+            {
+                errorMessage += "&#149; " + String.Format(tt.Get("error_field_length"), tt.Get("account_code"), "10") + "<br/>";
             }
 
             // Check if there is errors

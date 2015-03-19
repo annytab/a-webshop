@@ -6,8 +6,6 @@
     Domain domain = ViewBag.Domain;
     KeyStringList tt = ViewBag.TranslatedTexts;
     string returnUrl = ViewBag.ReturnUrl;
-
-    // Set the error message
     string error_message = ViewBag.ErrorMessage != null ? ViewBag.ErrorMessage : string.Empty;
 
     // Get translated texts
@@ -25,6 +23,7 @@
     ViewBag.Title = domain_tt + " - " + sitemap_tt.ToLower();
 }
 
+@*Title*@
 <h1>@ViewBag.Title</h1>
 
 @*Menu*@
@@ -33,18 +32,21 @@
 @*Main form*@
 @using (Html.BeginForm("sitemap", "admin_domains", FormMethod.Post))
 {
+    @*Hidden data*@
     <input name="returnUrl" type="hidden" value="@returnUrl" />
     <input type="hidden" name="hiddenDomainId" value="@domain.id" />
-    <div id="divErrors" class="formErrorMessage" style="@(error_message != "" ? "display:block;" : "display:none;")">@Html.Raw(error_message)</div>
-    <table style="clear:both;width:100%;">
-        <tr>
-            <td class="label">@(path_tt + ":")</td>
-            <td class="input">@("/Content/domains/" + domain.id.ToString() + "/sitemaps/Sitemap.xml.gz")</td>
-        </tr>
-        <tr>
-            <td class="label">@(priority_tt + " " + categories_tt.ToLower() + ":")</td>
-            <td class="input">
-                <select id="selectPriorityCategories" name="selectPriorityCategories" class="formSelect">
+    <div class="annytab-form-error-message" style="@(error_message != "" ? "display:block;" : "display:none;")">@Html.Raw(error_message)</div>
+    
+    @*Input form table*@
+    <div class="annytab-input-form-table">
+        <div class="annytab-input-form-row">
+            <div class="annytab-input-form-column-label">@(path_tt + ":")</div>
+            <div class="annytab-input-form-column-input"><div class="annytab-form-label">@("/Content/domains/" + domain.id.ToString() + "/sitemaps/Sitemap.xml.gz")</div></div>
+        </div>
+        <div class="annytab-input-form-row">
+            <div class="annytab-input-form-column-label">@(priority_tt + " " + categories_tt.ToLower() + ":")</div>
+            <div class="annytab-input-form-column-input">
+                <select id="selectPriorityCategories" name="selectPriorityCategories" class="annytab-form-select">
                     <option value="0.0">0.0</option>
                     <option value="0.1">0.1</option>
                     <option value="0.2">0.2</option>
@@ -57,12 +59,12 @@
                     <option value="0.9">0.9</option>
                     <option value="1.0" selected="selected">1.0</option>
                 </select>
-            </td>
-        </tr>
-        <tr>
-            <td class="label">@(priority_tt + " " + products_tt.ToLower() + ":")</td>
-            <td class="input">
-                <select name="selectPriorityProducts" class="formSelect">
+            </div>
+        </div>
+        <div class="annytab-input-form-row">
+            <div class="annytab-input-form-column-label">@(priority_tt + " " + products_tt.ToLower() + ":")</div>
+            <div class="annytab-input-form-column-input">
+                <select name="selectPriorityProducts" class="annytab-form-select">
                     <option value="0.0">0.0</option>
                     <option value="0.1">0.1</option>
                     <option value="0.2">0.2</option>
@@ -75,12 +77,12 @@
                     <option value="0.9">0.9</option>
                     <option value="1.0" selected="selected">1.0</option>
                 </select>
-            </td>
-        </tr>
-        <tr>
-            <td class="label">@(change_frequency_tt + ":")</td>
-            <td class="input">
-                <select name="selectChangeFrequency" class="formSelect">
+            </div>
+        </div>
+        <div class="annytab-input-form-row">
+            <div class="annytab-input-form-column-label">@(change_frequency_tt + ":")</div>
+            <div class="annytab-input-form-column-input">
+                <select name="selectChangeFrequency" class="annytab-form-select">
                     <option value="never">never</option>
                     <option value="yearly">yearly</option>
                     <option value="monthly" selected="selected">monthly</option>
@@ -89,17 +91,17 @@
                     <option value="hourly">hourly</option>
                     <option value="always">always</option>
                 </select>
-            </td>
-        </tr>
-    </table>
+            </div>
+        </div>
+    </div>
 
-    // Save form button
+    @*Button panel*@
     <div style="display:block;border: 1px solid #cccccc;margin: 20px 0px 0px 0px;border-radius: 4px;">
-        <input id="btnSave" type="submit" value="@save_tt" />
-        <input type="button" value="@cancel_tt" onclick="@Html.Raw("location.href='/admin_domains" + returnUrl + "'")" />
+        <input id="btnSave" type="submit" class="annytab-form-button" value="@save_tt" />
+        <input type="button" class="annytab-form-button" value="@cancel_tt" onclick="@Html.Raw("location.href='/admin_domains" + returnUrl + "'")" />
     </div>
 }
 
 @section scripts {
-    <script>$("#selectPriorityCategories").focus();</script>
+    <script type="text/javascript">$("#selectPriorityCategories").focus();</script>
 }

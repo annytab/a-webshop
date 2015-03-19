@@ -46,66 +46,69 @@
 @using (Html.BeginForm("edit", "admin_additional_services", FormMethod.Post))
 {
     <input name="returnUrl" type="hidden" value="@returnUrl" />
-    <div id="divErrors" class="formErrorMessage" style="@(error_message != "" ? "display:block;" : "display:none;")">@Html.Raw(error_message)</div>
-    <table style="width:100%;">
-        <tr style="@(additionalService.id != 0 ? "display:table-row;" : "display:none;")">
-            <td class="label">@(id_tt + ":")</td>
-            <td class="input"><input name="txtId" type="text" class="formTextbox" tabindex="-1" readonly="readonly" value="@additionalService.id" /></td>
-        </tr>
-        <tr>
-            <td class="label">@(product_code_tt + ":")</td>
-            <td class="input"><input id="txtProductCode" name="txtProductCode" type="text" class="formTextbox" value="@additionalService.product_code" /></td>
-        </tr>
-        <tr>
-            <td class="label">@(name_tt + ":")</td>
-            <td class="input"><input name="txtName" type="text" class="formTextbox" value="@additionalService.name" /></td>
-        </tr>
-        <tr>
-            <td class="label">@(fee_tt + ":")</td>
-            <td class="input"><input name="txtFee" type="number" step="any" class="formTextbox" value="@additionalService.fee.ToString(CultureInfo.InvariantCulture)" /></td>
-        </tr>
-        <tr>
-            <td class="label">@(unit_tt + ":")</td>
-            <td class="input">
-                <select name="selectUnit" class="formSelect">
+    <div class="annytab-form-error-message" style="@(error_message != "" ? "display:block;" : "display:none;")">@Html.Raw(error_message)</div>
+
+    @*Input form table*@
+    <div class="annytab-input-form-table">
+        <div class="annytab-input-form-row" style="@(additionalService.id != 0 ? "display:table-row;" : "display:none;")">
+            <div class="annytab-input-form-column-label">@(id_tt + ":")</div>
+            <div class="annytab-input-form-column-input"><input name="txtId" type="text" class="annytab-form-textbox" tabindex="-1" readonly="readonly" value="@additionalService.id" /></div>
+        </div>
+        <div class="annytab-input-form-row">
+            <div class="annytab-input-form-column-label">@(product_code_tt + ":")</div>
+            <div class="annytab-input-form-column-input"><input id="txtProductCode" name="txtProductCode" type="text" class="annytab-form-textbox" value="@additionalService.product_code" /></div>
+        </div>
+        <div class="annytab-input-form-row">
+            <div class="annytab-input-form-column-label">@(name_tt + ":")</div>
+            <div class="annytab-input-form-column-input"><input name="txtName" type="text" class="annytab-form-textbox" value="@additionalService.name" /></div>
+        </div>
+        <div class="annytab-input-form-row">
+            <div class="annytab-input-form-column-label">@(fee_tt + ":")</div>
+            <div class="annytab-input-form-column-input"><input name="txtFee" type="number" step="any" class="annytab-form-textbox" value="@additionalService.fee.ToString(CultureInfo.InvariantCulture)" /></div>
+        </div>
+        <div class="annytab-input-form-row">
+            <div class="annytab-input-form-column-label">@(unit_tt + ":")</div>
+            <div class="annytab-input-form-column-input">
+                <select name="selectUnit" class="annytab-form-select">
                     @foreach (Unit unit in units)
                     {
                         <option value="@unit.id.ToString()" @(additionalService.unit_id == unit.id ? Html.Raw("selected='selected'") : Html.Raw(""))>@(unit.name + " (" + unit.unit_code + ")")</option>
                     }
                 </select>
-            </td>
-        </tr> 
-        <tr>
-            <td class="label">@(price_based_on_mount_time_tt + ":")</td>
-            <td class="input"><input name="cbPriceBasedOnMountTime" type="checkbox" value="true" @(additionalService != null && additionalService.price_based_on_mount_time == true ? Html.Raw("checked='checked'") : Html.Raw("")) /></td>
-        </tr>
-        <tr>
-            <td class="label">@(value_added_tax_tt + ":")</td>
-            <td class="input">
-                <select name="selectValueAddedTax" class="formSelect">
+            </div>
+        </div>
+        <div class="annytab-input-form-row">
+            <div class="annytab-input-form-column-label">@(price_based_on_mount_time_tt + ":")</div>
+            <div class="annytab-input-form-column-input"><input name="cbPriceBasedOnMountTime" type="checkbox" class="annytab-form-checkbox" value="true" @(additionalService != null && additionalService.price_based_on_mount_time == true ? Html.Raw("checked='checked'") : Html.Raw("")) /></div>
+        </div>
+        <div class="annytab-input-form-row">
+            <div class="annytab-input-form-column-label">@(value_added_tax_tt + ":")</div>
+            <div class="annytab-input-form-column-input">
+                <select name="selectValueAddedTax" class="annytab-form-select">
                     @foreach (ValueAddedTax valueAddedTax in valueAddedTaxes)
                     {
                         <option value="@valueAddedTax.id.ToString()" @(additionalService.value_added_tax_id == valueAddedTax.id ? Html.Raw("selected='selected'") : Html.Raw(""))>@((valueAddedTax.value * 100).ToString() + "%")</option>
                     }
                 </select>
-            </td>
-        </tr>
-        <tr>
-            <td class="label">@(account_code_tt + ":")</td>
-            <td class="input"><input name="txtAccountCode" type="text" class="formTextbox" value="@additionalService.account_code" /></td>
-        </tr>
-        <tr>
-            <td class="label">@(inactive_tt + ":")</td>
-            <td class="input"><input name="cbInactive" type="checkbox" value="true" @(additionalService != null && additionalService.inactive == true ? Html.Raw("checked='checked'") : Html.Raw("")) /></td>
-        </tr>
-    </table>
+            </div>
+        </div>
+        <div class="annytab-input-form-row">
+            <div class="annytab-input-form-column-label">@(account_code_tt + ":")</div>
+            <div class="annytab-input-form-column-input"><input name="txtAccountCode" type="text" class="annytab-form-textbox" value="@additionalService.account_code" /></div>
+        </div>
+        <div class="annytab-input-form-row">
+            <div class="annytab-input-form-column-label">@(inactive_tt + ":")</div>
+            <div class="annytab-input-form-column-input"><input name="cbInactive" type="checkbox" class="annytab-form-checkbox" value="true" @(additionalService != null && additionalService.inactive == true ? Html.Raw("checked='checked'") : Html.Raw("")) /></div>
+        </div>
+    </div>
 
+    @*Button panel*@
     <div style="display:block;border:1px solid #cccccc;margin:20px 0px 0px 0px;border-radius:4px;">
-        <input id="btnSave" type="submit" value="@save_tt" />
-        <input type="button" value="@cancel_tt" onclick="@Html.Raw("location.href='/admin_additional_services" + returnUrl + "'")" />
+        <input id="btnSave" type="submit" class="annytab-form-button" value="@save_tt" />
+        <input type="button" value="@cancel_tt" class="annytab-form-button" onclick="@Html.Raw("location.href='/admin_additional_services" + returnUrl + "'")" />
     </div>
 }
 
 @section scripts {
-    <script>$("#txtProductCode").focus();</script>
+    <script type="text/javascript">$("#txtProductCode").focus();</script>
 }

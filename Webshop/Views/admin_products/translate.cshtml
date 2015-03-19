@@ -1,5 +1,4 @@
 ﻿@using System.Globalization
-
 @{
     // Set the layout for the page
     Layout = "/Views/shared_admin/_standard_layout.cshtml";
@@ -10,11 +9,11 @@
     List<ValueAddedTax> valueAddedTaxes = ValueAddedTax.GetAll("id", "ASC");
     Product standardProduct = ViewBag.StandardProduct;
     Product translatedProduct = ViewBag.TranslatedProduct;
+    KeyStringList tt = ViewBag.TranslatedTexts;
     string returnUrl = ViewBag.ReturnUrl;
     string error_message = ViewBag.ErrorMessage != null ? ViewBag.ErrorMessage : string.Empty;
 
     // Get translated texts
-    KeyStringList tt = ViewBag.TranslatedTexts;
     string translate_tt = tt.Get("translate");
     string no_choice_tt = tt.Get("no_choice");
     string language_tt = tt.Get("language");
@@ -54,6 +53,7 @@
     ViewBag.Title = product_tt + " - " + translate_tt.ToLower();
 }
 
+@*Title*@
 <h1>@ViewBag.Title</h1>
 
 @*Menu*@
@@ -62,134 +62,140 @@
 @*Main form*@
 @using (Html.BeginForm("translate", "admin_products", FormMethod.Post))
 {
+    @*Hidden data*@
     <input name="returnUrl" type="hidden" value="@returnUrl" />
-    <div id="divErrors" class="formErrorMessage" style="@(error_message != "" ? "display:block;" : "display:none;")">@Html.Raw(error_message)</div>
-    <input type="hidden" name="hiddenProductId" class="formTextbox" value="@standardProduct.id" />
-    <table style="width:100%;">
-        <tr>
-            <td class="label">@(language_tt + ":")</td>
-            <td class="input">
-                <select id="selectLanguage" name="selectLanguage" class="formSelect">
+    <div class="annytab-form-error-message" style="@(error_message != "" ? "display:block;" : "display:none;")">@Html.Raw(error_message)</div>
+    <input type="hidden" name="hiddenProductId" value="@standardProduct.id" />
+    
+    @*Input form table*@
+    <div class="annytab-input-form-table">
+        <div class="annytab-input-form-row">
+            <div class="annytab-input-form-column-label">@(language_tt + ":")</div>
+            <div class="annytab-input-form-column-input">
+                <select id="selectLanguage" name="selectLanguage" class="annytab-form-select">
                     <option value="0" data-url="@("/admin_products/translate/" + standardProduct.id.ToString() + "?returnUrl=" + Server.UrlEncode(returnUrl))" @(languageId == 0 ? Html.Raw("selected='selected'") : Html.Raw(""))>@("-- " + no_choice_tt + " --")</option>
                     @foreach (Language language in languages)
                     {
                         <option value="@language.id" data-url="@("/admin_products/translate/" + standardProduct.id.ToString() + "?returnUrl=" + Server.UrlEncode(returnUrl) + "&lang=" + language.id.ToString())" @(language.id == languageId ? Html.Raw("selected='selected'") : Html.Raw(""))>@language.name</option>
                     }
                 </select>
-            </td>
-        </tr>
-        <tr><td colspan="2">&nbsp;</td></tr>
-        <tr>
-            <td class="label">@(title_tt + ":")</td>
-            <td class="input"><input name="txtStandardTitle" type="text" class="formTextbox" tabindex="-1" readonly="readonly" value="@standardProduct.title" /></td>
-        </tr>
-        <tr>
-            <td class="label">&nbsp;</td>
-            <td class="input"><input name="txtTranslatedTitle" type="text" class="formTextbox" value="@(translatedProduct != null ? translatedProduct.title : "")" @(languageId == 0 ? Html.Raw("readonly='readonly'") : Html.Raw("")) /></td>
-        </tr>
-        <tr>
-            <td class="label">@(description_tt + ":")</td>
-            <td class="input"><textarea name="txtStandardDescription" class="formTextarea" tabindex="-1" rows="6" readonly="readonly">@standardProduct.main_content</textarea></td>
-        </tr>
-        <tr>
-            <td class="label">&nbsp;</td>
-            <td class="input"><textarea name="txtTranslatedDescription" class="formTextarea" rows="6" @(languageId == 0 ? Html.Raw("readonly='readonly'") : Html.Raw(""))>@(translatedProduct != null ? translatedProduct.main_content : "")</textarea></td>
-        </tr>
-        <tr>
-            <td class="label">@(extras_tt + ":")</td>
-            <td class="input"><textarea name="txtStandardExtraContent" class="formTextarea" tabindex="-1" rows="6" readonly="readonly">@standardProduct.extra_content</textarea></td>
-        </tr>
-        <tr>
-            <td class="label">&nbsp;</td>
-            <td class="input"><textarea name="txtTranslatedExtraContent" class="formTextarea" rows="6" @(languageId == 0 ? Html.Raw("readonly='readonly'") : Html.Raw(""))>@(translatedProduct != null ? translatedProduct.extra_content : "")</textarea></td>
-        </tr>
-        <tr>
-            <td class="label">@(meta_description_tt + ":")</td>
-            <td class="input"><textarea name="txtStandardMetadescription" class="formTextarea" tabindex="-1" rows="4" readonly="readonly">@standardProduct.meta_description</textarea></td>
-        </tr>
-        <tr>
-            <td class="label">&nbsp;</td>
-            <td class="input"><textarea name="txtTranslatedMetadescription" class="formTextarea" rows="4" @(languageId == 0 ? Html.Raw("readonly='readonly'") : Html.Raw(""))>@(translatedProduct != null ? translatedProduct.meta_description : "")</textarea></td>
-        </tr>
-        <tr>
-            <td class="label">@(keywords_tt + ":")</td>
-            <td class="input"><input name="txtStandardMetakeywords" type="text" class="formTextbox" tabindex="-1" readonly="readonly" value="@standardProduct.meta_keywords" /></td>
-        </tr>
-        <tr>
-            <td class="label">&nbsp;</td>
-            <td class="input"><input name="txtTranslatedMetakeywords" type="text" class="formTextbox" value="@(translatedProduct != null ? translatedProduct.meta_keywords : "")" @(languageId == 0 ? Html.Raw("readonly='readonly'") : Html.Raw("")) /></td>
-        </tr>
-        <tr>
-            <td class="label">@(page_name_tt + ":")</td>
-            <td class="input"><input name="txtStandardPagename" type="text" class="formTextbox" tabindex="-1" readonly="readonly" value="@standardProduct.page_name" /></td>
-        </tr>
-        <tr>
-            <td class="label">&nbsp;</td>
-            <td class="input"><input name="txtTranslatedPagename" type="text" class="formTextbox" value="@(translatedProduct != null ? translatedProduct.page_name : "")" @(languageId == 0 ? Html.Raw("readonly='readonly'") : Html.Raw("")) /></td>
-        </tr>
-        <tr>
-            <td class="label">@(delivery_time_tt + ":")</td>
-            <td class="input"><input name="txtStandardDeliveryTime" type="text" class="formTextbox" tabindex="-1" readonly="readonly" value="@standardProduct.delivery_time" /></td>
-        </tr>
-        <tr>
-            <td class="label">&nbsp;</td>
-            <td class="input"><input name="txtTranslatedDeliveryTime" type="text" class="formTextbox" value="@(translatedProduct != null ? translatedProduct.delivery_time : "")" @(languageId == 0 ? Html.Raw("readonly='readonly'") : Html.Raw("")) /></td>
-        </tr>
-        <tr>
-            <td class="label">@(affiliate_link_tt + ":")</td>
-            <td class="input"><input name="txtAffiliateLink" type="text" class="formTextbox" value="@(translatedProduct != null ? translatedProduct.affiliate_link : "")" /></td>
-        </tr>
-        <tr>
-            <td class="label">@(toll_freight_addition_tt + ":")</td>
-            <td class="input"><input name="txtTollFreight" type="number" step="any" class="formTextbox" value="@(translatedProduct != null ? translatedProduct.toll_freight_addition.ToString(CultureInfo.InvariantCulture) : "")" /></td>
-        </tr>
-        <tr>
-            <td class="label">@(value_added_tax_tt + ":")</td>
-            <td class="input">
-                <select name="selectValueAddedTax" class="formSelect" @(languageId == 0 ? Html.Raw("disabled='disabled'") : Html.Raw(""))>
+            </div>
+        </div>
+        <div class="annytab-input-form-row">
+            <div class="annytab-input-form-column-label"><div class="annytab-basic-space"></div></div>
+            <div class="annytab-input-form-column-input"><div class="annytab-basic-space"></div></div>
+        </div> 
+        <div class="annytab-input-form-row">
+            <div class="annytab-input-form-column-label">@(title_tt + ":")</div>
+            <div class="annytab-input-form-column-input"><input name="txtStandardTitle" type="text" class="annytab-form-textbox" tabindex="-1" readonly="readonly" value="@standardProduct.title" /></div>
+        </div>
+        <div class="annytab-input-form-row">
+            <div class="annytab-input-form-column-label">&nbsp;</div>
+            <div class="annytab-input-form-column-input"><input name="txtTranslatedTitle" type="text" class="annytab-form-textbox" value="@(translatedProduct != null ? translatedProduct.title : "")" @(languageId == 0 ? Html.Raw("readonly='readonly'") : Html.Raw("")) /></div>
+        </div>
+        <div class="annytab-input-form-row">
+            <div class="annytab-input-form-column-label">@(description_tt + ":")</div>
+            <div class="annytab-input-form-column-input"><textarea name="txtStandardDescription" class="annytab-form-textarea" tabindex="-1" rows="6" readonly="readonly">@standardProduct.main_content</textarea></div>
+        </div>
+        <div class="annytab-input-form-row">
+            <div class="annytab-input-form-column-label">&nbsp;</div>
+            <div class="annytab-input-form-column-input"><textarea name="txtTranslatedDescription" class="annytab-form-textarea" rows="6" @(languageId == 0 ? Html.Raw("readonly='readonly'") : Html.Raw(""))>@(translatedProduct != null ? translatedProduct.main_content : "")</textarea></div>
+        </div>
+        <div class="annytab-input-form-row">
+            <div class="annytab-input-form-column-label">@(extras_tt + ":")</div>
+            <div class="annytab-input-form-column-input"><textarea name="txtStandardExtraContent" class="annytab-form-textarea" tabindex="-1" rows="6" readonly="readonly">@standardProduct.extra_content</textarea></div>
+        </div>
+        <div class="annytab-input-form-row">
+            <div class="annytab-input-form-column-label">&nbsp;</div>
+            <div class="annytab-input-form-column-input"><textarea name="txtTranslatedExtraContent" class="annytab-form-textarea" rows="6" @(languageId == 0 ? Html.Raw("readonly='readonly'") : Html.Raw(""))>@(translatedProduct != null ? translatedProduct.extra_content : "")</textarea></div>
+        </div>
+        <div class="annytab-input-form-row">
+            <div class="annytab-input-form-column-label">@(meta_description_tt + ":")</div>
+            <div class="annytab-input-form-column-input"><textarea name="txtStandardMetadescription" class="annytab-form-textarea" tabindex="-1" rows="4" readonly="readonly">@standardProduct.meta_description</textarea></div>
+        </div>
+        <div class="annytab-input-form-row">
+            <div class="annytab-input-form-column-label">&nbsp;</div>
+            <div class="annytab-input-form-column-input"><textarea name="txtTranslatedMetadescription" class="annytab-form-textarea" rows="4" @(languageId == 0 ? Html.Raw("readonly='readonly'") : Html.Raw(""))>@(translatedProduct != null ? translatedProduct.meta_description : "")</textarea></div>
+        </div>
+        <div class="annytab-input-form-row">
+            <div class="annytab-input-form-column-label">@(keywords_tt + ":")</div>
+            <div class="annytab-input-form-column-input"><input name="txtStandardMetakeywords" type="text" class="annytab-form-textbox" tabindex="-1" readonly="readonly" value="@standardProduct.meta_keywords" /></div>
+        </div>
+        <div class="annytab-input-form-row">
+            <div class="annytab-input-form-column-label">&nbsp;</div>
+            <div class="annytab-input-form-column-input"><input name="txtTranslatedMetakeywords" type="text" class="annytab-form-textbox" value="@(translatedProduct != null ? translatedProduct.meta_keywords : "")" @(languageId == 0 ? Html.Raw("readonly='readonly'") : Html.Raw("")) /></div>
+        </div>
+        <div class="annytab-input-form-row">
+            <div class="annytab-input-form-column-label">@(page_name_tt + ":")</div>
+            <div class="annytab-input-form-column-input"><input name="txtStandardPagename" type="text" class="annytab-form-textbox" tabindex="-1" readonly="readonly" value="@standardProduct.page_name" /></div>
+        </div>
+        <div class="annytab-input-form-row">
+            <div class="annytab-input-form-column-label">&nbsp;</div>
+            <div class="annytab-input-form-column-input"><input name="txtTranslatedPagename" type="text" class="annytab-form-textbox" value="@(translatedProduct != null ? translatedProduct.page_name : "")" @(languageId == 0 ? Html.Raw("readonly='readonly'") : Html.Raw("")) /></div>
+        </div>
+        <div class="annytab-input-form-row">
+            <div class="annytab-input-form-column-label">@(delivery_time_tt + ":")</div>
+            <div class="annytab-input-form-column-input"><input name="txtStandardDeliveryTime" type="text" class="annytab-form-textbox" tabindex="-1" readonly="readonly" value="@standardProduct.delivery_time" /></div>
+        </div>
+        <div class="annytab-input-form-row">
+            <div class="annytab-input-form-column-label">&nbsp;</div>
+            <div class="annytab-input-form-column-input"><input name="txtTranslatedDeliveryTime" type="text" class="annytab-form-textbox" value="@(translatedProduct != null ? translatedProduct.delivery_time : "")" @(languageId == 0 ? Html.Raw("readonly='readonly'") : Html.Raw("")) /></div>
+        </div>
+        <div class="annytab-input-form-row">
+            <div class="annytab-input-form-column-label">@(affiliate_link_tt + ":")</div>
+            <div class="annytab-input-form-column-input"><input name="txtAffiliateLink" type="text" class="annytab-form-textbox" value="@(translatedProduct != null ? translatedProduct.affiliate_link : "")" /></div>
+        </div>
+        <div class="annytab-input-form-row">
+            <div class="annytab-input-form-column-label">@(toll_freight_addition_tt + ":")</div>
+            <div class="annytab-input-form-column-input"><input name="txtTollFreight" type="number" step="any" class="annytab-form-textbox" value="@(translatedProduct != null ? translatedProduct.toll_freight_addition.ToString(CultureInfo.InvariantCulture) : "")" /></div>
+        </div>
+        <div class="annytab-input-form-row">
+            <div class="annytab-input-form-column-label">@(value_added_tax_tt + ":")</div>
+            <div class="annytab-input-form-column-input">
+                <select name="selectValueAddedTax" class="annytab-form-select" @(languageId == 0 ? Html.Raw("disabled='disabled'") : Html.Raw(""))>
                     @foreach (ValueAddedTax valueAddedTax in valueAddedTaxes)
                     {
                         <option value="@valueAddedTax.id.ToString()" @(translatedProduct != null && translatedProduct.value_added_tax_id == valueAddedTax.id ? Html.Raw("selected='selected'") : Html.Raw(""))>@((valueAddedTax.value * 100).ToString() + "%")</option>
                     }
                 </select>
-            </td>
-        </tr>
-        <tr>
-            <td class="label">@(availability_status_tt)</td>
-            <td class="input">
-                <select name="selectAvailabilityStatus" class="formSelect" @(languageId == 0 ? Html.Raw("disabled='disabled'") : Html.Raw(""))>
+            </div>
+        </div>
+        <div class="annytab-input-form-row">
+            <div class="annytab-input-form-column-label">@(availability_status_tt)</div>
+            <div class="annytab-input-form-column-input">
+                <select name="selectAvailabilityStatus" class="annytab-form-select" @(languageId == 0 ? Html.Raw("disabled='disabled'") : Html.Raw(""))>
                     <option value="" @(translatedProduct != null && translatedProduct.availability_status == "" ? Html.Raw("selected='selected'") : Html.Raw(""))>@("-- " + no_choice_tt + " --")</option>
                     <option value="availability_in_stock" @(translatedProduct != null && translatedProduct.availability_status == "availability_in_stock" ? Html.Raw("selected='selected'") : Html.Raw(""))>@availability_in_stock_tt</option>
                     <option value="availability_out_of_stock" @(translatedProduct != null && translatedProduct.availability_status == "availability_out_of_stock" ? Html.Raw("selected='selected'") : Html.Raw(""))>@availability_out_of_stock_tt</option>
                     <option value="availability_to_order" @(translatedProduct != null && translatedProduct.availability_status == "availability_to_order" ? Html.Raw("selected='selected'") : Html.Raw(""))>@availability_to_order_tt</option>
                     <option value="availability_preorder" @(translatedProduct != null && translatedProduct.availability_status == "availability_preorder" ? Html.Raw("selected='selected'") : Html.Raw(""))>@availability_preorder_tt</option>
                 </select>
-            </td>
-        </tr>
-        <tr>
-            <td class="label">@(availability_date_tt + " (yyyy-mm-dd):")</td>
-            <td class="input"><input id="txtAvailabilityDate" name="txtAvailabilityDate" type="text" class="formTextbox" value="@(translatedProduct != null ? translatedProduct.availability_date.ToString("yyyy-MM-dd") : "2000-01-01")" @(languageId == 0 ? Html.Raw("readonly='readonly'") : Html.Raw("")) /></td>
-        </tr>
-        <tr>
-            <td class="label">@(account_code_tt + ":")</td>
-            <td class="input"><input name="txtAccountCode" type="text" class="formTextbox" value="@(translatedProduct != null ? translatedProduct.account_code : "")" @(languageId == 0 ? Html.Raw("readonly='readonly'") : Html.Raw("")) /></td>
-        </tr>
-        <tr>
-            <td class="label">@(google_category_tt + ":")</td>
-            <td class="input"><textarea name="txtGoogleCategory" class="formTextarea" rows="4" @(languageId == 0 ? Html.Raw("readonly='readonly'") : Html.Raw(""))>@(translatedProduct != null ? translatedProduct.google_category : "")</textarea></td>
-        </tr>
-        <tr>
-            <td class="label">@(use_local_images_tt + ":")</td>
-            <td class="input"><input name="cbLocalImages" type="checkbox" value="true" @(translatedProduct != null && translatedProduct.use_local_images == true ? Html.Raw("checked='checked'") : Html.Raw("")) /></td>
-        </tr>
-        <tr>
-            <td class="label">@(use_local_files_tt + ":")</td>
-            <td class="input"><input name="cbLocalFiles" type="checkbox" value="true" @(translatedProduct != null && translatedProduct.use_local_files == true ? Html.Raw("checked='checked'") : Html.Raw("")) /></td>
-        </tr>
-        <tr>
-            <td class="label">@(size_type_tt + ":")</td>
-            <td class="input">
-                <select name="selectSizeType" class="formSelect" @(languageId == 0 ? Html.Raw("disabled='disabled'") : Html.Raw(""))>
+            </div>
+        </div>
+        <div class="annytab-input-form-row">
+            <div class="annytab-input-form-column-label">@(availability_date_tt + " (yyyy-mm-dd):")</div>
+            <div class="annytab-input-form-column-input"><input id="txtAvailabilityDate" name="txtAvailabilityDate" type="text" class="annytab-form-textbox" value="@(translatedProduct != null ? translatedProduct.availability_date.ToString("yyyy-MM-dd") : "2000-01-01")" @(languageId == 0 ? Html.Raw("readonly='readonly'") : Html.Raw("")) /></div>
+        </div>
+        <div class="annytab-input-form-row">
+            <div class="annytab-input-form-column-label">@(account_code_tt + ":")</div>
+            <div class="annytab-input-form-column-input"><input name="txtAccountCode" type="text" class="annytab-form-textbox" value="@(translatedProduct != null ? translatedProduct.account_code : "")" @(languageId == 0 ? Html.Raw("readonly='readonly'") : Html.Raw("")) /></div>
+        </div>
+        <div class="annytab-input-form-row">
+            <div class="annytab-input-form-column-label">@(google_category_tt + ":")</div>
+            <div class="annytab-input-form-column-input"><textarea name="txtGoogleCategory" class="annytab-form-textarea" rows="4" @(languageId == 0 ? Html.Raw("readonly='readonly'") : Html.Raw(""))>@(translatedProduct != null ? translatedProduct.google_category : "")</textarea></div>
+        </div>
+        <div class="annytab-input-form-row">
+            <div class="annytab-input-form-column-label">@(use_local_images_tt + ":")</div>
+            <div class="annytab-input-form-column-input"><input name="cbLocalImages" type="checkbox" class="annytab-form-checkbox" value="true" @(translatedProduct != null && translatedProduct.use_local_images == true ? Html.Raw("checked='checked'") : Html.Raw("")) /></div>
+        </div>
+        <div class="annytab-input-form-row">
+            <div class="annytab-input-form-column-label">@(use_local_files_tt + ":")</div>
+            <div class="annytab-input-form-column-input"><input name="cbLocalFiles" type="checkbox" class="annytab-form-checkbox" value="true" @(translatedProduct != null && translatedProduct.use_local_files == true ? Html.Raw("checked='checked'") : Html.Raw("")) /></div>
+        </div>
+        <div class="annytab-input-form-row">
+            <div class="annytab-input-form-column-label">@(size_type_tt + ":")</div>
+            <div class="annytab-input-form-column-input">
+                <select name="selectSizeType" class="annytab-form-select" @(languageId == 0 ? Html.Raw("disabled='disabled'") : Html.Raw(""))>
                     <option value="" @(translatedProduct != null && translatedProduct.size_type == "" ? Html.Raw("selected='selected'") : Html.Raw(""))>@("-- " + no_choice_tt + " --")</option>
                     <option value="regular" @(translatedProduct != null && translatedProduct.size_type == "regular" ? Html.Raw("selected='selected'") : Html.Raw(""))>@regular_tt</option>
                     <option value="petite" @(translatedProduct != null && translatedProduct.size_type == "petite" ? Html.Raw("selected='selected'") : Html.Raw(""))>@petite_tt</option>
@@ -197,12 +203,12 @@
                     <option value="big_and_tall" @(translatedProduct != null && translatedProduct.size_type == "big_and_tall" ? Html.Raw("selected='selected'") : Html.Raw(""))>@big_and_tall_tt</option>
                     <option value="maternity" @(translatedProduct != null && translatedProduct.size_type == "maternity" ? Html.Raw("selected='selected'") : Html.Raw(""))>@maternity_tt</option>
                 </select>
-            </td>
-        </tr>
-        <tr>
-            <td class="label">@(size_system_tt + ":")</td>
-            <td class="input">
-                <select name="selectSizeSystem" class="formSelect" @(languageId == 0 ? Html.Raw("disabled='disabled'") : Html.Raw(""))>
+            </div>
+        </div>
+        <div class="annytab-input-form-row">
+            <div class="annytab-input-form-column-label">@(size_system_tt + ":")</div>
+            <div class="annytab-input-form-column-input">
+                <select name="selectSizeSystem" class="annytab-form-select" @(languageId == 0 ? Html.Raw("disabled='disabled'") : Html.Raw(""))>
                     <option value="" @(translatedProduct != null && translatedProduct.size_system == "" ? Html.Raw("selected='selected'") : Html.Raw(""))>@("-- " + no_choice_tt + " --")</option>
                     <option value="US" @(translatedProduct != null && translatedProduct.size_system == "US" ? Html.Raw("selected='selected'") : Html.Raw(""))>US</option>
                     <option value="UK" @(translatedProduct != null && translatedProduct.size_system == "UK" ? Html.Raw("selected='selected'") : Html.Raw(""))>UK</option>
@@ -216,19 +222,19 @@
                     <option value="MEX" @(translatedProduct != null && translatedProduct.size_system == "MEX" ? Html.Raw("selected='selected'") : Html.Raw(""))>MEX</option>
                     <option value="AU" @(translatedProduct != null && translatedProduct.size_system == "AU" ? Html.Raw("selected='selected'") : Html.Raw(""))>AU</option>
                 </select>
-            </td>
-        </tr>
-        <tr>
-            <td class="label">@(inactive_tt + ":")</td>
-            <td class="input"><input name="cbInactive" type="checkbox" value="true" @(translatedProduct != null && translatedProduct.inactive == true ? Html.Raw("checked='checked'") : Html.Raw("")) @(languageId == 0 ? Html.Raw("disabled='disabled'") : Html.Raw("")) /></td>
-        </tr>
-    </table>
+            </div>
+        </div>
+        <div class="annytab-input-form-row">
+            <div class="annytab-input-form-column-label">@(inactive_tt + ":")</div>
+            <div class="annytab-input-form-column-input"><input name="cbInactive" type="checkbox" class="annytab-form-checkbox" value="true" @(translatedProduct != null && translatedProduct.inactive == true ? Html.Raw("checked='checked'") : Html.Raw("")) @(languageId == 0 ? Html.Raw("disabled='disabled'") : Html.Raw("")) /></div>
+        </div>
+    </div>
 
-    // Save form button
+    @*Button panel*@
     <div style="display:block;border:1px solid #cccccc;margin:20px 0px 0px 0px;border-radius:4px;">
-        <input id="btnSave" type="submit" value="@translate_tt" @(languageId == 0 ? Html.Raw("disabled='disabled'") : Html.Raw("")) />
-        <input data-id="deletePost" type="button" value="@delete_tt" @(Html.Raw("data-url='/admin_products/delete/" + standardProduct.id.ToString() + "?returnUrl=" + Server.UrlEncode(returnUrl) + "&lang=" + languageId.ToString() + "'")) @(languageId == 0 ? Html.Raw("disabled='disabled'") : Html.Raw("")) />
-        <input type="button" value="@cancel_tt" onclick="@Html.Raw("location.href='/admin_products" + returnUrl + "'")" />
+        <input id="btnSave" type="submit" class="annytab-form-button" value="@translate_tt" @(languageId == 0 ? Html.Raw("disabled='disabled'") : Html.Raw("")) />
+        <input data-id="deletePost" type="button" class="annytab-form-button" value="@delete_tt" @(Html.Raw("data-url='/admin_products/delete/" + standardProduct.id.ToString() + "?returnUrl=" + Server.UrlEncode(returnUrl) + "&lang=" + languageId.ToString() + "'")) @(languageId == 0 ? Html.Raw("disabled='disabled'") : Html.Raw("")) />
+        <input type="button" class="annytab-form-button" value="@cancel_tt" onclick="@Html.Raw("location.href='/admin_products" + returnUrl + "'")" />
     </div>
 }
 

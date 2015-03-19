@@ -7,11 +7,11 @@
     List<Language> languages = ViewBag.Languages;
     StaticPage standardStaticPage = ViewBag.StandardStaticPage;
     StaticPage translatedStaticPage = ViewBag.TranslatedStaticPage;
+    KeyStringList tt = ViewBag.TranslatedTexts;
     string returnUrl = ViewBag.ReturnUrl;
     string error_message = ViewBag.ErrorMessage != null ? ViewBag.ErrorMessage : string.Empty;
 
     // Get translated texts
-    KeyStringList tt = ViewBag.TranslatedTexts;
     string translate_tt = tt.Get("translate");
     string no_choice_tt = tt.Get("no_choice");
     string language_tt = tt.Get("language");
@@ -30,6 +30,7 @@
     ViewBag.Title = static_page_tt + " - " + translate_tt.ToLower();
 }
 
+@*Title*@
 <h1>@ViewBag.Title</h1>
 
 @*Menu*@
@@ -38,82 +39,88 @@
 @*Main form*@
 @using (Html.BeginForm("translate", "admin_static_pages", FormMethod.Post))
 {
+    @*Hidden data*@
     <input name="returnUrl" type="hidden" value="@returnUrl" />
-    <div id="divErrors" class="formErrorMessage" style="@(error_message != "" ? "display:block;" : "display:none;")">@Html.Raw(error_message)</div>
-    <input type="hidden" name="hiddenStaticPageId" class="formTextbox" value="@standardStaticPage.id" />
-    <table style="width:100%;">
-        <tr>
-            <td class="label">@(language_tt + ":")</td>
-            <td class="input">
-                <select id="selectLanguage" name="selectLanguage" class="formSelect">
+    <div class="annytab-form-error-message" style="@(error_message != "" ? "display:block;" : "display:none;")">@Html.Raw(error_message)</div>
+    <input name="hiddenStaticPageId" type="hidden" value="@standardStaticPage.id" />
+
+    @*Input form table*@
+    <div class="annytab-input-form-table">
+        <div class="annytab-input-form-row">
+            <div class="annytab-input-form-column-label">@(language_tt + ":")</div>
+            <div class="annytab-input-form-column-input">
+                <select id="selectLanguage" name="selectLanguage" class="annytab-form-select">
                     <option value="0" data-url="@("/admin_static_pages/translate/" + standardStaticPage.id.ToString() + "?returnUrl=" + Server.UrlEncode(returnUrl))" @(languageId == 0 ? Html.Raw("selected='selected'") : Html.Raw(""))>@("-- " + no_choice_tt + " --")</option>
                     @foreach (Language language in languages)
                     {
                         <option value="@language.id" data-url="@("/admin_static_pages/translate/" + standardStaticPage.id.ToString() + "?returnUrl=" + Server.UrlEncode(returnUrl) + "&lang=" + language.id.ToString())" @(language.id == languageId ? Html.Raw("selected='selected'") : Html.Raw(""))>@language.name</option>
                     }
                 </select>
-            </td>
-        </tr>
-        <tr><td colspan="2">&nbsp;</td></tr>
-        <tr>
-            <td class="label">@(title_tt + ":")</td>
-            <td class="input"><input name="txtStandardTitle" type="text" class="formTextbox" tabindex="-1" readonly="readonly" value="@standardStaticPage.title" /></td>
-        </tr>
-        <tr>
-            <td class="label">&nbsp;</td>
-            <td class="input"><input name="txtTranslatedTitle" type="text" class="formTextbox" value="@(translatedStaticPage != null ? translatedStaticPage.title : "")" @(languageId == 0 ? Html.Raw("readonly='readonly'") : Html.Raw("")) /></td>
-        </tr>
-        <tr>
-            <td class="label">@(linkname_tt + ":")</td>
-            <td class="input"><input name="txtStandardLinkname" type="text" class="formTextbox" tabindex="-1" readonly="readonly" value="@standardStaticPage.link_name" /></td>
-        </tr>
-        <tr>
-            <td class="label">&nbsp;</td>
-            <td class="input"><input name="txtTranslatedLinkname" type="text" class="formTextbox" value="@(translatedStaticPage != null ? translatedStaticPage.link_name : "")" @(languageId == 0 ? Html.Raw("readonly='readonly'") : Html.Raw("")) /></td>
-        </tr>
-        <tr>
-            <td class="label">@(description_tt + ":")</td>
-            <td class="input"><textarea name="txtStandardDescription" class="formTextarea" tabindex="-1" rows="6" readonly="readonly">@standardStaticPage.main_content</textarea></td>
-        </tr>
-        <tr>
-            <td class="label">&nbsp;</td>
-            <td class="input"><textarea name="txtTranslatedDescription" class="formTextarea" rows="6" @(languageId == 0 ? Html.Raw("readonly='readonly'") : Html.Raw(""))>@(translatedStaticPage != null ? translatedStaticPage.main_content : "")</textarea></td>
-        </tr>
-        <tr>
-            <td class="label">@(meta_description_tt + ":")</td>
-            <td class="input"><textarea name="txtStandardMetadescription" class="formTextarea" tabindex="-1" rows="4" readonly="readonly">@standardStaticPage.meta_description</textarea></td>
-        </tr>
-        <tr>
-            <td class="label">&nbsp;</td>
-            <td class="input"><textarea name="txtTranslatedMetadescription" class="formTextarea" rows="4" @(languageId == 0 ? Html.Raw("readonly='readonly'") : Html.Raw(""))>@(translatedStaticPage != null ? translatedStaticPage.meta_description : "")</textarea></td>
-        </tr>
-        <tr>
-            <td class="label">@(keywords_tt + ":")</td>
-            <td class="input"><input name="txtStandardMetakeywords" type="text" class="formTextbox" tabindex="-1" readonly="readonly" value="@standardStaticPage.meta_keywords" /></td>
-        </tr>
-        <tr>
-            <td class="label">&nbsp;</td>
-            <td class="input"><input name="txtTranslatedMetakeywords" type="text" class="formTextbox" value="@(translatedStaticPage != null ? translatedStaticPage.meta_keywords : "")" @(languageId == 0 ? Html.Raw("readonly='readonly'") : Html.Raw("")) /></td>
-        </tr>
-        <tr>
-            <td class="label">@(page_name_tt + ":")</td>
-            <td class="input"><input name="txtStandardPagename" type="text" class="formTextbox" tabindex="-1" readonly="readonly" value="@standardStaticPage.page_name" /></td>
-        </tr>
-        <tr>
-            <td class="label">&nbsp;</td>
-            <td class="input"><input name="txtTranslatedPagename" type="text" class="formTextbox" value="@(translatedStaticPage != null ? translatedStaticPage.page_name : "")" @(languageId == 0 ? Html.Raw("readonly='readonly'") : Html.Raw("")) /></td>
-        </tr>
-        <tr>
-            <td class="label">@(inactive_tt + ":")</td>
-            <td class="input"><input name="cbInactive" type="checkbox" value="true" @(translatedStaticPage != null && translatedStaticPage.inactive == true ? Html.Raw("checked='checked'") : Html.Raw("")) /></td>
-        </tr>
-    </table>
+            </div>
+        </div>
+        <div class="annytab-input-form-row">
+            <div class="annytab-input-form-column-label"><div class="annytab-basic-space"></div></div>
+            <div class="annytab-input-form-column-input"><div class="annytab-basic-space"></div></div>
+        </div>
+        <div class="annytab-input-form-row">
+            <div class="annytab-input-form-column-label">@(title_tt + ":")</div>
+            <div class="annytab-input-form-column-input"><input name="txtStandardTitle" type="text" class="annytab-form-textbox" tabindex="-1" readonly="readonly" value="@standardStaticPage.title" /></div>
+        </div>
+        <div class="annytab-input-form-row">
+            <div class="annytab-input-form-column-label">&nbsp;</div>
+            <div class="annytab-input-form-column-input"><input name="txtTranslatedTitle" type="text" class="annytab-form-textbox" value="@(translatedStaticPage != null ? translatedStaticPage.title : "")" @(languageId == 0 ? Html.Raw("readonly='readonly'") : Html.Raw("")) /></div>
+        </div>
+        <div class="annytab-input-form-row">
+            <div class="annytab-input-form-column-label">@(linkname_tt + ":")</div>
+            <div class="annytab-input-form-column-input"><input name="txtStandardLinkname" type="text" class="annytab-form-textbox" tabindex="-1" readonly="readonly" value="@standardStaticPage.link_name" /></div>
+        </div>
+        <div class="annytab-input-form-row">
+            <div class="annytab-input-form-column-label">&nbsp;</div>
+            <div class="annytab-input-form-column-input"><input name="txtTranslatedLinkname" type="text" class="annytab-form-textbox" value="@(translatedStaticPage != null ? translatedStaticPage.link_name : "")" @(languageId == 0 ? Html.Raw("readonly='readonly'") : Html.Raw("")) /></div>
+        </div>
+        <div class="annytab-input-form-row">
+            <div class="annytab-input-form-column-label">@(description_tt + ":")</div>
+            <div class="annytab-input-form-column-input"><textarea name="txtStandardDescription" class="annytab-form-textarea" tabindex="-1" rows="6" readonly="readonly">@standardStaticPage.main_content</textarea></div>
+        </div>
+        <div class="annytab-input-form-row">
+            <div class="annytab-input-form-column-label">&nbsp;</div>
+            <div class="annytab-input-form-column-input"><textarea name="txtTranslatedDescription" class="annytab-form-textarea" rows="6" @(languageId == 0 ? Html.Raw("readonly='readonly'") : Html.Raw(""))>@(translatedStaticPage != null ? translatedStaticPage.main_content : "")</textarea></div>
+        </div>
+        <div class="annytab-input-form-row">
+            <div class="annytab-input-form-column-label">@(meta_description_tt + ":")</div>
+            <div class="annytab-input-form-column-input"><textarea name="txtStandardMetadescription" class="annytab-form-textarea" tabindex="-1" rows="4" readonly="readonly">@standardStaticPage.meta_description</textarea></div>
+        </div>
+        <div class="annytab-input-form-row">
+            <div class="annytab-input-form-column-label">&nbsp;</div>
+            <div class="annytab-input-form-column-input"><textarea name="txtTranslatedMetadescription" class="annytab-form-textarea" rows="4" @(languageId == 0 ? Html.Raw("readonly='readonly'") : Html.Raw(""))>@(translatedStaticPage != null ? translatedStaticPage.meta_description : "")</textarea></div>
+        </div>
+        <div class="annytab-input-form-row">
+            <div class="annytab-input-form-column-label">@(keywords_tt + ":")</div>
+            <div class="annytab-input-form-column-input"><input name="txtStandardMetakeywords" type="text" class="annytab-form-textbox" tabindex="-1" readonly="readonly" value="@standardStaticPage.meta_keywords" /></div>
+        </div>
+        <div class="annytab-input-form-row">
+            <div class="annytab-input-form-column-label">&nbsp;</div>
+            <div class="annytab-input-form-column-input"><input name="txtTranslatedMetakeywords" type="text" class="annytab-form-textbox" value="@(translatedStaticPage != null ? translatedStaticPage.meta_keywords : "")" @(languageId == 0 ? Html.Raw("readonly='readonly'") : Html.Raw("")) /></div>
+        </div>
+        <div class="annytab-input-form-row">
+            <div class="annytab-input-form-column-label">@(page_name_tt + ":")</div>
+            <div class="annytab-input-form-column-input"><input name="txtStandardPagename" type="text" class="annytab-form-textbox" tabindex="-1" readonly="readonly" value="@standardStaticPage.page_name" /></div>
+        </div>
+        <div class="annytab-input-form-row">
+            <div class="annytab-input-form-column-label">&nbsp;</div>
+            <div class="annytab-input-form-column-input"><input name="txtTranslatedPagename" type="text" class="annytab-form-textbox" value="@(translatedStaticPage != null ? translatedStaticPage.page_name : "")" @(languageId == 0 ? Html.Raw("readonly='readonly'") : Html.Raw("")) /></div>
+        </div>
+        <div class="annytab-input-form-row">
+            <div class="annytab-input-form-column-label">@(inactive_tt + ":")</div>
+            <div class="annytab-input-form-column-input"><input name="cbInactive" type="checkbox" class="annytab-form-checkbox" value="true" @(translatedStaticPage != null && translatedStaticPage.inactive == true ? Html.Raw("checked='checked'") : Html.Raw("")) /></div>
+        </div>
+    </div>
 
-    // Save form button
+    @*Button panel*@
     <div style="display:block;border:1px solid #cccccc;margin:20px 0px 0px 0px;border-radius:4px;">
-        <input id="btnSave" type="submit" value="@translate_tt" @(languageId == 0 ? Html.Raw("disabled='disabled'") : Html.Raw("")) />
-        <input data-id="deletePost" type="button" value="@delete_tt" @(Html.Raw("data-url='/admin_static_pages/delete/" + standardStaticPage.id.ToString() + "?returnUrl=" + Server.UrlEncode(returnUrl) + "&lang=" + languageId.ToString() + "'")) @(languageId == 0 ? Html.Raw("disabled='disabled'") : Html.Raw("")) />
-        <input type="button" value="@cancel_tt" onclick="@Html.Raw("location.href='/admin_static_pages" + returnUrl + "'")" />
+        <input id="btnSave" type="submit" class="annytab-form-button" value="@translate_tt" @(languageId == 0 ? Html.Raw("disabled='disabled'") : Html.Raw("")) />
+        <input data-id="deletePost" type="button" class="annytab-form-button" value="@delete_tt" @(Html.Raw("data-url='/admin_static_pages/delete/" + standardStaticPage.id.ToString() + "?returnUrl=" + Server.UrlEncode(returnUrl) + "&lang=" + languageId.ToString() + "'")) @(languageId == 0 ? Html.Raw("disabled='disabled'") : Html.Raw("")) />
+        <input type="button" class="annytab-form-button" value="@cancel_tt" onclick="@Html.Raw("location.href='/admin_static_pages" + returnUrl + "'")" />
     </div>
 }
 

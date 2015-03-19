@@ -54,46 +54,40 @@
     ViewBag.Title = files_tt;
 }
 
-@* Title *@
+@*Title*@
 <h1>@ViewBag.Title</h1>
+
+@*Menu*@
 @Html.Partial("~/Views/admin_customers/_form_menu.cshtml")
 
-@* List of files *@
-<div class="listContainer">
-    <table class="listTable" style="width:400px;">
-        <tr>
-            <th class="listTh" style="text-align:left;width:200px;">@product_tt</th>
-            <th class="listTh" style="text-align:left;width:100px;">@order_date_tt</th>
-            <th class="listTh" style="text-align:center;width:100px;"></th>
-        </tr>
+@*List of files*@
+<div class="annytab-list-container">
+    <div class="annytab-list-table" style="width:424px;">
+        <div class="annytab-list-row">
+            <div class="annytab-list-column-head" style="text-align:left;width:200px;">@product_tt</div>
+            <div class="annytab-list-column-head" style="text-align:left;width:100px;">@order_date_tt</div>
+            <div class="annytab-list-column-head" style="text-align:center;width:100px;"></div>
+        </div>
 
         @for (int i = 0; i < customerFiles.Count; i++)
         {
             // Get the product
             Product product = Product.GetOneById(customerFiles[i].product_id, domain.back_end_language);
 
-            if (i % 2 != 0)
-            {
-                @:<tr class="annytab-list-main-row">
-            }
-            else
-            {
-                @:<tr class="annytab-list-alt-row">
-            }
-
-            @:<td style="text-align:left;">@product.title</td>
-            @:<td style="text-align:left;">@customerFiles[i].order_date.ToString("d", cultureInfo)</td>
-            @:<td style="text-align:center;"><input data-id="deletePost" type="button" value="@delete_tt" @(Html.Raw("data-url='/admin_customers/delete_file?customerId=" + customerFiles[i].customer_id + "&productId=" + customerFiles[i].product_id + "&returnUrl=" + Server.UrlEncode(returnUrl) + "'")) /></td>
-            @:</tr>
+            @:<div class="@(i % 2 != 0 ? "annytab-list-row-main" : "annytab-list-row-alt")">
+            @:<div class="annytab-list-column" style="text-align:left;width:200px;">@product.title</div>
+            @:<div class="annytab-list-column" style="text-align:left;width:100px;">@customerFiles[i].order_date.ToString("d", cultureInfo)</div>
+            @:<div class="annytab-list-column" style="text-align:center;width:100px;"><input data-id="deletePost" type="button" class="annytab-form-button" value="@delete_tt" @(Html.Raw("data-url='/admin_customers/delete_file?customerId=" + customerFiles[i].customer_id + "&productId=" + customerFiles[i].product_id + "&returnUrl=" + Server.UrlEncode(returnUrl) + "'")) /></div>
+            @:</div>
         }
-    </table>
+    </div>
 </div>
 
 <div class="annytab-basic-space"></div>
 
-@* Paging menu *@
+@*Paging menu*@
 @Html.Partial("/Views/shared_admin/_paging_menu.cshtml")
 
 @section scripts {
-    <script>$("#txtSearch").focus();</script>
+    <script type="text/javascript">$("#txtSearch").focus();</script>
 }

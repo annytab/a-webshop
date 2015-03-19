@@ -2,9 +2,9 @@
     // Get the form data
     QueryParams parameters = ViewBag.QueryParams;
     string queryString = QueryParams.GetQueryString(parameters);
+    KeyStringList tt = ViewBag.TranslatedTexts;
     
     // Get translated texts
-    KeyStringList tt = ViewBag.TranslatedTexts;
     string show_tt = tt.Get("show");
     string list_tt = tt.Get("list");
     string custom_images_tt = tt.Get("custom_images");
@@ -21,29 +21,29 @@
 }
 
 @*The menu bar*@
-<div id="menu" class="formMenuBar">
+<div class="annytab-form-menubar">
     @using (Html.BeginForm("search", "admin_custom_design", FormMethod.Post))
     {
-        <input type="button" value="@(show_tt + " " + list_tt.ToLower())" onclick="location.href='@Url.Action("index", "admin_custom_design", new { sf = parameters.sort_field, so = parameters.sort_order, pz = parameters.page_size })'" />
-        <input type="button" value="@(new_tt)" onclick="location.href='@Url.Action("edit_theme", "admin_custom_design", new { id = 0, returnUrl = queryString })'" />
-        <select name="selectSortField" style="width:100px;height:22px;">
+        <input type="button" class="annytab-form-button" value="@(show_tt + " " + list_tt.ToLower())" onclick="location.href='@Url.Action("index", "admin_custom_design", new { sf = parameters.sort_field, so = parameters.sort_order, pz = parameters.page_size })'" />
+        <input type="button" class="annytab-form-button" value="@(new_tt)" onclick="location.href='@Url.Action("edit_theme", "admin_custom_design", new { id = 0, returnUrl = queryString })'" />
+        <select name="selectSortField" class="annytab-form-select" style="width:100px;">
             <option value="id" @(parameters.sort_field == "" ? Html.Raw("selected='selected'") : Html.Raw(""))>@(sort_tt + " " + on_tt.ToLower())</option>
             <option value="id" @(parameters.sort_field == "id" ? Html.Raw("selected='selected'") : Html.Raw(""))>@id_tt</option>
             <option value="name" @(parameters.sort_field == "name" ? Html.Raw("selected='selected'") : Html.Raw(""))>@name_tt</option>
         </select>
-        <select name="selectSortOrder" style="width:80px;height:22px;">
+        <select name="selectSortOrder" class="annytab-form-select" style="width:80px;">
             <option value="ASC" @(parameters.sort_order == "ASC" ? Html.Raw("selected='selected'") : Html.Raw(""))>@ascending_tt</option>
             <option value="DESC" @(parameters.sort_order == "DESC" ? Html.Raw("selected='selected'") : Html.Raw(""))>@descending_tt</option>
         </select>
-        <select name="selectPageSize" style="width:50px;height:22px;">
+        <select name="selectPageSize" class="annytab-form-select" style="width:50px;">
             <option value="10" @(parameters.page_size == 10 ? Html.Raw("selected='selected'") : Html.Raw(""))>10</option>
             <option value="20" @(parameters.page_size == 20 ? Html.Raw("selected='selected'") : Html.Raw(""))>20</option>
             <option value="40" @(parameters.page_size == 40 ? Html.Raw("selected='selected'") : Html.Raw(""))>40</option>
             <option value="80" @(parameters.page_size == 80 ? Html.Raw("selected='selected'") : Html.Raw(""))>80</option>
         </select>
-        <input id="txtSearch" name="txtSearch" type="text" class="textbox" value="@Server.UrlDecode(parameters.keywords)" />
-        <input type="submit" value="@search_tt" />
-        <input type="button" value="@custom_images_tt" onclick="location.href='@Url.Action("images", "admin_custom_design", new { returnUrl = queryString })'" />
-        <input type="button" value="@files_tt" onclick="location.href='@Url.Action("user_files", "admin_custom_design", new { id = 0, returnUrl = queryString })'" />
+        <input id="txtSearch" name="txtSearch" type="text" class="annytab-form-textbox" style="width:150px;" value="@Server.UrlDecode(parameters.keywords)" />
+        <input type="submit" class="annytab-form-button" value="@search_tt" />
+        <input type="button" class="annytab-form-button" value="@custom_images_tt" onclick="location.href='@Url.Action("images", "admin_custom_design", new { returnUrl = queryString })'" />
+        <input type="button" class="annytab-form-button" value="@files_tt" onclick="location.href='@Url.Action("user_files", "admin_custom_design", new { id = 0, returnUrl = queryString })'" />
     }
 </div>

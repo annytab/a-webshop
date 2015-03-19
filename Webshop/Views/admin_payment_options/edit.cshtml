@@ -7,11 +7,11 @@
     List<ValueAddedTax> valueAddedTaxes = ValueAddedTax.GetAll("id", "ASC");
     List<Unit> units = ViewBag.Units;
     PaymentOption paymentOption = ViewBag.PaymentOption;
+    KeyStringList tt = ViewBag.TranslatedTexts;
     string returnUrl = ViewBag.ReturnUrl;
     string error_message = ViewBag.ErrorMessage != null ? ViewBag.ErrorMessage : string.Empty;
 
     // Get translated texts
-    KeyStringList tt = ViewBag.TranslatedTexts;
     string payment_option_tt = tt.Get("payment_option");
     string new_tt = tt.Get("new");
     string edit_tt = tt.Get("edit");
@@ -49,66 +49,71 @@
     }
 }
 
+@*Title*@
 <h1>@ViewBag.Title</h1>
+
 @*Menu*@
 @Html.Partial("~/Views/admin_payment_options/_form_menu.cshtml")
 
 @*Main form*@
 @using (Html.BeginForm("edit", "admin_payment_options", FormMethod.Post))
 {
+    @*Hidden data*@
     <input name="returnUrl" type="hidden" value="@returnUrl" />
-    <div id="divErrors" class="formErrorMessage" style="@(error_message != "" ? "display:block;" : "display:none;")">@Html.Raw(error_message)</div>
-    <table style="width:100%;">
-        <tr style="@(paymentOption.id != 0 ? "display:table-row;" : "display:none;")">
-            <td class="label">@(id_tt + ":")</td>
-            <td class="input"><input name="txtId" type="text" class="formTextbox" tabindex="-1" readonly="readonly" value="@paymentOption.id" /></td>
-        </tr>
-        <tr>
-            <td class="label">@(product_code_tt + ":")</td>
-            <td class="input"><input id="txtProductCode" name="txtProductCode" type="text" class="formTextbox" value="@paymentOption.product_code" /></td>
-        </tr>
-        <tr>
-            <td class="label">@(name_tt + ":")</td>
-            <td class="input"><input name="txtName" type="text" class="formTextbox" value="@paymentOption.name" /></td>
-        </tr>
-        <tr>
-            <td class="label">@(payment_term_code_tt + ":")</td>
-            <td class="input"><input name="txtPaymentTermCode" type="text" class="formTextbox" value="@paymentOption.payment_term_code" /></td>
-        </tr>
-        <tr>
-            <td class="label">@(value_added_tax_tt + ":")</td>
-            <td class="input">
-                <select name="selectValueAddedTax" class="formSelect">
+    <div class="annytab-form-error-message" style="@(error_message != "" ? "display:block;" : "display:none;")">@Html.Raw(error_message)</div>
+    
+    @*Input form table*@
+    <div class="annytab-input-form-table">
+        <div class="annytab-input-form-row" style="@(paymentOption.id != 0 ? "display:table-row;" : "display:none;")">
+            <div class="annytab-input-form-column-label">@(id_tt + ":")</div>
+            <div class="annytab-input-form-column-input"><input name="txtId" type="text" class="annytab-form-textbox" tabindex="-1" readonly="readonly" value="@paymentOption.id" /></div>
+        </div>
+        <div class="annytab-input-form-row">
+            <div class="annytab-input-form-column-label">@(product_code_tt + ":")</div>
+            <div class="annytab-input-form-column-input"><input id="txtProductCode" name="txtProductCode" type="text" class="annytab-form-textbox" value="@paymentOption.product_code" /></div>
+        </div>
+        <div class="annytab-input-form-row">
+            <div class="annytab-input-form-column-label">@(name_tt + ":")</div>
+            <div class="annytab-input-form-column-input"><input name="txtName" type="text" class="annytab-form-textbox" value="@paymentOption.name" /></div>
+        </div>
+        <div class="annytab-input-form-row">
+            <div class="annytab-input-form-column-label">@(payment_term_code_tt + ":")</div>
+            <div class="annytab-input-form-column-input"><input name="txtPaymentTermCode" type="text" class="annytab-form-textbox" value="@paymentOption.payment_term_code" /></div>
+        </div>
+        <div class="annytab-input-form-row">
+            <div class="annytab-input-form-column-label">@(value_added_tax_tt + ":")</div>
+            <div class="annytab-input-form-column-input">
+                <select name="selectValueAddedTax" class="annytab-form-select">
                     @foreach (ValueAddedTax valueAddedTax in valueAddedTaxes)
                     {
                         <option value="@valueAddedTax.id.ToString()" @(paymentOption.value_added_tax_id == valueAddedTax.id ? Html.Raw("selected='selected'") : Html.Raw(""))>@((valueAddedTax.value * 100).ToString() + "%")</option>
                     }
                 </select>
-            </td>
-        </tr>
-        <tr>
-            <td class="label">@(fee_tt + ":")</td>
-            <td class="input"><input name="txtFee" type="number" step="any" class="formTextbox" value="@paymentOption.fee.ToString(CultureInfo.InvariantCulture)" /></td>
-        </tr>
-        <tr>
-            <td class="label">@(unit_tt + ":")</td>
-            <td class="input">
-                <select name="selectUnit" class="formSelect">
+            </div>
+        </div>
+        <div class="annytab-input-form-row">
+            <div class="annytab-input-form-column-label">@(fee_tt + ":")</div>
+            <div class="annytab-input-form-column-input"><input name="txtFee" type="number" step="any" class="annytab-form-textbox" value="@paymentOption.fee.ToString(CultureInfo.InvariantCulture)" /></div>
+        </div>
+        <div class="annytab-input-form-row">
+            <div class="annytab-input-form-column-label">@(unit_tt + ":")</div>
+            <div class="annytab-input-form-column-input">
+                <select name="selectUnit" class="annytab-form-select">
                     @foreach (Unit unit in units)
                     {
                         <option value="@unit.id.ToString()" @(paymentOption.unit_id == unit.id ? Html.Raw("selected='selected'") : Html.Raw(""))>@(unit.name + " (" + unit.unit_code + ")")</option>
                     }
                 </select>
-            </td>
-        </tr>
-        <tr>
-            <td class="label">@(account_code_tt + ":")</td>
-            <td class="input"><input name="txtAccountCode" type="text" class="formTextbox" value="@paymentOption.account_code" /></td>
-        </tr>
-        <tr>
-            <td class="label">@(connected_to_tt + ":")</td>
-            <td class="input">
-                <select name="selectConnection" class="formSelect">
+            </div>
+        </div>
+        <div class="annytab-input-form-row">
+            <div class="annytab-input-form-column-label">@(account_code_tt + ":")</div>
+            <div class="annytab-input-form-column-input"><input name="txtAccountCode" type="text" class="annytab-form-textbox" value="@paymentOption.account_code" /></div>
+        </div>
+        <div class="annytab-input-form-row">
+            <div class="annytab-input-form-column-label">@(connected_to_tt + ":")</div>
+            <div class="annytab-input-form-column-input">
+                <select name="selectConnection" class="annytab-form-select">
                     <option value="0" @(paymentOption.connection == 0 ? Html.Raw("selected='selected'") : Html.Raw(""))>@no_connection_tt</option>
                     <option value="101" @(paymentOption.connection == 101 ? Html.Raw("selected='selected'") : Html.Raw(""))>@payson_direct_tt</option>
                     <option value="102" @(paymentOption.connection == 102 ? Html.Raw("selected='selected'") : Html.Raw(""))>@payson_invoice_tt</option>
@@ -120,21 +125,21 @@
                     <option value="403" @(paymentOption.connection == 403 ? Html.Raw("selected='selected'") : Html.Raw(""))>@payex_invoice_tt</option>
                     <option value="404" @(paymentOption.connection == 404 ? Html.Raw("selected='selected'") : Html.Raw(""))>@payex_wywallet_tt</option>
                 </select>
-            </td>
-        </tr>
-        <tr>
-            <td class="label">@(inactive_tt + ":")</td>
-            <td class="input"><input name="cbInactive" type="checkbox" value="true" @(paymentOption != null && paymentOption.inactive == true ? Html.Raw("checked='checked'") : Html.Raw("")) /></td>
-        </tr>
-    </table>
+            </div>
+        </div>
+        <div class="annytab-input-form-row">
+            <div class="annytab-input-form-column-label">@(inactive_tt + ":")</div>
+            <div class="annytab-input-form-column-input"><input name="cbInactive" type="checkbox" class="annytab-form-checkbox" value="true" @(paymentOption != null && paymentOption.inactive == true ? Html.Raw("checked='checked'") : Html.Raw("")) /></div>
+        </div>
+    </div>
 
-    // Save form button
+    @*Button panel*@
     <div style="display:block;border:1px solid #cccccc;margin:20px 0px 0px 0px;border-radius:4px;">
-        <input id="btnSave" type="submit" value="@save_tt" />
-        <input type="button" value="@cancel_tt" onclick="@Html.Raw("location.href='/admin_payment_options" + returnUrl + "'")" />
+        <input id="btnSave" type="submit" class="annytab-form-button" value="@save_tt" />
+        <input type="button" class="annytab-form-button" value="@cancel_tt" onclick="@Html.Raw("location.href='/admin_payment_options" + returnUrl + "'")" />
     </div>
 }
 
 @section scripts {
-    <script>$("#txtProductCode").focus();</script>
+    <script type="text/javascript">$("#txtProductCode").focus();</script>
 }

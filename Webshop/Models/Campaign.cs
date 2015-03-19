@@ -775,7 +775,8 @@ public class Campaign
     public static string GetValidSortField(string sortField)
     {
         // Make sure that the sort field is valid
-        if (sortField != "id" && sortField != "name" && sortField != "category_name" && sortField != "image_name")
+        if (sortField != "id" && sortField != "name" && sortField != "category_name" 
+            && sortField != "image_name" && sortField != "inactive")
         {
             sortField = "id";
         }

@@ -26,6 +26,7 @@
     ViewBag.Title = newsletter_tt;
 }
 
+@*Title*@
 <h1>@ViewBag.Title</h1>
 
 @*Menu*@
@@ -34,35 +35,34 @@
 @*Main form*@
 @using (Html.BeginForm("edit", "admin_newsletters", FormMethod.Post))
 {
+    @*Hidden data*@
     <input name="returnUrl" type="hidden" value="@returnUrl" />
-    <div id="divErrors" class="formErrorMessage" style="@(error_message != "" ? "display:block;" : "display:none;")">@Html.Raw(error_message)</div>
+    <div class="annytab-form-error-message" style="@(error_message != "" ? "display:block;" : "display:none;")">@Html.Raw(error_message)</div>
     <input name="hiddenId" type="hidden" value="@newsletter.id" />
+    
+    @*Input form*@
     <div style="font-size:16px;line-height:24px;font-weight:bold;">@language_tt</div>
-    <select id="selectLanguage" name="selectLanguage" class="formSelect">
+    <select id="selectLanguage" name="selectLanguage" class="annytab-form-select">
         <option value="0" @(newsletter.language_id == 0 ? Html.Raw("selected='selected'") : Html.Raw(""))>@("-- " + no_choice_tt + " --")</option>
         @foreach (Language language in languages)
         {
             <option value="@language.id" @(language.id == newsletter.language_id ? Html.Raw("selected='selected'") : Html.Raw(""))>@language.name</option>
         }
     </select>
-    
-    <div style="margin-bottom:20px;"></div>
-
+    <div class="annytab-basic-space"></div>
     <div style="font-size:16px;line-height:24px;font-weight:bold;">@(title_tt)</div>
-    <input name="txtTitle" type="text" class="formTextbox" value="@newsletter.title" />
-
-    <div style="margin-bottom:20px;"></div>
-
+    <input name="txtTitle" type="text" class="annytab-form-textbox" value="@newsletter.title" />
+    <div class="annytab-basic-space"></div>
     <div>
         <span style="font-size:16px;line-height:24px;font-weight:bold;">@message_tt</span>
         <textarea id="txtContent" name="txtContent" style="height:400px;">@Html.Raw(messageText)</textarea>
     </div>
 
-    // Button panel
+    @*Button panel*@
     <div style="display:block;border:1px solid #cccccc;margin:20px 0px 0px 0px;border-radius:4px;">
-        <input id="btnPreview" type="button" value="@preview_tt" />
-        <input id="btnSave" type="submit" value="@save_tt" />
-        <input type="button" value="@cancel_tt" onclick="@Html.Raw("location.href='/admin_newsletters" + returnUrl + "'")" />
+        <input id="btnPreview" type="button" class="annytab-form-button" value="@preview_tt" />
+        <input id="btnSave" type="submit" class="annytab-form-button" value="@save_tt" />
+        <input type="button" class="annytab-form-button" value="@cancel_tt" onclick="@Html.Raw("location.href='/admin_newsletters" + returnUrl + "'")" />
     </div>
 }
 
@@ -90,6 +90,5 @@
             printWindow.document.close();
 
         } // End of the previewNewsletter method
-
     </script>
 }

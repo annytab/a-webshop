@@ -59,6 +59,7 @@
     List<Country> countries = Country.GetAll(domain.back_end_language, "name", "ASC");
     Language currentLanguage = Language.GetOneById(domain.back_end_language);
     CultureInfo cultureInfo = Tools.GetCultureInfo(currentLanguage);
+    KeyStringList tt = ViewBag.TranslatedTexts;
 
     // Count the number of posts and get them
     Int32 count = 0;
@@ -89,7 +90,6 @@
     numberOfPages = numberOfPages == 0 ? 1 : numberOfPages;
 
     // Get translated texts
-    KeyStringList tt = ViewBag.TranslatedTexts;
     string order_statistics_tt = tt.Get("order_statistics");
     string period_tt = tt.Get("period");
     string all_tt = tt.Get("all");
@@ -117,72 +117,66 @@
     ViewBag.Title = title;
 }
 
+@*Title*@
 <h1>@ViewBag.Title</h1>
-<div id="menu" class="formMenuBar">
+
+@*The menu bar*@
+<div class="annytab-form-menubar">
     @using (Html.BeginForm("filter_report", "admin_default", FormMethod.Post))
     {
-        <select name="selectCountry" style="height:22px;">
+        <select name="selectCountry" class="annytab-form-select" style="width:150px;">
             <option value="" @(countryCode == "" ? Html.Raw("selected='selected'") : Html.Raw(""))>@(all_tt + " " + countries_tt.ToLower())</option>
             @foreach (Country country in countries)
             {
                 <option value="@country.country_code" @(country.country_code == countryCode ? Html.Raw("selected='selected'") : Html.Raw(""))>@country.name</option>
             }
         </select>
-    <select name="selectGroupBy" style="height:22px;">
-        <option value="0" @(groupBy == 0 ? Html.Raw("selected='selected'") : Html.Raw(""))>@year_tt</option>
-        <option value="1" @(groupBy == 1 ? Html.Raw("selected='selected'") : Html.Raw(""))>@month_tt</option>
-        <option value="2" @(groupBy == 2 ? Html.Raw("selected='selected'") : Html.Raw(""))>@week_tt</option>
-        <option value="3" @(groupBy == 3 ? Html.Raw("selected='selected'") : Html.Raw(""))>@day_tt</option>
-    </select>
-    <select name="selectPageSize" style="height:22px;">
-        <option value="12" @(pageSize == 12 ? Html.Raw("selected='selected'") : Html.Raw(""))>12</option>
-        <option value="24" @(pageSize == 24 ? Html.Raw("selected='selected'") : Html.Raw(""))>24</option>
-        <option value="36" @(pageSize == 36 ? Html.Raw("selected='selected'") : Html.Raw(""))>36</option>
-    </select>
-        <input type="submit" value="@filter_tt" />
+        <select name="selectGroupBy" class="annytab-form-select" style="width:100px;">
+            <option value="0" @(groupBy == 0 ? Html.Raw("selected='selected'") : Html.Raw(""))>@year_tt</option>
+            <option value="1" @(groupBy == 1 ? Html.Raw("selected='selected'") : Html.Raw(""))>@month_tt</option>
+            <option value="2" @(groupBy == 2 ? Html.Raw("selected='selected'") : Html.Raw(""))>@week_tt</option>
+            <option value="3" @(groupBy == 3 ? Html.Raw("selected='selected'") : Html.Raw(""))>@day_tt</option>
+        </select>
+        <select name="selectPageSize" class="annytab-form-select" style="width:50px;">
+            <option value="12" @(pageSize == 12 ? Html.Raw("selected='selected'") : Html.Raw(""))>12</option>
+            <option value="24" @(pageSize == 24 ? Html.Raw("selected='selected'") : Html.Raw(""))>24</option>
+            <option value="36" @(pageSize == 36 ? Html.Raw("selected='selected'") : Html.Raw(""))>36</option>
+        </select>
+        <input type="submit" class="annytab-form-button" value="@filter_tt" />
     }
 </div>
 
-@*List of static texts*@
-<div class="listContainer">
-    <table class="listTable" style="width:780px;">
-        <tr>
-            <th class="listTh" style="text-align:center;width:80px;">@period_tt</th>
-            <th class="listTh" style="text-align:right;width:50px;">@quantity_tt</th>
-            <th class="listTh" style="text-align:right;width:150px;">@sum_tt</th>
-            <th class="listTh" style="text-align:right;width:150px;">@value_added_tax_tt</th>
-            <th class="listTh" style="text-align:right;width:150px;">@total_sum_tt</th>
-            <th class="listTh" style="text-align:center;width:100px;"></th>
-            <th class="listTh" style="text-align:center;width:100px;"></th>
-        </tr>
+@*List of periods*@
+<div class="annytab-list-container">
+    <div class="annytab-list-table" style="width:936px;">
+        <div class="annytab-list-row">
+            <div class="annytab-list-column-head" style="text-align:center;width:80px;">@period_tt</div>
+            <div class="annytab-list-column-head" style="text-align:right;width:50px;">@quantity_tt</div>
+            <div class="annytab-list-column-head" style="text-align:right;width:150px;">@sum_tt</div>
+            <div class="annytab-list-column-head" style="text-align:right;width:150px;">@value_added_tax_tt</div>
+            <div class="annytab-list-column-head" style="text-align:right;width:150px;">@total_sum_tt</div>
+            <div class="annytab-list-column-head" style="text-align:center;width:150px;">@orders_tt</div>
+            <div class="annytab-list-column-head" style="text-align:center;width:150px;">@products_tt</div>
+        </div>
 
         @for (int i = 0; i < orderSaleDataPosts.Count; i++)
         {
-            if (i % 2 != 0)
-            {
-                @:<tr class="annytab-list-main-row">
-            }
-            else
-            {
-                @:<tr class="annytab-list-alt-row">
-            }
-            
             // Create the period string
             string period = orderSaleDataPosts[i].year;
             period += orderSaleDataPosts[i].datepart != "0" ? "-" + orderSaleDataPosts[i].datepart : "";
             
-            @*Columns*@
-            @:<td style="text-align:center;">@period</td>
-            @:<td style="text-align:right;">@orderSaleDataPosts[i].quantity.ToString("##,0.##", cultureInfo)</td>
-            @:<td style="text-align:right;">@orderSaleDataPosts[i].net_sum.ToString("##,0.##", cultureInfo)</td>
-            @:<td style="text-align:right;">@orderSaleDataPosts[i].vat_sum.ToString("##,0.##", cultureInfo)</td>
-            @:<td style="text-align:right;">@orderSaleDataPosts[i].total_sum.ToString("##,0.##", cultureInfo)</td>
-            @:<td style="text-align:center;"><input type="button" value="@orders_tt" onclick="location.href='@Url.Action("order_sale_data", "admin_default", new { year = orderSaleDataPosts[i].year, dp = orderSaleDataPosts[i].datepart, cc = countryCode, gb = groupBy, pz = pageSize})'" /></td>
-            @:<td style="text-align:center;"><input type="button" value="@products_tt" onclick="location.href='@Url.Action("product_sale_data", "admin_default", new { year = orderSaleDataPosts[i].year, dp = orderSaleDataPosts[i].datepart, cc = countryCode, gb = groupBy, pz = pageSize })'" /></td>
-            @:</tr>
+            @:<div class="@(i % 2 != 0 ? "annytab-list-row-main" : "annytab-list-row-alt")">
+            @:<div class="annytab-list-column" style="text-align:center;width:80px;">@period</div>
+            @:<div class="annytab-list-column" style="text-align:right;width:50px;">@orderSaleDataPosts[i].quantity.ToString("##,0.##", cultureInfo)</div>
+            @:<div class="annytab-list-column" style="text-align:right;width:150px;">@orderSaleDataPosts[i].net_sum.ToString("##,0.##", cultureInfo)</div>
+            @:<div class="annytab-list-column" style="text-align:right;width:150px;">@orderSaleDataPosts[i].vat_sum.ToString("##,0.##", cultureInfo)</div>
+            @:<div class="annytab-list-column" style="text-align:right;width:150px;">@orderSaleDataPosts[i].total_sum.ToString("##,0.##", cultureInfo)</div>
+            @:<div class="annytab-list-column" style="text-align:center;width:150px;"><input type="button" class="annytab-form-button" value="@orders_tt" onclick="location.href='@Url.Action("order_sale_data", "admin_default", new { year = orderSaleDataPosts[i].year, dp = orderSaleDataPosts[i].datepart, cc = countryCode, gb = groupBy, pz = pageSize})'" /></div>
+            @:<div class="annytab-list-column" style="text-align:center;width:150px;"><input type="button" class="annytab-form-button" value="@products_tt" onclick="location.href='@Url.Action("product_sale_data", "admin_default", new { year = orderSaleDataPosts[i].year, dp = orderSaleDataPosts[i].datepart, cc = countryCode, gb = groupBy, pz = pageSize })'" /></div>
+            @:</div>
         }
-    </table>
+    </div>
 </div>
 
-@* Paging menu *@
+@*Paging menu*@
 @Html.Partial("/Views/shared_admin/_paging_menu.cshtml")

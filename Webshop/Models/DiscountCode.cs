@@ -561,7 +561,8 @@ public class DiscountCode
     public static string GetValidSortField(string sortField)
     {
         // Make sure that the sort field is valid
-        if (sortField != "id" && sortField != "language_id" && sortField != "discount_value")
+        if (sortField != "id" && sortField != "language_id" && sortField != "currency_code" 
+            && sortField != "discount_value")
         {
             sortField = "id";
         }

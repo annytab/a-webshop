@@ -8,10 +8,10 @@
     Product product = Product.GetOneById(productReview.product_id, domain.back_end_language);
     Customer customer = Customer.GetOneById(productReview.customer_id);
     Language language = Language.GetOneById(productReview.language_id, domain.back_end_language);
+    KeyStringList tt = ViewBag.TranslatedTexts;
     string returnUrl = ViewBag.ReturnUrl;
 
     // Get translated texts
-    KeyStringList tt = ViewBag.TranslatedTexts;
     string review_tt = tt.Get("review");
     string id_tt = tt.Get("id");
     string language_tt = tt.Get("language");
@@ -27,48 +27,53 @@
     ViewBag.Title = review_tt + " - " + edit_tt.ToLower();  
 }
 
+@*Title*@
 <h1>@ViewBag.Title</h1>
+
 @*Menu*@
 @Html.Partial("~/Views/admin_product_reviews/_form_menu.cshtml")
 
 @*Main form*@
 @using (Html.BeginForm("edit", "admin_product_reviews", FormMethod.Post))
 {
+    @*Hidden data*@
     <input name="returnUrl" type="hidden" value="@returnUrl" />
-    <table style="width:100%;">
-        <tr>
-            <td class="label">@(id_tt + ":")</td>
-            <td class="input"><input name="txtId" type="text" class="formTextbox" tabindex="-1" readonly="readonly" value="@productReview.id.ToString()" /></td>
-        </tr>
-        <tr>
-            <td class="label">@(language_tt + ":")</td>
-            <td class="input"><input type="text" class="formTextbox" tabindex="-1" readonly="readonly" value="@language.name" /></td>
-        </tr>
-        <tr>
-            <td class="label">@(product_tt + ":")</td>
-            <td class="input"><input type="text" class="formTextbox" tabindex="-1" readonly="readonly" value="@product.title" /></td>
-        </tr>
-        <tr>
-            <td class="label">@(customer_tt + ":")</td>
-            <td class="input"><input type="text" class="formTextbox" tabindex="-1" readonly="readonly" value="@customer.invoice_name" /></td>
-        </tr>
-        <tr>
-            <td class="label">@(rating_tt + ":")</td>
-            <td class="input"><input type="text" class="formTextbox" tabindex="-1" readonly="readonly" value="@productReview.rating.ToString()" /></td>
-        </tr>
-        <tr>
-            <td class="label">@(text_tt + ":")</td>
-            <td class="input"><textarea id="txtReviewText" name="txtReviewText" class="formTextarea" rows="10">@productReview.review_text</textarea></td>
-        </tr>
-    </table>
+    
+    @*Input form table*@
+    <div class="annytab-input-form-table">
+        <div class="annytab-input-form-row">
+            <div class="annytab-input-form-column-label">@(id_tt + ":")</div>
+            <div class="annytab-input-form-column-input"><input name="txtId" type="text" class="annytab-form-textbox" tabindex="-1" readonly="readonly" value="@productReview.id.ToString()" /></div>
+        </div>
+        <div class="annytab-input-form-row">
+            <div class="annytab-input-form-column-label">@(language_tt + ":")</div>
+            <div class="annytab-input-form-column-input"><input type="text" class="annytab-form-textbox" tabindex="-1" readonly="readonly" value="@language.name" /></div>
+        </div>
+        <div class="annytab-input-form-row">
+            <div class="annytab-input-form-column-label">@(product_tt + ":")</div>
+            <div class="annytab-input-form-column-input"><input type="text" class="annytab-form-textbox" tabindex="-1" readonly="readonly" value="@product.title" /></div>
+        </div>
+        <div class="annytab-input-form-row">
+            <div class="annytab-input-form-column-label">@(customer_tt + ":")</div>
+            <div class="annytab-input-form-column-input"><input type="text" class="annytab-form-textbox" tabindex="-1" readonly="readonly" value="@customer.invoice_name" /></div>
+        </div>
+        <div class="annytab-input-form-row">
+            <div class="annytab-input-form-column-label">@(rating_tt + ":")</div>
+            <div class="annytab-input-form-column-input"><input type="text" class="annytab-form-textbox" tabindex="-1" readonly="readonly" value="@productReview.rating.ToString()" /></div>
+        </div>
+        <div class="annytab-input-form-row">
+            <div class="annytab-input-form-column-label">@(text_tt + ":")</div>
+            <div class="annytab-input-form-column-input"><textarea id="txtReviewText" name="txtReviewText" class="annytab-form-textarea" rows="10">@productReview.review_text</textarea></div>
+        </div>
+    </div>
 
-    // Save form button
+    @*Button panel*@
     <div style="display:block;border:1px solid #cccccc;margin:20px 0px 0px 0px;border-radius:4px;">
-        <input id="btnSave" type="submit" value="@save_tt" />
-        <input type="button" value="@cancel_tt" onclick="@Html.Raw("location.href='/admin_product_reviews" + returnUrl + "'")" />
+        <input id="btnSave" type="submit" class="annytab-form-button" value="@save_tt" />
+        <input type="button" class="annytab-form-button" value="@cancel_tt" onclick="@Html.Raw("location.href='/admin_product_reviews" + returnUrl + "'")" />
     </div>
 }
 
 @section scripts {
-    <script>$("#txtReviewText").focus();</script>
+    <script type="text/javascript">$("#txtReviewText").focus();</script>
 }

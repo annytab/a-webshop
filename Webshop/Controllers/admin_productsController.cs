@@ -1323,6 +1323,10 @@ namespace Annytab.Webshop.Controllers
             {
                 errorMessage += "&#149; " + String.Format(tt.Get("error_field_range"), tt.Get("toll_freight_addition"), "9 999 999 999.99") + "<br/>";
             }
+            if (translatedProduct.account_code.Length > 10)
+            {
+                errorMessage += "&#149; " + String.Format(tt.Get("error_field_length"), tt.Get("account_code"), "10") + "<br/>";
+            }
 
             // Check if there is errors
             if (errorMessage == string.Empty)

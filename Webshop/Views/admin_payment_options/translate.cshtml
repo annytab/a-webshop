@@ -8,11 +8,11 @@
     List<ValueAddedTax> valueAddedTaxes = ValueAddedTax.GetAll("id", "ASC");
     PaymentOption standardPaymentOption = ViewBag.StandardPaymentOption;
     PaymentOption translatedPaymentOption = ViewBag.TranslatedPaymentOption;
+    KeyStringList tt = ViewBag.TranslatedTexts;
     string returnUrl = ViewBag.ReturnUrl;
     string error_message = ViewBag.ErrorMessage != null ? ViewBag.ErrorMessage : string.Empty;
 
     // Get translated texts
-    KeyStringList tt = ViewBag.TranslatedTexts;
     string payment_option_tt = tt.Get("payment_option");
     string language_tt = tt.Get("language");
     string translate_tt = tt.Get("translate");
@@ -29,64 +29,69 @@
     ViewBag.Title = payment_option_tt + " - " + translate_tt.ToLower();
 }
 
+@*Title*@
 <h1>@ViewBag.Title</h1>
+
 @*Menu*@
 @Html.Partial("~/Views/admin_payment_options/_form_menu.cshtml")
 
 @*Main form*@
 @using (Html.BeginForm("translate", "admin_payment_options", FormMethod.Post))
 {
+    @*Hidden data*@
     <input name="returnUrl" type="hidden" value="@returnUrl" />
-    <div id="divErrors" class="formErrorMessage" style="@(error_message != "" ? "display:block;" : "display:none;")">@Html.Raw(error_message)</div>
-    <input type="hidden" name="hiddenPaymentOptionId" class="formTextbox" value="@standardPaymentOption.id" />
-    <table style="width:100%;">
-        <tr>
-            <td class="label">@(language_tt + ":")</td>
-            <td class="input">
-                <select id="selectLanguage" name="selectLanguage" class="formSelect">
+    <div class="annytab-form-error-message" style="@(error_message != "" ? "display:block;" : "display:none;")">@Html.Raw(error_message)</div>
+    <input type="hidden" name="hiddenPaymentOptionId" value="@standardPaymentOption.id" />
+    
+    @*Input form table*@
+    <div class="annytab-input-form-table">
+        <div class="annytab-input-form-row">
+            <div class="annytab-input-form-column-label">@(language_tt + ":")</div>
+            <div class="annytab-input-form-column-input">
+                <select id="selectLanguage" name="selectLanguage" class="annytab-form-select">
                     <option value="0" data-url="@("/admin_payment_options/translate/" + standardPaymentOption.id.ToString() + "?returnUrl=" + Server.UrlEncode(returnUrl))" @(languageId == 0 ? Html.Raw("selected='selected'") : Html.Raw(""))>@("-- " + no_choice_tt + " --")</option>
                     @foreach (Language language in languages)
                     {
                         <option value="@language.id" data-url="@("/admin_payment_options/translate/" + standardPaymentOption.id.ToString() + "?returnUrl=" + Server.UrlEncode(returnUrl) + "&lang=" + language.id.ToString())" @(language.id == languageId ? Html.Raw("selected='selected'") : Html.Raw(""))>@language.name</option>
                     }
                 </select>
-            </td>
-        </tr>
-        <tr><td colspan="2">&nbsp;</td></tr>
-        <tr>
-            <td class="label">@(name_tt + ":")</td>
-            <td class="input"><input name="txtStandardName" type="text" class="formTextbox" tabindex="-1" readonly="readonly" value="@standardPaymentOption.name" /></td>
-        </tr>
-        <tr>
-            <td class="label">&nbsp;</td>
-            <td class="input"><input name="txtTranslatedName" type="text" class="formTextbox" value="@(translatedPaymentOption != null ? translatedPaymentOption.name : "")" @(languageId == 0 ? Html.Raw("readonly='readonly'") : Html.Raw("")) /></td>
-        </tr>
-        <tr>
-            <td class="label">@(value_added_tax_tt + ":")</td>
-            <td class="input">
-                <select name="selectValueAddedTax" class="formSelect" @(languageId == 0 ? Html.Raw("disabled='disabled'") : Html.Raw(""))>
+            </div>
+        </div>
+        <div class="annytab-basic-space"></div>
+        <div class="annytab-input-form-row">
+            <div class="annytab-input-form-column-label">@(name_tt + ":")</div>
+            <div class="annytab-input-form-column-input"><input name="txtStandardName" type="text" class="annytab-form-textbox" tabindex="-1" readonly="readonly" value="@standardPaymentOption.name" /></div>
+        </div>
+        <div class="annytab-input-form-row">
+            <div class="annytab-input-form-column-label">&nbsp;</div>
+            <div class="annytab-input-form-column-input"><input name="txtTranslatedName" type="text" class="annytab-form-textbox" value="@(translatedPaymentOption != null ? translatedPaymentOption.name : "")" @(languageId == 0 ? Html.Raw("readonly='readonly'") : Html.Raw("")) /></div>
+        </div>
+        <div class="annytab-input-form-row">
+            <div class="annytab-input-form-column-label">@(value_added_tax_tt + ":")</div>
+            <div class="annytab-input-form-column-input">
+                <select name="selectValueAddedTax" class="annytab-form-select" @(languageId == 0 ? Html.Raw("disabled='disabled'") : Html.Raw(""))>
                     @foreach (ValueAddedTax valueAddedTax in valueAddedTaxes)
                     {
                         <option value="@valueAddedTax.id.ToString()" @(translatedPaymentOption != null && translatedPaymentOption.value_added_tax_id == valueAddedTax.id ? Html.Raw("selected='selected'") : Html.Raw(""))>@((valueAddedTax.value * 100).ToString() + "%")</option>
                     }
                 </select>
-            </td>
-        </tr>
-        <tr>
-            <td class="label">@(account_code_tt + ":")</td>
-            <td class="input"><input name="txtAccountCode" type="text" class="formTextbox" value="@(translatedPaymentOption != null ? translatedPaymentOption.account_code : "")" @(languageId == 0 ? Html.Raw("readonly='readonly'") : Html.Raw("")) /></td>
-        </tr>
-        <tr>
-            <td class="label">@(inactive_tt + ":")</td>
-            <td class="input"><input name="cbInactive" type="checkbox" value="true" @(translatedPaymentOption != null && translatedPaymentOption.inactive == true ? Html.Raw("checked='checked'") : Html.Raw("")) @(languageId == 0 ? Html.Raw("disabled='disabled'") : Html.Raw("")) /></td>
-        </tr>
-    </table>
+            </div>
+        </div>
+        <div class="annytab-input-form-row">
+            <div class="annytab-input-form-column-label">@(account_code_tt + ":")</div>
+            <div class="annytab-input-form-column-input"><input name="txtAccountCode" type="text" class="annytab-form-textbox" value="@(translatedPaymentOption != null ? translatedPaymentOption.account_code : "")" @(languageId == 0 ? Html.Raw("readonly='readonly'") : Html.Raw("")) /></div>
+        </div>
+        <div class="annytab-input-form-row">
+            <div class="annytab-input-form-column-label">@(inactive_tt + ":")</div>
+            <div class="annytab-input-form-column-input"><input name="cbInactive" type="checkbox" class="annytab-form-checkbox" value="true" @(translatedPaymentOption != null && translatedPaymentOption.inactive == true ? Html.Raw("checked='checked'") : Html.Raw("")) @(languageId == 0 ? Html.Raw("disabled='disabled'") : Html.Raw("")) /></div>
+        </div>
+    </div>
 
-    // Save form button
+    @*Button panel*@
     <div style="display:block;border:1px solid #cccccc;margin:20px 0px 0px 0px;border-radius:4px;">
-        <input id="btnSave" type="submit" value="@translate_tt" @(languageId == 0 ? Html.Raw("disabled='disabled'") : Html.Raw("")) />
-        <input data-id="deletePost" type="button" value="@delete_tt" @(Html.Raw("data-url='/admin_payment_options/delete/" + standardPaymentOption.id.ToString() + "?returnUrl=" + Server.UrlEncode(returnUrl) + "&lang=" + languageId.ToString() + "'")) @(languageId == 0 ? Html.Raw("disabled='disabled'") : Html.Raw("")) />
-        <input type="button" value="@cancel_tt" onclick="@Html.Raw("location.href='/admin_payment_options" + returnUrl + "'")" />
+        <input id="btnSave" type="submit" class="annytab-form-button" value="@translate_tt" @(languageId == 0 ? Html.Raw("disabled='disabled'") : Html.Raw("")) />
+        <input data-id="deletePost" type="button" class="annytab-form-button" value="@delete_tt" @(Html.Raw("data-url='/admin_payment_options/delete/" + standardPaymentOption.id.ToString() + "?returnUrl=" + Server.UrlEncode(returnUrl) + "&lang=" + languageId.ToString() + "'")) @(languageId == 0 ? Html.Raw("disabled='disabled'") : Html.Raw("")) />
+        <input type="button" class="annytab-form-button" value="@cancel_tt" onclick="@Html.Raw("location.href='/admin_payment_options" + returnUrl + "'")" />
     </div>
 }
 

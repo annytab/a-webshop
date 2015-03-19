@@ -73,6 +73,7 @@
     Domain domain = ViewBag.CurrentDomain;
     Language currentLanguage = Language.GetOneById(domain.back_end_language);
     CultureInfo cultureInfo = Tools.GetCultureInfo(currentLanguage);
+    KeyStringList tt = ViewBag.TranslatedTexts;
 
     // Count the number of posts and get them
     Int32 count = 0;
@@ -103,7 +104,6 @@
     numberOfPages = numberOfPages == 0 ? 1 : numberOfPages;
 
     // Get translated texts
-    KeyStringList tt = ViewBag.TranslatedTexts;
     string products_tt = tt.Get("products");
     string order_statistics_tt = tt.Get("order_statistics");
     string product_code_tt = tt.Get("product_code");
@@ -124,30 +124,25 @@
     ViewBag.Title = products_tt + " " + period;
 }
 
+@*Title*@
 <h1>@ViewBag.Title</h1>
-<div id="menu" class="formMenuBar">
-    <input type="button" value="@order_statistics_tt" onclick="location.href='@Url.Action("index", "admin_default", new { cc = countryCode, gb = groupBy, pz = pageSize })'" />
+
+@*Menu*@
+<div class="annytab-form-menubar">
+    <input type="button" class="annytab-form-button" value="@order_statistics_tt" onclick="location.href='@Url.Action("index", "admin_default", new { cc = countryCode, gb = groupBy, pz = pageSize })'" />
 </div>
 
-<div class="listContainer">
-    <table class="listTable" style="width:600px;">
-        <tr>
-            <th class="listTh" style="text-align:left;width:200px;">@product_code_tt</th>
-            <th class="listTh" style="text-align:left;width:300px;">@name_tt</th>
-            <th class="listTh" style="text-align:center;width:100px;">@quantity_tt</th>
-        </tr>
+@*List of products*@
+<div class="annytab-list-container">
+    <div class="annytab-list-table" style="width:624px;">
+        <div class="annytab-list-row">
+            <div class="annytab-list-column-head" style="text-align:left;width:200px;">@product_code_tt</div>
+            <div class="annytab-list-column-head" style="text-align:left;width:300px;">@name_tt</div>
+            <div class="annytab-list-column-head" style="text-align:center;width:100px;">@quantity_tt</div>
+        </div>
 
         @for (int i = 0; i < productSaleDataPosts.Count; i++)
         {
-            if (i % 2 != 0)
-            {
-                @:<tr class="annytab-list-main-row">
-            }
-            else
-            {
-                @:<tr class="annytab-list-alt-row">
-            }
-            
             @* Get the product name array *@
             string[] productName = productSaleDataPosts[i].product_name.Split(',');
 
@@ -158,14 +153,14 @@
                 productString += productName[j] + "<br />";
             }
 
-            @*Columns*@
-            @:<td style="text-align:left;">@productSaleDataPosts[i].product_code</td>
-            @:<td style="text-align:left;">@Html.Raw(productString)</td>
-            @:<td style="text-align:center;">@productSaleDataPosts[i].quantity.ToString("##,0.##", cultureInfo)</td>
-            @:</tr>
+            @:<div class="@(i % 2 != 0 ? "annytab-list-row-main" : "annytab-list-row-alt")">
+            @:<div class="annytab-list-column" style="text-align:left;width:200px;">@productSaleDataPosts[i].product_code</div>
+            @:<div class="annytab-list-column" style="text-align:left;width:300px;">@Html.Raw(productString)</div>
+            @:<div class="annytab-list-column" style="text-align:center;width:100px;">@productSaleDataPosts[i].quantity.ToString("##,0.##", cultureInfo)</div>
+            @:</div>
         }
-    </table>
+    </div>
 </div>
 
-@* Paging menu *@
+@*Paging menu*@
 @Html.Partial("/Views/shared_admin/_paging_menu.cshtml")

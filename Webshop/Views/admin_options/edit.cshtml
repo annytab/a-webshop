@@ -6,11 +6,11 @@
     // Get form data
     OptionType optionType = ViewBag.OptionType;
     List<Option> options = ViewBag.Options;
+    KeyStringList tt = ViewBag.TranslatedTexts;
     string returnUrl = ViewBag.ReturnUrl;
     string error_message = ViewBag.ErrorMessage != null ? ViewBag.ErrorMessage : string.Empty;
     
     // Get translated texts
-    KeyStringList tt = ViewBag.TranslatedTexts;
     string product_options_tt = tt.Get("product_options");
     string new_tt = tt.Get("new");
     string edit_tt = tt.Get("edit");
@@ -33,75 +33,82 @@
     }
 }
 
+@*Title*@
 <h1>@ViewBag.Title</h1>
+
 @*Menu*@
 @Html.Partial("~/Views/admin_options/_form_menu.cshtml")
 
 @*Main form*@
 @using (Html.BeginForm("edit", "admin_options", FormMethod.Post))
 {
+    @*Hidden data*@
     <input name="returnUrl" type="hidden" value="@returnUrl" />
-    <div id="divErrors" class="formErrorMessage" style="@(error_message != "" ? "display:block;" : "display:none;")">@Html.Raw(error_message)</div>
-    <table style="width:100%;">
-        <tr style="@(optionType.id != 0 ? "display:table-row;" : "display:none;")">
-            <td class="label">@(id_tt + ":")</td>
-            <td class="input"><input name="txtId" type="text" class="formTextbox" tabindex="-1" readonly="readonly" value="@optionType.id" /></td>
-        </tr>
-        <tr>
-            <td class="label">@(title_tt + ":")</td>
-            <td class="input"><input id="txtTitle" name="txtTitle" type="text" class="formTextbox" value="@optionType.title" /></td>
-        </tr>
-        <tr>
-            <td class="label">@google_name_tt</td>
-            <td class="input">
-                <select name="selectGoogleName" class="formSelect">
+    <div class="annytab-form-error-message" style="@(error_message != "" ? "display:block;" : "display:none;")">@Html.Raw(error_message)</div>
+    
+    @*Option type input form*@
+    <div class="annytab-input-form-table">
+        <div class="annytab-input-form-row" style="@(optionType.id != 0 ? "display:table-row;" : "display:none;")">
+            <div class="annytab-input-form-column-label">@(id_tt + ":")</div>
+            <div class="annytab-input-form-column-input"><input name="txtId" type="text" class="annytab-form-textbox" tabindex="-1" readonly="readonly" value="@optionType.id" /></div>
+        </div>
+        <div class="annytab-input-form-row">
+            <div class="annytab-input-form-column-label">@(title_tt + ":")</div>
+            <div class="annytab-input-form-column-input"><input id="txtTitle" name="txtTitle" type="text" class="annytab-form-textbox" value="@optionType.title" /></div>
+        </div>
+        <div class="annytab-input-form-row">
+            <div class="annytab-input-form-column-label">@google_name_tt</div>
+            <div class="annytab-input-form-column-input">
+                <select name="selectGoogleName" class="annytab-form-select">
                     <option value="" @(optionType.google_name == "" ? Html.Raw("selected='selected'") : Html.Raw(""))>@("-- " + no_choice_tt + " --")</option>
                     <option value="g:color" @(optionType.google_name == "g:color" ? Html.Raw("selected='selected'") : Html.Raw(""))>g:color</option>
                     <option value="g:material" @(optionType.google_name == "g:material" ? Html.Raw("selected='selected'") : Html.Raw(""))>g:material</option>
                     <option value="g:pattern" @(optionType.google_name == "g:pattern" ? Html.Raw("selected='selected'") : Html.Raw(""))>g:pattern</option>
                     <option value="g:size" @(optionType.google_name == "g:size" ? Html.Raw("selected='selected'") : Html.Raw(""))>g:size</option>
                 </select>
-            </td>
-        </tr>
-    </table>
+            </div>
+        </div>
+    </div>
+    
+    <div class="annytab-basic-space"></div>
 
-    // Option input table
-    <div class="inputTableContainer" style="margin:20px 0px 0px 0px;">
-        <table id="inputTable" class="inputTable" style="width:288px;">
-            <tr style="border-bottom:2px solid #ffffff;">
-                <th style="display:none;">@id_tt</th>
-                <th class="inputTableTh" style="width:40px;">&nbsp;</th>
-                <th class="inputTableTh" style="width:100px;">@title_tt</th>
-                <th class="inputTableTh" style="width:100px;">@product_suffix_tt</th>
-                <th class="inputTableTh" style="min-width:48px;text-align:center;">&nbsp;</th>
-            </tr>
+    @*Options input form*@
+    <div class="annytab-sortable-container">
+        <div id="sortableTable" class="annytab-sortable-table" style="width:510px;">
+            <div class="annytab-sortable-row">
+                <div style="display:none;">@id_tt</div>
+                <div class="annytab-sortable-column-head" style="width:30px;">&nbsp;</div>
+                <div class="annytab-sortable-column-head" style="width:200px;">@title_tt</div>
+                <div class="annytab-sortable-column-head" style="width:200px;">@product_suffix_tt</div>
+                <div class="annytab-sortable-column-head" style="text-align:center;width:56px;">&nbsp;</div>
+            </div>
             @for (int i = 0; i < options.Count; i++)
             {
-                <tr>
-                    <td style="display:none;"><input name="optionId" type="hidden" tabindex="-1" class="inputTableTextbox" value="@options[i].id" /></td>
-                    <td><img src="/Content/images/annytab_design/drag_icon.png" alt="Drag icon" style="width:20px;height:20px;padding:5px 4px 0px 4px;cursor:move;" /></td>
-                    <td><input name="optionTitle" type="text" class="inputTableTextbox" value="@options[i].title" /></td>
-                    <td><input name="optionSuffix" type="text" class="inputTableTextbox" value="@options[i].product_code_suffix" /></td>
-                    <td><input data-id="addRow" type="button" class="inputTableAddRemoveButton" value="+" /><input data-id="deleteRow" type="button" class="inputTableAddRemoveButton" value="-" /></td>
-                </tr>
+                <div class="annytab-sortable-row">
+                    <div style="display:none;"><input name="optionId" type="hidden" tabindex="-1" value="@options[i].id" /></div>
+                    <div class="annytab-sortable-column" style="text-align:center;width:30px;"><img src="/Content/images/annytab_design/drag_icon.png" alt="Icon" style="width:20px;height:20px;cursor:move;" /></div>
+                    <div class="annytab-sortable-column" style="width:200px;"><input name="optionTitle" type="text" class="annytab-sortable-textbox" value="@options[i].title" /></div>
+                    <div class="annytab-sortable-column" style="width:200px;"><input name="optionSuffix" type="text" class="annytab-sortable-textbox" value="@options[i].product_code_suffix" /></div>
+                    <div class="annytab-sortable-column" style="text-align:center;width:56px;"><input data-id="addRow" type="button" class="annytab-sortable-button" value="+" /><input data-id="deleteRow" type="button" class="annytab-sortable-button" value="-" /></div>
+                </div>
             }
-            <tr>
-                <td style="display:none;"><input name="optionId" type="hidden" tabindex="-1" class="inputTableTextbox" value="0" /></td>
-                <td><img src="/Content/images/annytab_design/drag_icon.png" alt="Drag icon" style="width:20px;height:20px;padding:5px 4px 0px 4px;cursor:move;" /></td>
-                <td><input name="optionTitle" type="text" class="inputTableTextbox" /></td>
-                <td><input name="optionSuffix" type="text" class="inputTableTextbox" /></td>
-                <td><input data-id="addRow" type="button" class="inputTableAddRemoveButton" value="+" /><input data-id="deleteRow" type="button" class="inputTableAddRemoveButton" value="-" /></td>
-            </tr>
-        </table>
+            <div class="annytab-sortable-row">
+                <div style="display:none;"><input name="optionId" type="hidden" tabindex="-1" value="0" /></div>
+                <div class="annytab-sortable-column" style="text-align:center;width:30px;"><img src="/Content/images/annytab_design/drag_icon.png" alt="Icon" style="width:20px;height:20px;cursor:move;" /></div>
+                <div class="annytab-sortable-column" style="width:200px;"><input name="optionTitle" type="text" class="annytab-sortable-textbox" /></div>
+                <div class="annytab-sortable-column" style="width:200px;"><input name="optionSuffix" type="text" class="annytab-sortable-textbox" /></div>
+                <div class="annytab-sortable-column" style="text-align:center;width:56px;"><input data-id="addRow" type="button" class="annytab-sortable-button" value="+" /><input data-id="deleteRow" type="button" class="annytab-sortable-button" value="-" /></div>
+            </div>
+        </div>
     </div>
 
-    // Save form button
+    @*Button panel*@
     <div style="display:block;border:1px solid #cccccc;margin:20px 0px 0px 0px;border-radius:4px;">
-        <input id="btnSave" type="submit" value="@save_tt" />
-        <input type="button" value="@cancel_tt" onclick="@Html.Raw("location.href='/admin_options" + returnUrl + "'")" />
+        <input id="btnSave" type="submit" class="annytab-form-button" value="@save_tt" />
+        <input type="button" class="annytab-form-button" value="@cancel_tt" onclick="@Html.Raw("location.href='/admin_options" + returnUrl + "'")" />
     </div>
 }
 
 @section scripts {
-    <script>$("#txtTitle").focus();</script>
+    <script type="text/javascript">$("#txtTitle").focus();</script>
 }

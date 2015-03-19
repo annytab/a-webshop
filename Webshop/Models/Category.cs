@@ -1148,7 +1148,8 @@ public class Category
     public static string GetValidSortField(string sortField)
     {
         // Make sure that the sort field is valid
-        if (sortField != "id" && sortField != "date_added" && sortField != "page_views" && sortField != "title")
+        if (sortField != "id" && sortField != "date_added" && sortField != "page_views" 
+            && sortField != "title" && sortField != "inactive")
         {
             sortField = "id";
         }

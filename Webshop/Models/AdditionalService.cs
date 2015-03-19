@@ -797,7 +797,7 @@ public class AdditionalService
     public static string GetValidSortField(string sortField)
     {
         // Make sure that the sort field is valid
-        if (sortField != "id" && sortField != "product_code" && sortField != "name" && sortField != "fee")
+        if (sortField != "id" && sortField != "product_code" && sortField != "name" && sortField != "fee" && sortField != "inactive")
         {
             sortField = "id";
         }

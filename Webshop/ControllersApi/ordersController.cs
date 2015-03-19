@@ -33,6 +33,10 @@ namespace Annytab.Webshop.ControllersApi
             {
                 return Request.CreateResponse<string>(HttpStatusCode.BadRequest, "The customer does not exist");
             }
+            else if (Currency.MasterPostExists(post.currency_code) == false)
+            {
+                return Request.CreateResponse<string>(HttpStatusCode.BadRequest, "The currency does not exist");
+            }
             else if (Country.MasterPostExists(post.invoice_country_id) == false)
             {
                 return Request.CreateResponse<string>(HttpStatusCode.BadRequest, "The invoice country does not exist");
@@ -108,6 +112,10 @@ namespace Annytab.Webshop.ControllersApi
             else if (Customer.MasterPostExists(post.customer_id) == false)
             {
                 return Request.CreateResponse<string>(HttpStatusCode.BadRequest, "The customer does not exist");
+            }
+            else if (Currency.MasterPostExists(post.currency_code) == false)
+            {
+                return Request.CreateResponse<string>(HttpStatusCode.BadRequest, "The currency does not exist");
             }
             else if (Country.MasterPostExists(post.invoice_country_id) == false)
             {

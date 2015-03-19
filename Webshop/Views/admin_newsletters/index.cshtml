@@ -46,52 +46,46 @@
     ViewBag.Title = newsletter_tt + " - " + list_tt.ToLower();
 }
 
+@*Title*@
 <h1>@ViewBag.Title</h1>
+
+@*Menu*@
 @Html.Partial("~/Views/admin_newsletters/_form_menu.cshtml")
 
-@* List of newsletters *@
-<div class="listContainer">
-    <table class="listTable" style="width:900px;">
-        <tr>
-            <th class="listTh" style="text-align:center;width:100px;">@id_tt</th>
-            <th class="listTh" style="text-align:center;width:100px;">@language_tt</th>
-            <th class="listTh" style="text-align:left;width:200px;">@title_tt</th>
-            <th class="listTh" style="text-align:left;width:200px;">@sent_tt</th>
-            <th class="listTh" style="text-align:center;width:100px;">@edit_tt</th>
-            <th class="listTh" style="text-align:center;width:100px;">@send_tt</th>
-            <th class="listTh" style="text-align:center;width:100px;">@delete_tt</th>
-        </tr>
+@*List of newsletters*@
+<div class="annytab-list-container">
+    <div class="annytab-list-table" style="width:956px;">
+        <div class="annytab-list-row">
+            <div class="annytab-list-column-head" style="text-align:center;width:100px;">@id_tt</div>
+            <div class="annytab-list-column-head" style="text-align:center;width:100px;">@language_tt</div>
+            <div class="annytab-list-column-head" style="text-align:left;width:200px;">@title_tt</div>
+            <div class="annytab-list-column-head" style="text-align:left;width:200px;">@sent_tt</div>
+            <div class="annytab-list-column-head" style="text-align:center;width:100px;">@edit_tt</div>
+            <div class="annytab-list-column-head" style="text-align:center;width:100px;">@send_tt</div>
+            <div class="annytab-list-column-head" style="text-align:center;width:100px;">@delete_tt</div>
+        </div>
 
         @for (int i = 0; i < newsletters.Count; i++)
         {
             // Get the language
             Language language = Language.GetOneById(newsletters[i].language_id, domain.back_end_language);
             
-            if (i % 2 != 0)
-            {
-                @:<tr class="annytab-list-main-row">
-            }
-            else
-            {
-                @:<tr class="annytab-list-alt-row">
-            }
-
-            @*Columns*@
-            @:<td style="text-align:center;">@newsletters[i].id.ToString()</td>
-            @:<td style="text-align:center;">@(language.language_code.ToLower() + "-" + language.country_code.ToUpper())</td>
-            @:<td style="text-align:left;">@newsletters[i].title</td>
-            @:<td style="text-align:left;">@(newsletters[i].sent_date > minDate ? newsletters[i].sent_date.ToString() : "-")</td>
-            @:<td style="text-align:center;"><input type="button" value="@edit_tt" onclick="location.href='@Url.Action("edit", "admin_newsletters", new { id = newsletters[i].id, returnUrl = queryString })'" /></td>
-            @:<td style="text-align:center;"><input type="button" value="@send_tt" onclick="location.href='@Url.Action("send_newsletter", "admin_newsletters", new { id = newsletters[i].id, returnUrl = queryString })'" /></td>
-            @:<td style="text-align:center;"><input data-id="deletePost" type="button" value="@delete_tt" @(Html.Raw("data-url='/admin_newsletters/delete/" + newsletters[i].id + "?returnUrl=" + Server.UrlEncode(queryString) + "'")) /></td>
-            @:</tr>
+            @:<div class="@(i % 2 != 0 ? "annytab-list-row-main" : "annytab-list-row-alt")">
+            @:<div class="annytab-list-column" style="text-align:center;width:100px;">@newsletters[i].id.ToString()</div>
+            @:<div class="annytab-list-column" style="text-align:center;width:100px;">@(language.language_code.ToLower() + "-" + language.country_code.ToUpper())</div>
+            @:<div class="annytab-list-column" style="text-align:left;width:200px;">@newsletters[i].title</div>
+            @:<div class="annytab-list-column" style="text-align:left;width:200px;">@(newsletters[i].sent_date > minDate ? newsletters[i].sent_date.ToString() : "-")</div>
+            @:<div class="annytab-list-column" style="text-align:center;width:100px;"><input type="button" class="annytab-form-button" value="@edit_tt" onclick="location.href='@Url.Action("edit", "admin_newsletters", new { id = newsletters[i].id, returnUrl = queryString })'" /></div>
+            @:<div class="annytab-list-column" style="text-align:center;width:100px;"><input type="button" class="annytab-form-button" value="@send_tt" onclick="location.href='@Url.Action("send_newsletter", "admin_newsletters", new { id = newsletters[i].id, returnUrl = queryString })'" /></div>
+            @:<div class="annytab-list-column" style="text-align:center;width:100px;"><input data-id="deletePost" type="button" class="annytab-form-button" value="@delete_tt" @(Html.Raw("data-url='/admin_newsletters/delete/" + newsletters[i].id + "?returnUrl=" + Server.UrlEncode(queryString) + "'")) /></div>
+            @:</div>
         }
-    </table>
+    </div>
 </div>
 
-@* Paging menu *@
+@*Paging menu*@
 @Html.Partial("/Views/shared_admin/_paging_menu.cshtml")
 
 @section scripts {
-    <script>$("#txtSearch").focus();</script>
+    <script type="text/javascript">$("#txtSearch").focus();</script>
 }

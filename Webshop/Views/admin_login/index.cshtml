@@ -16,21 +16,38 @@
     ViewBag.Title = log_in_tt;
 }
 
+@*Title*@
 <h1>@ViewBag.Title</h1>
+
+@*Main form*@
 @using(Html.BeginForm("login", "admin_login", FormMethod.Post))
 {
-    <div id="divErrors" class="formErrorMessage" style="@(error_message != "" ? "display:block;" : "display:none;")">@Html.Raw(error_message)</div>
-    <div style="margin:5px 0px 5px 0px;">
-        <div style="display:inline-block;width:200px">@(user_name_tt + ":")</div><input id="txtUserName" name="txtUserName" type="text" class="textbox" value="@admin.admin_user_name" />
-    </div>
-    <div style="margin:5px 0px 5px 0px;">
-        <div style="display:inline-block;width:200px;">@(password_tt + ":")</div><input name="txtPassword" type="password" class="textbox" value="" />
-    </div>
-    <div style="margin:5px 0px 5px 0px;">
-        <input id="btnLogin" type="submit" value="@log_in_tt" class="button" />
+    @*Hidden data*@
+    <div class="annytab-form-error-message" style="@(error_message != "" ? "display:block;" : "display:none;")">@Html.Raw(error_message)</div>
+    
+    @*Input form*@
+    <div style="border:1px solid #cccccc;border-radius:4px;padding:3px 0px 0px 0px;">
+        <div class="annytab-input-form-table">
+            <div class="annytab-input-form-row">
+                <div class="annytab-input-form-column-label">@(user_name_tt + ":")</div>
+                <div class="annytab-input-form-column-input"><input id="txtUserName" name="txtUserName" type="text" class="annytab-form-textbox" value="@admin.admin_user_name" /></div>
+            </div>
+            <div class="annytab-input-form-row">
+                <div class="annytab-input-form-column-label">@(password_tt + ":")</div>
+                <div class="annytab-input-form-column-input"><input name="txtPassword" type="password" class="annytab-form-textbox" value="" /></div>
+            </div>
+            <div class="annytab-input-form-row">
+                <div class="annytab-input-form-column-label"><div style="margin-top:3px;"></div></div>
+                <div class="annytab-input-form-column-input"><div style="margin-top:3px;"></div></div>
+            </div>
+            <div class="annytab-input-form-row" style="background-color:#efefef;border-top:1px solid #cccccc;">
+                <div class="annytab-input-form-column-label"><input id="btnLogin" type="submit" class="annytab-basic-button" style="padding:5px 20px 5px 20px;margin-top:5px;" value="@log_in_tt" /></div>
+                <div class="annytab-input-form-column-input"></div>
+            </div>
+        </div>
     </div>
 }
 
 @section scripts {
-    <script>$("#txtUserName").focus();</script>
+    <script type="text/javascript">$("#txtUserName").focus();</script>
 }

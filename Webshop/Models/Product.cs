@@ -1882,7 +1882,7 @@ public class Product
         // Make sure that the sort field is valid
         if (sortField != "id" && sortField != "unit_price" && sortField != "title" && sortField != "page_views"
             && sortField != "rating" && sortField != "buys" && sortField != "added_in_basket"
-            && sortField != "date_added")
+            && sortField != "date_added" && sortField != "inactive")
         {
             sortField = "id";
         }

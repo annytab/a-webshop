@@ -25,6 +25,7 @@
     ViewBag.Title = domain_tt + " - " + images_tt.ToLower();
 }
 
+@*Title*@
 <h1>@ViewBag.Title</h1>
 
 @*Menu*@
@@ -33,46 +34,48 @@
 @*Main form*@
 @using (Html.BeginForm("images", "admin_domains", FormMethod.Post, new { enctype = "multipart/form-data" }))
 {
+    @*Hidden data*@
     <input name="returnUrl" type="hidden" value="@returnUrl" />
     <input type="hidden" name="hiddenDomainId" value="@domain.id" />
+    
+    @*Upload images*@
     <div style="padding:2px;margin:2px;">
         <div style="font-size:16px;font-weight:bold;line-height:18px;">@(background_image_tt + " [jpg, 1 MB]")</div>
-        <div style="margin:10px 0px 0px 0px;"><input id="uploadBackgroundImage" name="background_image" data-id="previewDomainImage" data-img="0" type="file" class="formUpload" accept="image/jpeg" /></div>
+        <div style="margin:10px 0px 0px 0px;"><input id="uploadBackgroundImage" name="background_image" data-id="previewDomainImage" data-img="0" type="file" class="annytab-form-upload" accept="image/jpeg" /></div>
         <div style="margin:10px 0px 0px 2px;"><img id="0" src="@imageUrls.Get("background_image")" alt="@background_image_tt" style="max-width:100%;border:1px solid #cccccc;" /></div>
 
         <div style="margin-bottom:10px;"></div>
 
         <div style="font-size:16px;font-weight:bold;line-height:18px;">@(logotype_tt + " (" + default_tt.ToLower() + ") [jpg, 1 MB]")</div>
-        <div style="margin:10px 0px 0px 0px;"><input name="default_logotype" data-id="previewDomainImage" data-img="1" type="file" class="formUpload" accept="image/jpeg" /></div>
+        <div style="margin:10px 0px 0px 0px;"><input name="default_logotype" data-id="previewDomainImage" data-img="1" type="file" class="annytab-form-upload" accept="image/jpeg" /></div>
         <div style="margin:10px 0px 0px 2px;"><img id="1" src="@imageUrls.Get("default_logotype")" alt="@logotype_tt" style="max-width:100%;border:1px solid #cccccc;" /></div>
 
         <div style="margin-bottom:10px;"></div>
 
         <div style="font-size:16px;font-weight:bold;line-height:18px;">@(logotype_tt + " (" + mobile_tt.ToLower() + ") [jpg, 1 MB]")</div>
-        <div style="margin:10px 0px 0px 0px;"><input name="mobile_logotype" data-id="previewDomainImage" data-img="2" type="file" class="formUpload" accept="image/jpeg" /></div>
+        <div style="margin:10px 0px 0px 0px;"><input name="mobile_logotype" data-id="previewDomainImage" data-img="2" type="file" class="annytab-form-upload" accept="image/jpeg" /></div>
         <div style="margin:10px 0px 0px 2px;"><img id="2" src="@imageUrls.Get("mobile_logotype")" alt="@logotype_tt" style="max-width:100%;border:1px solid #cccccc;" /></div>
 
         <div style="margin-bottom:10px;"></div>
 
         <div style="font-size:16px;font-weight:bold;line-height:18px;">@(big_tt + " " + icon_tt.ToLower() + " [512x512, jpg, 1 MB]")</div>
-        <div style="margin:10px 0px 0px 0px;"><input name="big_icon" data-id="previewDomainImage" data-img="3" type="file" class="formUpload" accept="image/jpeg" /></div>
+        <div style="margin:10px 0px 0px 0px;"><input name="big_icon" data-id="previewDomainImage" data-img="3" type="file" class="annytab-form-upload" accept="image/jpeg" /></div>
         <div style="margin:10px 0px 0px 2px;"><img id="3" src="@imageUrls.Get("big_icon")" alt="@(big_tt + " " + icon_tt.ToLower())" style="max-width:100%;border:1px solid #cccccc;" /></div>
 
         <div style="margin-bottom:10px;"></div>
 
         <div style="font-size:16px;font-weight:bold;line-height:18px;">@(small_tt + " " + icon_tt.ToLower() + " [32x32, jpg, 1 MB]")</div>
-        <div style="margin:10px 0px 0px 0px;"><input name="small_icon" data-id="previewDomainImage" data-img="4" type="file" class="formUpload" accept="image/jpeg" /></div>
+        <div style="margin:10px 0px 0px 0px;"><input name="small_icon" data-id="previewDomainImage" data-img="4" type="file" class="annytab-form-upload" accept="image/jpeg" /></div>
         <div style="margin:10px 0px 0px 2px;"><img id="4" src="@imageUrls.Get("small_icon")" alt="@(small_tt + " " + icon_tt.ToLower())" style="max-width:100%;border:1px solid #cccccc;" /></div>
     </div>
     
-    // Save form button
+    @*Button panel*@
     <div style="display:block;border:1px solid #cccccc;margin:20px 0px 0px 0px;border-radius:4px;">
-        <input id="btnSave" type="submit" value="@save_tt" />
-        <input type="button" value="@cancel_tt" onclick="@Html.Raw("location.href='/admin_domains" + returnUrl + "'")" />
+        <input id="btnSave" type="submit" class="annytab-form-button" value="@save_tt" />
+        <input type="button" class="annytab-form-button" value="@cancel_tt" onclick="@Html.Raw("location.href='/admin_domains" + returnUrl + "'")" />
     </div>
-
 }
 
 @section scripts {
-    <script>$("#uploadBackgroundImage").focus();</script>
+    <script type="text/javascript">$("#uploadBackgroundImage").focus();</script>
 }

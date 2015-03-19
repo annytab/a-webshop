@@ -19,59 +19,63 @@ input[type="submit"]{cursor:pointer;}
 .annytab-header-title{font-size:22px;color:#808080;cursor:pointer;text-shadow:1px 1px 2px #ffffff;}
 .annytab-header-title:hover{text-decoration:none;color:#000000;}
 .annytab-basic-container{clear:both;padding:0px;margin:20px 0px 10px 0px;text-align:center;background-color:#cccccc;box-shadow:0px 0px 10px #000000;}
+.annytab-basic-button{display:block;border:1px solid #9e9e9e;background-image:url('/Content/images/annytab_design/gray_gradient_button.png');font-weight:bold;color:#808080;padding:2px 5px 2px 5px;margin:0px 0px 5px 0px;cursor:pointer;border-radius:4px;text-shadow:1px 1px 1px #ffffff;}
+.annytab-basic-button:hover{background-image:url('/Content/images/annytab_design/gray_gradient_button_hover.png');text-shadow:none;text-decoration:none;}
+.annytab-basic-line{display:block;clear:both;border-bottom:1px solid #cccccc;margin:10px 0px 10px 0px;}
+.annytab-basic-space{display:block;clear:both;margin-bottom:20px;}
 
-.listContainer{width:100%;background-color:#cccccc;box-shadow:0px 0px 10px #000000;overflow:auto;}
-.listTable{padding:2px;margin:4px;border-radius:4px;border-collapse:collapse;}
-.listTh{height:18px;color:#ffffff;border-bottom:2px solid #9e9e9e;font-size:13px;text-shadow:1px 1px 2px #000000;}
-.listTextbox{height:16px;padding:0px;margin:0px 2px 0px 2px;font-family:Arial;border:1px solid #cccccc;}
-.annytab-list-main-row{background-color:#ffffff;cursor:default;}
-.annytab-list-main-row.highlight{background-color:#BCD5E0;}
-.annytab-list-alt-row{background-color:#f0f0f0;cursor:default;}
-.annytab-list-alt-row.highlight{background-color:#BCD5E0;}
+/* List of posts in table */
+.annytab-list-container{display:block;padding:5px;background-color:#cccccc;box-shadow:0px 0px 10px #000000;overflow:auto;}
+.annytab-list-table{display:block;}
+.annytab-list-row{display:table-row;}
+.annytab-list-row-main{display:table-row;background-color:#ffffff;cursor:default;}
+.annytab-list-row-main.highlight{background-color:#BCD5E0;}
+.annytab-list-row-alt{display:table-row;background-color:#f0f0f0;cursor:default;}
+.annytab-list-row-alt.highlight{background-color:#BCD5E0;}
+.annytab-list-column-head{display:table-cell;padding:4px;background-image:url('/Content/images/annytab_design/gray-gradient_header.png');color:#3d3d3d;border-bottom:2px solid #9e9e9e;font-size:14px;line-height:18px;text-shadow:0px 1px 2px #ffffff;vertical-align:middle;}
+.annytab-list-column{display:table-cell;padding:4px;font-size:12px;line-height:12px;word-break:break-all;vertical-align:middle;}
 
-.inputTableContainer{width:100%;overflow:auto;}
-.inputTable{border-collapse:collapse;}
-.inputTableTh{background-image:url('/Content/images/annytab_design/gray-gradient_header.png');color:#3d3d3d;font-weight:normal;border:1px solid #cccccc;height:22px;font-size:12px;padding:0px 0px 0px 4px;text-shadow:1px 1px 2px #ffffff;}
-.inputTableTextbox{height:18px;padding:1px;margin:2px 4px 2px 0px;font-family:Arial;border:1px solid #cccccc;}
-.inputTableAddRemoveButton{display:inline;background-image:url('/Content/images/annytab_design/gray_gradient_button.png');height:20px;width:20px;border:1px solid #cccccc;padding:0px;margin:2px 0px 2px 4px;cursor:pointer;border-radius:4px;}
-.inputTableAddRemoveButton:hover{background-image:url('/Content/images/annytab_design/gray_gradient_button_hover.png');}
+/* Form input table */
+.annytab-input-form-table{display:table;width:100%;padding:0px;margin:0px;border-collapse:collapse;}
+.annytab-input-form-row{display:table-row;}
+.annytab-input-form-column-label{display:table-cell;vertical-align:middle;width:30%;padding-left:5px;}
+.annytab-input-form-column-input{display:table-cell;vertical-align:middle;width:70%;}
 
-.divTableOuterContainer{clear:both;width:100%;overflow:auto;}
-.divTableRowContainer{margin:0px 0px 0px 0px;padding:0px;}
-.divTableOuterTh{display:table-cell;vertical-align: middle;padding: 0px 4px 0px 4px;border-bottom:2px solid #808080;border-top:2px solid #dddddd;margin:0px;height:28px;}
-.divTableTh{display:table-cell;vertical-align:middle;background-image:url('/Content/images/annytab_design/gray-gradient_header.png');color:#3d3d3d;font-weight:normal;border:1px solid #cccccc;height:22px;font-size:12px;padding:0px 0px 0px 4px;text-shadow:1px 1px 2px #ffffff;}
-.divTableTr{display:table-row;}
-.divTableTd{display:table-cell;vertical-align:middle;}
+/* Form input */
+.annytab-form-menubar{display:block;margin:0px 0px 20px 0px;padding:5px;background-color:#cccccc;box-shadow:0px 0px 10px #000000;}
+.annytab-form-error-message{display:none;font-style:italic;color:#F00000;padding:4px;margin:0px 0px 20px 0px;border:1px dashed #880000;border-radius:4px;}
+.annytab-form-textbox{width:100%;max-width:400px;height:18px;line-height:18px;font-size:12px;padding:1px;margin:2px 2px 2px 2px;font-family:Arial;border:1px solid #9e9e9e;vertical-align:top;}
+.annytab-form-button{height:22px;background-image:url('/Content/images/annytab_design/gray_gradient_button.png');border:1px solid #9e9e9e;color:#000000;padding:2px 5px 2px 5px;margin:2px 2px 2px 2px;cursor:pointer;}
+.annytab-form-button:hover{border:1px solid #808080;}
+.annytab-form-select{width:100%;max-width:404px;height:22px;padding:1px;margin:2px;font-family:Arial;font-size:12px;cursor:pointer;border:1px solid #9e9e9e;vertical-align:top;}
+.annytab-form-upload{width:100%;max-width:400px;padding:1px;margin:2px;font-family:Arial;font-size:12px;border:0px;cursor:pointer;}
+.annytab-form-textarea{width:100%;max-width:400px;padding:1px;margin:2px;font-family:Arial;font-size:12px;border:1px solid #9e9e9e;}
+.annytab-form-checkbox{padding:1px;margin:6px 2px 6px 2px;font-family:Arial;font-size:12px;border:1px solid #9e9e9e;vertical-align:middle;cursor:pointer;}
+.annytab-form-radio{padding:1px;margin:6px 2px 6px 2px;font-family:Arial;font-size:12px;border:1px solid #9e9e9e;vertical-align:middle;cursor:pointer;}
+.annytab-form-label{display:inline-block;width:100%;max-width:400px;font-size:12px;padding:1px;margin:6px 2px 6px 2px;font-family:Arial;vertical-align:middle;}
 
-.annytab-other-image-square{display:inline-block;position:relative;max-width:128px;margin:4px;padding:1px;vertical-align:top;border:1px solid #cccccc;text-align:center;word-wrap:break-word;}
-.annytab-other-image-delete{position:absolute;width:16px;height:16px;top:-8px;right:-8px;cursor:pointer;}
+/* Sortable table */
+.annytab-sortable-container{display:block;padding:5px;background-color:#dddddd;border-radius:4px;overflow:auto;}
+.annytab-sortable-table{display:block;border-collapse:collapse;}
+.annytab-sortable-row{display:table-row;}
+.annytab-sortable-column-head{display:table-cell;color:#3d3d3d;font-size:12px;line-height:12px;padding:6px 4px 6px 2px;background-image:url('/Content/images/annytab_design/gray-gradient_header.png');border:1px solid #9e9e9e;text-shadow:1px 1px 2px #ffffff;text-align:left;}
+.annytab-sortable-column{display:table-cell;padding:4px 4px 0px 2px;font-size:12px;line-height:12px;word-break:break-all;vertical-align:middle;text-align:left;}
+.annytab-sortable-textbox{width:100%;height:18px;padding:1px;margin:0px;font-family:Arial;border:1px solid #9e9e9e;}
+.annytab-sortable-checkbox{padding:1px;margin:0px;border:1px solid #9e9e9e;vertical-align:middle;cursor:pointer;}
+.annytab-sortable-button{display:inline;background-image:url('/Content/images/annytab_design/gray_gradient_button.png');height:20px;width:20px;border:1px solid #9e9e9e;padding:0px;margin:0px 0px 0px 4px;cursor:pointer;border-radius:4px;}
+.annytab-sortable-button:hover{background-image:url('/Content/images/annytab_design/gray_gradient_button_hover.png');}
+.annytab-sortable-placeholder{background:#BCD5E0;height:28px;}
 
-.menuLink{display:block;border:1px solid #9e9e9e;background-image:url('/Content/images/annytab_design/gray_gradient_button.png');font-weight:bold;color:#808080;padding:2px 5px 2px 5px;margin:0px 0px 5px 0px;cursor:pointer;border-radius:4px;text-shadow:1px 1px 1px #ffffff;}
-.menuLink:hover{background-image:url('/Content/images/annytab_design/gray_gradient_button_hover.png');text-decoration:none;}
-
-.textbox{height:16px;line-height:14px;padding:1px;margin:0px 2px 0px 2px;font-family:Arial;}
-.textarea{padding:0px;margin:0px 2px 0px 2px;font-family:Arial;}
-
-.formMenuBar{display:block;margin:0px 0px 20px 0px;padding:5px 5px 5px 5px;background-color:#cccccc;box-shadow:0px 0px 10px #000000;}
-.formTextbox{width:100%;max-width:400px;height:18px;line-height:18px;font-size:12px;padding:1px;margin:0px 2px 0px 2px;font-family:Arial;border:1px solid #cccccc;}
-.formTextarea{width:100%;max-width:400px;padding:1px;margin:0px 2px 0px 2px;font-family:Arial;border:1px solid #cccccc;}
-.formSelect{width:100%;max-width:404px;height:24px;padding:1px;margin:0px 2px 0px 2px;font-family:Arial;cursor:pointer;}
-.formCheckbox{margin:0px;padding:0px;border:1px solid #3d3d3d;cursor:pointer;}
-.formUpload{padding:0px;max-width:400px;margin:0px 2px 0px 2px;font-family:Arial;border:0px;cursor:pointer;}
-.formErrorMessage{display:none;font-style:italic;color:#F00000;padding:4px;margin:0px 0px 20px 0px;border:1px dashed #880000;border-radius:4px;}
-.formHeading{padding:4px;font-weight:bold;font-size:16px;background-color:#cccccc;}
-
-.button{border:1px solid #9e9e9e;background-image:url('/Content/images/annytab_design/gray_gradient_button.png');font-size:12px;font-weight:bold;color:#808080;padding:2px 5px 2px 5px;margin:0px;cursor:pointer;border-radius:4px;text-shadow:1px 1px 1px #ffffff;}
-.button:hover{background-image:url('/Content/images/annytab_design/gray_gradient_button_hover.png');text-shadow:none;}
-
-.sortPlaceholder{background:#BCD5E0;height:24px;}
-.sortBigPlaceholder{background:#BCD5E0;height:28px;}
-
-.label{width:30%;}
-.input{width:70%;}
+/* Images */
+.annytab-image-outer-container{clear:both;width:100%;margin:0px;border:1px solid #cccccc;border-radius:4px;overflow:auto;}
+.annytab-image-inner-container{clear:both;display:block;position:relative;margin:0px;padding:4px;height:300px;}
+.annytab-image-container{display:inline-block;position:relative;max-width:128px;margin:4px;padding:1px;vertical-align:top;border:1px solid #cccccc;text-align:center;word-wrap:break-word;}
+.annytab-image-delete{position:absolute;width:16px;height:16px;top:-8px;right:-8px;cursor:pointer;}
 
 /* Paging menu */
 .annytab-navigate-button{margin:0px 0px 0px 0px;padding:0px 10px 0px 10px;color:#ffffff;font-weight:bold;font-size:16px;height:24px;line-height:24px;cursor:pointer;}
 .annytab-navigate-button:hover{color:#808080;text-decoration:none;}
 .annytab-page-information{margin:0px 0px 0px 0px;padding:0px 10px 0px 10px;color:#000000;height:24px;line-height:24px;}
 .annytab-inactive-navigate-button{margin:0px 0px 0px 0px;padding:0px 10px 0px 10px;font-size:16px;color:#000000;height:24px;line-height:24px;}
+
+

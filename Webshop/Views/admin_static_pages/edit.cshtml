@@ -5,11 +5,11 @@
 
     // Get form data
     StaticPage staticPage = ViewBag.StaticPage;
+    KeyStringList tt = ViewBag.TranslatedTexts;
     string returnUrl = ViewBag.ReturnUrl;
     string error_message = ViewBag.ErrorMessage != null ? ViewBag.ErrorMessage : string.Empty;
 
     // Get translated texts
-    KeyStringList tt = ViewBag.TranslatedTexts;
     string static_page_tt = tt.Get("static_page");
     string new_tt = tt.Get("new");
     string edit_tt = tt.Get("edit");
@@ -42,59 +42,64 @@
     }
 }
 
+@*Title*@
 <h1>@ViewBag.Title</h1>
+
 @*Menu*@
 @Html.Partial("~/Views/admin_static_pages/_form_menu.cshtml")
 
 @*Main form*@
 @using (Html.BeginForm("edit", "admin_static_pages", FormMethod.Post))
 {
+    @*Hidden data*@
     <input name="returnUrl" type="hidden" value="@returnUrl" />
-    <div id="divErrors" class="formErrorMessage" style="@(error_message != "" ? "display:block;" : "display:none;")">@Html.Raw(error_message)</div>
-    <table style="width:100%;">
-        <tr style="@(staticPage.id != 0 ? "display:table-row;" : "display:none;")">
-            <td class="label">@(id_tt + ":")</td>
-            <td class="input"><input name="txtId" type="text" class="formTextbox" tabindex="-1" readonly="readonly" value="@staticPage.id" /></td>
-        </tr>
-        <tr>
-            <td class="label">@(title_tt + ":")</td>
-            <td class="input"><input id="txtTitle" name="txtTitle" type="text" class="formTextbox" value="@staticPage.title" /></td>
-        </tr>
-        <tr>
-            <td class="label">@(linkname_tt + ":")</td>
-            <td class="input"><input name="txtLinkname" type="text" class="formTextbox" value="@staticPage.link_name" /></td>
-        </tr>
-        <tr>
-            <td class="label">@(description_tt + ":")</td>
-            <td class="input"><textarea name="txtDescription" class="formTextarea" rows="6">@staticPage.main_content</textarea></td>
-        </tr>
-        <tr>
-            <td class="label">@(meta_description_tt + ":")</td>
-            <td class="input"><textarea name="txtMetaDescription" class="formTextarea" rows="3">@staticPage.meta_description</textarea></td>
-        </tr>
-        <tr>
-            <td class="label">@(keywords_tt + ":")</td>
-            <td class="input"><input name="txtMetaKeywords" type="text" class="formTextbox" value="@staticPage.meta_keywords" /></td>
-        </tr>
-        <tr>
-            <td class="label">@("Robots:")</td>
-            <td class="input">
-                <select name="selectMetaRobots" class="formSelect">
+    <div class="annytab-form-error-message" style="@(error_message != "" ? "display:block;" : "display:none;")">@Html.Raw(error_message)</div>
+    
+    @*Input data form*@
+    <div class="annytab-input-form-table">
+        <div class="annytab-input-form-row" style="@(staticPage.id != 0 ? "display:table-row;" : "display:none;")">
+            <div class="annytab-input-form-column-label">@(id_tt + ":")</div>
+            <div class="annytab-input-form-column-input"><input name="txtId" type="text" class="annytab-form-textbox" tabindex="-1" readonly="readonly" value="@staticPage.id" /></div>
+        </div>
+        <div class="annytab-input-form-row">
+            <div class="annytab-input-form-column-label">@(title_tt + ":")</div>
+            <div class="annytab-input-form-column-input"><input id="txtTitle" name="txtTitle" type="text" class="annytab-form-textbox" value="@staticPage.title" /></div>
+        </div>
+        <div class="annytab-input-form-row">
+            <div class="annytab-input-form-column-label">@(linkname_tt + ":")</div>
+            <div class="annytab-input-form-column-input"><input name="txtLinkname" type="text" class="annytab-form-textbox" value="@staticPage.link_name" /></div>
+        </div>
+        <div class="annytab-input-form-row">
+            <div class="annytab-input-form-column-label">@(description_tt + ":")</div>
+            <div class="annytab-input-form-column-input"><textarea name="txtDescription" class="annytab-form-textarea" rows="6">@staticPage.main_content</textarea></div>
+        </div>
+        <div class="annytab-input-form-row">
+            <div class="annytab-input-form-column-label">@(meta_description_tt + ":")</div>
+            <div class="annytab-input-form-column-input"><textarea name="txtMetaDescription" class="annytab-form-textarea" rows="3">@staticPage.meta_description</textarea></div>
+        </div>
+        <div class="annytab-input-form-row">
+            <div class="annytab-input-form-column-label">@(keywords_tt + ":")</div>
+            <div class="annytab-input-form-column-input"><input name="txtMetaKeywords" type="text" class="annytab-form-textbox" value="@staticPage.meta_keywords" /></div>
+        </div>
+        <div class="annytab-input-form-row">
+            <div class="annytab-input-form-column-label">@("Robots:")</div>
+            <div class="annytab-input-form-column-input">
+                <select name="selectMetaRobots" class="annytab-form-select">
                     <option value="index, follow" @(staticPage.meta_robots == "index, follow" ? Html.Raw("selected='selected'") : Html.Raw(""))>index, follow</option>
                     <option value="index, nofollow" @(staticPage.meta_robots == "index, nofollow" ? Html.Raw("selected='selected'") : Html.Raw(""))>index, nofollow</option>
                     <option value="noindex, follow" @(staticPage.meta_robots == "noindex, follow" ? Html.Raw("selected='selected'") : Html.Raw(""))>noindex, follow</option>
                     <option value="noindex, nofollow" @(staticPage.meta_robots == "noindex, nofollow" ? Html.Raw("selected='selected'") : Html.Raw(""))>noindex, nofollow</option>
                 </select>
-            </td>
-        </tr>
-        <tr>
-            <td class="label">@(page_name_tt + ":")</td>
-            <td class="input"><input name="txtPageName" type="text" class="formTextbox" value="@staticPage.page_name" /></td>
-        </tr>
-        <tr>
-            <td class="label">@(connected_to_tt + ":")</td>
-            <td class="input">
-                <select id="selectConnectionId" name="selectConnectionId" class="formSelect">
+            </div>
+        </div>
+        <div class="annytab-input-form-row">
+            <div class="annytab-input-form-column-label">@(page_name_tt + ":")</div>
+            <div class="annytab-input-form-column-input"><input name="txtPageName" type="text" class="annytab-form-textbox" value="@staticPage.page_name" /></div>
+        </div>
+        <div class="annytab-input-form-row">
+            <div class="annytab-input-form-column-label">@(connected_to_tt + ":")</div>
+            <div class="annytab-input-form-column-input">
+                <select id="selectConnectionId" name="selectConnectionId" class="annytab-form-select">
                     <option value="0" @(staticPage.connected_to_page == 0 ? Html.Raw("selected='selected'") : Html.Raw(""))>@no_connection_tt</option>
                     <option value="1" @(staticPage.connected_to_page == 1 ? Html.Raw("selected='selected'") : Html.Raw(""))>@start_page_tt</option>
                     <option value="2" @(staticPage.connected_to_page == 2 ? Html.Raw("selected='selected'") : Html.Raw(""))>@terms_of_purchase_tt</option>
@@ -102,22 +107,22 @@
                     <option value="4" @(staticPage.connected_to_page == 4 ? Html.Raw("selected='selected'") : Html.Raw(""))>@error_invalid_input_tt</option>
                     <option value="5" @(staticPage.connected_to_page == 5 ? Html.Raw("selected='selected'") : Html.Raw(""))>@error_404_tt</option>
                 </select>
-            </td>
-        </tr>
-        <tr>
-            <td class="label">@(inactive_tt + ":")</td>
-            <td class="input"><input name="cbInactive" type="checkbox" value="true" @(staticPage != null && staticPage.inactive == true ? Html.Raw("checked='checked'") : Html.Raw("")) /></td>
-        </tr>
-    </table>
+            </div>
+        </div>
+        <div class="annytab-input-form-row">
+            <div class="annytab-input-form-column-label">@(inactive_tt + ":")</div>
+            <div class="annytab-input-form-column-input"><input name="cbInactive" type="checkbox" class="annytab-form-checkbox" value="true" @(staticPage != null && staticPage.inactive == true ? Html.Raw("checked='checked'") : Html.Raw("")) /></div>
+        </div>
+    </div>
 
-    // Save form button
+    @*Button panel*@
     <div style="display:block;border:1px solid #cccccc;margin:20px 0px 0px 0px;border-radius:4px;">
-        <input id="btnSave" type="submit" value="@save_tt" />
-        <input type="button" value="@cancel_tt" onclick="@Html.Raw("location.href='/admin_static_pages" + returnUrl + "'")" />
+        <input id="btnSave" type="submit" class="annytab-form-button" value="@save_tt" />
+        <input type="button" class="annytab-form-button" value="@cancel_tt" onclick="@Html.Raw("location.href='/admin_static_pages" + returnUrl + "'")" />
     </div>
 }
 
 @section scripts {
-    <script>$("#txtTitle").focus();</script>
+    <script type="text/javascript">$("#txtTitle").focus();</script>
 }
 

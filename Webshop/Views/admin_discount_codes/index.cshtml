@@ -47,52 +47,46 @@
     ViewBag.Title = discount_code_tt + " - " + list_tt.ToLower();
 }
 
+@*Title*@
 <h1>@ViewBag.Title</h1>
+
+@*Menu*@
 @Html.Partial("~/Views/admin_discount_codes/_form_menu.cshtml")
 
 @*List of discount codes*@
-<div class="listContainer">
-    <table class="listTable" style="width:800px;">
-        <tr>
-            <th class="listTh" style="text-align:left;width:200px;">@id_tt</th>
-            <th class="listTh" style="text-align:center;width:100px;">@language_tt</th>
-            <th class="listTh" style="text-align:center;width:100px;">@currency_tt</th>
-            <th class="listTh" style="text-align:center;width:100px;">@discount_tt</th>
-            <th class="listTh" style="text-align:center;width:100px;">@quantity_tt</th>
-            <th class="listTh" style="text-align:center;width:100px;">@edit_tt</th>
-            <th class="listTh" style="text-align:center;width:100px;">@delete_tt</th>
-        </tr>
+<div class="annytab-list-container">
+    <div class="annytab-list-table" style="width:856px;">
+        <div class="annytab-list-row">
+            <div class="annytab-list-column-head" style="text-align:left;width:200px;">@id_tt</div>
+            <div class="annytab-list-column-head" style="text-align:center;width:100px;">@language_tt</div>
+            <div class="annytab-list-column-head" style="text-align:center;width:100px;">@currency_tt</div>
+            <div class="annytab-list-column-head" style="text-align:center;width:100px;">@discount_tt</div>
+            <div class="annytab-list-column-head" style="text-align:center;width:100px;">@quantity_tt</div>
+            <div class="annytab-list-column-head" style="text-align:center;width:100px;">@edit_tt</div>
+            <div class="annytab-list-column-head" style="text-align:center;width:100px;">@delete_tt</div>
+        </div>
 
         @for (int i = 0; i < discountCodes.Count; i++)
         {
             // Get the usage count
             Int32 usageCount = Order.GetCountByDiscountCode(discountCodes[i].id);
             
-            if (i % 2 != 0)
-            {
-                @:<tr class="annytab-list-main-row">
-            }
-            else
-            {
-                @:<tr class="annytab-list-alt-row">
-            }
-
-            @*Columns*@
-            @:<td style="text-align:left;">@discountCodes[i].id.ToString()</td>
-            @:<td style="text-align:center;">@discountCodes[i].language_id.ToString()</td>
-            @:<td style="text-align:center;">@discountCodes[i].currency_code</td>
-            @:<td style="text-align:center;">@((discountCodes[i].discount_value * 100).ToString("##,0.##", cultureInfo) + " %")</td>
-            @:<td style="text-align:center;">@usageCount.ToString()</td>
-            @:<td style="text-align:center;"><input type="button" value="@edit_tt" onclick="location.href='@Url.Action("edit", "admin_discount_codes", new { id = discountCodes[i].id, returnUrl = queryString })'" /></td>
-            @:<td style="text-align:center;"><input data-id="deletePost" type="button" value="@delete_tt" @(Html.Raw("data-url='/admin_discount_codes/delete/" + discountCodes[i].id + "?returnUrl=" + Server.UrlEncode(queryString) + "'")) /></td>
-            @:</tr>
+            @:<div class="@(i % 2 != 0 ? "annytab-list-row-main" : "annytab-list-row-alt")">
+            @:<div class="annytab-list-column" style="text-align:left;width:200px;">@discountCodes[i].id.ToString()</div>
+            @:<div class="annytab-list-column" style="text-align:center;width:100px;">@discountCodes[i].language_id.ToString()</div>
+            @:<div class="annytab-list-column" style="text-align:center;width:100px;">@discountCodes[i].currency_code</div>
+            @:<div class="annytab-list-column" style="text-align:center;width:100px;">@((discountCodes[i].discount_value * 100).ToString("##,0.##", cultureInfo) + " %")</div>
+            @:<div class="annytab-list-column" style="text-align:center;width:100px;">@usageCount.ToString()</div>
+            @:<div class="annytab-list-column" style="text-align:center;width:100px;"><input type="button" class="annytab-form-button" value="@edit_tt" onclick="location.href='@Url.Action("edit", "admin_discount_codes", new { id = discountCodes[i].id, returnUrl = queryString })'" /></div>
+            @:<div class="annytab-list-column" style="text-align:center;width:100px;"><input data-id="deletePost" type="button" class="annytab-form-button" value="@delete_tt" @(Html.Raw("data-url='/admin_discount_codes/delete/" + discountCodes[i].id + "?returnUrl=" + Server.UrlEncode(queryString) + "'")) /></div>
+            @:</div>
         }
-    </table>
+    </div>
 </div>
 
-@* Paging menu *@
+@*Paging menu*@
 @Html.Partial("/Views/shared_admin/_paging_menu.cshtml")
 
 @section scripts {
-    <script>$("#txtSearch").focus();</script>
+    <script type="text/javascript">$("#txtSearch").focus();</script>
 }

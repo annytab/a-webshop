@@ -4,11 +4,11 @@
 
     // Get form values
     Company company = ViewBag.Company;
+    KeyStringList tt = ViewBag.TranslatedTexts;
     string returnUrl = ViewBag.ReturnUrl;
     string error_message = ViewBag.ErrorMessage != null ? ViewBag.ErrorMessage : string.Empty;
 
     // Get translated texts
-    KeyStringList tt = ViewBag.TranslatedTexts;
     string company_tt = tt.Get("company");
     string new_tt = tt.Get("new");
     string edit_tt = tt.Get("edit");
@@ -38,6 +38,7 @@
     }
 }
 
+@*Title*@
 <h1>@ViewBag.Title</h1>
 
 @*Menu*@
@@ -46,70 +47,73 @@
 @*Main form*@
 @using (Html.BeginForm("edit", "admin_companies", FormMethod.Post))
 {
+    @*Hidden data*@
     <input name="returnUrl" type="hidden" value="@returnUrl" />
-    <div id="divErrors" class="formErrorMessage" style="@(error_message != "" ? "display:block;" : "display:none;")">@Html.Raw(error_message)</div>
-    <table style="width:100%;">
-        <tr style="@(company.id != 0 ? "display:table-row;" : "display:none;")">
-            <td class="label">@(id_tt + ":")</td>
-            <td class="input"><input name="txtId" type="text" class="formTextbox" tabindex="-1" readonly="readonly" value="@company.id" /></td>
-        </tr>
-        <tr>
-            <td class="label">@(name_tt + ":")</td>
-            <td class="input"><input id="txtName" name="txtName" type="text" class="formTextbox" value="@company.name" /></td>
-        </tr>
-        <tr>
-            <td class="label">@(registered_office_tt + ":")</td>
-            <td class="input"><input name="txtRegisteredOffice" type="text" class="formTextbox" value="@company.registered_office" /></td>
-        </tr>
-        <tr>
-            <td class="label">@(organization_number_tt + ":")</td>
-            <td class="input"><input name="txtOrgNumber" type="text" class="formTextbox" value="@company.org_number" /></td>
-        </tr>
-        <tr>
-            <td class="label">@(vat_number_tt + ":")</td>
-            <td class="input"><input name="txtVatNumber" type="text" class="formTextbox" value="@company.vat_number" /></td>
-        </tr>
-        <tr>
-            <td class="label">@(phone_number_tt + ":")</td>
-            <td class="input"><input name="txtPhoneNumber" type="text" class="formTextbox" value="@company.phone_number" /></td>
-        </tr>
-        <tr>
-            <td class="label">@(mobile_phone_number_tt + ":")</td>
-            <td class="input"><input name="txtMobilePhoneNumber" type="text" class="formTextbox" value="@company.mobile_phone_number" /></td>
-        </tr>
-        <tr>
-            <td class="label">@(email_tt + ":")</td>
-            <td class="input"><input name="txtEmail" type="text" class="formTextbox" value="@company.email" /></td>
-        </tr>
-        <tr>
-            <td class="label">@(address_tt + "1:")</td>
-            <td class="input"><input name="txtPostAddress1" type="text" class="formTextbox" value="@company.post_address_1" /></td>
-        </tr>
-        <tr>
-            <td class="label">@(address_tt + "2:")</td>
-            <td class="input"><input name="txtPostAddress2" type="text" class="formTextbox" value="@company.post_address_2" /></td>
-        </tr>
-        <tr>
-            <td class="label">@(post_code_tt + ":")</td>
-            <td class="input"><input name="txtPostCode" type="text" class="formTextbox" value="@company.post_code" /></td>
-        </tr>
-        <tr>
-            <td class="label">@(city_tt + ":")</td>
-            <td class="input"><input name="txtPostCity" type="text" class="formTextbox" value="@company.post_city" /></td>
-        </tr>
-        <tr>
-            <td class="label">@(country_tt + ":")</td>
-            <td class="input"><input name="txtPostCountry" type="text" class="formTextbox" value="@company.post_country" /></td>
-        </tr>
-    </table>
+    <div class="annytab-form-error-message" style="@(error_message != "" ? "display:block;" : "display:none;")">@Html.Raw(error_message)</div>
+    
+    @*Input form table*@
+    <div class="annytab-input-form-table">
+        <div class="annytab-input-form-row" style="@(company.id != 0 ? "display:table-row;" : "display:none;")">
+            <div class="annytab-input-form-column-label">@(id_tt + ":")</div>
+            <div class="annytab-input-form-column-input"><input name="txtId" type="text" class="annytab-form-textbox" tabindex="-1" readonly="readonly" value="@company.id" /></div>
+        </div>
+        <div class="annytab-input-form-row">
+            <div class="annytab-input-form-column-label">@(name_tt + ":")</div>
+            <div class="annytab-input-form-column-input"><input id="txtName" name="txtName" type="text" class="annytab-form-textbox" value="@company.name" /></div>
+        </div>
+        <div class="annytab-input-form-row">
+            <div class="annytab-input-form-column-label">@(registered_office_tt + ":")</div>
+            <div class="annytab-input-form-column-input"><input name="txtRegisteredOffice" type="text" class="annytab-form-textbox" value="@company.registered_office" /></div>
+        </div>
+        <div class="annytab-input-form-row">
+            <div class="annytab-input-form-column-label">@(organization_number_tt + ":")</div>
+            <div class="annytab-input-form-column-input"><input name="txtOrgNumber" type="text" class="annytab-form-textbox" value="@company.org_number" /></div>
+        </div>
+        <div class="annytab-input-form-row">
+            <div class="annytab-input-form-column-label">@(vat_number_tt + ":")</div>
+            <div class="annytab-input-form-column-input"><input name="txtVatNumber" type="text" class="annytab-form-textbox" value="@company.vat_number" /></div>
+        </div>
+        <div class="annytab-input-form-row">
+            <div class="annytab-input-form-column-label">@(phone_number_tt + ":")</div>
+            <div class="annytab-input-form-column-input"><input name="txtPhoneNumber" type="text" class="annytab-form-textbox" value="@company.phone_number" /></div>
+        </div>
+        <div class="annytab-input-form-row">
+            <div class="annytab-input-form-column-label">@(mobile_phone_number_tt + ":")</div>
+            <div class="annytab-input-form-column-input"><input name="txtMobilePhoneNumber" type="text" class="annytab-form-textbox" value="@company.mobile_phone_number" /></div>
+        </div>
+        <div class="annytab-input-form-row">
+            <div class="annytab-input-form-column-label">@(email_tt + ":")</div>
+            <div class="annytab-input-form-column-input"><input name="txtEmail" type="text" class="annytab-form-textbox" value="@company.email" /></div>
+        </div>
+        <div class="annytab-input-form-row">
+            <div class="annytab-input-form-column-label">@(address_tt + "1:")</div>
+            <div class="annytab-input-form-column-input"><input name="txtPostAddress1" type="text" class="annytab-form-textbox" value="@company.post_address_1" /></div>
+        </div>
+        <div class="annytab-input-form-row">
+            <div class="annytab-input-form-column-label">@(address_tt + "2:")</div>
+            <div class="annytab-input-form-column-input"><input name="txtPostAddress2" type="text" class="annytab-form-textbox" value="@company.post_address_2" /></div>
+        </div>
+        <div class="annytab-input-form-row">
+            <div class="annytab-input-form-column-label">@(post_code_tt + ":")</div>
+            <div class="annytab-input-form-column-input"><input name="txtPostCode" type="text" class="annytab-form-textbox" value="@company.post_code" /></div>
+        </div>
+        <div class="annytab-input-form-row">
+            <div class="annytab-input-form-column-label">@(city_tt + ":")</div>
+            <div class="annytab-input-form-column-input"><input name="txtPostCity" type="text" class="annytab-form-textbox" value="@company.post_city" /></div>
+        </div>
+        <div class="annytab-input-form-row">
+            <div class="annytab-input-form-column-label">@(country_tt + ":")</div>
+            <div class="annytab-input-form-column-input"><input name="txtPostCountry" type="text" class="annytab-form-textbox" value="@company.post_country" /></div>
+        </div>
+    </div>
 
-    // Save form button
+    @*Button panel*@
     <div style="display:block;border:1px solid #cccccc;margin:20px 0px 0px 0px;border-radius:4px;">
-        <input id="btnSave" type="submit" value="@save_tt" />
-        <input type="button" value="@cancel_tt" onclick="@Html.Raw("location.href='/admin_companies" + returnUrl + "'")" />
+        <input id="btnSave" type="submit" class="annytab-form-button" value="@save_tt" />
+        <input type="button" class="annytab-form-button" value="@cancel_tt" onclick="@Html.Raw("location.href='/admin_companies" + returnUrl + "'")" />
     </div>
 }
 
 @section scripts {
-    <script>$("#txtName").focus();</script>
+    <script type="text/javascript">$("#txtName").focus();</script>
 }

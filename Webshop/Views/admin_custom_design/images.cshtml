@@ -25,54 +25,58 @@
     ViewBag.Title = custom_images_tt;
 }
 
+@*Title*@
 <h1>@ViewBag.Title</h1>
 
-@*The menu bar*@
+@*Menu*@
 @Html.Partial("~/Views/admin_custom_design/_form_menu.cshtml")
 
 @*Action menu bar*@
-<div class="formMenuBar">
+<div class="annytab-form-menubar">
     <div style="padding:2px;margin-bottom:4px;background-color:#f0f0f0;">
-        <input type="button" value="@(clear_tt + " " + images_tt.ToLower())" onclick="location.href='@Url.Action("delete_all_user_images", "admin_custom_design", new { returnUrl = returnUrl })'" />
+        <input type="button" class="annytab-form-button" value="@(clear_tt + " " + images_tt.ToLower())" onclick="location.href='@Url.Action("delete_all_user_images", "admin_custom_design", new { returnUrl = returnUrl })'" />
     </div>
     <div style="padding:2px;margin-bottom:4px; background-color: #f0f0f0; ">
-        <input type="button" value="@export_to_zip_tt" onclick="location.href='@Url.Action("export_images_to_zip", "admin_custom_design", new { returnUrl = returnUrl })'" />
+        <input type="button" class="annytab-form-button" value="@export_to_zip_tt" onclick="location.href='@Url.Action("export_images_to_zip", "admin_custom_design", new { returnUrl = returnUrl })'" />
     </div> 
     @using (Html.BeginForm("import_images_from_zip", "admin_custom_design", FormMethod.Post, new { enctype = "multipart/form-data" }))
     {
         <input name="returnUrl" type="hidden" value="@returnUrl" />
         <div style="padding:2px;background-color:#f0f0f0;">
-            <input name="importImagesFromZip" type="file" accept=".zip" />
-            <input type="submit" value="@import_from_zip_tt" />
+            <input name="importImagesFromZip" type="file" class="annytab-form-upload" accept=".zip" />
+            <input type="submit" class="annytab-form-button" value="@import_from_zip_tt" />
         </div>
     }
     </div>
 
 @using (Html.BeginForm("images", "admin_custom_design", FormMethod.Post, new { enctype = "multipart/form-data" }))
 {
+    @*Hidden data*@
     <input name="returnUrl" type="hidden" value="@returnUrl" />
-    <div style="padding:0px 0px 5px 0px;margin:0px 0px 2px 0px;">@(add_images_tt + ", max 4 mb (~/Content/images/user_design/): ")<input id="uploadOtherImages" name="uploadOtherImages" type="file" class="formUpload" accept="image" multiple /><button id="clearFileUpload">@undo_tt</button></div>
-    <div id="divTableOuterContainer" class="divTableOuterContainer" style="clear:both;margin:0px;border:1px solid #cccccc;border-radius:4px;overflow:auto;">
-        <div id="divOtherImagesContainer" style="clear:both;display:block;position:relative;margin:0px;padding:4px;height:400px;">
+    
+    @*Upload images form*@
+    <div style="padding:0px 0px 5px 0px;margin:0px 0px 2px 0px;">@(add_images_tt + ", max 4 mb (~/Content/images/user_design/): ")<input id="uploadOtherImages" name="uploadOtherImages" type="file" class="annytab-form-upload" accept="image" multiple /><button id="clearFileUpload" class="annytab-form-button">@undo_tt</button></div>
+    <div id="divTableOuterContainer" class="annytab-image-outer-container">
+        <div id="divOtherImagesContainer" class="annytab-image-inner-container">
             @for (int i = 0; i < customImages.Count; i++)
             {
-                @:<div data-id="otherImageContainer" class="annytab-other-image-square">
+                @:<div data-id="otherImageContainer" class="annytab-image-container">
                     @:<img src="@customImages[i]" alt="@image_tt" style="max-width:128px;" />
                     @:<input name="otherImageUrl" type="hidden" value="@customImages[i]" />
-                    @:<img data-id="deleteOtherImage" alt="@image_tt" class="annytab-other-image-delete" src="/Content/images/annytab_design/black_circle_cross.png" />
+                    @:<img data-id="deleteOtherImage" alt="@image_tt" class="annytab-image-delete" src="/Content/images/annytab_design/black_circle_cross.png" />
                     @:<div>@Path.GetFileName(customImages[i])</div>
                 @:</div>
             }
         </div>
     </div>
 
-    // Save form button
+    @*Button panel*@
     <div style="display:block;border:1px solid #cccccc;margin:20px 0px 0px 0px;border-radius:4px;">
-        <input id="btnSave" type="submit" value="@save_tt" />
-        <input type="button" value="@cancel_tt" onclick="@Html.Raw("location.href='/admin_custom_design" + returnUrl + "'")" />
+        <input id="btnSave" type="submit" class="annytab-form-button" value="@save_tt" />
+        <input type="button" class="annytab-form-button" value="@cancel_tt" onclick="@Html.Raw("location.href='/admin_custom_design" + returnUrl + "'")" />
     </div>
 }
 
 @section scripts {
-    <script>$("#uploadMainImage").focus();</script>
+    <script type="text/javascript">$("#uploadMainImage").focus();</script>
 }

@@ -2,9 +2,9 @@
     // Get the form data
     QueryParams parameters = ViewBag.QueryParams;
     string queryString = QueryParams.GetQueryString(parameters);
+    KeyStringList tt = ViewBag.TranslatedTexts;
     
     // Get translated texts
-    KeyStringList tt = ViewBag.TranslatedTexts;
     string show_tt = tt.Get("show");
     string list_tt = tt.Get("list");
     string new_tt = tt.Get("new");
@@ -19,28 +19,28 @@
 }
 
 @*The menu bar*@
-<div id="menu" class="formMenuBar">
+<div class="annytab-form-menubar">
     @using (Html.BeginForm("search", "admin_currencies", FormMethod.Post))
     {
-        <input type="button" value="@(show_tt + " " + list_tt.ToLower())" onclick="location.href='@Url.Action("index", "admin_currencies",  new { sf = parameters.sort_field, so = parameters.sort_order, pz = parameters.page_size })'" />
-        <input type="button" value="@new_tt" onclick="location.href='@Url.Action("edit", "admin_currencies", new { id = 0, returnUrl = queryString })'" />
-        <select name="selectSortField" style="width:100px;height:22px;">
+        <input type="button" class="annytab-form-button" value="@(show_tt + " " + list_tt.ToLower())" onclick="location.href='@Url.Action("index", "admin_currencies",  new { sf = parameters.sort_field, so = parameters.sort_order, pz = parameters.page_size })'" />
+        <input type="button" class="annytab-form-button" value="@new_tt" onclick="location.href='@Url.Action("edit", "admin_currencies", new { id = 0, returnUrl = queryString })'" />
+        <select name="selectSortField" class="annytab-form-select" style="width:100px;">
             <option value="currency_code" @(parameters.sort_field == "" ? Html.Raw("selected='selected'") : Html.Raw(""))>@(sort_tt + " " + on_tt.ToLower())</option>
             <option value="currency_code" @(parameters.sort_field == "currency_code" ? Html.Raw("selected='selected'") : Html.Raw(""))>@currency_code_tt</option>
             <option value="conversion_rate" @(parameters.sort_field == "conversion_rate" ? Html.Raw("selected='selected'") : Html.Raw(""))>@conversion_rate_tt</option>
             <option value="currency_base" @(parameters.sort_field == "currency_base" ? Html.Raw("selected='selected'") : Html.Raw(""))>@currency_base_tt</option>
         </select>
-        <select name="selectSortOrder" style="width:80px;height:22px;">
+        <select name="selectSortOrder" class="annytab-form-select" style="width:80px;">
             <option value="ASC" @(parameters.sort_order == "ASC" ? Html.Raw("selected='selected'") : Html.Raw(""))>@ascending_tt</option>
             <option value="DESC" @(parameters.sort_order == "DESC" ? Html.Raw("selected='selected'") : Html.Raw(""))>@descending_tt</option>
         </select>
-        <select name="selectPageSize" style="width:50px;height:22px;">
+        <select name="selectPageSize" class="annytab-form-select" style="width:50px;">
             <option value="10" @(parameters.page_size == 10 ? Html.Raw("selected='selected'") : Html.Raw(""))>10</option>
             <option value="20" @(parameters.page_size == 20 ? Html.Raw("selected='selected'") : Html.Raw(""))>20</option>
             <option value="40" @(parameters.page_size == 40 ? Html.Raw("selected='selected'") : Html.Raw(""))>40</option>
             <option value="80" @(parameters.page_size == 80 ? Html.Raw("selected='selected'") : Html.Raw(""))>80</option>
         </select>
-        <input id="txtSearch" name="txtSearch" type="text" class="textbox" value="@Server.UrlDecode(parameters.keywords)" />
-        <input type="submit" value="@search_tt" />
+        <input id="txtSearch" name="txtSearch" type="text" class="annytab-form-textbox" style="width:150px;" value="@Server.UrlDecode(parameters.keywords)" />
+        <input type="submit" class="annytab-form-button" value="@search_tt" />
     }
 </div>

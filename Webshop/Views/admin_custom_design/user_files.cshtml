@@ -20,57 +20,49 @@
     ViewBag.Title = custom_design_tt + " - " + files_tt.ToLower();
 }
 
+@*Title*@
 <h1>@ViewBag.Title</h1>
 
-@*The menu bar*@
+@*Menu*@
 @Html.Partial("~/Views/admin_custom_design/_form_menu.cshtml")
 
 @*Action menu bar*@
-<div class="formMenuBar">
-        <div style="padding:2px;margin-bottom:4px;background-color:#f0f0f0;"><input type="button" value="@export_to_zip_tt" onclick="location.href='@Url.Action("export_user_files_to_zip", "admin_custom_design", new { returnUrl = returnUrl })'" /></div>
+<div class="annytab-form-menubar">
+        <div style="padding:2px;margin-bottom:4px;background-color:#f0f0f0;"><input type="button" class="annytab-form-button" value="@export_to_zip_tt" onclick="location.href='@Url.Action("export_user_files_to_zip", "admin_custom_design", new { returnUrl = returnUrl })'" /></div>
         @using (Html.BeginForm("import_user_files_from_zip", "admin_custom_design", FormMethod.Post, new { enctype = "multipart/form-data" }))
         {
             <input name="returnUrl" type="hidden" value="@returnUrl" />
             <div style="padding:2px;margin-bottom:4px;background-color:#f0f0f0;">
-                <input name="importFilesFromZip" type="file" accept=".zip" />
-                <input type="submit" value="@import_from_zip_tt" />
+                <input name="importFilesFromZip" type="file" class="annytab-form-upload" accept=".zip" />
+                <input type="submit" class="annytab-form-button" value="@import_from_zip_tt" />
             </div>
         }
         @using (Html.BeginForm("add_user_files", "admin_custom_design", FormMethod.Post, new { enctype = "multipart/form-data" }))
         {
             <input name="returnUrl" type="hidden" value="@returnUrl" />
             <div style="padding:2px;background-color:#f0f0f0;">
-                <input name="addFiles" type="file" accept=".css, .js" multiple />
-                <input type="submit" value="@(add_tt + " " + files_tt.ToLower())" />
+                <input name="addFiles" type="file" class="annytab-form-upload" accept=".css, .js" multiple />
+                <input type="submit" class="annytab-form-button" value="@(add_tt + " " + files_tt.ToLower())" />
             </div>
         }
     </div>
 
 @*List of user files*@
-<div class="listContainer">
-    <table class="listTable" style="width:500px;">
-        <tr>
-            <th class="listTh" style="text-align:left;width:400px;">@file_name_tt</th>
-            <th class="listTh" style="text-align:center;width:100px;">@delete_tt</th>
-        </tr>
+<div class="annytab-list-container">
+    <div class="annytab-list-table" style="width:516px;">
+        <div>
+            <div class="annytab-list-column-head" style="text-align:left;width:400px;">@file_name_tt</div>
+            <div class="annytab-list-column-head" style="text-align:center;width:100px;">@delete_tt</div>
+        </div>
 
         @for (int i = 0; i < userFileUrls.Count; i++)
         {
-            if (i % 2 != 0)
-            {
-                @:<tr class="annytab-list-main-row">
-            }
-            else
-            {
-                @:<tr class="annytab-list-alt-row">
-            }
-
-            @*Columns*@
-            @:<td style="text-align:left;">@userFileUrls[i]</td>
-            @:<td style="text-align:center;"><input type="button" value="@delete_tt" onclick="location.href='@Url.Action("delete_user_file", "admin_custom_design", new { file_name = userFileUrls[i], returnUrl = returnUrl })'" /></td>
-            @:</tr>
+            @:<div class="@(i % 2 != 0 ? "annytab-list-row-main" : "annytab-list-row-alt")">
+            @:<div class="annytab-list-column" style="text-align:left;width:400px;">@userFileUrls[i]</div>
+            @:<div class="annytab-list-column" style="text-align:center;width:100px;"><input type="button" class="annytab-form-button" value="@delete_tt" onclick="location.href='@Url.Action("delete_user_file", "admin_custom_design", new { file_name = userFileUrls[i], returnUrl = returnUrl })'" /></div>
+            @:</div>
         }
-    </table>
+    </div>
 </div>
 
 <div class="annytab-basic-space"></div>

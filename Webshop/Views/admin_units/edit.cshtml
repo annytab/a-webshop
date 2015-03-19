@@ -5,11 +5,11 @@
 
     // Get values
     Unit unit = ViewBag.Unit;
+    KeyStringList tt = ViewBag.TranslatedTexts;
     string returnUrl = ViewBag.ReturnUrl;
     string error_message = ViewBag.ErrorMessage != null ? ViewBag.ErrorMessage : string.Empty;
 
     // Get translated texts
-    KeyStringList tt = ViewBag.TranslatedTexts;
     string unit_tt = tt.Get("unit");
     string new_tt = tt.Get("new");
     string edit_tt = tt.Get("edit");
@@ -32,45 +32,50 @@
     }
 }
 
+@*Title*@
 <h1>@ViewBag.Title</h1>
+
 @*Menu*@
 @Html.Partial("~/Views/admin_units/_form_menu.cshtml")
 
 @*Main form*@
 @using (Html.BeginForm("edit", "admin_units", FormMethod.Post))
 {
+    @*Hidden data*@
     <input name="returnUrl" type="hidden" value="@returnUrl" />
-    <div id="divErrors" class="formErrorMessage" style="@(error_message != "" ? "display:block;" : "display:none;")">@Html.Raw(error_message)</div>
-    <table style="width:100%;">
-        <tr style="@(unit.id != 0 ? "display:table-row;" : "display:none;")">
-            <td class="label">@(id_tt + ":")</td>
-            <td class="input"><input name="txtId" type="text" class="formTextbox" tabindex="-1" readonly="readonly" value="@unit.id" /></td>
-        </tr>
-        <tr>
-            <td class="label">@(unit_code_tt + ":")</td>
-            <td class="input"><input id="txtUnitCode" name="txtUnitCode" type="text" class="formTextbox" value="@unit.unit_code" /></td>
-        </tr>
-        <tr>
-            <td class="label">@(name_tt + ":")</td>
-            <td class="input"><input name="txtName" type="text" class="formTextbox" value="@unit.name" /></td>
-        </tr>
-        <tr>
-            <td class="label">@(unit_code_si_tt + ":")</td>
-            <td class="input"><input name="txtUnitCodeSi" type="text" class="formTextbox" value="@unit.unit_code_si" /></td>
-        </tr>
-        <tr>
-            <td class="label">@(erp_code_tt + ":")</td>
-            <td class="input"><input name="txtErpCode" type="text" class="formTextbox" value="@unit.erp_code" /></td>
-        </tr>
-    </table>
+    <div class="annytab-form-error-message" style="@(error_message != "" ? "display:block;" : "display:none;")">@Html.Raw(error_message)</div>
+    
+    @*Input form table*@
+    <div class="annytab-input-form-table">
+        <div class="annytab-input-form-row" style="@(unit.id != 0 ? "display:table-row;" : "display:none;")">
+            <div class="annytab-input-form-column-label">@(id_tt + ":")</div>
+            <div class="annytab-input-form-column-input"><input name="txtId" type="text" class="annytab-form-textbox" tabindex="-1" readonly="readonly" value="@unit.id" /></div>
+        </div>
+        <div class="annytab-input-form-row">
+            <div class="annytab-input-form-column-label">@(unit_code_tt + ":")</div>
+            <div class="annytab-input-form-column-input"><input id="txtUnitCode" name="txtUnitCode" type="text" class="annytab-form-textbox" value="@unit.unit_code" /></div>
+        </div>
+        <div class="annytab-input-form-row">
+            <div class="annytab-input-form-column-label">@(name_tt + ":")</div>
+            <div class="annytab-input-form-column-input"><input name="txtName" type="text" class="annytab-form-textbox" value="@unit.name" /></div>
+        </div>
+        <div class="annytab-input-form-row">
+            <div class="annytab-input-form-column-label">@(unit_code_si_tt + ":")</div>
+            <div class="annytab-input-form-column-input"><input name="txtUnitCodeSi" type="text" class="annytab-form-textbox" value="@unit.unit_code_si" /></div>
+        </div>
+        <div class="annytab-input-form-row">
+            <div class="annytab-input-form-column-label">@(erp_code_tt + ":")</div>
+            <div class="annytab-input-form-column-input"><input name="txtErpCode" type="text" class="annytab-form-textbox" value="@unit.erp_code" /></div>
+        </div>
+    </div>
 
-    // Save form button
+    @*Button panel*@
     <div style="display:block;border:1px solid #cccccc;margin:20px 0px 0px 0px;border-radius:4px;">
-        <input id="btnSave" type="submit" value="@save_tt" />
-        <input type="button" value="@cancel_tt" onclick="@Html.Raw("location.href='/admin_units" + returnUrl + "'")" />
+        <input id="btnSave" type="submit" class="annytab-form-button" value="@save_tt" />
+        <input type="button" class="annytab-form-button" value="@cancel_tt" onclick="@Html.Raw("location.href='/admin_units" + returnUrl + "'")" />
     </div>
 }
 
 @section scripts {
-    <script>$("#txtUnitCode").focus();</script>
+    <script type="text/javascript">$("#txtUnitCode").focus();</script>
 }

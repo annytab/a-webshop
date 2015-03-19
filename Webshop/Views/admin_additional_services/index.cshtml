@@ -51,41 +51,32 @@
 <h1>@ViewBag.Title</h1>
 @Html.Partial("~/Views/admin_additional_services/_form_menu.cshtml")
 
-@*List of option types*@
-<div class="listContainer">
-    <table class="listTable" style="width:800px;">
-        <tr>
-            <th class="listTh" style="text-align:center;width:100px;">@id_tt</th>
-            <th class="listTh" style="text-align:left;width:100px;">@product_code_short_tt</th>
-            <th class="listTh" style="text-align:left;width:200px;">@name_tt</th>
-            <th class="listTh" style="text-align:left;width:100px;">@fee_tt</th>
-            <th class="listTh" style="text-align:center;width:100px;">@edit_tt</th>
-            <th class="listTh" style="text-align:center;width:100px;">@translate_tt</th>
-            <th class="listTh" style="text-align:center;width:100px;">@delete_tt</th>
-        </tr>
+@*List of additional services*@
+<div class="annytab-list-container">
+    <div class="annytab-list-table" style="width:856px;">
+        <div class="anntyab-list-row">
+            <div class="annytab-list-column-head" style="text-align:center;width:100px;">@id_tt</div>
+            <div class="annytab-list-column-head" style="text-align:left;width:100px;">@product_code_short_tt</div>
+            <div class="annytab-list-column-head" style="text-align:left;width:200px;">@name_tt</div>
+            <div class="annytab-list-column-head" style="text-align:left;width:100px;">@fee_tt</div>
+            <div class="annytab-list-column-head" style="text-align:center;width:100px;">@edit_tt</div>
+            <div class="annytab-list-column-head" style="text-align:center;width:100px;">@translate_tt</div>
+            <div class="annytab-list-column-head" style="text-align:center;width:100px;">@delete_tt</div>
+        </div>
 
         @for (int i = 0; i < additionalServices.Count; i++)
         {
-            if (i % 2 != 0)
-            {
-                @:<tr class="annytab-list-main-row">
-            }
-            else
-            {
-                @:<tr class="annytab-list-alt-row">
-            }
-
-            @* Columns *@
-            @:<td style="text-align:center;">@additionalServices[i].id.ToString()</td>
-            @:<td style="text-align:left;">@additionalServices[i].product_code.ToString()</td>
-            @:<td style="text-align:left;">@additionalServices[i].name.ToString()</td>
-            @:<td style="text-align:left;">@additionalServices[i].fee.ToString("##,0.##", cultureInfo)</td>
-            @:<td style="text-align:center;"><input type="button" value="@edit_tt" onclick="location.href='@Url.Action("edit", "admin_additional_services", new { id = additionalServices[i].id, returnUrl = queryString })'" /></td>
-            @:<td style="text-align:center;"><input type="button" value="@translate_tt" onclick="location.href='@Url.Action("translate", "admin_additional_services", new { id = additionalServices[i].id, returnUrl = queryString })'" /></td>
-            @:<td style="text-align:center;"><input data-id="deletePost" type="button" value="@delete_tt" @(Html.Raw("data-url='/admin_additional_services/delete/" + additionalServices[i].id + "?returnUrl=" + Server.UrlEncode(queryString) + "'")) /></td>
-            @:</tr>
+            @:<div class="@(i % 2 != 0 ? "annytab-list-row-main" : "annytab-list-row-alt")">
+            @:<div class="annytab-list-column" style="text-align:center;width:100px;">@additionalServices[i].id.ToString()</div>
+            @:<div class="annytab-list-column" style="text-align:left;width:100px;">@additionalServices[i].product_code.ToString()</div>
+            @:<div class="annytab-list-column" style="text-align:left;width:200px;">@additionalServices[i].name.ToString()</div>
+            @:<div class="annytab-list-column" style="text-align:left;width:100px;">@additionalServices[i].fee.ToString("##,0.##", cultureInfo)</div>
+            @:<div class="annytab-list-column" style="text-align:center;width:100px;"><input type="button" class="annytab-form-button" value="@edit_tt" onclick="location.href='@Url.Action("edit", "admin_additional_services", new { id = additionalServices[i].id, returnUrl = queryString })'" /></div>
+            @:<div class="annytab-list-column" style="text-align:center;width:100px;"><input type="button" class="annytab-form-button" value="@translate_tt" onclick="location.href='@Url.Action("translate", "admin_additional_services", new { id = additionalServices[i].id, returnUrl = queryString })'" /></div>
+            @:<div class="annytab-list-column" style="text-align:center;width:100px;"><input data-id="deletePost" type="button" class="annytab-form-button" value="@delete_tt" @(Html.Raw("data-url='/admin_additional_services/delete/" + additionalServices[i].id + "?returnUrl=" + Server.UrlEncode(queryString) + "'")) /></div>
+            @:</div>  
         }
-    </table>
+    </div>
 </div>
 
 @* Paging menu *@

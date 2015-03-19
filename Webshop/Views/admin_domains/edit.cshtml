@@ -9,13 +9,11 @@
     List<Currency> currencies = Currency.GetAll("currency_code", "ASC");
     List<CustomTheme> themes = CustomTheme.GetAll("name", "ASC");
     Domain domain = ViewBag.Domain;
+    KeyStringList tt = ViewBag.TranslatedTexts;
     string returnUrl = ViewBag.ReturnUrl;
-
-    // Set the error message
     string error_message = ViewBag.ErrorMessage != null ? ViewBag.ErrorMessage : string.Empty;
 
     // Get translated texts
-    KeyStringList tt = ViewBag.TranslatedTexts;
     string domain_tt = tt.Get("domain");
     string new_tt = tt.Get("new");
     string edit_tt = tt.Get("edit");
@@ -55,6 +53,7 @@
     }
 }
 
+@*Title*@
 <h1>@ViewBag.Title</h1>
 
 @*Menu*@
@@ -63,89 +62,92 @@
 @*Main form*@
 @using (Html.BeginForm("edit", "admin_domains", FormMethod.Post))
 {
+    @*Hidden data*@
     <input name="returnUrl" type="hidden" value="@returnUrl" />
-    <div id="divErrors" class="formErrorMessage" style="@(error_message != "" ? "display:block;" : "display:none;")">@Html.Raw(error_message)</div>
-    <table style="clear:both;width:100%;">
-        <tr style="@(domain.id != 0 ? "display:table-row;" : "display:none;")">
-            <td class="label">@(id_tt + ":")</td>
-            <td class="input"><input name="txtId" type="text" class="formTextbox" tabindex="-1" readonly="readonly" value="@domain.id" /></td>
-        </tr>
-        <tr>
-            <td class="label">@(name_tt + ":")</td>
-            <td class="input"><input id="txtWebshopName" name="txtWebshopName" type="text" class="formTextbox" value="@domain.webshop_name" /></td>
-        </tr>
-        <tr>
-            <td class="label">@(domain_name_tt + ":")</td>
-            <td class="input"><input name="txtDomainName" type="text" class="formTextbox" value="@domain.domain_name" /></td>
-        </tr>
-        <tr>
-            <td class="label">@(web_address_tt + ":")</td>
-            <td class="input"><input name="txtWebAddress" type="text" class="formTextbox" value="@domain.web_address" /></td>
-        </tr>
-        <tr>
-            <td class="label">@(country_tt + ":")</td>
-            <td class="input">
-                <select name="selectCountry" class="formSelect">
+    <div class="annytab-form-error-message" style="@(error_message != "" ? "display:block;" : "display:none;")">@Html.Raw(error_message)</div>
+    
+    @*Input form table*@
+    <div class="annytab-input-form-table">
+        <div class="annytab-input-form-row" style="@(domain.id != 0 ? "display:table-row;" : "display:none;")">
+            <div class="annytab-input-form-column-label">@(id_tt + ":")</div>
+            <div class="annytab-input-form-column-input"><input name="txtId" type="text" class="annytab-form-textbox" tabindex="-1" readonly="readonly" value="@domain.id" /></div>
+        </div>
+        <div class="annytab-input-form-row">
+            <div class="annytab-input-form-column-label">@(name_tt + ":")</div>
+            <div class="annytab-input-form-column-input"><input id="txtWebshopName" name="txtWebshopName" type="text" class="annytab-form-textbox" value="@domain.webshop_name" /></div>
+        </div>
+        <div class="annytab-input-form-row">
+            <div class="annytab-input-form-column-label">@(domain_name_tt + ":")</div>
+            <div class="annytab-input-form-column-input"><input name="txtDomainName" type="text" class="annytab-form-textbox" value="@domain.domain_name" /></div>
+        </div>
+        <div class="annytab-input-form-row">
+            <div class="annytab-input-form-column-label">@(web_address_tt + ":")</div>
+            <div class="annytab-input-form-column-input"><input name="txtWebAddress" type="text" class="annytab-form-textbox" value="@domain.web_address" /></div>
+        </div>
+        <div class="annytab-input-form-row">
+            <div class="annytab-input-form-column-label">@(country_tt + ":")</div>
+            <div class="annytab-input-form-column-input">
+                <select name="selectCountry" class="annytab-form-select">
                     <option value="0" @(domain.country_id == 0 ? Html.Raw("selected='selected'") : Html.Raw(""))>@("-- " + no_choice_tt + " --")</option>
                     @foreach (Country country in countries)
                     {
                         <option value="@country.id" @(country.id == domain.country_id ? Html.Raw("selected='selected'") : Html.Raw(""))>@country.name</option>
                     }
                 </select>
-            </td>
-        </tr>
-        <tr>
-            <td class="label">@(front_end_language_tt + ":")</td>
-            <td class="input">
-                <select name="selectFrontEndLanguage" class="formSelect">
+            </div>
+        </div>
+        <div class="annytab-input-form-row">
+            <div class="annytab-input-form-column-label">@(front_end_language_tt + ":")</div>
+            <div class="annytab-input-form-column-input">
+                <select name="selectFrontEndLanguage" class="annytab-form-select">
                     <option value="0" @(domain.front_end_language == 0 ? Html.Raw("selected='selected'") : Html.Raw(""))>@("-- " + no_choice_tt + " --")</option>
                     @foreach (Language language in languages)
                     {
                         <option value="@language.id" @(language.id == domain.front_end_language ? Html.Raw("selected='selected'") : Html.Raw(""))>@language.name</option>
                     }
                 </select>
-            </td>
-        </tr>
-        <tr>
-            <td class="label">@(back_end_language_tt + ":")</td>
-            <td class="input">
-                <select name="selectBackEndLanguage" class="formSelect">
+            </div>
+        </div>
+        <div class="annytab-input-form-row">
+            <div class="annytab-input-form-column-label">@(back_end_language_tt + ":")</div>
+            <div class="annytab-input-form-column-input">
+                <select name="selectBackEndLanguage" class="annytab-form-select">
                     <option value="0" @(domain.back_end_language == 0 ? Html.Raw("selected='selected'") : Html.Raw(""))>@("-- " + no_choice_tt + " --")</option>
                     @foreach (Language language in languages)
                     {
                         <option value="@language.id" @(language.id == domain.back_end_language ? Html.Raw("selected='selected'") : Html.Raw(""))>@language.name</option>
                     }
                 </select>
-            </td>
-        </tr>
-        <tr>
-            <td class="label">@(currency_tt + ":")</td>
-            <td class="input">
-                <select name="selectCurrency" class="formSelect">
+            </div>
+        </div>
+        <div class="annytab-input-form-row">
+            <div class="annytab-input-form-column-label">@(currency_tt + ":")</div>
+            <div class="annytab-input-form-column-input">
+                <select name="selectCurrency" class="annytab-form-select">
                     <option value="" @(domain.currency == "" ? Html.Raw("selected='selected'") : Html.Raw(""))>@("-- " + no_choice_tt + " --")</option>
                     @foreach (Currency currency in currencies)
                     {
                         <option value="@currency.currency_code" @(currency.currency_code == domain.currency ? Html.Raw("selected='selected'") : Html.Raw(""))>@currency.currency_code</option>
                     }
                 </select>
-            </td>
-        </tr>
-        <tr>
-            <td class="label">@(company_tt + ":")</td>
-            <td class="input">
-                <select name="selectCompany" class="formSelect">
+            </div>
+        </div>
+        <div class="annytab-input-form-row">
+            <div class="annytab-input-form-column-label">@(company_tt + ":")</div>
+            <div class="annytab-input-form-column-input">
+                <select name="selectCompany" class="annytab-form-select">
                     <option value="0" @(domain.company_id == 0 ? Html.Raw("selected='selected'") : Html.Raw(""))>@("-- " + no_choice_tt + " --")</option>
                     @foreach (Company company in companies)
                     {
                         <option value="@company.id" @(company.id == domain.company_id ? Html.Raw("selected='selected'") : Html.Raw(""))>@(company.name + "," + company.vat_number)</option>
                     }
                 </select>
-            </td>
-        </tr>
-        <tr>
-            <td class="label">@(default_display_view_tt + ":")</td>
-            <td class="input">
-                <select name="selectDefaultDisplayView" class="formSelect">
+            </div>
+        </div>
+        <div class="annytab-input-form-row">
+            <div class="annytab-input-form-column-label">@(default_display_view_tt + ":")</div>
+            <div class="annytab-input-form-column-input">
+                <select name="selectDefaultDisplayView" class="annytab-form-select">
                     <option value="0" @(domain.default_display_view == 0 ? Html.Raw("selected='selected'") : Html.Raw(""))>@(view_tt + " 0")</option>
                     <option value="1" @(domain.default_display_view == 1 ? Html.Raw("selected='selected'") : Html.Raw(""))>@(view_tt + " 1")</option>
                     <option value="2" @(domain.default_display_view == 2 ? Html.Raw("selected='selected'") : Html.Raw(""))>@(view_tt + " 2")</option>
@@ -157,12 +159,12 @@
                     <option value="8" @(domain.default_display_view == 8 ? Html.Raw("selected='selected'") : Html.Raw(""))>@(view_tt + " 8")</option>
                     <option value="9" @(domain.default_display_view == 9 ? Html.Raw("selected='selected'") : Html.Raw(""))>@(view_tt + " 9")</option>
                 </select>
-            </td>
-        </tr>
-        <tr>
-            <td class="label">@(mobile_display_view_tt + ":")</td>
-            <td class="input">
-                <select name="selectMobileDisplayView" class="formSelect">
+            </div>
+        </div>
+        <div class="annytab-input-form-row">
+            <div class="annytab-input-form-column-label">@(mobile_display_view_tt + ":")</div>
+            <div class="annytab-input-form-column-input">
+                <select name="selectMobileDisplayView" class="annytab-form-select">
                     <option value="0" @(domain.mobile_display_view == 0 ? Html.Raw("selected='selected'") : Html.Raw(""))>@(view_tt + " 0")</option>
                     <option value="1" @(domain.mobile_display_view == 1 ? Html.Raw("selected='selected'") : Html.Raw(""))>@(view_tt + " 1")</option>
                     <option value="2" @(domain.mobile_display_view == 2 ? Html.Raw("selected='selected'") : Html.Raw(""))>@(view_tt + " 2")</option>
@@ -174,63 +176,63 @@
                     <option value="8" @(domain.mobile_display_view == 8 ? Html.Raw("selected='selected'") : Html.Raw(""))>@(view_tt + " 8")</option>
                     <option value="9" @(domain.mobile_display_view == 9 ? Html.Raw("selected='selected'") : Html.Raw(""))>@(view_tt + " 9")</option>
                 </select>
-            </td>
-        </tr>
-        <tr>
-            <td class="label">@(theme_tt + ":")</td>
-            <td class="input">
-                <select name="selectTemplate" class="formSelect">
+            </div>
+        </div>
+        <div class="annytab-input-form-row">
+            <div class="annytab-input-form-column-label">@(theme_tt + ":")</div>
+            <div class="annytab-input-form-column-input">
+                <select name="selectTemplate" class="annytab-form-select">
                     <option value="0" @(domain.custom_theme_id == 0 ? Html.Raw("selected='selected'") : Html.Raw(""))>@default_tt</option>
-                    @foreach(CustomTheme theme in themes)
+                    @foreach (CustomTheme theme in themes)
                     {
                         <option value="@theme.id.ToString()" @(domain.custom_theme_id == theme.id ? Html.Raw("selected='selected'") : Html.Raw(""))>@theme.name</option>
                     }
                 </select>
-            </td>
-        </tr>
-        <tr>
-            <td class="label">@(show_tt + " " + prices_tt.ToLower() + ":")</td>
-            <td class="input">
-                <select name="selectPricesIncludesVat" class="formSelect">
-                    <option value="false" @(domain.prices_includes_vat == false ? Html.Raw("selected='selected'") : Html.Raw(""))>@excluding_vat_tt</option>
-                    <option value="true" @(domain.prices_includes_vat == true ? Html.Raw("selected='selected'") : Html.Raw(""))>@including_vat_tt</option>
+            </div>
+        </div>
+        <div class="annytab-input-form-row">
+            <div class="annytab-input-form-column-label">@(show_tt + " " + prices_tt.ToLower() + ":")</div>
+            <div class="annytab-input-form-column-input">
+                <select name="selectPricesIncludesVat" class="annytab-form-select">
+                    <option value="false" @(domain.prices_includes_vat == false ? Html.Raw("selected='selected' ") : Html.Raw(" "))>@excluding_vat_tt</option>
+                    <option value="true" @(domain.prices_includes_vat == true ? Html.Raw("selected='selected' ") : Html.Raw(" "))>@including_vat_tt</option>
                 </select>
-            </td>
-        </tr>
-        <tr>
-            <td class="label">@(analytics_tracking_id_tt + ":")</td>
-            <td class="input"><input name="txtAnalyticsTrackingId" type="text" class="formTextbox" value="@domain.analytics_tracking_id" /></td>
-        </tr>
-        <tr>
-            <td class="label">@("Facebook app id: ")</td>
-            <td class="input"><input name="txtFacebookAppId" type="text" class="formTextbox" value="@domain.facebook_app_id" /></td>
-        </tr>
-        <tr>
-            <td class="label">@("Facebook app secret: ")</td>
-            <td class="input"><input name="txtFacebookAppSecret" type="text" class="formTextbox" value="@domain.facebook_app_secret" /></td>
-        </tr>
-        <tr>
-            <td class="label">@("Google app id: ")</td>
-            <td class="input"><input name="txtGoogleAppId" type="text" class="formTextbox" value="@domain.google_app_id" /></td>
-        </tr>
-        <tr>
-            <td class="label">@("Google app secret: ")</td>
-            <td class="input"><input name="txtGoogleAppSecret" type="text" class="formTextbox" value="@domain.google_app_secret" /></td>
-        </tr>
-        <tr>
-            <td class="label">@(do_not_index_tt + ":")</td>
-            <td class="input"><input name="cbNoindex" type="checkbox" value="true" @(domain != null && domain.noindex == true ? Html.Raw("checked='checked'") : Html.Raw("")) /></td>
-        </tr>
-    </table>
+            </div>
+        </div>
+        <div class="annytab-input-form-row">
+            <div class="annytab-input-form-column-label">@(analytics_tracking_id_tt + ":")</div>
+            <div class="annytab-input-form-column-input"><input name="txtAnalyticsTrackingId" type="text" class="annytab-form-textbox" value="@domain.analytics_tracking_id" /></div>
+        </div>
+        <div class="annytab-input-form-row">
+            <div class="annytab-input-form-column-label">@("Facebook app id: ")</div>
+            <div class="annytab-input-form-column-input"><input name="txtFacebookAppId" type="text" class="annytab-form-textbox" value="@domain.facebook_app_id" /></div>
+        </div>
+        <div class="annytab-input-form-row">
+            <div class="annytab-input-form-column-label">@("Facebook app secret: ")</div>
+            <div class="annytab-input-form-column-input"><input name="txtFacebookAppSecret" type="text" class="annytab-form-textbox" value="@domain.facebook_app_secret" /></div>
+        </div>
+        <div class="annytab-input-form-row">
+            <div class="annytab-input-form-column-label">@("Google app id: ")</div>
+            <div class="annytab-input-form-column-input"><input name="txtGoogleAppId" type="text" class="annytab-form-textbox" value="@domain.google_app_id" /></div>
+        </div>
+        <div class="annytab-input-form-row">
+            <div class="annytab-input-form-column-label">@("Google app secret: ")</div>
+            <div class="annytab-input-form-column-input"><input name="txtGoogleAppSecret" type="text" class="annytab-form-textbox" value="@domain.google_app_secret" /></div>
+        </div>
+        <div class="annytab-input-form-row">
+            <div class="annytab-input-form-column-label">@(do_not_index_tt + ":")</div>
+            <div class="annytab-input-form-column-input"><input name="cbNoindex" type="checkbox" class="annytab-form-checkbox" value="true" @(domain != null && domain.noindex == true ? Html.Raw("checked='checked'") : Html.Raw("")) /></div>
+        </div>
+    </div>
 
-    // Save form button
+    @*Button panel*@
     <div style="display:block;border: 1px solid #cccccc;margin: 20px 0px 0px 0px;border-radius: 4px;">
-        <input id="btnSave" type="submit" value="@save_tt" />
-        <input type="button" value="@cancel_tt" onclick="@Html.Raw("location.href='/admin_domains" + returnUrl + "'")" />
+        <input id="btnSave" type="submit" class="annytab-form-button" value="@save_tt" />
+        <input type="button" class="annytab-form-button" value="@cancel_tt" onclick="@Html.Raw("location.href='/admin_domains" + returnUrl + "'")" />
     </div>
 
 }
 
 @section scripts {
-    <script>$("#txtWebshopName").focus();</script>
+    <script type="text/javascript">$("#txtWebshopName").focus();</script>
 }

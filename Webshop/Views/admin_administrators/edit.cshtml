@@ -30,6 +30,7 @@
     }
 }
 
+@*Title*@
 <h1>@ViewBag.Title</h1>
 
 @*Menu*@
@@ -39,24 +40,26 @@
 @using (Html.BeginForm("edit", "admin_administrators", FormMethod.Post))
 {
     <input name="returnUrl" type="hidden" value="@returnUrl" />
-    <div id="divErrors" class="formErrorMessage" style="@(error_message != "" ? "display:block;" : "display:none;")">@Html.Raw(error_message)</div>
-    <table style="clear:both;width:100%;">
-        <tr style="@(administrator.id != 0 ? "display:table-row;" : "display:none;")">
-            <td class="label">@(id_tt + ":")</td>
-            <td class="input"><input name="txtId" type="text" class="formTextbox" tabindex="-1" readonly="readonly" value="@administrator.id" /></td>
-        </tr>
-        <tr>
-            <td class="label">@(user_name_tt + ":")</td>
-            <td class="input"><input id="txtUserName" name="txtUserName" type="text" class="formTextbox" value="@administrator.admin_user_name" /></td>
-        </tr>
-        <tr>
-            <td class="label">@(password_tt + ":")</td>
-            <td class="input"><input name="txtPassword" type="password" class="formTextbox" /></td>
-        </tr>
-        <tr>
-            <td class="label">@(admin_role_tt + ":")</td>
-            <td class="input">
-                <select name="selectAdminRole" class="formSelect">
+    <div class="annytab-form-error-message" style="@(error_message != "" ? "display:block;" : "display:none;")">@Html.Raw(error_message)</div>
+    
+    @*Input form table*@
+    <div class="annytab-input-form-table">
+        <div class="annytab-input-form-row" style="@(administrator.id != 0 ? "display:table-row;" : "display:none;")">
+            <div class="annytab-input-form-column-label">@(id_tt + ":")</div>
+            <div class="annytab-input-form-column-input"><input name="txtId" type="text" class="annytab-form-textbox" tabindex="-1" readonly="readonly" value="@administrator.id" /></div>
+        </div>
+        <div class="annytab-input-form-row">
+            <div class="annytab-input-form-column-label">@(user_name_tt + ":")</div>
+            <div class="annytab-input-form-column-input"><input id="txtUserName" name="txtUserName" type="text" class="annytab-form-textbox" value="@administrator.admin_user_name" /></div>
+        </div>
+        <div class="annytab-input-form-row">
+            <div class="annytab-input-form-column-label">@(password_tt + ":")</div>
+            <div class="annytab-input-form-column-input"><input name="txtPassword" type="password" class="annytab-form-textbox" /></div>
+        </div>
+        <div class="annytab-input-form-row">
+            <div class="annytab-input-form-column-label">@(admin_role_tt + ":")</div>
+            <div class="annytab-input-form-column-input">
+                <select name="selectAdminRole" class="annytab-form-select">
                     <option value="Administrator" @(administrator.admin_role == "Administrator" ? Html.Raw("selected='selected'") : Html.Raw(""))>Administrator</option>
                     <option value="Editor" @(administrator.admin_role == "Editor" ? Html.Raw("selected='selected'") : Html.Raw(""))>Editor</option>
                     <option value="Translator" @(administrator.admin_role == "Translator" ? Html.Raw("selected='selected'") : Html.Raw(""))>Translator</option>
@@ -65,17 +68,17 @@
                     <option value="API_MEDIUM_TRUST" @(administrator.admin_role == "API_MEDIUM_TRUST" ? Html.Raw("selected='selected'") : Html.Raw(""))>API Medium Trust</option>
                     <option value="API_MINIMAL_TRUST" @(administrator.admin_role == "API_MINIMAL_TRUST" ? Html.Raw("selected='selected'") : Html.Raw(""))>API Minimal Trust</option>
                 </select>
-            </td>
-        </tr>
-    </table>
+            </div>
+        </div>
+    </div>
 
-    // Save form button
+    @*Button panel*@
     <div style="display:block;border: 1px solid #cccccc;margin: 20px 0px 0px 0px;border-radius: 4px;">
-        <input id="btnSave" type="submit" value="@save_tt" />
-        <input type="button" value="@cancel_tt" onclick="@Html.Raw("location.href='/admin_administrators" + returnUrl + "'")" />
+        <input id="btnSave" type="submit" class="annytab-form-button" value="@save_tt" />
+        <input type="button" class="annytab-form-button" value="@cancel_tt" onclick="@Html.Raw("location.href='/admin_administrators" + returnUrl + "'")" />
     </div>
 }
 
 @section scripts {
-    <script>$("#txtUserName").focus();</script>
+    <script type="text/javascript">$("#txtUserName").focus();</script>
 }

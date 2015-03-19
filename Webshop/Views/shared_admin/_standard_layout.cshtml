@@ -56,7 +56,6 @@
     string cancel_tt = tt.Get("cancel");
     string logotype_tt = tt.Get("logotype");
     string copyright_information_tt = tt.Get("copyright_information");
-
 }
 
 <!DOCTYPE html>
@@ -80,32 +79,32 @@
             <div style="padding:20px 10px 20px 10px;"><a href="/admin_default" class="annytab-header-title">@domain.webshop_name</a></div>
         </div>
         <div class="leftContent">
-            <div id="adminMenu" style="padding: 10px 10px 10px 10px;@(adminSession ? "display:block;":"display:none;")">
-                <a href="/admin_default" class="menuLink">@start_page_tt</a>
-                <a href="/admin_domains" class="menuLink">@domains_tt</a>
-                <a href="/admin_administrators" class="menuLink">@administrators_tt</a>
-                <a href="/admin_webshop_settings" class="menuLink">@settings_tt</a>
-                <a href="/admin_units" class="menuLink">@units_tt</a>
-                <a href="/admin_languages" class="menuLink">@languages_tt</a>
-                <a href="/admin_currencies" class="menuLink">@currencies_tt</a>
-                <a href="/admin_countries" class="menuLink">@countries_tt</a>
-                <a href="/admin_value_added_taxes" class="menuLink">@value_added_tax_rates_tt</a>
-                <a href="/admin_companies" class="menuLink">@companies_tt</a>
-                <a href="/admin_custom_design" class="menuLink">@custom_design_tt</a>
-                <a href="/admin_campaigns" class="menuLink">@campaigns_tt</a>
-                <a href="/admin_payment_options" class="menuLink">@payment_options_tt</a>
-                <a href="/admin_additional_services" class="menuLink">@additional_services_tt</a>
-                <a href="/admin_static_texts" class="menuLink">@static_texts_tt</a>
-                <a href="/admin_static_pages" class="menuLink">@static_pages_tt</a>
-                <a href="/admin_categories" class="menuLink">@categories_tt</a>
-                <a href="/admin_options" class="menuLink">@product_options_tt</a>
-                <a href="/admin_products" class="menuLink">@products_tt</a>
-                <a href="/admin_customers" class="menuLink">@customers_tt</a>
-                <a href="/admin_orders" class="menuLink">@orders_tt</a>
-                <a href="/admin_product_reviews" class="menuLink">@reviews_tt</a>
-                <a href="/admin_newsletters" class="menuLink">@newsletters_tt</a>
-                <a href="/admin_discount_codes" class="menuLink">@discount_codes_tt</a>
-                <a href="/admin_login/logout" class="menuLink">@log_out_tt</a>
+            <div style="padding:10px 10px 10px 10px;@(adminSession ? "display:block;":"display:none;")">
+                <a href="/admin_default" class="annytab-basic-button">@start_page_tt</a>
+                <a href="/admin_domains" class="annytab-basic-button">@domains_tt</a>
+                <a href="/admin_administrators" class="annytab-basic-button">@administrators_tt</a>
+                <a href="/admin_webshop_settings" class="annytab-basic-button">@settings_tt</a>
+                <a href="/admin_units" class="annytab-basic-button">@units_tt</a>
+                <a href="/admin_languages" class="annytab-basic-button">@languages_tt</a>
+                <a href="/admin_currencies" class="annytab-basic-button">@currencies_tt</a>
+                <a href="/admin_countries" class="annytab-basic-button">@countries_tt</a>
+                <a href="/admin_value_added_taxes" class="annytab-basic-button">@value_added_tax_rates_tt</a>
+                <a href="/admin_companies" class="annytab-basic-button">@companies_tt</a>
+                <a href="/admin_custom_design" class="annytab-basic-button">@custom_design_tt</a>
+                <a href="/admin_campaigns" class="annytab-basic-button">@campaigns_tt</a>
+                <a href="/admin_payment_options" class="annytab-basic-button">@payment_options_tt</a>
+                <a href="/admin_additional_services" class="annytab-basic-button">@additional_services_tt</a>
+                <a href="/admin_static_texts" class="annytab-basic-button">@static_texts_tt</a>
+                <a href="/admin_static_pages" class="annytab-basic-button">@static_pages_tt</a>
+                <a href="/admin_categories" class="annytab-basic-button">@categories_tt</a>
+                <a href="/admin_options" class="annytab-basic-button">@product_options_tt</a>
+                <a href="/admin_products" class="annytab-basic-button">@products_tt</a>
+                <a href="/admin_customers" class="annytab-basic-button">@customers_tt</a>
+                <a href="/admin_orders" class="annytab-basic-button">@orders_tt</a>
+                <a href="/admin_product_reviews" class="annytab-basic-button">@reviews_tt</a>
+                <a href="/admin_newsletters" class="annytab-basic-button">@newsletters_tt</a>
+                <a href="/admin_discount_codes" class="annytab-basic-button">@discount_codes_tt</a>
+                <a href="/admin_login/logout" class="annytab-basic-button">@log_out_tt</a>
             </div>
         </div>
         <div class="mainContent">
@@ -141,9 +140,9 @@
                 <span id="messageBoxMessage4" data-number="4" style="display:none">@message_box_message_4_tt</span>
                 <span id="messageBoxMessage5" data-number="5" style="display:none">@message_box_message_5_tt</span>
             </div>
-            <div id="messageBoxButtonPanel" style="clear: both; background-color: #dcdcdc;bottom: 0px; height: 44px; border-top: 1px solid #adadad;">
-                <input id="messageBoxCancelButton" type="button" class="button" value="@cancel_tt" style="width:80px;float:right;height:24px;margin:10px 15px 10px 0px;" />
-                <input id="messageBoxOkButton" type="button" class="button" value="@ok_tt" style="width:80px;float:right;height:24px;margin:10px 15px 10px 0px;" />
+            <div id="messageBoxButtonPanel" style="clear: both; background-color: #dcdcdc;bottom:0px;height:44px;border-top:1px solid #adadad;">
+                <input id="messageBoxCancelButton" type="button" class="annytab-basic-button" value="@cancel_tt" style="width:80px;float:right;height:24px;margin:10px 15px 10px 0px;" />
+                <input id="messageBoxOkButton" type="button" class="annytab-basic-button" value="@ok_tt" style="width:80px;float:right;height:24px;margin:10px 15px 10px 0px;" />
             </div>
         </div>
     </div>

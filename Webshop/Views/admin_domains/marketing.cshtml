@@ -24,62 +24,54 @@
     ViewBag.Title = marketing_tt + " - " + files_tt.ToLower();
 }
 
+@*Title*@
 <h1>@ViewBag.Title</h1>
 
-@*The menu bar*@
+@*Menu*@
 @Html.Partial("~/Views/admin_domains/_form_menu.cshtml")
 
 @*Action menu bar*@
-<div class="formMenuBar">
+<div class="annytab-form-menubar">
     @using (Html.BeginForm("add_marketing_file", "admin_domains", FormMethod.Post))
     {
         <input name="returnUrl" type="hidden" value="@returnUrl" />
         <input name="hiddenDomainId" type="hidden" value="@domain.id" />
         <div style="padding:2px;margin-bottom:4px;background-color:#f0f0f0;">
-            <select name="selectType" class="formSelect">
+            <select name="selectType" class="annytab-form-select">
                 <option value="google_shopping">Google Shopping</option>
             </select>
         </div>
         <div style="padding:2px;margin-bottom:4px;background-color:#f0f0f0;">
-            @(title_tt + ": ")<input name="txtTitle" type="text" class="formTextbox" />
+            <div class="annytab-form-label" style="width:100px;">@(title_tt + ": ")</div><input name="txtTitle" type="text" class="annytab-form-textbox" />
         </div>
         <div style="padding:2px;margin-bottom:4px;background-color:#f0f0f0;">
-            @(description_tt + ": ")<input name="txtDescription" type="text" class="formTextbox" />
+            <div class="annytab-form-label" style="width:100px;">@(description_tt + ": ")</div><input name="txtDescription" type="text" class="annytab-form-textbox" />
         </div>
-        <div style="padding:2px;margin-bottom:4px;background-color:#f0f0f0;">
-            <input type="submit" value="@(add_tt + "/" + update_tt)" />
-            <input type="button" value="@cancel_tt" onclick="@Html.Raw("location.href='/admin_domains" + returnUrl + "'")" />
+        <div style="padding:2px;background-color:#f0f0f0;">
+            <input type="submit" class="annytab-form-button" value="@(add_tt + "/" + update_tt)" />
+            <input type="button" class="annytab-form-button" value="@cancel_tt" onclick="@Html.Raw("location.href='/admin_domains" + returnUrl + "'")" />
         </div>
     }
 </div>
 
-@*List of user files*@
-<div class="listContainer">
-    <table class="listTable" style="width:800px;">
-        <tr>
-            <th class="listTh" style="text-align:left;width:600px;">@file_name_tt</th>
-            <th class="listTh" style="text-align:center;width:100px;">@download_tt</th>
-            <th class="listTh" style="text-align:center;width:100px;">@delete_tt</th>
-        </tr>
+@*List of marketing files*@
+<div class="annytab-list-container">
+    <div class="annytab-list-table" style="width:824px;">
+        <div class="annytab-list-row">
+            <div class="annytab-list-column-head" style="text-align:left;width:600px;">@file_name_tt</div>
+            <div class="annytab-list-column-head" style="text-align:center;width:100px;">@download_tt</div>
+            <div class="annytab-list-column-head" style="text-align:center;width:100px;">@delete_tt</div>
+        </div>
 
         @for (int i = 0; i < marketingFiles.Count; i++)
         {
-            if (i % 2 != 0)
-            {
-                @:<tr class="annytab-list-main-row">
-            }
-            else
-            {
-                @:<tr class="annytab-list-alt-row">
-            }
-
-            @*Columns*@
-            @:<td style="text-align:left;">@marketingFiles[i]</td>
-            @:<td style="text-align:center;"><input type="button" value="@download_tt" onclick="location.href='@Url.Action("download_marketing_file", "admin_domains", new { id = domain.id, file_name = marketingFiles[i], returnUrl = returnUrl })'" /></td>
-            @:<td style="text-align:center;"><input type="button" value="@delete_tt" onclick="location.href='@Url.Action("delete_marketing_file", "admin_domains", new { id = domain.id, file_name = marketingFiles[i], returnUrl = returnUrl })'" /></td>
-            @:</tr>
+            @:<div class="@(i % 2 != 0 ? "annytab-list-row-main" : "annytab-list-row-alt")">
+            @:<div class="annytab-list-column" style="text-align:left;width:600px;">@marketingFiles[i]</div>
+            @:<div class="annytab-list-column" style="text-align:center;width:100px;"><input type="button" class="annytab-form-button" value="@download_tt" onclick="location.href='@Url.Action("download_marketing_file", "admin_domains", new { id = domain.id, file_name = marketingFiles[i], returnUrl = returnUrl })'" /></div>
+            @:<div class="annytab-list-column" style="text-align:center;width:100px;"><input type="button" class="annytab-form-button" value="@delete_tt" onclick="location.href='@Url.Action("delete_marketing_file", "admin_domains", new { id = domain.id, file_name = marketingFiles[i], returnUrl = returnUrl })'" /></div>
+            @:</div>
         }
-    </table>
+    </div>
 </div>
 
 <div class="annytab-basic-space"></div>

@@ -6,11 +6,11 @@
     List<Language> languages = ViewBag.Languages;
     List<Country> countries = ViewBag.Countries;
     Customer customer = ViewBag.Customer;
+    KeyStringList tt = ViewBag.TranslatedTexts;
     string returnUrl = ViewBag.ReturnUrl;
     string error_message = ViewBag.ErrorMessage != null ? ViewBag.ErrorMessage : string.Empty;
 
     // Get translated texts
-    KeyStringList tt = ViewBag.TranslatedTexts;
     string customer_tt = tt.Get("customer");
     string new_tt = tt.Get("new");
     string edit_tt = tt.Get("edit");
@@ -50,161 +50,171 @@
     }
 }
 
+@*Title*@
 <h1>@ViewBag.Title</h1>
+
 @*Menu*@
 @Html.Partial("~/Views/admin_customers/_form_menu.cshtml")
 
 @*Main form*@
 @using (Html.BeginForm("edit", "admin_customers", FormMethod.Post))
 {
+    @*Hidden data*@
     <input name="returnUrl" type="hidden" value="@returnUrl" />
-    <div id="divErrors" class="formErrorMessage" style="@(error_message != "" ? "display:block;" : "display:none;")">@Html.Raw(error_message)</div>
-    <table style="width:100%;">
-        <tr style="@(customer.id != 0 ? "display:table-row;" : "display:none;")">
-            <td class="label">@(id_tt + ":")</td>
-            <td class="input"><input name="txtId" type="text" class="formTextbox" tabindex="-1" readonly="readonly" value="@customer.id" /></td>
-        </tr>
-        <tr>
-            <td class="label">@(language_tt + ":")</td>
-            <td class="input">
-                <select id="selectLanguage" name="selectLanguage" class="formSelect">
+    <div class="annytab-form-error-message" style="@(error_message != "" ? "display:block;" : "display:none;")">@Html.Raw(error_message)</div>
+    
+    @*Input form table*@
+    <div class="annytab-input-form-table">
+        <div class="annytab-input-form-row" style="@(customer.id != 0 ? "display:table-row;" : "display:none;")">
+            <div class="annytab-input-form-column-label">@(id_tt + ":")</div>
+            <div class="annytab-input-form-column-input"><input name="txtId" type="text" class="annytab-form-textbox" tabindex="-1" readonly="readonly" value="@customer.id" /></div>
+        </div>
+        <div class="annytab-input-form-row">
+            <div class="annytab-input-form-column-label">@(language_tt + ":")</div>
+            <div class="annytab-input-form-column-input">
+                <select id="selectLanguage" name="selectLanguage" class="annytab-form-select">
                     <option value="0" @(customer.language_id == 0 ? Html.Raw("selected='selected'") : Html.Raw(""))>@("-- " + no_choice_tt + " --")</option>
                     @foreach (Language language in languages)
                     {
                         <option value="@language.id" @(language.id == customer.language_id ? Html.Raw("selected='selected'") : Html.Raw(""))>@language.name</option>
                     }
                 </select>
-            </td>
-        </tr>
-        <tr>
-            <td class="label">@(email_tt + ":")</td>
-            <td class="input"><input name="txtEmail" type="text" class="formTextbox" value="@customer.email" /></td>
-        </tr>
-        <tr>
-            <td class="label">@(password_tt + ":")</td>
-            <td class="input"><input name="txtPassword" type="password" class="formTextbox" value="" /></td>
-        </tr>
-        <tr>
-            <td class="label">@(customer_type_tt + ":")</td>
-            <td class="input"><input name="customerType" type="radio" value="0" @(customer.customer_type == 0 ? Html.Raw("checked='checked'") : Html.Raw("")) />@company_tt
-            <input name="customerType" type="radio" value="1" @(customer.customer_type == 1 ? Html.Raw("checked='checked'") : Html.Raw("")) />@private_person_tt</td>
-        </tr>
-        <tr>
-            <td class="label">@(organization_number_tt + ":")</td>
-            <td class="input"><input name="txtOrgNumber" type="text" class="formTextbox" value="@customer.org_number" /></td>
-        </tr>
-        <tr>
-            <td class="label">@(vat_number_tt + ":")</td>
-            <td class="input"><input name="txtVatNumber" type="text" class="formTextbox" value="@customer.vat_number" /></td>
-        </tr>
-        <tr>
-            <td class="label">@(reference_tt + ":")</td>
-            <td class="input"><input name="txtContactName" type="text" class="formTextbox" value="@customer.contact_name" /></td>
-        </tr>
-        <tr>
-            <td class="label">@(phone_number_tt + ":")</td>
-            <td class="input"><input name="txtPhoneNumber" type="text" class="formTextbox" value="@customer.phone_number" /></td>
-        </tr>
-        <tr>
-            <td class="label">@(mobile_phone_number_tt + ":")</td>
-            <td class="input"><input name="txtMobilePhoneNumber" type="text" class="formTextbox" value="@customer.mobile_phone_number" /></td>
-        </tr>
-        <tr>
-            <td class="label">@(want_newsletter_tt + ":")</td>
-            <td class="input"><input name="cbNewsletter" type="checkbox" class="annytab-form-checkbox" value="true" @(customer != null && customer.newsletter == true ? Html.Raw("checked='checked'") : Html.Raw("")) /></td>
-        </tr>
-        <tr>
-            <td class="label">@("Facebook user id:")</td>
-            <td class="input"><input name="txtFacebookUserId" type="text" class="formTextbox" value="@customer.facebook_user_id" /></td>
-        </tr>
-        <tr>
-            <td class="label">@("Google user id:")</td>
-            <td class="input"><input name="txtGoogleUserId" type="text" class="formTextbox" value="@customer.google_user_id" /></td>
-        </tr>
-        <tr><td colspan="2">&nbsp;</td></tr>
-        <tr>
-            <td colspan="2" style="border-bottom:1px solid #cccccc;font-weight: bold;font-size:16px;">@invoice_address_tt</td>
-        </tr>
-        <tr>
-            <td class="label">@(name_tt + ":")</td>
-            <td class="input"><input id="txtInvoiceName" name="txtInvoiceName" type="text" class="formTextbox" value="@customer.invoice_name" /></td>
-        </tr>
-        <tr>
-            <td class="label">@(address_tt + "1:")</td>
-            <td class="input"><input id="txtInvoiceAddress1" name="txtInvoiceAddress1" type="text" class="formTextbox" value="@customer.invoice_address_1" /></td>
-        </tr>
-        <tr>
-            <td class="label">@(address_tt + "2:")</td>
-            <td class="input"><input id="txtInvoiceAddress2" name="txtInvoiceAddress2" type="text" class="formTextbox" value="@customer.invoice_address_2" /></td>
-        </tr>
-        <tr>
-            <td class="label">@(post_code_tt + ":")</td>
-            <td class="input"><input id="txtInvoicePostCode" name="txtInvoicePostCode" type="text" class="formTextbox" value="@customer.invoice_post_code" /></td>
-        </tr>
-        <tr>
-            <td class="label">@(city_tt + ":")</td>
-            <td class="input"><input id="txtInvoiceCity" name="txtInvoiceCity" type="text" class="formTextbox" value="@customer.invoice_city" /></td>
-        </tr>
-        <tr>
-            <td class="label">@(country_tt + ":")</td>
-            <td class="input">
-                <select id="selectInvoiceCountry" name="selectInvoiceCountry" class="formSelect">
+            </div>
+        </div>
+        <div class="annytab-input-form-row">
+            <div class="annytab-input-form-column-label">@(email_tt + ":")</div>
+            <div class="annytab-input-form-column-input"><input name="txtEmail" type="text" class="annytab-form-textbox" value="@customer.email" /></div>
+        </div>
+        <div class="annytab-input-form-row">
+            <div class="annytab-input-form-column-label">@(password_tt + ":")</div>
+            <div class="annytab-input-form-column-input"><input name="txtPassword" type="password" class="annytab-form-textbox" value="" /></div>
+        </div>
+        <div class="annytab-input-form-row">
+            <div class="annytab-input-form-column-label">@(customer_type_tt + ":")</div>
+            <div class="annytab-input-form-column-input">
+                <input name="customerType" type="radio" class="annytab-form-radio" value="0" @(customer.customer_type == 0 ? Html.Raw("checked='checked'") : Html.Raw("")) /><span style="vertical-align:middle;">@company_tt</span>
+                <input name="customerType" type="radio" class="annytab-form-radio" value="1" @(customer.customer_type == 1 ? Html.Raw("checked='checked'") : Html.Raw("")) /><span style="vertical-align:middle;">@private_person_tt</span>
+            </div>
+        </div>
+        <div class="annytab-input-form-row">
+            <div class="annytab-input-form-column-label">@(organization_number_tt + ":")</div>
+            <div class="annytab-input-form-column-input"><input name="txtOrgNumber" type="text" class="annytab-form-textbox" value="@customer.org_number" /></div>
+        </div>
+        <div class="annytab-input-form-row">
+            <div class="annytab-input-form-column-label">@(vat_number_tt + ":")</div>
+            <div class="annytab-input-form-column-input"><input name="txtVatNumber" type="text" class="annytab-form-textbox" value="@customer.vat_number" /></div>
+        </div>
+        <div class="annytab-input-form-row">
+            <div class="annytab-input-form-column-label">@(reference_tt + ":")</div>
+            <div class="annytab-input-form-column-input"><input name="txtContactName" type="text" class="annytab-form-textbox" value="@customer.contact_name" /></div>
+        </div>
+        <div class="annytab-input-form-row">
+            <div class="annytab-input-form-column-label">@(phone_number_tt + ":")</div>
+            <div class="annytab-input-form-column-input"><input name="txtPhoneNumber" type="text" class="annytab-form-textbox" value="@customer.phone_number" /></div>
+        </div>
+        <div class="annytab-input-form-row">
+            <div class="annytab-input-form-column-label">@(mobile_phone_number_tt + ":")</div>
+            <div class="annytab-input-form-column-input"><input name="txtMobilePhoneNumber" type="text" class="annytab-form-textbox" value="@customer.mobile_phone_number" /></div>
+        </div>
+        <div class="annytab-input-form-row">
+            <div class="annytab-input-form-column-label">@(want_newsletter_tt + ":")</div>
+            <div class="annytab-input-form-column-input"><input name="cbNewsletter" type="checkbox" class="annytab-form-checkbox" value="true" @(customer != null && customer.newsletter == true ? Html.Raw("checked='checked'") : Html.Raw("")) /></div>
+        </div>
+        <div class="annytab-input-form-row">
+            <div class="annytab-input-form-column-label">@("Facebook user id:")</div>
+            <div class="annytab-input-form-column-input"><input name="txtFacebookUserId" type="text" class="annytab-form-textbox" value="@customer.facebook_user_id" /></div>
+        </div>
+        <div class="annytab-input-form-row">
+            <div class="annytab-input-form-column-label">@("Google user id:")</div>
+            <div class="annytab-input-form-column-input"><input name="txtGoogleUserId" type="text" class="annytab-form-textbox" value="@customer.google_user_id" /></div>
+        </div>
+        <div class="annytab-basic-space"></div>
+        <div class="annytab-input-form-row">
+            <div class="annytab-input-form-column-label" style="border-bottom:1px solid #cccccc;font-weight:bold;font-size:16px;">@invoice_address_tt</div>
+            <div class="annytab-input-form-column-input" style="border-bottom:1px solid #cccccc;"></div>
+        </div>
+        <div class="annytab-input-form-row">
+            <div class="annytab-input-form-column-label">@(name_tt + ":")</div>
+            <div class="annytab-input-form-column-input"><input id="txtInvoiceName" name="txtInvoiceName" type="text" class="annytab-form-textbox" value="@customer.invoice_name" /></div>
+        </div>
+        <div class="annytab-input-form-row">
+            <div class="annytab-input-form-column-label">@(address_tt + "1:")</div>
+            <div class="annytab-input-form-column-input"><input id="txtInvoiceAddress1" name="txtInvoiceAddress1" type="text" class="annytab-form-textbox" value="@customer.invoice_address_1" /></div>
+        </div>
+        <div class="annytab-input-form-row">
+            <div class="annytab-input-form-column-label">@(address_tt + "2:")</div>
+            <div class="annytab-input-form-column-input"><input id="txtInvoiceAddress2" name="txtInvoiceAddress2" type="text" class="annytab-form-textbox" value="@customer.invoice_address_2" /></div>
+        </div>
+        <div class="annytab-input-form-row">
+            <div class="annytab-input-form-column-label">@(post_code_tt + ":")</div>
+            <div class="annytab-input-form-column-input"><input id="txtInvoicePostCode" name="txtInvoicePostCode" type="text" class="annytab-form-textbox" value="@customer.invoice_post_code" /></div>
+        </div>
+        <div class="annytab-input-form-row">
+            <div class="annytab-input-form-column-label">@(city_tt + ":")</div>
+            <div class="annytab-input-form-column-input"><input id="txtInvoiceCity" name="txtInvoiceCity" type="text" class="annytab-form-textbox" value="@customer.invoice_city" /></div>
+        </div>
+        <div class="annytab-input-form-row">
+            <div class="annytab-input-form-column-label">@(country_tt + ":")</div>
+            <div class="annytab-input-form-column-input">
+                <select id="selectInvoiceCountry" name="selectInvoiceCountry" class="annytab-form-select">
                     <option value="0" @(customer.invoice_country == 0 ? Html.Raw("selected='selected'") : Html.Raw(""))>@("-- " + no_choice_tt + " --")</option>
                     @foreach (Country country in countries)
                     {
                         <option value="@country.id" @(customer.invoice_country == country.id ? Html.Raw("selected='selected'") : Html.Raw(""))>@country.name</option>
                     }
                 </select>
-            </td>
-        </tr>
-        <tr><td colspan="2">&nbsp;</td></tr>
-        <tr>
-            <td colspan="2" style="border-bottom:1px solid #cccccc;font-weight:bold;font-size:16px;">@delivery_address_tt</td>
-        </tr>
-        <tr>
-            <td colspan="2" style="border-bottom:1px solid #cccccc;"><button id="copyInvoiceAddress">@copy_invoice_address_tt</button></td>
-        </tr>
-        <tr>
-            <td class="label">@(name_tt + ":")</td>
-            <td class="input"><input id="txtDeliveryName" name="txtDeliveryName" type="text" class="formTextbox" value="@customer.delivery_name" /></td>
-        </tr>
-        <tr>
-            <td class="label">@(address_tt + "1:")</td>
-            <td class="input"><input id="txtDeliveryAddress1" name="txtDeliveryAddress1" type="text" class="formTextbox" value="@customer.delivery_address_1" /></td>
-        </tr>
-        <tr>
-            <td class="label">@(address_tt + "2:")</td>
-            <td class="input"><input id="txtDeliveryAddress2" name="txtDeliveryAddress2" type="text" class="formTextbox" value="@customer.delivery_address_2" /></td>
-        </tr>
-        <tr>
-            <td class="label">@(post_code_tt + ":")</td>
-            <td class="input"><input id="txtDeliveryPostCode" name="txtDeliveryPostCode" type="text" class="formTextbox" value="@customer.delivery_post_code" /></td>
-        </tr>
-        <tr>
-            <td class="label">@(city_tt + ":")</td>
-            <td class="input"><input id="txtDeliveryCity" name="txtDeliveryCity" type="text" class="formTextbox" value="@customer.delivery_city" /></td>
-        </tr>
-        <tr>
-            <td class="label">@(country_tt + ":")</td>
-            <td class="input">
-                <select id="selectDeliveryCountry" name="selectDeliveryCountry" class="formSelect">
+            </div>
+        </div>
+        <div class="annytab-basic-space"></div>
+        <div class="annytab-input-form-row">
+            <div class="annytab-input-form-column-label" style="border-bottom:1px solid #cccccc;font-weight:bold;font-size:16px;">@delivery_address_tt</div>
+            <div class="annytab-input-form-column-input" style="border-bottom:1px solid #cccccc;"></div>
+        </div>
+        <div class="annytab-input-form-row">
+            <div class="annytab-input-form-column-label" style="border-bottom:1px solid #cccccc;"><button id="copyInvoiceAddress" class="annytab-form-button">@copy_invoice_address_tt</button></div>
+            <div class="annytab-input-form-column-input" style="border-bottom:1px solid #cccccc;"></div>
+        </div>
+        <div class="annytab-input-form-row">
+            <div class="annytab-input-form-column-label">@(name_tt + ":")</div>
+            <div class="annytab-input-form-column-input"><input id="txtDeliveryName" name="txtDeliveryName" type="text" class="annytab-form-textbox" value="@customer.delivery_name" /></div>
+        </div>
+        <div class="annytab-input-form-row">
+            <div class="annytab-input-form-column-label">@(address_tt + "1:")</div>
+            <div class="annytab-input-form-column-input"><input id="txtDeliveryAddress1" name="txtDeliveryAddress1" type="text" class="annytab-form-textbox" value="@customer.delivery_address_1" /></div>
+        </div>
+        <div class="annytab-input-form-row">
+            <div class="annytab-input-form-column-label">@(address_tt + "2:")</div>
+            <div class="annytab-input-form-column-input"><input id="txtDeliveryAddress2" name="txtDeliveryAddress2" type="text" class="annytab-form-textbox" value="@customer.delivery_address_2" /></div>
+        </div>
+        <div class="annytab-input-form-row">
+            <div class="annytab-input-form-column-label">@(post_code_tt + ":")</div>
+            <div class="annytab-input-form-column-input"><input id="txtDeliveryPostCode" name="txtDeliveryPostCode" type="text" class="annytab-form-textbox" value="@customer.delivery_post_code" /></div>
+        </div>
+        <div class="annytab-input-form-row">
+            <div class="annytab-input-form-column-label">@(city_tt + ":")</div>
+            <div class="annytab-input-form-column-input"><input id="txtDeliveryCity" name="txtDeliveryCity" type="text" class="annytab-form-textbox" value="@customer.delivery_city" /></div>
+        </div>
+        <div class="annytab-input-form-row">
+            <div class="annytab-input-form-column-label">@(country_tt + ":")</div>
+            <div class="annytab-input-form-column-input">
+                <select id="selectDeliveryCountry" name="selectDeliveryCountry" class="annytab-form-select">
                     <option value="0" @(customer.invoice_country == 0 ? Html.Raw("selected='selected'") : Html.Raw(""))>@("-- " + no_choice_tt + " --")</option>
                     @foreach (Country country in countries)
                     {
                         <option value="@country.id" @(customer.delivery_country == country.id ? Html.Raw("selected='selected'") : Html.Raw(""))>@country.name</option>
                     }
                 </select>
-            </td>
-        </tr>
-    </table>
+            </div>
+        </div>
+    </div>
 
-    // Save form button
+    @*Button panel*@
     <div style="display:block;border:1px solid #cccccc;margin:20px 0px 0px 0px;border-radius:4px;">
-        <input id="btnSave" type="submit" value="@save_tt" />
-        <input type="button" value="@cancel_tt" onclick="@Html.Raw("location.href='/admin_customers" + returnUrl + "'")" />
+        <input id="btnSave" type="submit" class="annytab-form-button" value="@save_tt" />
+        <input type="button" class="annytab-form-button" value="@cancel_tt" onclick="@Html.Raw("location.href='/admin_customers" + returnUrl + "'")" />
     </div>
 }
 
 @section scripts {
-    <script>$("#selectLanguage").focus();</script>
+    <script type="text/javascript">$("#selectLanguage").focus();</script>
 }

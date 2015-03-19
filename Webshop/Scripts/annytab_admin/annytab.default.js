@@ -5,17 +5,10 @@ $(document).ready(start);
 function start() 
 {
     // Register events
-    $("#inputTable").sortable({
-        items: 'tr:not(:first)', placeholder: 'sortPlaceholder', 'start': function (event, ui) {
-            var tds = $("#inputTable").find("tr").last().find("td").length;
-            ui.placeholder.html("<td colspan='" + tds.toString() + "'></td>")
-        }
+    $("#sortableTable").sortable({
+        items: '.annytab-sortable-row', placeholder: 'annytab-sortable-placeholder'
     });
-    $("#inputTable").disableSelection();
-    $("#divTable").sortable({
-        items: '.divTableRowContainer', placeholder: 'sortBigPlaceholder'
-    });
-    $("#divTable").disableSelection();
+    $("#sortableTable").disableSelection();
     $(document).on("click", "img[data-id='toggleVisibilityOptions']", toggleOptionsVisibility);
     $(document).on("click", "input[data-id='checkAllOptions']", checkAllOptions);
     $(document).on("keydown", "input:text, input:file, input[type=number], input:password, input:radio, button, input:checkbox, select", enterAsTab);
@@ -30,8 +23,7 @@ function start()
     $("#uploadOtherImages").change(previewOtherImages);
     $(document).on("click", "img[data-id='deleteOtherImage']", deleteOtherImage);
     $("#clearFileUpload").click(clearFileUpload);
-    $(".annytab-list-main-row").click(toggleRowBgColor);
-    $(".annytab-list-alt-row").click(toggleRowBgColor);
+    $(document).on("click", ".annytab-list-row-main, .annytab-list-row-alt", toggleRowBgColor);
     $("input[data-id='deletePost']").each(function()
     {
         var deleteButton = $(this);
@@ -116,10 +108,10 @@ function addNewRow()
     var control = $(this);
 
     // Get the table
-    var table = $("#inputTable")
+    var table = $("#sortableTable")
 
     // Get the current row
-    var currentRow = control.closest("tr");
+    var currentRow = control.closest(".annytab-sortable-row");
 
     if (currentRow.find(":text").val() == "")
     {
@@ -145,7 +137,7 @@ function addNewRow()
         tableRowClone.insertAfter(currentRow);
 
         // Set focus to the new row
-        currentRow.next("tr").find(":text").first().focus();
+        currentRow.next(".annytab-sortable-row").find(":text").first().focus();
     }
 
 } // End of the AddNewOptionRow function
@@ -154,19 +146,22 @@ function addNewRow()
 function deleteRow()
 {
     // Count the number of rows in the table
-    var table = $("#inputTable");
-    var rowCount = table.find("tr").length;
+    var table = $("#sortableTable");
+    var rowCount = table.find(".annytab-sortable-row").length;
 
-    if (rowCount > 2) {
+    if (rowCount > 2)
+    {
         // Get the closest table row
-        var tableRow = $(this).closest("tr");
+        var tableRow = $(this).closest(".annytab-sortable-row");
 
         // Check if we are on the first row
-        if (tableRow.prevAll().length == 1) {
+        if (tableRow.prevAll().length == 1)
+        {
             // Set focus to a new row
             tableRow.next().find(":text").first().focus();
         }
-        else {
+        else
+        {
             // Set focus to a new row
             tableRow.prev().find(":text").first().focus();
         }
@@ -177,7 +172,7 @@ function deleteRow()
     else
     {
         // Set focus to the first textbox in the first row
-        table.find("tr").eq(1).find(":text").first().focus();
+        table.find(".annytab-sortable-row").eq(1).find(":text").first().focus();
     }
 
 } // End of the deleteOptionRow method
@@ -400,7 +395,7 @@ function previewOtherImages(event)
             // Load the image
             reader.onload = function (e)
             {
-                var control = "<div data-id='otherImageContainer'" + " data-temp='true' " + "class='annytab-other-image-square' >";
+                var control = "<div data-id='otherImageContainer'" + " data-temp='true' " + "class='annytab-image-container' >";
                 control += "<img src='" + e.target.result + "' style='max-width:128px;' />";
                 control += "</div>";
 

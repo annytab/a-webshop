@@ -9,11 +9,11 @@
     List<Option> standardOptions = ViewBag.StandardOptions;
     OptionType translatedOptionType = ViewBag.TranslatedOptionType;
     List<Option> translatedOptions = ViewBag.TranslatedOptions;
+    KeyStringList tt = ViewBag.TranslatedTexts;
     string returnUrl = ViewBag.ReturnUrl;
     string error_message = ViewBag.ErrorMessage != null ? ViewBag.ErrorMessage : string.Empty;
     
     // Get translated texts
-    KeyStringList tt = ViewBag.TranslatedTexts;
     string product_options_tt = tt.Get("product_options");
     string translate_tt = tt.Get("translate");
     string language_tt = tt.Get("language");
@@ -28,64 +28,73 @@
     ViewBag.Title = product_options_tt + " - " + translate_tt.ToLower();
 }
 
+@*Title*@
 <h1>@ViewBag.Title</h1>
+
 @*Menu*@
 @Html.Partial("~/Views/admin_options/_form_menu.cshtml")
 
 @*Main form*@
 @using (Html.BeginForm("translate", "admin_options", FormMethod.Post))
 {
+    @*Hidden data*@
     <input name="returnUrl" type="hidden" value="@returnUrl" />
-    <div id="divErrors" class="formErrorMessage" style="@(error_message != "" ? "display:block;" : "display:none;")">@Html.Raw(error_message)</div>
-    <input type="hidden" name="hiddenOptionTypeId" class="formTextbox" value="@standardOptionType.id" />
-    <table style="width:100%;">
-        <tr>
-            <td class="label">@(language_tt + ":")</td>
-            <td class="input">
-                <select id="selectLanguage" name="selectLanguage" class="formSelect">
+    <div class="annytab-form-error-message" style="@(error_message != "" ? "display:block;" : "display:none;")">@Html.Raw(error_message)</div>
+    <input type="hidden" name="hiddenOptionTypeId" value="@standardOptionType.id" />
+    
+    @*Input form table*@
+    <div class="annytab-input-form-table">
+        <div class="annytab-input-form-row">
+            <div class="annytab-input-form-column-label">@(language_tt + ":")</div>
+            <div class="annytab-input-form-column-input">
+                <select id="selectLanguage" name="selectLanguage" class="annytab-form-select">
                     <option value="0" data-url="@("/admin_options/translate/" + standardOptionType.id.ToString() + "?returnUrl=" + Server.UrlEncode(returnUrl))" @(languageId == 0 ? Html.Raw("selected='selected'") : Html.Raw(""))>@("-- " + no_choice_tt + " --")</option>
                     @foreach (Language language in languages)
                     {
                         <option value="@language.id" data-url="@("/admin_options/translate/" + standardOptionType.id.ToString() + "?returnUrl=" + Server.UrlEncode(returnUrl) + "&lang=" + language.id.ToString())" @(language.id == languageId ? Html.Raw("selected='selected'") : Html.Raw(""))>@language.name</option>
                     }
                 </select>
-            </td>
-        </tr>
-        <tr><td colspan="2">&nbsp;</td></tr>
-        <tr>
-            <td class="label">@(title_tt + ":")</td>
-            <td class="input"><input name="txtStandardTitle" type="text" class="formTextbox" tabindex="-1" readonly="readonly" value="@standardOptionType.title" /></td>
-        </tr>
-        <tr>
-            <td class="label">&nbsp;</td>
-            <td class="input"><input name="txtTranslatedTitle" type="text" class="formTextbox" value="@(translatedOptionType != null ? translatedOptionType.title : "")" @(languageId == 0 ? Html.Raw("readonly='readonly'") : Html.Raw("")) /></td>
-        </tr>
-    </table>
+            </div>
+        </div>
+        <div class="annytab-basic-space"></div>
+        <div class="annytab-input-form-row">
+            <div class="annytab-input-form-column-label">@(title_tt + ":")</div>
+            <div class="annytab-input-form-column-input"><input name="txtStandardTitle" type="text" class="annytab-form-textbox" tabindex="-1" readonly="readonly" value="@standardOptionType.title" /></div>
+        </div>
+        <div class="annytab-input-form-row">
+            <div class="annytab-input-form-column-label">&nbsp;</div>
+            <div class="annytab-input-form-column-input"><input name="txtTranslatedTitle" type="text" class="annytab-form-textbox" value="@(translatedOptionType != null ? translatedOptionType.title : "")" @(languageId == 0 ? Html.Raw("readonly='readonly'") : Html.Raw("")) /></div>
+        </div>
+    </div>
+    
+    <div class="annytab-basic-space"></div>
 
-    // Option input table
-    <div class="inputTableContainer" style="margin:20px 0px 0px 0px;@(standardOptions.Count == 0 ? "display:none" :"")">
-        <table id="optionsInputTable" class="listTable" style="width:280px;border-collapse:collapse;">
-            <tr>
-                <th class="inputTableTh" style="width:100px;">@id_tt</th>
-                <th class="inputTableTh" style="width:100px;">@title_tt</th>
-                <th class="inputTableTh" style="width:100px;">@(translated_tt + " " + title_tt.ToLower())</th>
-            </tr>
-            @for (int i = 0; i < standardOptions.Count; i++)
-            {
-                <tr>
-                    <td><input name="optionId" type="text" class="inputTableTextbox" tabindex="-1" readonly="readonly" value="@standardOptions[i].id" /></td>
-                    <td><input name="optionStandardTitle" type="text" class="inputTableTextbox" tabindex="-1" readonly="readonly" value="@standardOptions[i].title" /></td>
-                    <td><input name="optionTranslatedTitle" type="text" class="inputTableTextbox" value="@(translatedOptions.Count > i ? translatedOptions[i].title : "")" @(languageId == 0 ? Html.Raw("readonly='readonly'") : Html.Raw("")) /></td>
-                </tr>
-            }
-        </table>
+    @*Options input table*@
+    <div class="annytab-sortable-container" style="@(standardOptions.Count == 0 ? "display:none" :"")">
+        <div class="annytab-sortable-table">
+            <div class="annytab-sortable-table" style="width:518px;">
+                <div class="annytab-sortable-row">
+                    <div class="annytab-sortable-column-head" style="width:100px;">@id_tt</div>
+                    <div class="annytab-sortable-column-head" style="width:200px;">@title_tt</div>
+                    <div class="annytab-sortable-column-head" style="width:200px;">@(translated_tt + " " + title_tt.ToLower())</div>
+                </div>
+                @for (int i = 0; i < standardOptions.Count; i++)
+                {
+                    <div class="annytab-sortable-row">
+                        <div class="annytab-sortable-column" style="width:100px;"><input name="optionId" type="text" class="annytab-sortable-textbox" tabindex="-1" readonly="readonly" value="@standardOptions[i].id" /></div>
+                        <div class="annytab-sortable-column" style="width:200px;"><input name="optionStandardTitle" type="text" class="annytab-sortable-textbox" tabindex="-1" readonly="readonly" value="@standardOptions[i].title" /></div>
+                        <div class="annytab-sortable-column" style="width:200px;"><input name="optionTranslatedTitle" type="text" class="annytab-sortable-textbox" value="@(translatedOptions.Count > i ? translatedOptions[i].title : "")" @(languageId == 0 ? Html.Raw("readonly='readonly'") : Html.Raw("")) /></div>
+                    </div>
+                }
+            </div>
+        </div>
     </div>
 
-    // Save form button
+    @*Button panel*@
     <div style="display:block;border:1px solid #cccccc;margin:20px 0px 0px 0px;border-radius:4px;">
-        <input id="btnSave" type="submit" value="@translate_tt" @(languageId == 0 ? Html.Raw("disabled='disabled'") : Html.Raw("")) />
-        <input data-id="deletePost" type="button" value="@delete_tt" @(Html.Raw("data-url='/admin_options/delete/" + standardOptionType.id.ToString() + "?returnUrl=" + Server.UrlEncode(returnUrl) + "&lang=" + languageId.ToString() + "'")) @(languageId == 0 ? Html.Raw("disabled='disabled'") : Html.Raw("")) />
-        <input type="button" value="@cancel_tt" onclick="@Html.Raw("location.href='/admin_options" + returnUrl + "'")" />
+        <input id="btnSave" type="submit" class="annytab-form-button" value="@translate_tt" @(languageId == 0 ? Html.Raw("disabled='disabled'") : Html.Raw("")) />
+        <input data-id="deletePost" type="button" class="annytab-form-button" value="@delete_tt" @(Html.Raw("data-url='/admin_options/delete/" + standardOptionType.id.ToString() + "?returnUrl=" + Server.UrlEncode(returnUrl) + "&lang=" + languageId.ToString() + "'")) @(languageId == 0 ? Html.Raw("disabled='disabled'") : Html.Raw("")) />
+        <input type="button" class="annytab-form-button" value="@cancel_tt" onclick="@Html.Raw("location.href='/admin_options" + returnUrl + "'")" />
     </div>
 }
 

@@ -5,6 +5,7 @@
     // Get the form data
     QueryParams parameters = ViewBag.QueryParams;
     string queryString = QueryParams.GetQueryString(parameters);
+    KeyStringList tt = ViewBag.TranslatedTexts;
     
     // Create a clean string with keywords
     string cleanKeywords = parameters.keywords.Replace("+", "");
@@ -23,7 +24,6 @@
     List<Domain> domains = Domain.GetBySearch(words, parameters.page_size, parameters.current_page, parameters.sort_field, parameters.sort_order);
 
     // Get translated texts
-    KeyStringList tt = ViewBag.TranslatedTexts;
     string domain_tt = tt.Get("domain");
     string list_tt = tt.Get("list");
     string id_tt = tt.Get("id");
@@ -43,49 +43,43 @@
     ViewBag.Title = domain_tt + " - " + list_tt.ToLower();
 }
 
+@*Title*@
 <h1>@ViewBag.Title</h1>
+
+@*Menu*@
 @Html.Partial("~/Views/admin_domains/_form_menu.cshtml")
 
-@*List of static texts*@
-<div class="listContainer">
-    <table class="listTable" style="width:900px;">
-        <tr>
-            <th class="listTh" style="text-align:center;width:100px;">@id_tt</th>
-            <th class="listTh" style="text-align:left;width:200px;">@domain_name_tt</th>
-            <th class="listTh" style="text-align:center;width:100px;">@edit_tt</th>
-            <th class="listTh" style="text-align:center;width:100px;">@images_tt</th>
-            <th class="listTh" style="text-align:center;width:150px;">@sitemap_tt</th>
-            <th class="listTh" style="text-align:center;width:150px;">@marketing_tt</th>
-            <th class="listTh" style="text-align:center;width:100px;">@delete_tt</th>
-        </tr>
+@*List of domains*@
+<div class="annytab-list-container">
+    <div class="annytab-list-table" style="width:956px;">
+        <div class="annytab-list-row">
+            <div class="annytab-list-column-head" style="text-align:center;width:100px;">@id_tt</div>
+            <div class="annytab-list-column-head" style="text-align:left;width:200px;">@domain_name_tt</div>
+            <div class="annytab-list-column-head" style="text-align:center;width:100px;">@edit_tt</div>
+            <div class="annytab-list-column-head" style="text-align:center;width:100px;">@images_tt</div>
+            <div class="annytab-list-column-head" style="text-align:center;width:150px;">@sitemap_tt</div>
+            <div class="annytab-list-column-head" style="text-align:center;width:150px;">@marketing_tt</div>
+            <div class="annytab-list-column-head" style="text-align:center;width:100px;">@delete_tt</div>
+        </div>
 
         @for (int i = 0; i < domains.Count; i++)
         {
-            if (i % 2 != 0)
-            {
-                @:<tr class="annytab-list-main-row">
-            }
-            else
-            {
-                @:<tr class="annytab-list-alt-row">
-            }
-
-            @*Columns*@
-            @:<td style="text-align:center;">@domains[i].id.ToString()</td>
-            @:<td style="text-align:left;">@domains[i].domain_name</td>
-            @:<td style="text-align:center;"><input type="button" value="@edit_tt" onclick="location.href='@Url.Action("edit", "admin_domains", new { id = domains[i].id, returnUrl = queryString })'" /></td>
-            @:<td style="text-align:center;"><input type="button" value="@images_tt" onclick="location.href='@Url.Action("images", "admin_domains", new { id = domains[i].id, returnUrl = queryString })'" /></td>
-            @:<td style="text-align:center;"><input type="button" value="@sitemap_tt" onclick="location.href='@Url.Action("sitemap", "admin_domains", new { id = domains[i].id, returnUrl = queryString })'" /></td>
-            @:<td style="text-align:center;"><input type="button" value="@marketing_tt" onclick="location.href='@Url.Action("marketing", "admin_domains", new { id = domains[i].id, returnUrl = queryString })'" /></td>
-            @:<td style="text-align:center;"><input data-id="deletePost" type="button" value="@delete_tt" @(Html.Raw("data-url='/admin_domains/delete/" + domains[i].id + "?returnUrl=" + Server.UrlEncode(queryString) + "'")) /></td>
-            @:</tr>
+            @:<div class="@(i % 2 != 0 ? "annytab-list-row-main" : "annytab-list-row-alt")">
+            @:<div class="annytab-list-column" style="text-align:center;width:100px;">@domains[i].id.ToString()</div>
+            @:<div class="annytab-list-column" style="text-align:left;width:200px;">@domains[i].domain_name</div>
+            @:<div class="annytab-list-column" style="text-align:center;width:100px;"><input type="button" class="annytab-form-button" value="@edit_tt" onclick="location.href='@Url.Action("edit", "admin_domains", new { id = domains[i].id, returnUrl = queryString })'" /></div>
+            @:<div class="annytab-list-column" style="text-align:center;width:100px;"><input type="button" class="annytab-form-button" value="@images_tt" onclick="location.href='@Url.Action("images", "admin_domains", new { id = domains[i].id, returnUrl = queryString })'" /></div>
+            @:<div class="annytab-list-column" style="text-align:center;width:150px;"><input type="button" class="annytab-form-button" value="@sitemap_tt" onclick="location.href='@Url.Action("sitemap", "admin_domains", new { id = domains[i].id, returnUrl = queryString })'" /></div>
+            @:<div class="annytab-list-column" style="text-align:center;width:150px;"><input type="button" class="annytab-form-button" value="@marketing_tt" onclick="location.href='@Url.Action("marketing", "admin_domains", new { id = domains[i].id, returnUrl = queryString })'" /></div>
+            @:<div class="annytab-list-column" style="text-align:center;width:100px;"><input data-id="deletePost" type="button" class="annytab-form-button" value="@delete_tt" @(Html.Raw("data-url='/admin_domains/delete/" + domains[i].id + "?returnUrl=" + Server.UrlEncode(queryString) + "'")) /></div>
+            @:</div>
         }
-    </table>
+    </div>
 </div>
 
-@* Paging menu *@
+@*Paging menu*@
 @Html.Partial("/Views/shared_admin/_paging_menu.cshtml")
 
 @section scripts {
-    <script>$("#txtSearch").focus();</script>
+    <script type="text/javascript">$("#txtSearch").focus();</script>
 }

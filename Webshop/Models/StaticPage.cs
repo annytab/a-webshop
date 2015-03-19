@@ -992,7 +992,7 @@ public class StaticPage
     public static string GetValidSortField(string sortField)
     {
         // Make sure that the sort field is valid
-        if (sortField != "id" && sortField != "link_name" && sortField != "title")
+        if (sortField != "id" && sortField != "link_name" && sortField != "title" && sortField != "inactive")
         {
             sortField = "id";
         }

@@ -11,13 +11,11 @@
     Product product = ViewBag.Product;
     List<ProductOptionType> productOptionTypes = ViewBag.ProductOptionTypes;
     Dictionary<Int32, List<ProductOption>> productOptions = ViewBag.ProductOptions;
+    KeyStringList tt = ViewBag.TranslatedTexts;
     string returnUrl = ViewBag.ReturnUrl;
-
-    // Set the error message
     string error_message = ViewBag.ErrorMessage != null ? ViewBag.ErrorMessage : string.Empty;
 
     // Get translated texts
-    KeyStringList tt = ViewBag.TranslatedTexts;
     string new_tt = tt.Get("new");
     string edit_tt = tt.Get("edit");
     string product_tt = tt.Get("product");
@@ -101,6 +99,7 @@
     }
 }
 
+@*Title*@
 <h1>@ViewBag.Title</h1>
 
 @*Menu*@
@@ -109,227 +108,230 @@
 @*Main form*@
 @using (Html.BeginForm("edit", "admin_products", FormMethod.Post))
 {
+    @*Hidden data*@
     <input name="returnUrl" type="hidden" value="@returnUrl" />
-    <div id="divErrors" class="formErrorMessage" style="@(error_message != "" ? "display:block;" : "display:none;")">@Html.Raw(error_message)</div>
-    <table style="clear:both;width:100%;">
-        <tr>
-            <td class="label">@(category_tt + ":")</td>
-            <td class="input">
-                <select id="selectCategory" name="selectCategory" class="formSelect">
+    <div class="annytab-form-error-message" style="@(error_message != "" ? "display:block;" : "display:none;")">@Html.Raw(error_message)</div>
+    
+    @*Input form table*@
+    <div class="annytab-input-form-table">
+        <div class="annytab-input-form-row">
+            <div class="annytab-input-form-column-label">@(category_tt + ":")</div>
+            <div class="annytab-input-form-column-input">
+                <select id="selectCategory" name="selectCategory" class="annytab-form-select">
                     <option value="0" @(product.category_id == 0 ? Html.Raw("selected='selected'") : Html.Raw(""))>@("-- " + no_choice_tt + " --")</option>
                     @CreateChildOptions(0, mainCategories, product.category_id, domain.back_end_language)
                 </select>
-            </td>
-        </tr>
-        <tr style="@(product.id != 0 ? "display:table-row;" : "display:none;")">
-            <td class="label">@(id_tt + ":")</td>
-            <td class="input"><input name="txtId" type="text" class="formTextbox" tabindex="-1" readonly="readonly" value="@product.id" /></td>
-        </tr>
-        <tr>
-            <td class="label">@(title_tt + ":")</td>
-            <td class="input"><input name="txtTitle" type="text" class="formTextbox" value="@product.title" /></td>
-        </tr>
-        <tr>
-            <td class="label">@(product_code_tt + ":")</td>
-            <td class="input"><input name="txtProductCode" type="text" class="formTextbox" value="@product.product_code" /></td>
-        </tr>
-        <tr>
-            <td class="label">@(manufacturer_code_tt + ":")</td>
-            <td class="input"><input name="txtManufacturerCode" type="text" class="formTextbox" value="@product.manufacturer_code" /></td>
-        </tr>
-        <tr>
-            <td class="label">@(gtin_tt.ToUpper() + ":")</td>
-            <td class="input"><input name="txtGtin" type="text" class="formTextbox" value="@product.gtin" /></td>
-        </tr>
-        <tr>
-            <td class="label">@(price_tt + ":")</td>
-            <td class="input"><input name="txtPrice" type="number" step="any" class="formTextbox" value="@product.unit_price.ToString(CultureInfo.InvariantCulture)" /></td>
-        </tr>
-        <tr>
-            <td class="label">@(freight_tt + ":")</td>
-            <td class="input"><input name="txtFreight" type="number" step="any" class="formTextbox" value="@product.unit_freight.ToString(CultureInfo.InvariantCulture)" /></td>
-        </tr>
-        <tr>
-            <td class="label">@(toll_freight_addition_tt + ":")</td>
-            <td class="input"><input name="txtTollFreight" type="number" step="any" class="formTextbox" value="@product.toll_freight_addition.ToString(CultureInfo.InvariantCulture)" /></td>
-        </tr>
-        <tr>
-            <td class="label">@(unit_tt + ":")</td>
-            <td class="input">
-                <select name="selectUnit" class="formSelect">
+            </div>
+        </div>
+        <div class="annytab-input-form-row" style="@(product.id != 0 ? "display:table-row;" : "display:none;")">
+            <div class="annytab-input-form-column-label">@(id_tt + ":")</div>
+            <div class="annytab-input-form-column-input"><input name="txtId" type="text" class="annytab-form-textbox" tabindex="-1" readonly="readonly" value="@product.id" /></div>
+        </div>
+        <div class="annytab-input-form-row">
+            <div class="annytab-input-form-column-label">@(title_tt + ":")</div>
+            <div class="annytab-input-form-column-input"><input name="txtTitle" type="text" class="annytab-form-textbox" value="@product.title" /></div>
+        </div>
+        <div class="annytab-input-form-row">
+            <div class="annytab-input-form-column-label">@(product_code_tt + ":")</div>
+            <div class="annytab-input-form-column-input"><input name="txtProductCode" type="text" class="annytab-form-textbox" value="@product.product_code" /></div>
+        </div>
+        <div class="annytab-input-form-row">
+            <div class="annytab-input-form-column-label">@(manufacturer_code_tt + ":")</div>
+            <div class="annytab-input-form-column-input"><input name="txtManufacturerCode" type="text" class="annytab-form-textbox" value="@product.manufacturer_code" /></div>
+        </div>
+        <div class="annytab-input-form-row">
+            <div class="annytab-input-form-column-label">@(gtin_tt.ToUpper() + ":")</div>
+            <div class="annytab-input-form-column-input"><input name="txtGtin" type="text" class="annytab-form-textbox" value="@product.gtin" /></div>
+        </div>
+        <div class="annytab-input-form-row">
+            <div class="annytab-input-form-column-label">@(price_tt + ":")</div>
+            <div class="annytab-input-form-column-input"><input name="txtPrice" type="number" step="any" class="annytab-form-textbox" value="@product.unit_price.ToString(CultureInfo.InvariantCulture)" /></div>
+        </div>
+        <div class="annytab-input-form-row">
+            <div class="annytab-input-form-column-label">@(freight_tt + ":")</div>
+            <div class="annytab-input-form-column-input"><input name="txtFreight" type="number" step="any" class="annytab-form-textbox" value="@product.unit_freight.ToString(CultureInfo.InvariantCulture)" /></div>
+        </div>
+        <div class="annytab-input-form-row">
+            <div class="annytab-input-form-column-label">@(toll_freight_addition_tt + ":")</div>
+            <div class="annytab-input-form-column-input"><input name="txtTollFreight" type="number" step="any" class="annytab-form-textbox" value="@product.toll_freight_addition.ToString(CultureInfo.InvariantCulture)" /></div>
+        </div>
+        <div class="annytab-input-form-row">
+            <div class="annytab-input-form-column-label">@(unit_tt + ":")</div>
+            <div class="annytab-input-form-column-input">
+                <select name="selectUnit" class="annytab-form-select">
                     @foreach (Unit unit in units)
                     {
                         <option value="@unit.id.ToString()" @(product.unit_id == unit.id ? Html.Raw("selected='selected'") : Html.Raw(""))>@(unit.name + " (" + unit.unit_code + ")")</option>
                     }
                 </select>
-            </td>
-        </tr>
-        <tr>
-            <td class="label">@(discount_tt + ":")</td>
-            <td class="input"><input name="txtDiscount" type="number" step="any" class="formTextbox" value="@product.discount.ToString(CultureInfo.InvariantCulture)" /></td>
-        </tr>
-        <tr>
-            <td class="label">@(mount_time_hours_tt + ":")</td>
-            <td class="input"><input name="txtMountTimeHours" type="number" step="any" class="formTextbox" value="@product.mount_time_hours.ToString(CultureInfo.InvariantCulture)" /></td>
-        </tr>
-        <tr>
-            <td class="label">@(show_tt + " " + as_tt.ToLower() + " " + from_tt.ToLower() + " " + price_tt.ToLower() + ":")</td>
-            <td class="input"><input name="cbFromPrice" type="checkbox" value="true" @(product != null && product.from_price == true ? Html.Raw("checked='checked'") : Html.Raw("")) /></td>
-        </tr>
-        <tr>
-            <td class="label">@(brand_tt + ":")</td>
-            <td class="input"><input name="txtBrand" type="text" class="formTextbox" value="@product.brand" /></td>
-        </tr>
-        <tr>
-            <td class="label">@(supplier_erp_id_tt + ":")</td>
-            <td class="input"><input name="txtSupplierErpId" type="text" class="formTextbox" value="@product.supplier_erp_id" /></td>
-        </tr>
-        <tr>
-            <td class="label">@(condition_tt + ":")</td>
-            <td class="input">
-                <select name="selectCondition" class="formSelect">
+            </div>
+        </div>
+        <div class="annytab-input-form-row">
+            <div class="annytab-input-form-column-label">@(discount_tt + ":")</div>
+            <div class="annytab-input-form-column-input"><input name="txtDiscount" type="number" step="any" class="annytab-form-textbox" value="@product.discount.ToString(CultureInfo.InvariantCulture)" /></div>
+        </div>
+        <div class="annytab-input-form-row">
+            <div class="annytab-input-form-column-label">@(mount_time_hours_tt + ":")</div>
+            <div class="annytab-input-form-column-input"><input name="txtMountTimeHours" type="number" step="any" class="annytab-form-textbox" value="@product.mount_time_hours.ToString(CultureInfo.InvariantCulture)" /></div>
+        </div>
+        <div class="annytab-input-form-row">
+            <div class="annytab-input-form-column-label">@(show_tt + " " + as_tt.ToLower() + " " + from_tt.ToLower() + " " + price_tt.ToLower() + ":")</div>
+            <div class="annytab-input-form-column-input"><input name="cbFromPrice" type="checkbox" class="annytab-form-checkbox" value="true" @(product != null && product.from_price == true ? Html.Raw("checked='checked'") : Html.Raw("")) /></div>
+        </div>
+        <div class="annytab-input-form-row">
+            <div class="annytab-input-form-column-label">@(brand_tt + ":")</div>
+            <div class="annytab-input-form-column-input"><input name="txtBrand" type="text" class="annytab-form-textbox" value="@product.brand" /></div>
+        </div>
+        <div class="annytab-input-form-row">
+            <div class="annytab-input-form-column-label">@(supplier_erp_id_tt + ":")</div>
+            <div class="annytab-input-form-column-input"><input name="txtSupplierErpId" type="text" class="annytab-form-textbox" value="@product.supplier_erp_id" /></div>
+        </div>
+        <div class="annytab-input-form-row">
+            <div class="annytab-input-form-column-label">@(condition_tt + ":")</div>
+            <div class="annytab-input-form-column-input">
+                <select name="selectCondition" class="annytab-form-select">
                     <option value="" @(product.condition == "" ? Html.Raw("selected='selected'") : Html.Raw(""))>@("-- " + no_choice_tt + " --")</option>
                     <option value="new" @(product.condition == "new" ? Html.Raw("selected='selected'") : Html.Raw(""))>@tt.Get("new")</option>
                     <option value="used" @(product.condition == "used" ? Html.Raw("selected='selected'") : Html.Raw(""))>@tt.Get("used")</option>
                     <option value="refurbished" @(product.condition == "refurbished" ? Html.Raw("selected='selected'") : Html.Raw(""))>@tt.Get("refurbished")</option>
                 </select>
-            </td>
-        </tr>
-        <tr>
-            <td class="label">@(variant_image_filename_tt + " (nike-[0]-[1].jpg):")</td>
-            <td class="input"><input name="txtVariantImageFileName" type="text" class="formTextbox" value="@product.variant_image_filename" /></td>
-        </tr>
-        <tr>
-            <td class="label">@(description_tt + ":")</td>
-            <td class="input"><textarea name="txtDescription" class="formTextarea" rows="6">@product.main_content</textarea></td>
-        </tr>
-        <tr>
-            <td class="label">@(extras_tt + ":")</td>
-            <td class="input"><textarea name="txtExtraContent" class="formTextarea" rows="6">@product.extra_content</textarea></td>
-        </tr>
-        <tr>
-            <td class="label">@(meta_description_tt + ":")</td>
-            <td class="input"><textarea name="txtMetaDescription" class="formTextarea" rows="3">@product.meta_description</textarea></td>
-        </tr>
-        <tr>
-            <td class="label">@(keywords_tt + ":")</td>
-            <td class="input"><input name="txtMetaKeywords" type="text" class="formTextbox" value="@product.meta_keywords" /></td>
-        </tr>
-        <tr>
-            <td class="label">@("Robots:")</td>
-            <td class="input">
-                <select name="selectMetaRobots" class="formSelect">
+            </div>
+        </div>
+        <div class="annytab-input-form-row">
+            <div class="annytab-input-form-column-label">@(variant_image_filename_tt + " (nike-[0]-[1].jpg):")</div>
+            <div class="annytab-input-form-column-input"><input name="txtVariantImageFileName" type="text" class="annytab-form-textbox" value="@product.variant_image_filename" /></div>
+        </div>
+        <div class="annytab-input-form-row">
+            <div class="annytab-input-form-column-label">@(description_tt + ":")</div>
+            <div class="annytab-input-form-column-input"><textarea name="txtDescription" class="annytab-form-textarea" rows="6">@product.main_content</textarea></div>
+        </div>
+        <div class="annytab-input-form-row">
+            <div class="annytab-input-form-column-label">@(extras_tt + ":")</div>
+            <div class="annytab-input-form-column-input"><textarea name="txtExtraContent" class="annytab-form-textarea" rows="6">@product.extra_content</textarea></div>
+        </div>
+        <div class="annytab-input-form-row">
+            <div class="annytab-input-form-column-label">@(meta_description_tt + ":")</div>
+            <div class="annytab-input-form-column-input"><textarea name="txtMetaDescription" class="annytab-form-textarea" rows="3">@product.meta_description</textarea></div>
+        </div>
+        <div class="annytab-input-form-row">
+            <div class="annytab-input-form-column-label">@(keywords_tt + ":")</div>
+            <div class="annytab-input-form-column-input"><input name="txtMetaKeywords" type="text" class="annytab-form-textbox" value="@product.meta_keywords" /></div>
+        </div>
+        <div class="annytab-input-form-row">
+            <div class="annytab-input-form-column-label">@("Robots:")</div>
+            <div class="annytab-input-form-column-input">
+                <select name="selectMetaRobots" class="annytab-form-select">
                     <option value="index, follow" @(product.meta_robots == "index, follow" ? Html.Raw("selected='selected'") : Html.Raw(""))>index, follow</option>
                     <option value="index, nofollow" @(product.meta_robots == "index, nofollow" ? Html.Raw("selected='selected'") : Html.Raw(""))>index, nofollow</option>
                     <option value="noindex, follow" @(product.meta_robots == "noindex, follow" ? Html.Raw("selected='selected'") : Html.Raw(""))>noindex, follow</option>
                     <option value="noindex, nofollow" @(product.meta_robots == "noindex, nofollow" ? Html.Raw("selected='selected'") : Html.Raw(""))>noindex, nofollow</option>
                 </select>
-            </td>
-        </tr>
-        <tr>
-            <td class="label">@(page_name_tt + ":")</td>
-            <td class="input"><input name="txtPageName" type="text" class="formTextbox" value="@product.page_name" /></td>
-        </tr>
-        <tr>
-            <td class="label">@(availability_status_tt)</td>
-            <td class="input">
-                <select name="selectAvailabilityStatus" class="formSelect">
+            </div>
+        </div>
+        <div class="annytab-input-form-row">
+            <div class="annytab-input-form-column-label">@(page_name_tt + ":")</div>
+            <div class="annytab-input-form-column-input"><input name="txtPageName" type="text" class="annytab-form-textbox" value="@product.page_name" /></div>
+        </div>
+        <div class="annytab-input-form-row">
+            <div class="annytab-input-form-column-label">@(availability_status_tt)</div>
+            <div class="annytab-input-form-column-input">
+                <select name="selectAvailabilityStatus" class="annytab-form-select">
                     <option value="" @(product.availability_status == "" ? Html.Raw("selected='selected'") : Html.Raw(""))>@("-- " + no_choice_tt + " --")</option>
                     <option value="availability_in_stock" @(product.availability_status == "availability_in_stock" ? Html.Raw("selected='selected'") : Html.Raw(""))>@availability_in_stock_tt</option>
                     <option value="availability_out_of_stock" @(product.availability_status == "availability_out_of_stock" ? Html.Raw("selected='selected'") : Html.Raw(""))>@availability_out_of_stock_tt</option>
                     <option value="availability_to_order" @(product.availability_status == "availability_to_order" ? Html.Raw("selected='selected'") : Html.Raw(""))>@availability_to_order_tt</option>
                     <option value="availability_preorder" @(product.availability_status == "availability_preorder" ? Html.Raw("selected='selected'") : Html.Raw(""))>@availability_preorder_tt</option>
                 </select>
-            </td>
-        </tr>
-        <tr>
-            <td class="label">@(availability_date_tt + " (yyyy-mm-dd):")</td>
-            <td class="input"><input id="txtAvailabilityDate" name="txtAvailabilityDate" type="text" class="formTextbox" value="@product.availability_date.ToString("yyyy-MM-dd")" /></td>
-        </tr>
-        <tr>
-            <td class="label">@(delivery_time_tt + ":")</td>
-            <td class="input"><input name="txtDeliveryTime" type="text" class="formTextbox" value="@product.delivery_time" /></td>
-        </tr>
-        <tr>
-            <td class="label">@(affiliate_link_tt + ":")</td>
-            <td class="input"><input name="txtAffiliateLink" type="text" class="formTextbox" value="@product.affiliate_link" /></td>
-        </tr>
-        <tr>
-            <td class="label">@(value_added_tax_tt + ":")</td>
-            <td class="input">
-                <select name="selectValueAddedTax" class="formSelect">
+            </div>
+        </div>
+        <div class="annytab-input-form-row">
+            <div class="annytab-input-form-column-label">@(availability_date_tt + " (yyyy-mm-dd):")</div>
+            <div class="annytab-input-form-column-input"><input id="txtAvailabilityDate" name="txtAvailabilityDate" type="text" class="annytab-form-textbox" value="@product.availability_date.ToString("yyyy-MM-dd")" /></div>
+        </div>
+        <div class="annytab-input-form-row">
+            <div class="annytab-input-form-column-label">@(delivery_time_tt + ":")</div>
+            <div class="annytab-input-form-column-input"><input name="txtDeliveryTime" type="text" class="annytab-form-textbox" value="@product.delivery_time" /></div>
+        </div>
+        <div class="annytab-input-form-row">
+            <div class="annytab-input-form-column-label">@(affiliate_link_tt + ":")</div>
+            <div class="annytab-input-form-column-input"><input name="txtAffiliateLink" type="text" class="annytab-form-textbox" value="@product.affiliate_link" /></div>
+        </div>
+        <div class="annytab-input-form-row">
+            <div class="annytab-input-form-column-label">@(value_added_tax_tt + ":")</div>
+            <div class="annytab-input-form-column-input">
+                <select name="selectValueAddedTax" class="annytab-form-select">
                     @foreach (ValueAddedTax valueAddedTax in valueAddedTaxes)
                     {
                         <option value="@valueAddedTax.id.ToString()" @(product.value_added_tax_id == valueAddedTax.id ? Html.Raw("selected='selected'") : Html.Raw(""))>@((valueAddedTax.value * 100).ToString() + "%")</option>
                     }
                 </select>
-            </td>
-        </tr>
-        <tr>
-            <td class="label">@(account_code_tt + ":")</td>
-            <td class="input"><input name="txtAccountCode" type="text" class="formTextbox" value="@product.account_code" /></td>
-        </tr>
-        <tr>
-            <td class="label">@(unit_pricing_measure_tt + ":")</td>
-            <td class="input"><input name="txtUnitPricingMeasure" type="number" class="formTextbox" step="any" value="@product.unit_pricing_measure.ToString(CultureInfo.InvariantCulture)" /></td>
-        </tr>
-        <tr>
-            <td class="label">@(unit_pricing_base_measure_tt + ":")</td>
-            <td class="input"><input name="txtUnitPricingBaseMeasure" type="number" class="formTextbox" step="1" value="@product.unit_pricing_base_measure.ToString()" /></td>
-        </tr>
-        <tr>
-            <td class="label">@(comparison_unit_tt + ":")</td>
-            <td class="input">
-                <select name="selectComparisonUnit" class="formSelect">
+            </div>
+        </div>
+        <div class="annytab-input-form-row">
+            <div class="annytab-input-form-column-label">@(account_code_tt + ":")</div>
+            <div class="annytab-input-form-column-input"><input name="txtAccountCode" type="text" class="annytab-form-textbox" value="@product.account_code" /></div>
+        </div>
+        <div class="annytab-input-form-row">
+            <div class="annytab-input-form-column-label">@(unit_pricing_measure_tt + ":")</div>
+            <div class="annytab-input-form-column-input"><input name="txtUnitPricingMeasure" type="number" class="annytab-form-textbox" step="any" value="@product.unit_pricing_measure.ToString(CultureInfo.InvariantCulture)" /></div>
+        </div>
+        <div class="annytab-input-form-row">
+            <div class="annytab-input-form-column-label">@(unit_pricing_base_measure_tt + ":")</div>
+            <div class="annytab-input-form-column-input"><input name="txtUnitPricingBaseMeasure" type="number" class="annytab-form-textbox" step="1" value="@product.unit_pricing_base_measure.ToString()" /></div>
+        </div>
+        <div class="annytab-input-form-row">
+            <div class="annytab-input-form-column-label">@(comparison_unit_tt + ":")</div>
+            <div class="annytab-input-form-column-input">
+                <select name="selectComparisonUnit" class="annytab-form-select">
                     <option value="0" @(product.comparison_unit_id == 0 ? Html.Raw("selected='selected'") : Html.Raw(""))>@("-- " + no_choice_tt + " --")</option>
                     @foreach (Unit unit in units)
                     {
                         <option value="@unit.id.ToString()" @(product.comparison_unit_id == unit.id ? Html.Raw("selected='selected'") : Html.Raw(""))>@(unit.name + " (" + unit.unit_code + ")")</option>
                     }
                 </select>
-            </td>
-        </tr>
-        <tr>
-            <td class="label">@(google_category_tt + ":")</td>
-            <td class="input"><textarea name="txtGoogleCategory" class="formTextarea" rows="3">@product.google_category</textarea></td>
-        </tr>
-        <tr>
-            <td class="label">@(use_local_images_tt + ":")</td>
-            <td class="input"><input name="cbLocalImages" type="checkbox" value="true" @(product != null && product.use_local_images == true ? Html.Raw("checked='checked'") : Html.Raw("")) /></td>
-        </tr>
-        <tr>
-            <td class="label">@(downloadable_files_tt + ":")</td>
-            <td class="input"><input name="cbDownloadableFiles" type="checkbox" value="true" @(product != null && product.downloadable_files == true ? Html.Raw("checked='checked'") : Html.Raw("")) /></td>
-        </tr>
-        <tr>
-            <td class="label">@(use_local_files_tt + ":")</td>
-            <td class="input"><input name="cbLocalFiles" type="checkbox" value="true" @(product != null && product.use_local_files == true ? Html.Raw("checked='checked'") : Html.Raw("")) /></td>
-        </tr>
-        <tr>
-            <td class="label">@(gender_tt + ":")</td>
-            <td class="input">
-                <select name="selectGender" class="formSelect">
+            </div>
+        </div>
+        <div class="annytab-input-form-row">
+            <div class="annytab-input-form-column-label">@(google_category_tt + ":")</div>
+            <div class="annytab-input-form-column-input"><textarea name="txtGoogleCategory" class="annytab-form-textarea" rows="3">@product.google_category</textarea></div>
+        </div>
+        <div class="annytab-input-form-row">
+            <div class="annytab-input-form-column-label">@(use_local_images_tt + ":")</div>
+            <div class="annytab-input-form-column-input"><input name="cbLocalImages" type="checkbox" class="annytab-form-checkbox" value="true" @(product != null && product.use_local_images == true ? Html.Raw("checked='checked'") : Html.Raw("")) /></div>
+        </div>
+        <div class="annytab-input-form-row">
+            <div class="annytab-input-form-column-label">@(downloadable_files_tt + ":")</div>
+            <div class="annytab-input-form-column-input"><input name="cbDownloadableFiles" type="checkbox" class="annytab-form-checkbox" value="true" @(product != null && product.downloadable_files == true ? Html.Raw("checked='checked'") : Html.Raw("")) /></div>
+        </div>
+        <div class="annytab-input-form-row">
+            <div class="annytab-input-form-column-label">@(use_local_files_tt + ":")</div>
+            <div class="annytab-input-form-column-input"><input name="cbLocalFiles" type="checkbox" class="annytab-form-checkbox" value="true" @(product != null && product.use_local_files == true ? Html.Raw("checked='checked'") : Html.Raw("")) /></div>
+        </div>
+        <div class="annytab-input-form-row">
+            <div class="annytab-input-form-column-label">@(gender_tt + ":")</div>
+            <div class="annytab-input-form-column-input">
+                <select name="selectGender" class="annytab-form-select">
                     <option value="" @(product.gender == "" ? Html.Raw("selected='selected'") : Html.Raw(""))>@("-- " + no_choice_tt + " --")</option>
                     <option value="female" @(product.gender == "female" ? Html.Raw("selected='selected'") : Html.Raw(""))>@female_tt</option>
                     <option value="male" @(product.gender == "male" ? Html.Raw("selected='selected'") : Html.Raw(""))>@male_tt</option>
                     <option value="unisex" @(product.gender == "unisex" ? Html.Raw("selected='selected'") : Html.Raw(""))>@unisex_tt</option>
                 </select>
-            </td>
-        </tr>
-        <tr>
-            <td class="label">@(age_group_tt + ":")</td>
-            <td class="input">
-                <select name="selectAgeGroup" class="formSelect">
+            </div>
+        </div>
+        <div class="annytab-input-form-row">
+            <div class="annytab-input-form-column-label">@(age_group_tt + ":")</div>
+            <div class="annytab-input-form-column-input">
+                <select name="selectAgeGroup" class="annytab-form-select">
                     <option value="" @(product.age_group == "" ? Html.Raw("selected='selected'") : Html.Raw(""))>@("-- " + no_choice_tt + " --")</option>
                     <option value="adult" @(product.age_group == "adult" ? Html.Raw("selected='selected'") : Html.Raw(""))>@adult_tt</option>
                     <option value="kids" @(product.age_group == "kids" ? Html.Raw("selected='selected'") : Html.Raw(""))>@kids_tt</option>
                 </select>
-            </td>
-        </tr>
-        <tr>
-            <td class="label">@(size_type_tt + ":")</td>
-            <td class="input">
-                <select name="selectSizeType" class="formSelect">
+            </div>
+        </div>
+        <div class="annytab-input-form-row">
+            <div class="annytab-input-form-column-label">@(size_type_tt + ":")</div>
+            <div class="annytab-input-form-column-input">
+                <select name="selectSizeType" class="annytab-form-select">
                     <option value="" @(product.size_type == "" ? Html.Raw("selected='selected'") : Html.Raw(""))>@("-- " + no_choice_tt + " --")</option>
                     <option value="regular" @(product.size_type == "regular" ? Html.Raw("selected='selected'") : Html.Raw(""))>@regular_tt</option>
                     <option value="petite" @(product.size_type == "petite" ? Html.Raw("selected='selected'") : Html.Raw(""))>@petite_tt</option>
@@ -337,12 +339,12 @@
                     <option value="big_and_tall" @(product.size_type == "big_and_tall" ? Html.Raw("selected='selected'") : Html.Raw(""))>@big_and_tall_tt</option>
                     <option value="maternity" @(product.size_type == "maternity" ? Html.Raw("selected='selected'") : Html.Raw(""))>@maternity_tt</option>
                 </select>
-            </td>
-        </tr>
-        <tr>
-            <td class="label">@(size_system_tt + ":")</td>
-            <td class="input">
-                <select name="selectSizeSystem" class="formSelect">
+            </div>
+        </div>
+        <div class="annytab-input-form-row">
+            <div class="annytab-input-form-column-label">@(size_system_tt + ":")</div>
+            <div class="annytab-input-form-column-input">
+                <select name="selectSizeSystem" class="annytab-form-select">
                     <option value="" @(product.size_system == "" ? Html.Raw("selected='selected'") : Html.Raw(""))>@("-- " + no_choice_tt + " --")</option>
                     <option value="US" @(product.size_system == "US" ? Html.Raw("selected='selected'") : Html.Raw(""))>US</option>
                     <option value="UK" @(product.size_system == "UK" ? Html.Raw("selected='selected'") : Html.Raw(""))>UK</option>
@@ -356,12 +358,12 @@
                     <option value="MEX" @(product.size_system == "MEX" ? Html.Raw("selected='selected'") : Html.Raw(""))>MEX</option>
                     <option value="AU" @(product.size_system == "AU" ? Html.Raw("selected='selected'") : Html.Raw(""))>AU</option>
                 </select>
-            </td>
-        </tr>
-        <tr>
-            <td class="label">@(energy_efficiency_class_tt + ":")</td>
-            <td class="input">
-                <select name="selectEnergyClass" class="formSelect">
+            </div>
+        </div>
+        <div class="annytab-input-form-row">
+            <div class="annytab-input-form-column-label">@(energy_efficiency_class_tt + ":")</div>
+            <div class="annytab-input-form-column-input">
+                <select name="selectEnergyClass" class="annytab-form-select">
                     <option value="" @(product.energy_efficiency_class == "" ? Html.Raw("selected='selected'") : Html.Raw(""))>@("-- " + no_choice_tt + " --")</option>
                     <option value="G" @(product.energy_efficiency_class == "G" ? Html.Raw("selected='selected'") : Html.Raw(""))>G</option>
                     <option value="F" @(product.energy_efficiency_class == "F" ? Html.Raw("selected='selected'") : Html.Raw(""))>F</option>
@@ -374,82 +376,86 @@
                     <option value="A++" @(product.energy_efficiency_class == "A++" ? Html.Raw("selected='selected'") : Html.Raw(""))>A++</option>
                     <option value="A+++" @(product.energy_efficiency_class == "A+++" ? Html.Raw("selected='selected'") : Html.Raw(""))>A+++</option>
                 </select>
-            </td>
-        </tr>
-        <tr>
-            <td class="label">@(adult_only_tt + ":")</td>
-            <td class="input"><input name="cbAdultOnly" type="checkbox" value="true" @(product != null && product.adult_only == true ? Html.Raw("checked='checked'") : Html.Raw("")) /></td>
-        </tr>
-        <tr>
-            <td class="label">@(added_tt + ", " + date_tt.ToLower()+ " (yyyy-mm-dd):")</td>
-            <td class="input"><input id="txtDateAdded" name="txtDateAdded" type="text" class="formTextbox" value="@product.date_added.ToString("yyyy-MM-dd")" /></td>
-        </tr>
-        <tr>
-            <td class="label">@(inactive_tt + ":")</td>
-            <td class="input"><input name="cbInactive" type="checkbox" value="true" @(product != null && product.inactive == true ? Html.Raw("checked='checked'") : Html.Raw("")) /></td>
-        </tr>
-    </table>
-
-    // Product options
-    <h2 style="margin:20px 0px 5px 0px;border-bottom:1px solid #cccccc;">@(product_options_tt)</h2>
-    <div id="divTableOuterContainer" class="divTableOuterContainer" style="margin:0px 0px 0px 0px;">
-        <div id="divTable" style="display:table;width:905px">
-            @*Product option types*@
-            @for (int i = 0; i < productOptionTypes.Count; i++)
-            {
-                @:<div data-id="optionTypeContainer" class="divTableRowContainer">
-                    @:<div data-id="optionTypeRow" class="divTableTr" style="background-color: #cccccc;">
-                        @:<div style="display:none;"><input name="productOptionTypeId" type="hidden" tabindex="-1" value="@productOptionTypes[i].id"><input name="optionTypeId" type="hidden" tabindex="-1" value="@productOptionTypes[i].option_type_id"></div>
-                        @:<div class="divTableOuterTh" style="width: 28px; "><img src="/Content/images/annytab_design/drag_icon.png" alt="Drag icon" style="width:20px;height:20px;cursor:move;" /></div>
-                        @:<div class="divTableOuterTh" style="width: 28px; "><img data-id="toggleVisibilityOptions" src="/Content/images/annytab_design/expand_icon.png" alt="Visibility icon" style="width:20px;height:20px;cursor:pointer;" /></div>
-                        @:<div class="divTableOuterTh" style="width: 20px; "><input name="optionTypeSelected" value="true" type="checkbox" class="formCheckbox" @(productOptionTypes[i].selected == true ? Html.Raw("checked='checked'") : Html.Raw("")) /><input type="hidden" value="false" name="optionTypeSelected" /></div>
-                        @:<div class="divTableOuterTh" style="width: 829px; font-size: 16px; text-shadow: 1px 1px 1px #ffffff; "><input name="optionTypeTitle" type="text" value="@productOptionTypes[i].title" style="border:0px;color:#000000;background-color:transparent;" readonly="readonly" /></div>
-                    @:</div>
-
-                // Create the list of product options
-                List<ProductOption> listProductOptions = null;
-
-                // Try to get the list from the dictionary
-                if (productOptions.TryGetValue(productOptionTypes[i].option_type_id, out listProductOptions) == true)
-                {
-                    // Make sure that there is post in lists
-                    if (productOptions.Count > 0)
-                    {
-                        @:<div data-id="optionsTable" style="width:805px;display:none;">
-                            @:<div class="divTableTr">
-                                @:<div style="display:none;">Id</div>
-                                @:<div class="divTableTh" style="width:20px;"><input data-id="checkAllOptions" type="checkbox" class="formCheckbox" /></div>
-                                @:<div class="divTableTh" style="width:157px;">@title_tt</div>
-                                @:<div class="divTableTh" style="width:157px;">@product_suffix_tt</div>
-                                @:<div class="divTableTh" style="width:157px;">@mpn_suffix_tt</div>
-                                @:<div class="divTableTh" style="width:157px;">@price_addition_tt</div>
-                                @:<div class="divTableTh" style="width:157px;">@freight_addition_tt</div>
-                            @:</div>
-                        for (int j = 0; j < listProductOptions.Count; j++)
-                        {
-                            @:<div class="divTableTr">
-                                @:<div style="display:none;"><input name="keyOptionTypeId" type="hidden" tabindex="-1" value="@productOptionTypes[i].option_type_id" /><input name="optionId" type="hidden" tabindex="-1" value="@listProductOptions[j].option_id" /></div>
-                                @:<div class="divTableTd"><input name="optionSelected" value="true" type="checkbox" @(listProductOptions[j].selected == true ? Html.Raw("checked='checked'") : Html.Raw("")) /><input type="hidden" value="false" name="optionSelected" /></div>
-                                @:<div class="divTableTd"><input name="optionTitle" type="text" class="inputTableTextbox" tabindex="-1" readonly="readonly" value="@listProductOptions[j].title" /></div>
-                                @:<div class="divTableTd"><input name="optionSuffix" type="text" class="inputTableTextbox" tabindex="-1" readonly="readonly" value="@listProductOptions[j].product_code_suffix" /></div>
-                                @:<div class="divTableTd"><input name="optionMpnSuffix" type="text" class="inputTableTextbox" value="@listProductOptions[j].mpn_suffix" /></div>
-                                @:<div class="divTableTd"><input name="optionPriceAddition" type="number" step="any" class="inputTableTextbox" value="@listProductOptions[j].price_addition.ToString(CultureInfo.InvariantCulture)" /></div>
-                                @:<div class="divTableTd"><input name="optionFreightAddition" type="number" step="any" class="inputTableTextbox" value="@listProductOptions[j].freight_addition.ToString(CultureInfo.InvariantCulture)" /></div>
-                            @:</div>
-                        }
-                    @:</div>
-                    }
-                }
-                @:</div>
-            }
+            </div>
+        </div>
+        <div class="annytab-input-form-row">
+            <div class="annytab-input-form-column-label">@(adult_only_tt + ":")</div>
+            <div class="annytab-input-form-column-input"><input name="cbAdultOnly" type="checkbox" class="annytab-form-checkbox" value="true" @(product != null && product.adult_only == true ? Html.Raw("checked='checked'") : Html.Raw("")) /></div>
+        </div>
+        <div class="annytab-input-form-row">
+            <div class="annytab-input-form-column-label">@(added_tt + ", " + date_tt.ToLower() + " (yyyy-mm-dd):")</div>
+            <div class="annytab-input-form-column-input"><input id="txtDateAdded" name="txtDateAdded" type="text" class="annytab-form-textbox" value="@product.date_added.ToString("yyyy-MM-dd")" /></div>
+        </div>
+        <div class="annytab-input-form-row">
+            <div class="annytab-input-form-column-label">@(inactive_tt + ":")</div>
+            <div class="annytab-input-form-column-input"><input name="cbInactive" type="checkbox" class="annytab-form-checkbox" value="true" @(product != null && product.inactive == true ? Html.Raw("checked='checked'") : Html.Raw("")) /></div>
         </div>
     </div>
-    <div style="display:block;border-bottom:1px solid #cccccc;margin-top:5px;"></div>
     
-    // Save form button
+    <div class="annytab-basic-space"></div>
+
+    @*Product options*@
+    <div style="@(productOptionTypes.Count > 0 ? "display:block;" : "display:none;")">
+        <h2 style="border-bottom:1px solid #cccccc;">@(product_options_tt)</h2>
+        <div class="annytab-sortable-container">
+            <div id="sortableTable" class="annytab-sortable-table" style="display:table;width:100%;">
+                @*Product option types*@
+                @for (int i = 0; i < productOptionTypes.Count; i++)
+                {
+                    @:<div data-id="optionTypeContainer" class="annytab-sortable-row">
+                        @:<div data-id="optionTypeRow" style="background-color:#cccccc;border-bottom:2px solid #808080;border-top:2px solid #ffffff;">
+                            @:<div style="display:none;"><input name="productOptionTypeId" type="hidden" tabindex="-1" value="@productOptionTypes[i].id"><input name="optionTypeId" type="hidden" tabindex="-1" value="@productOptionTypes[i].option_type_id"></div>
+                            @:<div class="annytab-sortable-column" style="width:28px;padding:5px 4px 5px 2px;"><img src="/Content/images/annytab_design/drag_icon.png" alt="Icon" style="width:20px;height:20px;cursor:move;" /></div>
+                            @:<div class="annytab-sortable-column" style="width:28px;padding:5px 4px 5px 2px;"><img data-id="toggleVisibilityOptions" src="/Content/images/annytab_design/expand_icon.png" alt="Visibility icon" style="width:20px;height:20px;cursor:pointer;" /></div>
+                            @:<div class="annytab-sortable-column" style="width:20px;padding:5px 4px 5px 2px;"><input name="optionTypeSelected" value="true" type="checkbox" class="annytab-sortable-checkbox" @(productOptionTypes[i].selected == true ? Html.Raw("checked='checked'") : Html.Raw("")) /><input type="hidden" value="false" name="optionTypeSelected" /></div>
+                            @:<div class="annytab-sortable-column" style="width:829px;padding:5px 4px 5px 2px;"><input name="optionTypeTitle" type="text" value="@productOptionTypes[i].title" style="border:0px;color:#000000;background-color:transparent;" readonly="readonly" /></div>
+                            @:</div>
+
+
+                    // Create the list of product options
+                    List<ProductOption> listProductOptions = null;
+
+                    // Try to get the list from the dictionary
+                    if (productOptions.TryGetValue(productOptionTypes[i].option_type_id, out listProductOptions) == true)
+                    {
+                        // Make sure that there is post in lists
+                        if (productOptions.Count > 0)
+                        {
+                            @:<div data-id="optionsTable" class="annytab-sortable-table" style="width:841px;padding-bottom:4px;display:none;">
+                                @:<div class="annytab-sortable-row">
+                                    @:<div style="display:none;">Id</div>
+                                    @:<div class="annytab-sortable-column-head" style="text-align:center;width:20px;"><input data-id="checkAllOptions" type="checkbox" class="annytab-sortable-checkbox" /></div>
+                                    @:<div class="annytab-sortable-column-head" style="width:157px;">@title_tt</div>
+                                    @:<div class="annytab-sortable-column-head" style="width:157px;">@product_suffix_tt</div>
+                                    @:<div class="annytab-sortable-column-head" style="width:157px;">@mpn_suffix_tt</div>
+                                    @:<div class="annytab-sortable-column-head" style="width:157px;">@price_addition_tt</div>
+                                    @:<div class="annytab-sortable-column-head" style="width:157px;">@freight_addition_tt</div>
+                                    @:</div>
+                            for (int j = 0; j < listProductOptions.Count; j++)
+                            {
+                                @:<div class="annytab-sortable-row">
+                                    @:<div style="display:none;"><input name="keyOptionTypeId" type="hidden" tabindex="-1" value="@productOptionTypes[i].option_type_id" /><input name="optionId" type="hidden" tabindex="-1" value="@listProductOptions[j].option_id" /></div>
+                                    @:<div class="annytab-sortable-column" style="text-align:center;width:20px;"><input name="optionSelected" type="checkbox" class="annytab-sortable-checkbox" value="true" @(listProductOptions[j].selected == true ? Html.Raw("checked='checked'") : Html.Raw("")) /><input type="hidden" value="false" name="optionSelected" /></div>
+                                    @:<div class="annytab-sortable-column" style="width:157px;"><input name="optionTitle" type="text" class="annytab-sortable-textbox" tabindex="-1" readonly="readonly" value="@listProductOptions[j].title" /></div>
+                                    @:<div class="annytab-sortable-column" style="width:157px;"><input name="optionSuffix" type="text" class="annytab-sortable-textbox" tabindex="-1" readonly="readonly" value="@listProductOptions[j].product_code_suffix" /></div>
+                                    @:<div class="annytab-sortable-column" style="width:157px;"><input name="optionMpnSuffix" type="text" class="annytab-sortable-textbox" value="@listProductOptions[j].mpn_suffix" /></div>
+                                    @:<div class="annytab-sortable-column" style="width:157px;"><input name="optionPriceAddition" type="number" step="any" class="annytab-sortable-textbox" value="@listProductOptions[j].price_addition.ToString(CultureInfo.InvariantCulture)" /></div>
+                                    @:<div class="annytab-sortable-column" style="width:157px;"><input name="optionFreightAddition" type="number" step="any" class="annytab-sortable-textbox" value="@listProductOptions[j].freight_addition.ToString(CultureInfo.InvariantCulture)" /></div>
+                                    @:</div>
+                            }
+                            @:</div>
+                        }
+                    }
+                    @:</div>
+            }
+            </div>
+        </div>
+    </div>
+
+    @*Button panel*@
     <div style="display:block;border:1px solid #cccccc;margin:20px 0px 0px 0px;border-radius: 4px;">
-        <input id="btnSave" type="submit" value="@save_tt" />
-        <input type="button" value="@cancel_tt" onclick="@Html.Raw("location.href='/admin_products" + returnUrl + "'")" />
+        <input id="btnSave" type="submit" class="annytab-form-button" value="@save_tt" />
+        <input type="button" class="annytab-form-button" value="@cancel_tt" onclick="@Html.Raw("location.href='/admin_products" + returnUrl + "'")" />
     </div>
 }
 
