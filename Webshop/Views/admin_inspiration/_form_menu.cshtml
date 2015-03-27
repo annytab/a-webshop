@@ -1,0 +1,48 @@
+﻿@{
+    // Get the form data
+    QueryParams parameters = ViewBag.QueryParams;
+    string queryString = QueryParams.GetQueryString(parameters);
+    KeyStringList tt = ViewBag.TranslatedTexts;
+    
+    // Get translated texts
+    string show_tt = tt.Get("show");
+    string list_tt = tt.Get("list");
+    string new_tt = tt.Get("new");
+    string search_tt = tt.Get("search");
+    string id_tt = tt.Get("id");
+    string language_tt = tt.Get("language");
+    string name_tt = tt.Get("name");
+    string category_tt = tt.Get("category");
+    string ascending_tt = tt.Get("ascending");
+    string descending_tt = tt.Get("descending");
+    string sort_tt = tt.Get("sort");
+    string on_tt = tt.Get("on");
+}
+
+@*The menu bar*@
+<div class="annytab-form-menubar">
+    @using (Html.BeginForm("search", "admin_inspiration", FormMethod.Post))
+    {
+        <input type="button" class="annytab-form-button" value="@(show_tt + " " + list_tt.ToLower())" onclick="location.href='@Url.Action("index", "admin_inspiration", new { sf = parameters.sort_field, so = parameters.sort_order, pz = parameters.page_size })'" />
+        <input type="button" class="annytab-form-button" value="@new_tt" onclick="location.href='@Url.Action("edit", "admin_inspiration", new { id = 0, returnUrl = queryString })'" />
+        <select name="selectSortField" class="annytab-form-select" style="width:100px;">
+            <option value="id" @(parameters.sort_field == "" ? Html.Raw("selected='selected'") : Html.Raw(""))>@(sort_tt + " " + on_tt.ToLower())</option>
+            <option value="id" @(parameters.sort_field == "id" ? Html.Raw("selected='selected'") : Html.Raw(""))>@id_tt</option>
+            <option value="language_id" @(parameters.sort_field == "language_id" ? Html.Raw("selected='selected'") : Html.Raw(""))>@language_tt</option>
+            <option value="name" @(parameters.sort_field == "name" ? Html.Raw("selected='selected'") : Html.Raw(""))>@name_tt</option>
+            <option value="category_id" @(parameters.sort_field == "category_id" ? Html.Raw("selected='selected'") : Html.Raw(""))>@category_tt</option>
+        </select>
+        <select name="selectSortOrder" class="annytab-form-select" style="width:80px;">
+            <option value="ASC" @(parameters.sort_order == "ASC" ? Html.Raw("selected='selected'") : Html.Raw(""))>@ascending_tt</option>
+            <option value="DESC" @(parameters.sort_order == "DESC" ? Html.Raw("selected='selected'") : Html.Raw(""))>@descending_tt</option>
+        </select>
+        <select name="selectPageSize" class="annytab-form-select" style="width:50px;">
+            <option value="10" @(parameters.page_size == 10 ? Html.Raw("selected='selected'") : Html.Raw(""))>10</option>
+            <option value="20" @(parameters.page_size == 20 ? Html.Raw("selected='selected'") : Html.Raw(""))>20</option>
+            <option value="40" @(parameters.page_size == 40 ? Html.Raw("selected='selected'") : Html.Raw(""))>40</option>
+            <option value="80" @(parameters.page_size == 80 ? Html.Raw("selected='selected'") : Html.Raw(""))>80</option>
+        </select>
+        <input id="txtSearch" name="txtSearch" type="text" class="annytab-form-textbox" style="width:150px;" value="@Server.UrlDecode(parameters.keywords)" />
+        <input type="submit" class="annytab-form-button" value="@search_tt" />
+    }
+</div>

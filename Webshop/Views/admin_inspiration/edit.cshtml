@@ -1,0 +1,141 @@
+﻿@{
+    // Set the layout for the page
+    Layout = "/Views/shared_admin/_standard_layout.cshtml";
+
+    // Get values
+    Domain domain = ViewBag.CurrentDomain;
+    InspirationImageMap imageMap = ViewBag.InspirationImageMap;
+    List<Language> languages = ViewBag.Languages;
+    List<Category> mainCategories = Category.GetChildCategories(0, domain.back_end_language, "title", "ASC");
+    KeyStringList tt = ViewBag.TranslatedTexts;
+    string returnUrl = ViewBag.ReturnUrl;
+    string imageUrl = imageMap.image_name != "" ? Tools.GetInspirationImageUrl(imageMap.id, imageMap.image_name) : "/Content/images/annytab_design/no_image_wide.jpg";
+    string error_message = ViewBag.ErrorMessage != null ? ViewBag.ErrorMessage : string.Empty;
+
+    // Get translated texts
+    string inspiration_tt = tt.Get("inspiration");
+    string new_tt = tt.Get("new");
+    string edit_tt = tt.Get("edit");
+    string id_tt = tt.Get("id");
+    string no_choice_tt = tt.Get("no_choice");
+    string default_tt = tt.Get("default");
+    string language_tt = tt.Get("language");
+    string name_tt = tt.Get("name");
+    string category_tt = tt.Get("category");
+    string image_tt = tt.Get("image");
+    string save_tt = tt.Get("save");
+    string cancel_tt = tt.Get("cancel");
+
+    // Set the title for the page
+    if (imageMap.id == 0)
+    {
+        ViewBag.Title = inspiration_tt + " - " + new_tt.ToLower();
+    }
+    else
+    {
+        ViewBag.Title = inspiration_tt + " - " + edit_tt.ToLower();
+    }
+}
+
+@*Title*@
+<h1>@ViewBag.Title</h1>
+
+@*Menu*@
+@Html.Partial("/Views/admin_inspiration/_form_menu.cshtml")
+
+@*Main form*@
+@using (Html.BeginForm("edit", "admin_inspiration", FormMethod.Post, new { enctype = "multipart/form-data" }))
+{
+    @*Hidden data*@
+    <input name="returnUrl" type="hidden" value="@returnUrl" />
+    <div class="annytab-form-error-message" style="@(error_message != "" ? "display:block;" : "display:none;")">@Html.Raw(error_message)</div>
+
+    @*Input form table*@
+    <div class="annytab-input-form-table">
+        <div class="annytab-input-form-row" style="@(imageMap.id != 0 ? "display:table-row;" : "display:none;")">
+            <div class="annytab-input-form-column-label">@(id_tt + ":")</div>
+            <div class="annytab-input-form-column-input"><input name="txtId" type="text" class="annytab-form-textbox" tabindex="-1" readonly="readonly" value="@imageMap.id" /></div>
+        </div>
+        <div class="annytab-input-form-row">
+            <div class="annytab-input-form-column-label">@(language_tt + ":")</div>
+            <div class="annytab-input-form-column-input">
+                <select id="selectLanguage" name="selectLanguage" class="annytab-form-select">
+                    <option value="0" @(imageMap.language_id == 0 ? Html.Raw("selected='selected'") : Html.Raw(""))>@default_tt</option>
+                    @foreach (Language language in languages)
+                    {
+                        <option value="@language.id" @(language.id == imageMap.language_id ? Html.Raw("selected='selected'") : Html.Raw(""))>@language.name</option>
+                    }
+                </select>
+            </div>
+        </div>
+        <div class="annytab-input-form-row">
+            <div class="annytab-input-form-column-label">@(name_tt + ":")</div>
+            <div class="annytab-input-form-column-input"><input name="txtName" type="text" class="annytab-form-textbox" value="@imageMap.name" /></div>
+        </div>
+        <div class="annytab-input-form-row">
+            <div class="annytab-input-form-column-label">@(category_tt + ":")</div>
+            <div class="annytab-input-form-column-input">
+                <select name="selectCategory" class="annytab-form-select">
+                    <option value="0" @(imageMap.category_id == 0 ? Html.Raw("selected='selected'") : Html.Raw(""))>@("-- " + no_choice_tt + " --")</option>
+                    @CreateChildOptions(0, mainCategories, imageMap.category_id, domain.back_end_language)
+                </select>
+            </div>
+        </div>
+        <div class="annytab-input-form-row">
+            <div class="annytab-input-form-column-label">@(image_tt + " [Max 1 MB]")</div>
+            <div class="annytab-input-form-column-input"><input id="uploadInspirationImage" name="uploadInspirationImage" type="file" class="annytab-form-upload" accept="image" /></div>
+        </div>
+    </div>
+    
+    <div class="annytab-basic-space"></div>
+
+    @*The image map*@
+    <div id="annytabImapContainer" class="annytab-imap-container">
+        <img id="annytabImapImage" src="@imageUrl" alt="@image_tt" class="annytab-imap-background-image" />
+    </div>
+
+    @*Button panel*@
+    <div style="display:block;border:1px solid #cccccc;margin:20px 0px 0px 0px;border-radius:4px;">
+        <input id="btnSave" type="submit" class="annytab-form-button" value="@save_tt" />
+        <input type="button" class="annytab-form-button" value="@cancel_tt" onclick="@Html.Raw("location.href='/admin_inspiration" + returnUrl + "'")" />
+    </div>
+}
+
+@section scripts {
+    <script type="text/javascript">
+        $("#selectLanguage").focus();
+    </script>
+}
+
+@helper CreateChildOptions(Int32 level, List<Category> categories, Int32 categoryId, Int32 languageId)
+{
+    // Create the intendation
+    string intendation = "";
+
+    for (int i = 0; i < level; i++)
+    {
+        intendation += "-&nbsp;";
+    }
+
+    // Loop all the categories
+    for (int i = 0; i < categories.Count; i++)
+    {
+        // Reset the level
+        if (categories[i].parent_category_id == 0)
+        {
+            level = 0;
+        }
+
+        // Create the option
+        <option style="@(categories[i].parent_category_id == 0 ? Html.Raw("background-color:#cccccc;") : Html.Raw("background-color:#ffffff;"))" value="@categories[i].id.ToString()" @(categoryId == categories[i].id ? Html.Raw("selected='selected'") : Html.Raw(""))>@Html.Raw(intendation + categories[i].title)</option>
+
+        // Get the child categories
+        List<Category> childCategories = Category.GetChildCategories(categories[i].id, languageId, "title", "ASC");
+
+        if (childCategories.Count > 0)
+        {
+            level += 1;
+            @CreateChildOptions(level, childCategories, categoryId, languageId);
+        }
+    }
+}

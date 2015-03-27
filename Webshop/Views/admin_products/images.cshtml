@@ -10,6 +10,8 @@
     List<string> otherImages = ViewBag.OtherImages;
     KeyStringList tt = ViewBag.TranslatedTexts;
     string returnUrl = ViewBag.ReturnUrl;
+    string spinImageDirectory = ViewBag.SpinImagesDirectory;
+    string spinImages = ViewBag.SpinImageNames;
 
     // Get translated texts
     string product_tt = tt.Get("product");
@@ -22,8 +24,10 @@
     string product_code_tt = tt.Get("product_code");
     string main_image_tt = tt.Get("main_image");
     string other_product_images_title_tt = tt.Get("other_product_images_title");
+    string spin_image_360_tt = tt.Get("spin_image_360");
     string add_images_tt = tt.Get("add_images");
     string undo_tt = tt.Get("undo");
+    string delete_tt = tt.Get("delete");
     string save_tt = tt.Get("save");
     string cancel_tt = tt.Get("cancel");
     
@@ -92,17 +96,34 @@
             }
         </div>
     </div>
-
+    
+    @*360 degree images*@
+    <h2 style="margin:20px 0px 5px 0px;border-bottom:1px solid #cccccc;">@spin_image_360_tt</h2>
+    <div style="display:block;padding:0px 0px 5px 0px;margin:0px 0px 2px 0px;">
+        <input name="uploadSpinImages" type="file" class="annytab-form-upload" accept="image" multiple />
+        <input name="btnUploadSpinImages" type="submit" class="annytab-form-button" value="@add_images_tt" />
+        <input name="btnDeleteSpinImages" type="submit" class="annytab-form-button" value="@delete_tt"  />
+    </div>
+    
+    @*Preview 360 image*@
+    <div id="previewSpinImage" style="@(spinImages != "" ? "display:block;" : "display:none;")padding:0px 4px 0px 4px;overflow-x:auto;">
+        <img data-directory="@spinImageDirectory" data-images="@spinImages" alt="@spin_image_360_tt" class="annytab-spin-image" />
+        <div id="annytabSpinSlider" class="annytab-spin-slider"></div>
+    </div>
+    
     @*Button panel*@
     <div style="display:block;border:1px solid #cccccc;margin:20px 0px 0px 0px;border-radius:4px;">
-        <input id="btnSave" type="submit" class="annytab-form-button" value="@save_tt" />
+        <input id="btnSave" name="btnSave" type="submit" class="annytab-form-button" value="@save_tt" />
         <input type="button" class="annytab-form-button" value="@cancel_tt" onclick="@Html.Raw("location.href='/admin_products" + returnUrl + "'")" />
     </div>
 }
 
 @section scripts {
+    <link href="~/Content/jquery_css/jquery-ui.min.css" rel="stylesheet" />
     <script type="text/javascript">
         $("#selectLanguage").focus();
         $("#selectLanguage").on("change", function () { $(location).attr("href", $(this).find(":selected").attr("data-url")); });
+        $(".annytab-spin-image").imageSpin360({ speed: 0.2, sliderId: "annytabSpinSlider" });
+        $(".annytab-spin-image").resizable({ alsoResize: "#annytabSpinSlider", minWidth: 128, minHeight: 128 });
     </script>
 }

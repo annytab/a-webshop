@@ -292,6 +292,16 @@ public class CustomTheme
             CustomThemeTemplate.Add(new CustomThemeTemplate(id, "annytab.standard-layout-functions.js", "/Scripts/annytab_front/annytab.standard-layout-functions.js",
                 CustomThemeTemplate.GetMasterFileContent("/Scripts/annytab_front/annytab.standard-layout-functions.js"), "Functions that apply to the standard layout for the website."));
         }
+        if (templates.ContainsKey("front_category_imap.cshtml") == false) // 39
+        {
+            CustomThemeTemplate.Add(new CustomThemeTemplate(id, "front_category_imap.cshtml", "/Views/shared_front/_category_imap.cshtml",
+                CustomThemeTemplate.GetMasterFileContent("/Views/shared_front/_category_imap.cshtml"), "Displays inspiration image maps for a category."));
+        }
+        if (templates.ContainsKey("annytab.image-map.js") == false) // 40
+        {
+            CustomThemeTemplate.Add(new CustomThemeTemplate(id, "annytab.image-map.js", "/Scripts/annytab_front/annytab.image-map.js",
+                CustomThemeTemplate.GetMasterFileContent("/Scripts/annytab_front/annytab.image-map.js"), "A jQuery plugin that controls image maps."));
+        }
         
     } // End of the AddCustomThemeTemplates method
 

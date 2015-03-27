@@ -395,6 +395,19 @@ namespace Annytab.Webshop.ControllersApi
                 // Add other images
                 urls.AddRange(Tools.GetOtherProductImageUrls(posts[i].id, languageId, posts[i].use_local_images));
 
+                // Spin images
+                string spinImageDirectory = Tools.GetSpinImageDirectoryUrl(posts[i].id, languageId, posts[i].use_local_images);
+                string spinImageNames = Tools.GetSpinImageNames(spinImageDirectory);
+                string[] spinImageArray = spinImageNames != "" ? spinImageNames.Split('|') : null;
+                List<string> spinImages = spinImageArray != null ? spinImageArray.ToList<string>() : new List<string>(10);
+                for (int j = 0; j < spinImages.Count; j++)
+                {
+                    spinImages[j] = spinImageDirectory + spinImages[j];
+                }
+
+                // Add spin images
+                urls.AddRange(spinImages);
+
                 // Add the list to the dictionary
                 productUrls.Add(posts[i].id, urls);
             }
@@ -416,11 +429,30 @@ namespace Annytab.Webshop.ControllersApi
             // Get the post
             Product post = Product.GetOneById(id, languageId);
 
+            // Make sure that the post not is null
+            if(post == null)
+            {
+                return urls;
+            }
+
             // Add the main image
             urls.Add(Tools.GetProductMainImageUrl(id, languageId, "", post.use_local_images));
 
             // Add other images
             urls.AddRange(Tools.GetOtherProductImageUrls(id, languageId, post.use_local_images));
+
+            // Spin images
+            string spinImageDirectory = Tools.GetSpinImageDirectoryUrl(id, languageId, post.use_local_images);
+            string spinImageNames = Tools.GetSpinImageNames(spinImageDirectory);
+            string[] spinImageArray = spinImageNames != "" ? spinImageNames.Split('|') : null;
+            List<string> spinImages = spinImageArray != null ? spinImageArray.ToList<string>() : new List<string>(10);
+            for (int i = 0; i < spinImages.Count;i++)
+            {
+                spinImages[i] = spinImageDirectory + spinImages[i];
+            }
+
+            // Add spin images
+            urls.AddRange(spinImages);
 
             // Return the post
             return urls;
@@ -643,6 +675,39 @@ namespace Annytab.Webshop.ControllersApi
             return Request.CreateResponse<string>(HttpStatusCode.OK, "Images has been uploaded");
 
         } // End of the upload_other_images method
+
+        // Upload spin images
+        // POST api/products/upload_spin_images/5?languageId=0
+        [ApiAuthorize(Roles = "API_FULL_TRUST")]
+        [HttpPost]
+        public async Task<HttpResponseMessage> upload_spin_images(Int32 id = 0, Int32 languageId = 0)
+        {
+            // Verify that this is an HTML Form file upload request
+            if (Request.Content.IsMimeMultipartContent() == false)
+            {
+                return Request.CreateResponse<string>(HttpStatusCode.UnsupportedMediaType, "Images was not uploaded");
+            }
+
+            // Create the directory path
+            string directoryPath = System.Web.HttpContext.Current.Server.MapPath(Tools.GetSpinImageDirectoryUrl(id, languageId, true));
+
+            // Check if the directory exists
+            if (System.IO.Directory.Exists(directoryPath) == false)
+            {
+                // Create the directory
+                System.IO.Directory.CreateDirectory(directoryPath);
+            }
+
+            // Create a stream provider
+            AnnytabMultipartFormDataStreamProvider streamProvider = new AnnytabMultipartFormDataStreamProvider(directoryPath, "");
+
+            // Read the content and upload files
+            await Request.Content.ReadAsMultipartAsync(streamProvider);
+
+            // Return the success response
+            return Request.CreateResponse<string>(HttpStatusCode.OK, "Images has been uploaded");
+
+        } // End of the upload_spin_images method
 
         // Delete images for a product id
         // DELETE api/products/delete_images_by_id/1

@@ -281,6 +281,12 @@ namespace Annytab.Webshop.ControllersApi
             // Get the category
             Category post = Category.GetOneById(id, languageId);
 
+            // Make sure that the post not is null
+            if (post == null)
+            {
+                return urls;
+            }
+
             // Add the main image
             urls.Add(Tools.GetCategoryMainImageUrl(id, languageId, post.use_local_images));
 

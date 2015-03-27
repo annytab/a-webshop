@@ -1,0 +1,202 @@
+﻿@{
+    // Set the layout for the page
+    Layout = "/Views/shared_admin/_standard_layout.cshtml";
+
+    // Declare variables
+    Int32 pageSize = 10;
+
+    // Get values
+    Domain domain = ViewBag.CurrentDomain;
+    InspirationImageMap imageMap = ViewBag.InspirationImageMap;
+    KeyStringList tt = ViewBag.TranslatedTexts;
+    string keywords = ViewBag.Keywords;
+    Int32 page = ViewBag.CurrentPage;
+    string returnUrl = ViewBag.ReturnUrl;
+
+    // Create a clean string with keywords
+    string cleanKeywords = keywords.Replace("+", "");
+
+    // Create an array with search words
+    string[] words = cleanKeywords.Split(' ');
+
+    // Count the number of posts
+    Int32 count = Product.GetCountBySearch(words, domain.back_end_language);
+
+    // Get the number of pages
+    Int32 numberOfPages = Convert.ToInt32(Math.Ceiling(((double)count / pageSize)));
+    numberOfPages = numberOfPages == 0 ? 1 : numberOfPages;
+
+    // Get products by keywords in search
+    List<Product> products = Product.GetBySearch(words, domain.back_end_language, pageSize, page, "title", "ASC");
+    
+    // Get product titles
+    string productTitleString = "";
+    string[] mapPoints = imageMap.image_map_points.Split('|');
+    Int32 mapPointsCount = mapPoints != null ? mapPoints.Length : 0;
+    for (int i = 0; i < mapPointsCount; i++)
+    {
+        // Get the map point
+        string[] mapPoint = mapPoints[i].Split(';');
+
+        // Get the product id
+        Int32 product_id = 0;
+        Int32.TryParse(mapPoint[0], out product_id);
+           
+        // Get the product
+        Product product = Product.GetOneById(product_id, domain.back_end_language);
+        
+        // Make sure that the product not is null
+        if(product != null)
+        {
+            // Add the product title to the product title string
+            productTitleString += product.title;
+
+            // Add a divider if the map point not is the last
+            if (i != (mapPointsCount - 1))
+            {
+                productTitleString += "|";
+            } 
+        }       
+    }
+    
+    // Get translated texts
+    string image_map_tt = tt.Get("image_map");
+    string edit_tt = tt.Get("edit");
+    string image_tt = tt.Get("image");
+    string id_tt = tt.Get("id");
+    string language_tt = tt.Get("language");
+    string name_tt = tt.Get("name");
+    string category_tt = tt.Get("category");
+    string search_tt = tt.Get("search");
+    string products_tt = tt.Get("products");
+    string product_code_short_tt = tt.Get("product_code_short");
+    string title_tt = tt.Get("title");
+    string price_tt = tt.Get("price");
+    string add_tt = tt.Get("add");
+    string save_tt = tt.Get("save");
+    string cancel_tt = tt.Get("cancel");
+
+    // Set the title for the page
+    ViewBag.Title = image_map_tt + " - " + edit_tt.ToLower();
+}
+
+@*Title*@
+<h1>@ViewBag.Title</h1>
+
+@*Menu*@
+@Html.Partial("/Views/admin_inspiration/_form_menu.cshtml")
+
+@*Main form*@
+@using (Html.BeginForm("image_map", "admin_inspiration", FormMethod.Post))
+{
+    @*Hidden data*@
+    <input name="returnUrl" type="hidden" value="@returnUrl" />
+    <input name="hiddenPage" type="hidden" value="@page" />
+    <input id="hiddenImageMapPoints" name="hiddenImageMapPoints" type="hidden" value="@imageMap.image_map_points" />
+    <input id="hiddenProductTitles" type="hidden" value="@productTitleString" />
+
+    @*Input form table*@
+    <div class="annytab-input-form-table">
+        <div class="annytab-input-form-row">
+            <div class="annytab-input-form-column-label">@(id_tt + ":")</div>
+            <div class="annytab-input-form-column-input"><input name="txtId" type="text" class="annytab-form-textbox" tabindex="-1" readonly="readonly" value="@imageMap.id" /></div>
+        </div>
+        <div class="annytab-input-form-row">
+            <div class="annytab-input-form-column-label">@(language_tt + ":")</div>
+            <div class="annytab-input-form-column-input"><input type="text" class="annytab-form-textbox" tabindex="-1" readonly="readonly" value="@imageMap.language_id" /></div>
+        </div>
+        <div class="annytab-input-form-row">
+            <div class="annytab-input-form-column-label">@(name_tt + ":")</div>
+            <div class="annytab-input-form-column-input"><input type="text" class="annytab-form-textbox" tabindex="-1" readonly="readonly" value="@imageMap.name" /></div>
+        </div>
+        <div class="annytab-input-form-row">
+            <div class="annytab-input-form-column-label">@(category_tt + ":")</div>
+            <div class="annytab-input-form-column-input"><input type="text" class="annytab-form-textbox" tabindex="-1" readonly="readonly" value="@imageMap.category_id" /></div>
+        </div>
+    </div>
+
+    <div class="annytab-basic-space"></div>
+
+    @*The image map*@
+    <div id="annytabImapContainer" class="annytab-imap-container">
+        <img id="annytabImapImage" src="@(Tools.GetInspirationImageUrl(imageMap.id, imageMap.image_name))" alt="@image_tt" class="annytab-imap-background-image" />
+    </div>
+
+    <div class="annytab-basic-space"></div>
+
+    @*List of products*@
+    <div class="annytab-list-container">
+
+        @*Search box*@
+        <div style="text-align:left;padding:0px;margin-bottom:5px;">
+            <span>@(products_tt + ": ")</span>
+            <input id="txtProductSearch" name="txtSearch" type="text" class="annytab-form-textbox" value="@keywords" />
+            <input name="btnSearch" type="submit" class="annytab-form-button" value="@search_tt" />
+        </div>
+
+        @*Products*@
+        <div class="annytab-list-table" style="display:table;width:100%;padding-top:1px;">
+            @for (int i = 0; i < products.Count; i++)
+            {
+                // Create the product string
+                string productString = products[i].title.ToString() + "<br />";
+                productString += id_tt + ": " + products[i].id.ToString() + "<br />";
+                productString += product_code_short_tt + ": " + products[i].product_code.ToString() + "<br />";
+
+                @:<div class="annytab-list-row" style="background-color:#ffffff;">
+                @:<div class="annytab-list-column" style="text-align:left;width:64px;border-bottom:1px solid #cccccc;"><img style="width:64px;" alt="@products[i].title" src="@Tools.GetProductMainImageUrl(products[i].id, domain.back_end_language, "", products[i].use_local_images)" /></div>
+                @:<div class="annytab-list-column" style="text-align:left;width:500px;vertical-align:top;border-bottom:1px solid #cccccc;">@Html.Raw(productString)</div>
+                @:<div class="annytab-list-column" style="text-align:center;width:100px;border-bottom:1px solid #cccccc;"><input data-id="addImageMapPoint" data-product-id="@products[i].id.ToString()" data-product-title="@products[i].title" type="button" class="annytab-form-button" value="@add_tt" /></div>
+                @:</div>
+            }
+        </div>
+    </div>
+
+    <div class="annytab-basic-space"></div>
+
+    @* Paging menu *@
+    <div class="annytab-basic-container" style="text-align:center;">
+        @if (page > 1)
+        {
+            @:<div style="float:left;text-align:left;"><input name="btnPreviousPage" type="submit" class="annytab-navigate-button" value="@Html.Raw("&#60;&#60;")" /></div>
+        }
+        else
+        {
+            @:<div style="float:left;text-align:left;"><span class="annytab-inactive-navigate-button">@Html.Raw("&#60;&#60;")</span></div>
+        }
+
+        <span class="annytab-page-information">@(tt.Get("page") + " " + page.ToString() + " " + tt.Get("of").ToLower() + " " + numberOfPages)</span>
+
+        @if (page < numberOfPages)
+        {
+            @:<div style="float:right;text-align:right;"><input name="btnNextPage" type="submit" class="annytab-navigate-button" value="@Html.Raw("&#62;&#62;")" /></div>
+        }
+        else
+        {
+            @:<div style="float:right;text-align:right;"><span class="annytab-inactive-navigate-button">@Html.Raw("&#62;&#62;")</span></div>
+        }
+    </div>
+
+    @*Button panel*@
+    <div style="display:block;border:1px solid #cccccc;margin:20px 0px 0px 0px;border-radius:4px;">
+        <input id="btnSave" type="submit" class="annytab-form-button" value="@save_tt" />
+        <input type="button" class="annytab-form-button" value="@cancel_tt" onclick="@Html.Raw("location.href='/admin_inspiration" + returnUrl + "'")" />
+    </div>
+}
+
+@section scripts {
+    <script src="/Scripts/annytab_admin/annytab.edit-image-map.js"></script>
+    <script type="text/javascript">
+        $("#txtProductSearch").focus();
+        $("#annytabImapContainer").editImageMap({
+            imageMapPointsControlId: "hiddenImageMapPoints",
+            productTitlesControlId: "hiddenProductTitles",
+            imageMapBackgroundImageId: "annytabImapImage",
+            addImageMapPointButtonDataId: "addImageMapPoint",
+            containerWidth: "auto",
+            containerHeight: "400px",
+            zoomInCursor: "url('/Content/images/annytab_design/zoom-in.cur'), auto",
+            zoomOutCursor: "url('/Content/images/annytab_design/zoom-out.cur'), auto"
+        });
+    </script>
+}

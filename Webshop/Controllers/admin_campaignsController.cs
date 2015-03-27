@@ -222,6 +222,13 @@ namespace Annytab.Webshop.Controllers
             campaign.link_url = url;
             campaign.inactive = inactive;
 
+            // Get the image name
+            string image_name = "";
+            if (campaignImage.ContentLength > 0)
+            {
+                image_name = System.IO.Path.GetFileName(campaignImage.FileName);
+            }
+
             // Create a error message
             string errorMessage = string.Empty;
 
@@ -237,6 +244,10 @@ namespace Annytab.Webshop.Controllers
             if (campaign.link_url.Length > 200)
             {
                 errorMessage += "&#149; " + String.Format(tt.Get("error_field_length"), tt.Get("url"), "200") + "<br/>";
+            }
+            if (image_name.Length > 100)
+            {
+                errorMessage += "&#149; " + String.Format(tt.Get("error_field_length"), tt.Get("file_name"), "100") + "<br/>";
             }
 
             // Check if there is errors

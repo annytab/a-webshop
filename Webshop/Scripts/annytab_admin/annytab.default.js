@@ -17,6 +17,7 @@ function start()
     $(document).on("click", "input[data-id='printOrder']", printOrder);
     $(document).on("change", "input[data-id='previewDomainImage']", previewDomainImage);
     $(document).on("change", "#uploadCampaignImage", previewCampaignImage);
+    $("#uploadInspirationImage").change(previewInspirationImage);
     $(document).on("click", "#messageBoxOkButton, #messageBoxCancelButton, #messageBoxClose", unlockForm);
     $(document).on("click", "#copyInvoiceAddress", copyInvoiceAddress);
     $("#uploadMainImage").change(previewMainImage);
@@ -299,6 +300,44 @@ function previewCampaignImage(event)
     }
 
 } // End of the previewCampaignImage method
+
+// Preview the inspiration image to upload
+function previewInspirationImage(event)
+{
+    // Get the file upload control
+    var uploadControl = $(this);
+
+    // Get the file collection
+    var fileCollection = event.target.files;
+
+    // Make sure that there is files
+    if (fileCollection[0].size >= 1048576)
+    {
+        // Replace the file upload control
+        uploadControl.replaceWith(uploadControl = uploadControl.clone(true));
+
+        // Show the message box
+        var messageBoxContainer = $("#messageBoxContainer");
+        messageBoxContainer.find("span").css("display", "none");
+        messageBoxContainer.find("[data-number='4']").css("display", "inline");
+        messageBoxContainer.fadeIn(500);
+    }
+    else
+    {
+        // Create a file reader
+        var reader = new FileReader();
+
+        // Load the image
+        reader.onload = function (e)
+        {
+            $("#annytabImapImage").attr("src", e.target.result);
+        }
+
+        // Read the image file
+        reader.readAsDataURL(fileCollection[0]);
+    }
+
+} // End of the previewInspirationImage method
 
 // Preview the image to upload
 function previewMainImage(event)

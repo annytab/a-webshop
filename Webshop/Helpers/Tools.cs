@@ -9,7 +9,7 @@ using System.Net;
 using System.Net.Mail;
 using System.Data.SqlTypes;
 using System.Text;
-using Microsoft.WindowsAzure;
+using Microsoft.Azure;
 using Annytab;
 
 /// <summary>
@@ -636,6 +636,94 @@ public static class Tools
         return environmentImages;
 
     } // End of the GetEnvironmentImageUrls method
+
+    /// <summary>
+    /// Get the directory url for spin images
+    /// </summary>
+    /// <param name="productId">The product id</param>
+    /// <param name="languageId">The language id</param>
+    /// <param name="useLocalImages">A boolean that indicates if local images should be used</param>
+    /// <returns>The directory url for spin images</returns>
+    public static string GetSpinImageDirectoryUrl(Int32 productId, Int32 languageId, bool useLocalImages)
+    {
+        // Set the language id
+        languageId = useLocalImages == true ? languageId : 0;
+
+        // Create string to return
+        string spinImageDirectory = "/Content/products/" + (productId / 100).ToString() + "/" + productId.ToString() + "/" + languageId.ToString() + "/spin_images/";
+
+        // Return the string
+        return spinImageDirectory;
+
+    } // End of the GetSpinImageDirectoryUrl method
+
+    /// <summary>
+    /// Get a string of image names separated by | in a spin image directory
+    /// </summary>
+    /// <param name="spinImageDirectoryUrl">The url to the directory for spin images</param>
+    /// <returns>A string with image names separated by |</returns>
+    public static string GetSpinImageNames(string spinImageDirectoryUrl)
+    {
+        // Get the server file path to the directory
+        string serverFilePath = HttpContext.Current.Server.MapPath(spinImageDirectoryUrl);
+
+        // Create the string to return
+        string imageNameString = "";
+
+        // Get all the files
+        if (System.IO.Directory.Exists(serverFilePath) == true)
+        {
+            string[] files = Directory.GetFiles(serverFilePath);
+
+            if (files != null)
+            {
+                for (int i = 0; i < files.Length; i++)
+                {
+                    imageNameString += Path.GetFileName(files[i]);
+
+                    if (i < (files.Length - 1))
+                    {
+                        imageNameString += "|";
+                    }
+                }
+            }
+        }
+
+        // Return the string
+        return imageNameString;
+
+    } // End of the GetSpinImageNames method
+
+    /// <summary>
+    /// Get the directory url for inspiration image maps
+    /// </summary>
+    /// <param name="imageMapId">The id of the image map</param>
+    /// <returns>The directory url for inspiration images</returns>
+    public static string GetInspirationImageDirectoryUrl(Int32 imageMapId)
+    {
+        // Create string to return
+        string inspirationImageDirectory = "/Content/inspiration/" + (imageMapId / 100).ToString() + "/" + imageMapId.ToString() + "/";
+
+        // Return the string
+        return inspirationImageDirectory;
+
+    } // End of the GetInspirationImageDirectoryUrl method
+
+    /// <summary>
+    /// Get the url for a inspiration image map
+    /// </summary>
+    /// <param name="imageMapId">The id of the image map</param>
+    /// <param name="imageName">The image name of the inspiration image</param>
+    /// <returns>The directory url for inspiration images</returns>
+    public static string GetInspirationImageUrl(Int32 imageMapId, string imageName)
+    {
+        // Create string to return
+        string inspirationImageUrl = "/Content/inspiration/" + (imageMapId / 100).ToString() + "/" + imageMapId.ToString() + "/" + imageName;
+
+        // Return the string
+        return inspirationImageUrl;
+
+    } // End of the GetInspirationImageUrl method
 
     /// <summary>
     /// Get the file path to downloadable files

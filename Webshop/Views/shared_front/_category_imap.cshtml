@@ -1,0 +1,106 @@
+﻿@using System.Globalization
+@{
+    // Get form values
+    Domain domain = ViewBag.CurrentDomain;
+    Category category = ViewBag.CurrentCategory;
+    CultureInfo cultureInfo = ViewBag.CultureInfo;
+    bool pricesIncludesVat = ViewBag.PricesIncludesVat;
+    Int32 localLanguageId = category.use_local_images == true ? domain.front_end_language : 0;
+    List<InspirationImageMap> imageMaps = InspirationImageMap.GetByCategoryId(category.id, localLanguageId, "id", "ASC");
+    Currency currency = Currency.GetOneById(domain.currency);
+    Int32 decimalMultiplier = (Int32)Math.Pow(10, currency.decimals);
+    KeyStringList tt = ViewBag.TranslatedTexts;
+
+    // Get translated texts
+    string inspiration_tt = tt.Get("inspiration");
+    string from_short_tt = tt.Get("from_short");
+}
+
+<div style="@(imageMaps.Count > 0 ? "display:block;" : "display:none;")">
+    <div class="annytab-basic-space"></div>
+
+    @*Heading*@
+    <div id="annytabImapHeading" class="annytab-basic-container">
+        <div id="toggleImapVisibility" class="annytab-basic-button" style="display:inline-block;font-size:18px;line-height:20px;width:20px;height:20px;padding:0px;text-align:center;margin:2px 5px 2px 2px;">+</div><span class="annytab-form-heading" style="vertical-align:middle;">@inspiration_tt</span>
+    </div>
+
+    @*Image map container*@
+    <div id="annytabImapOuterContainer" class="annytab-imap-outer-container">
+        <input id="hiddenShowProductString" type="hidden" value="@(tt.Get("Show") + " " + tt.Get("Product").ToLower())" />
+        <div class="annytab-basic-space"></div>
+
+        @*Image map*@
+        <div id="annytabImapContainer" class="annytab-imap-container">
+            <img id="annytabImapImage" src="" alt="" class="annytab-imap-background-image" />
+        </div>
+        <div class="annytab-basic-space"></div>
+
+        @*Select image maps*@
+        <div id="annytabImapSelectImage" class="annytab-imap-select-image">
+            @for (int i = 0; i < imageMaps.Count; i++)
+            {
+                // Get the image map
+                InspirationImageMap imageMap = imageMaps[i];
+
+                // Create the data-point string
+                string dataPoints = "";
+
+                // Get map points
+                string[] mapPoints = imageMaps[i].image_map_points.Split('|');
+
+                // Get the count of map points
+                Int32 mapPointsCount = mapPoints != null ? mapPoints.Length : 0;
+
+                // Loop map points
+                for (int j = 0; j < mapPointsCount; j++)
+                {
+                    // Get the map point
+                    string[] mapPoint = mapPoints[j].Split(';');
+
+                    // Get the product id
+                    Int32 product_id = 0;
+                    Int32.TryParse(mapPoint[0], out product_id);
+
+                    // Get the product
+                    Product product = Product.GetOneById(product_id, domain.front_end_language);
+                    
+                    // Continue if the product is null
+                    if(product == null)
+                    {
+                        continue;
+                    }
+
+                    // Calculate the price
+                    ValueAddedTax valueAddedTax = ValueAddedTax.GetOneById(product.value_added_tax_id);
+                    decimal productPrice = product.unit_price;
+                    productPrice *= (currency.currency_base / currency.conversion_rate);
+                    productPrice = Math.Round(productPrice * (1 - product.discount) * decimalMultiplier, MidpointRounding.AwayFromZero) / decimalMultiplier;
+                    if (pricesIncludesVat == true)
+                    {
+                        productPrice += Math.Round(productPrice * valueAddedTax.value * decimalMultiplier, MidpointRounding.AwayFromZero) / decimalMultiplier;
+                    }
+
+                    // Create the price string
+                    string priceString = product.from_price == true ? from_short_tt.ToLower() + " " : "";
+                    priceString += productPrice.ToString("##,0.##", cultureInfo) + " " + domain.currency;
+
+                    // Add information about the data point
+                    dataPoints += product.id + ";" + product.title + ";" + priceString + ";" + Tools.GetProductMainImageUrl(product.id, domain.front_end_language, "", product.use_local_images) + ";"
+                        + "/home/product/" + product.page_name + ";" + mapPoint[1] + ";" + mapPoint[2];
+
+                    // Add a divider if the point not is the last
+                    if (j != (mapPointsCount - 1))
+                    {
+                        dataPoints += "|";
+                    }
+                }
+
+                // Get the image url
+                string imageUrl = Tools.GetInspirationImageUrl(imageMaps[i].id, imageMaps[i].image_name);
+
+                // Create the control
+                <div data-id="@imageMaps[i].id" data-points="@dataPoints" data-src="@imageUrl" class="annytab-imap-image-button" style="@Html.Raw("background-image:url('" + imageUrl + "');")"></div>
+            }
+        </div>
+    </div>
+</div>

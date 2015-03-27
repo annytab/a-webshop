@@ -220,6 +220,10 @@ namespace Annytab.Webshop.Controllers
                 Int32.TryParse(Request.Params["lang"], out languageId);
             }
 
+            // Get 360 degree images
+            string spinImageDirectoryUrl = Tools.GetSpinImageDirectoryUrl(id, languageId, true);
+            string spinImageNamesString = Tools.GetSpinImageNames(spinImageDirectoryUrl);
+
             // Add data to the form
             ViewBag.LanguageId = languageId;
             ViewBag.Languages = Language.GetAll(adminLanguageId, "name", "ASC");
@@ -228,6 +232,8 @@ namespace Annytab.Webshop.Controllers
             ViewBag.OtherImages = Tools.GetOtherProductImageUrls(id, languageId, true);
             ViewBag.TranslatedTexts = StaticText.GetAll(adminLanguageId, "id", "ASC");
             ViewBag.ReturnUrl = returnUrl;
+            ViewBag.SpinImagesDirectory = spinImageDirectoryUrl;
+            ViewBag.SpinImageNames = spinImageNamesString;
 
             // Return the view
             if (ViewBag.Product != null)
@@ -961,6 +967,7 @@ namespace Annytab.Webshop.Controllers
             string[] otherImageUrls = collection.GetValues("otherImageUrl");
             HttpPostedFileBase mainImage = null;
             List<HttpPostedFileBase> otherImages = new List<HttpPostedFileBase>(10);
+            List<HttpPostedFileBase> spinImages = new List<HttpPostedFileBase>(36);
 
             HttpFileCollectionBase images = Request.Files;
             string[] imageKeys = images.AllKeys;
@@ -970,9 +977,57 @@ namespace Annytab.Webshop.Controllers
                     continue;
 
                 if(imageKeys[i] == "uploadMainImage")
+                {
                     mainImage = images[i];
-                else
+                } 
+                else if (imageKeys[i] == "uploadOtherImages")
+                {
                     otherImages.Add(images[i]);
+                }
+                else if (imageKeys[i] == "uploadSpinImages")
+                {
+                    spinImages.Add(images[i]);
+                }   
+            }
+
+            // Get the directory to spin images
+            string spinImageDirectoryUrl = Tools.GetSpinImageDirectoryUrl(productId, languageId, true);
+
+            // Upload or delete spin images
+            if (collection["btnUploadSpinImages"] != null)
+            {
+                // Check if the directory exists
+                if (System.IO.Directory.Exists(Server.MapPath(spinImageDirectoryUrl)) == false)
+                {
+                    // Create the directory
+                    System.IO.Directory.CreateDirectory(Server.MapPath(spinImageDirectoryUrl));
+                }
+
+                // Get all the files and save them to the server
+                for (int i = 0; i < spinImages.Count; i++)
+                {
+                    // Get the file
+                    HttpPostedFileBase file = spinImages[i];
+
+                    // Make sure that there is a file
+                    if (file.ContentLength == 0)
+                    {
+                        continue;
+                    }
+
+                    // Save the file
+                    file.SaveAs(Server.MapPath(spinImageDirectoryUrl + System.IO.Path.GetFileName(file.FileName)));
+                }
+            }
+            if (collection["btnDeleteSpinImages"] != null)
+            {
+
+                // Check if the directory exists
+                if (System.IO.Directory.Exists(Server.MapPath(spinImageDirectoryUrl)) == true)
+                {
+                    // Create the directory
+                    System.IO.Directory.Delete(Server.MapPath(spinImageDirectoryUrl), true);
+                }
             }
 
             // Update images

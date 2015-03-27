@@ -1,7 +1,5 @@
 ﻿@using System.Diagnostics
-
 @{
-
     // Set the robots tag
     ViewBag.Robots = "noindex, nofollow";
     
@@ -34,6 +32,7 @@
     string static_texts_tt = tt.Get("static_texts");
     string static_pages_tt = tt.Get("static_pages");
     string categories_tt = tt.Get("categories");
+    string inspiration_tt = tt.Get("inspiration");
     string product_options_tt = tt.Get("product_options");
     string products_tt = tt.Get("products");
     string customers_tt = tt.Get("customers");
@@ -97,6 +96,7 @@
                 <a href="/admin_static_texts" class="annytab-basic-button">@static_texts_tt</a>
                 <a href="/admin_static_pages" class="annytab-basic-button">@static_pages_tt</a>
                 <a href="/admin_categories" class="annytab-basic-button">@categories_tt</a>
+                <a href="/admin_inspiration" class="annytab-basic-button">@inspiration_tt</a>
                 <a href="/admin_options" class="annytab-basic-button">@product_options_tt</a>
                 <a href="/admin_products" class="annytab-basic-button">@products_tt</a>
                 <a href="/admin_customers" class="annytab-basic-button">@customers_tt</a>

@@ -20,7 +20,8 @@ namespace Annytab.Webshop
                         "~/Scripts/jquery-ui-{version}.js",
                         "~/Scripts/jquery.mousewheel.js",
                         "~/Scripts/spin.min.js",
-                        "~/Scripts/jquery.spin.js"));
+                        "~/Scripts/jquery.spin.js",
+                        "~/Scripts/annytab.spin-image-360.js"));
 
             // Add references to annytab back-end scripts
             bundles.Add(new ScriptBundle("~/bundles/annytab_admin").Include(

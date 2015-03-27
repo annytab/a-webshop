@@ -17,6 +17,7 @@ function start()
     imageSlideShow.mouseleave(hideArrows);
     imageSlideShow.find('#leftArrow').click(previousSlide);
     imageSlideShow.find('#rightArrow').click(nextSlide);
+    $("#toggleImapVisibility").click(toggleImapVisibility);
 
     // Get all the image slides
     var imageSlides = imageSlideShow.find("img[data-img]");
@@ -30,7 +31,7 @@ function start()
     // Get the next slide every 10 seconds
     if (lastSlideId > 0)
     {
-        imageSlideShow.slideDown(1000);
+        imageSlideShow.slideDown(500);
         nextSlide();
         setInterval(function () { nextSlide() }, 10000);
     }
@@ -106,3 +107,29 @@ function hideArrows()
     imageSlideShow.find("#rightArrow").fadeOut(2000);
 
 } // End of the hideArrows method
+
+// Toggle the visibility for the image map
+function toggleImapVisibility()
+{
+    // Get the button
+    var button = $(this);
+
+    // Get the imap container
+    var imapContainer = $("#annytabImapOuterContainer");
+
+    // Get the sign of the button
+    var sign = button.text();
+
+    // Check if we should show or hide the image map
+    if(sign == "+")
+    {
+        button.text("-")
+        imapContainer.slideDown(500);
+    }
+    else if(sign == "-")
+    {
+        button.text("+")
+        imapContainer.slideUp(500);
+    }
+
+} // End of the toggleImapVisibility method
