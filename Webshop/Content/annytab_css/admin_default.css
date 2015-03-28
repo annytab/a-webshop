@@ -77,8 +77,8 @@ input[type="submit"]{cursor:pointer;}
 .annytab-image-delete{position:absolute;width:16px;height:16px;top:-8px;right:-8px;cursor:pointer;}
 
 /* 360 degree image */
-.annytab-spin-image{width:256px;height:auto;border:1px solid #cccccc;cursor:e-resize;}
-.annytab-spin-slider{width:244px;min-height:11px;max-height:11px;margin:10px 6px 10px 6px;}
+.annytab-spin-image{width:256px;height:256px;border:1px solid #cccccc;cursor:e-resize;}
+.annytab-spin-slider{width:236px;min-height:11px;max-height:11px;margin:10px 10px 10px 10px;}
 
 /* Image map */
 .annytab-imap-container{display:block;position:relative;width:100%;height:400px;border:1px solid #cccccc;background-color:#cccccc;overflow:auto;}

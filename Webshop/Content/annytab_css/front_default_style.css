@@ -90,8 +90,8 @@ li li {padding-left:2px;}
 
 /* 360 degree image */
 .annytab-spin-image-container{padding:10px 0px 10px 0px;}
-.annytab-spin-image{width:256px;height:auto;border:1px solid #cccccc;border-radius:4px;cursor:e-resize;}
-.annytab-spin-slider{width:244px;min-height:11px;max-height:11px;margin:10px 6px 10px 6px;}
+.annytab-spin-image{width:256px;height:256px;border:1px solid #cccccc;border-radius:4px;cursor:e-resize;}
+.annytab-spin-slider{width:236px;min-height:11px;max-height:11px;margin:10px 10px 10px 10px;}
 
 /* Image map */
 .annytab-imap-outer-container{display:none;}
