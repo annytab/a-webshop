@@ -30,10 +30,10 @@ public static class DatabaseManager
         Int32 currentDatabaseVersion = GetDatabaseVersion();
 
         // Loop and upgrade database versions
-        for (int i = currentDatabaseVersion; i <= DATABASE_VERSION; i++)
+        for (int i = currentDatabaseVersion; i < DATABASE_VERSION; i++)
         {
             // Upgrade the database
-            UpgradeToVersion(i);
+            bool success = UpgradeToVersion(i);
         }
 
         // Get all the custom themes
@@ -54,16 +54,19 @@ public static class DatabaseManager
     /// Upgrade the database to the specified version
     /// </summary>
     /// <param name="databaseVersion">The current database version</param>
-    private static void UpgradeToVersion(Int32 databaseVersion)
+    /// <returns>A boolean that indicates if the upgrade was successful</returns>
+    private static bool UpgradeToVersion(Int32 databaseVersion)
     {
         // Create the connection and the sql statement
         string connection = Tools.GetConnectionString();
         string sql = GetSqlString(databaseVersion);
 
-        // Make sure that the sql string not is null
-        if (sql == null)
-            return;
-
+        // Make sure that the sql string contains something
+        if (sql == "error")
+        {
+            return false;
+        }
+            
         // The using block is used to call dispose automatically even if there are an exception.
         using (SqlConnection cn = new SqlConnection(connection))
         {
@@ -84,10 +87,14 @@ public static class DatabaseManager
                 }
                 catch (Exception e)
                 {
-                    throw e;
+                    string exMessage = e.Message;
+                    return false;
                 }
             }
         }
+
+        // Return that the upgrade was successful
+        return true;
 
     } // End of the UpgradeToVersion method
 
@@ -110,7 +117,9 @@ public static class DatabaseManager
 
         // Check if the file exists
         if (File.Exists(filename) == false)
-            return null;
+        {
+            return "error";
+        }
 
         // Create variables
         StreamReader reader = null;
@@ -126,7 +135,8 @@ public static class DatabaseManager
         }
         catch (Exception e)
         {
-            throw e;
+            string exMessage = e.Message;
+            return "error";
         }
         finally
         {
