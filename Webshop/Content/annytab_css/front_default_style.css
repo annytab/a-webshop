@@ -95,7 +95,7 @@ li li {padding-left:2px;}
 
 /* Image map */
 .annytab-imap-outer-container{display:none;}
-.annytab-imap-container{display:block;position:relative;height:400px;border:1px solid #cccccc;border-radius:4px;background-color:#cccccc;overflow:auto;z-index:inherit;}
+.annytab-imap-container{display:block;position:relative;height:400px;border:1px solid #cccccc;border-radius:4px;background-color:#cccccc;overflow:auto;z-index:auto;}
 .annytab-imap-background-image{position:absolute;top:0;left:0px;z-index:inherit;}
 .annytab-imap-box{display:none;position:absolute;top:0;left:0px;padding:10px;background-color:#ffffff;border-radius:4px;color:#000000;width:150px;box-shadow:0px 0px 10px #000000;text-align:center;z-index:inherit;}
 .annytab-imap-box-heading{font-size:12px;line-height:14px;font-weight:bold;z-index:inherit;}

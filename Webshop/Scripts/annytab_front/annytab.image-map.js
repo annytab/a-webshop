@@ -128,7 +128,7 @@
             // Check if we should expand or make the container smaller
             if (imageMap.css("position") == "fixed")
             {
-                imageMapContainer.css("z-index", "auto");
+                imageMap.css("z-index", "auto");
                 imageMap.css("position", "relative");
                 imageMap.css("width", containerWidth);
                 imageMap.css("height", containerHeight);
@@ -136,7 +136,7 @@
             }
             else
             {
-                imageMapContainer.css("z-index", 5);
+                imageMap.css("z-index", "5");
                 imageMap.css("position", "fixed");
                 imageMap.css("top", "0px");
                 imageMap.css("left", "0px");
