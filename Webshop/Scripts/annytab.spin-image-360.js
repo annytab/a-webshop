@@ -31,6 +31,9 @@
         // Create the image array
         imageArray = imageData.split("|");
 
+        // Preload images
+        preloadImages(imageArray);
+
         // Set the start image
         image.attr("src", imageDirectory + imageArray[currentIntImageIndex]);
 
@@ -43,6 +46,23 @@
 
         // Return this object to allow chaining
         return this;
+
+        // Preload images
+        function preloadImages(arrayOfImages)
+        {
+            // Add a div to the body
+            $('body').append('<div id="preloadedImages" style="display:none;"></div>')
+
+            // Find the div
+            var divPreloadedImages = $('#preloadedImages');
+
+            // Add images to the div
+            for (var i = 0; i < arrayOfImages.length; i++)
+            {
+                divPreloadedImages.append('<img src="' + arrayOfImages[i] + this + '" alt="360" />');
+            }
+
+        } // End of the preloadImages method
 
         // Start spinning the image
         function startSpinning(event)

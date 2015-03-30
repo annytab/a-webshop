@@ -20,6 +20,7 @@
         var zoomInCursor = opts.zoomInCursor;
         var zoomOutCursor = opts.zoomOutCursor;
         var showProductString = opts.showProductString;
+        var fullscreenZ = opts.fullscreenZ;
 
         // Register events
         imageMapContainer.on("click", "." + imageMapButtonClass, loadImageMap);
@@ -125,7 +126,7 @@
         // Toggle fullscreen for the imap container
         function toggleFullscreen()
         {
-            // Check if we should expand or make the container smaller
+            // Check if we should expand or collapse the container
             if (imageMap.css("position") == "fixed")
             {
                 imageMap.css("z-index", "auto");
@@ -136,7 +137,7 @@
             }
             else
             {
-                imageMap.css("z-index", "5");
+                imageMap.css("z-index", fullscreenZ);
                 imageMap.css("position", "fixed");
                 imageMap.css("top", "0px");
                 imageMap.css("left", "0px");
@@ -158,7 +159,8 @@
         containerHeight: "400px",
         zoomInCursor: "auto",
         zoomOutCursor: "auto",
-        showProductString: ""
+        showProductString: "",
+        fullscreenZ: "auto"
     };
 
 }(jQuery));
