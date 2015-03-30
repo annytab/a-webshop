@@ -59,7 +59,7 @@
             // Add images to the div
             for (var i = 0; i < arrayOfImages.length; i++)
             {
-                divPreloadedImages.append('<img src="' + arrayOfImages[i] + this + '" alt="360" />');
+                divPreloadedImages.append('<img src="' + imageDirectory + arrayOfImages[i] + '" alt="360" />');
             }
 
         } // End of the preloadImages method
