@@ -406,6 +406,7 @@
     <Content Include="Scripts\codemirror\xml.js" />
     <Content Include="Content\annytab_css\rateit.css" />
     <Content Include="Scripts\jquery.spin.js" />
+    <Content Include="Scripts\jquery.ui.touch-punch.min.js" />
     <Content Include="Scripts\rangyinputs-jquery.js" />
     <Content Include="Scripts\spin.min.js" />
     <Content Include="Scripts\theme\readme.txt" />

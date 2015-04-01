@@ -23,3 +23,4 @@
 /// <reference path="annytab.spin-image-360.js" />
 /// <reference path="rangyinputs-jquery.js" />
 /// <reference path="annytab_front/annytab.image-map.js" />
+/// <reference path="jquery.ui.touch-punch.min.js" />

@@ -94,7 +94,7 @@
 
 @*List of products*@
 <div class="annytab-list-container">
-    <div class="annytab-list-table" style="width:1720px;">
+    <div class="annytab-list-table" style="width:1750px;">
         <div class="annytab-list-row">
             <div class="annytab-list-column-head" style="text-align:center;width:100px;">@id_tt</div>
             <div class="annytab-list-column-head" style="text-align:left;width:100px;">@product_code_short_tt</div>
@@ -106,7 +106,7 @@
             <div class="annytab-list-column-head" style="text-align:center;width:100px;">@edit_tt</div>
             <div class="annytab-list-column-head" style="text-align:center;width:100px;">@images_tt</div>
             <div class="annytab-list-column-head" style="text-align:center;width:100px;">@accessories_tt</div>
-            <div class="annytab-list-column-head" style="text-align:center;width:100px;">@bundle_structure_tt</div>
+            <div class="annytab-list-column-head" style="text-align:center;width:130px;">@bundle_structure_tt</div>
             <div class="annytab-list-column-head" style="text-align:center;width:100px;">@translate_tt</div>
             <div class="annytab-list-column-head" style="text-align:center;width:100px;">@files_tt</div>
             <div class="annytab-list-column-head" style="text-align:center;width:100px;">@statistics_tt</div>
@@ -126,7 +126,7 @@
             @:<div class="annytab-list-column" style="text-align:center;width:100px;"><input type="button" class="annytab-form-button" value="@edit_tt" onclick="location.href='@Url.Action("edit", "admin_products", new { id = products[i].id, returnUrl = queryString })'" /></div>
             @:<div class="annytab-list-column" style="text-align:center;width:100px;"><input type="button" class="annytab-form-button" value="@images_tt" onclick="location.href='@Url.Action("images", "admin_products", new { id = products[i].id, returnUrl = queryString })'" /></div>
             @:<div class="annytab-list-column" style="text-align:center;width:100px;"><input type="button" class="annytab-form-button" value="@accessories_tt" onclick="location.href='@Url.Action("accessories", "admin_products", new { id = products[i].id, returnUrl = queryString })'" /></div>
-            @:<div class="annytab-list-column" style="text-align:center;width:100px;"><input type="button" class="annytab-form-button" value="@bundle_structure_tt" onclick="location.href='@Url.Action("bundle_structure", "admin_products", new { id = products[i].id, returnUrl = queryString })'" /></div>
+            @:<div class="annytab-list-column" style="text-align:center;width:130px;"><input type="button" class="annytab-form-button" value="@bundle_structure_tt" onclick="location.href='@Url.Action("bundle_structure", "admin_products", new { id = products[i].id, returnUrl = queryString })'" /></div>
             @:<div class="annytab-list-column" style="text-align:center;width:100px;"><input type="button" class="annytab-form-button" value="@translate_tt" onclick="location.href='@Url.Action("translate", "admin_products", new { id = products[i].id, returnUrl = queryString })'" /></div>
             @:<div class="annytab-list-column" style="text-align:center;width:100px;"><input type="button" class="annytab-form-button" value="@files_tt" onclick="location.href='@Url.Action("files", "admin_products", new { id = products[i].id, returnUrl = queryString })'" /></div>
             @:<div class="annytab-list-column" style="text-align:center;width:100px;"><input type="button" class="annytab-form-button" value="@reset_tt" onclick="location.href='@Url.Action("reset_statistics", "admin_products", new { id = products[i].id, returnUrl = queryString })'" /></div>
