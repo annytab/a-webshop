@@ -936,8 +936,12 @@ namespace Annytab.Webshop.Controllers
             Int64 insertId = ProductReview.Add(review);
 
             // Send a email to the administrator of the website
-            string subject = tt.Get("review") + " " + insertId.ToString() + " - " + customer.invoice_name;
-            string message = tt.Get("rating") + ": " + review.rating.ToString() + "<br /><br />" + review.review_text;
+            string subject = tt.Get("review") + " - " + domain.webshop_name;
+            string message = tt.Get("id") + ": " + insertId.ToString() + "<br />"
+                + tt.Get("product") + ": " + review.product_id.ToString() + "<br />"
+                + tt.Get("customer") + ": " + customer.invoice_name + "<br />" 
+                + tt.Get("rating") + ": " + review.rating.ToString() + "<br /><br />" 
+                + review.review_text;
             Tools.SendEmailToHost("", subject, message);
 
             // Update the product rating
@@ -992,8 +996,12 @@ namespace Annytab.Webshop.Controllers
                 ProductReview.Update(review);
 
                 // Send a email to the administrator of the website
-                string subject = tt.Get("review") + " " + review.id.ToString() + " - " + customer.invoice_name;
-                string message = tt.Get("rating") + ": " + review.rating.ToString() + "<br /><br />" + review.review_text;
+                string subject = tt.Get("review") + " - " + domain.webshop_name;
+                string message = tt.Get("id") + ": " + review.id.ToString() + "<br />"
+                    + tt.Get("product") + ": " + review.product_id.ToString() + "<br />"
+                    + tt.Get("customer") + ": " + customer.invoice_name + "<br />"
+                    + tt.Get("rating") + ": " + review.rating.ToString() + "<br /><br />"
+                    + review.review_text;
                 Tools.SendEmailToHost("", subject, message);
 
                 // Update the product rating

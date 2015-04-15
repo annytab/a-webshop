@@ -5,13 +5,6 @@
     string keywords = string.Empty;
     Int32 page = 1;
     
-    // Get the layout type from the cookie
-    ViewBag.LayoutType = "standard";
-    if (Request.Cookies["LayoutType"] != null)
-    {
-        ViewBag.LayoutType = Request.Cookies["LayoutType"].Value;
-    }
-
     // Get the keywords
     if (Request.Params["kw"] != null)
     {
@@ -112,14 +105,7 @@
     ViewBag.NumberOfPages = numberOfPages;
     
     // Set the layout for the page
-    if (ViewBag.LayoutType == "mobile")
-    {
-        Layout = domain.custom_theme_id == 0 ? "/Views/shared_front/_mobile_layout.cshtml" : "/Views/theme/front_mobile_layout.cshtml";
-    }
-    else
-    {
-        Layout = domain.custom_theme_id == 0 ? "/Views/shared_front/_standard_layout.cshtml" : "/Views/theme/front_standard_layout.cshtml";
-    }
+    Layout = domain.custom_theme_id == 0 ? "/Views/shared_front/_standard_layout.cshtml" : "/Views/theme/front_standard_layout.cshtml";
 
     // A counter for columns
     Int32 columnCounter = 0;
@@ -230,7 +216,7 @@
                 </div>
                 <a class="annytab-basic-button" style="display:block;padding:10px;" href="@url">@link_text</a>
             </div>
-            <div style="margin-top:76px;"></div>
+            <div class="annytab-view1-bottom-space"></div>
         </div>
 
         if (columnCounter < 2 && i != products.Count - 1)
@@ -268,7 +254,7 @@
                 </div>
                 <a class="annytab-basic-button" style="display:block;padding:10px;" href="@url">@link_text</a>
             </div>
-            <div style="margin-top:76px;"></div>
+            <div class="annytab-view1-bottom-space"></div>
         </div>
 
         if (columnCounter < 3 && i != products.Count - 1)
@@ -306,7 +292,7 @@
                 </div>
                 <a class="annytab-basic-button" style="display:block;padding:10px;" href="@url">@short_link_text</a>
             </div>
-            <div style="margin-top:76px;"></div>
+            <div class="annytab-view1-bottom-space"></div>
         </div>
 
         if (columnCounter < 4 && i != products.Count - 1)

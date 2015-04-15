@@ -1,6 +1,5 @@
 ﻿@using System.Globalization
 @{
-    
     // Get form values
     Domain domain = ViewBag.CurrentDomain;
     Language language = ViewBag.CurrentLanguage;
@@ -25,6 +24,7 @@
     // Get translated texts
     string logotype_tt = tt.Get("logotype");
     string background_image_tt = tt.Get("background_image");
+    string menu_tt = tt.Get("menu");
     string search_tt = tt.Get("search");
     string categories_tt = tt.Get("categories");
     string shopping_cart_tt = tt.Get("shopping_cart");
@@ -61,7 +61,7 @@
     <link rel="canonical" href="@ViewBag.MetaCanonical" />
     <meta name="robots" content="@(domain.noindex == true ? "noindex, nofollow" : ViewBag.MetaRobots)" />
     <meta charset="utf-8" />
-    <meta name="viewport" content="width=device-width, height=device-height, user-scalable=yes" />
+    <meta name="viewport" content="width=device-width,height=device-height,initial-scale=1.0,user-scalable=yes" />
     <meta name="google" content="notranslate">
 
     @* Facebook meta tags *@
@@ -73,15 +73,16 @@
     <meta property="og:site_name" content="@domain.webshop_name" />
 
     @* Resources *@
-    <link href="@imageUrls.Get("small_icon")" rel="shortcut icon" type="image/x-icon" />
-    @Styles.Render(domain.custom_theme_id == 0 ? "/Content/annytab_css/front_standard_layout.css" : "/Content/theme/front_standard_layout.css")
-    @Styles.Render(domain.custom_theme_id == 0 ? "/Content/annytab_css/front_default_style.css" : "/Content/theme/front_default_style.css")
-
+    <link rel="icon" type="image/x-icon" href="@imageUrls.Get("small_icon")" />
+    <link rel="stylesheet" type="text/css" media="screen and (min-width:1366px)" href="@(domain.custom_theme_id == 0 ? "/Content/annytab_css/front_standard_layout.css" : "/Content/theme/front_standard_layout.css")" />
+    <link rel="stylesheet" type="text/css" media="only screen and (min-width:1046px) and (max-width:1365px)" href="@(domain.custom_theme_id == 0 ? "/Content/annytab_css/front_medium_layout.css" : "/Content/theme/front_medium_layout.css")" />
+    <link rel="stylesheet" type="text/css" media="only screen and (max-width:1045px)" href="@(domain.custom_theme_id == 0 ? "/Content/annytab_css/front_mobile_layout.css" : "/Content/theme/front_mobile_layout.css")" />
+    <link rel="stylesheet" type="text/css" href="@(domain.custom_theme_id == 0 ? "/Content/annytab_css/front_default_style.css" : "/Content/theme/front_default_style.css")" />
 </head>
 <body>
     @* The background image *@
-    <img src="@imageUrls.Get("background_image")" class="annytab-background-image" alt="@background_image_tt" />
-
+    <img id="backgroundImage" data-src="@imageUrls.Get("background_image")" class="annytab-background-image" alt="@background_image_tt" />
+    
     @* Master outer container *@
     <div class="annytab-layout-outer-container">
 
@@ -91,9 +92,21 @@
             @* Hidden fields *@
             <div id="cartUpdated" data-cart-updated="@cartUpdated" style="display:none;"></div>
 
-            @* Header *@
-            <div class="annytab-layout-header">
+            @* Standard header *@
+            <div class="annytab-layout-standard-header">
                 <a href="/"><img alt="@domain.webshop_name" class="annytab-logotype" src="@imageUrls.Get("default_logotype")" /></a>
+            </div>
+
+            @* Mobile header *@
+            <div class="annytab-layout-mobile-header">
+                <img id="toggleMobileMenu" alt="@menu_tt" src="/Content/images/annytab_design/menu_icon.png" style="z-index:1;height:100%;cursor:pointer;position:absolute;left:5px;top:0px;" />
+                <div class="annytab-basic-divider" style="position:absolute;left:47px;top:0px;height:42px;margin-left:5px;"></div>
+                <div class="annytab-basic-divider" style="position:absolute;right:47px;top:0px;height:42px;margin-right:5px;"></div>
+                <div id="mobileCartContainer" style="display:inline-block;position:absolute;z-index:1;border-radius:4px;height:42px;width:42px;cursor:pointer;right:5px;top:0px;" onclick="location.href='/order'">
+                    <img id="mobileCartIcon" alt="@shopping_cart_tt" src="/Content/images/annytab_design/cart_icon.png" style="z-index:1;width:42px;height:42px;" />
+                    <div id="mobileCartQuantity" style="height:42px;width:42px;font-weight:bold;color:#a30909;font-size:18px;display:inline-block;position:absolute;top:0px;right:0px;text-align:center;padding-top:12px;">@cartStatistics["total_quantity"].ToString("##,0.##", cultureInfo)</div>
+                </div>
+                <a href="/"><img alt="@domain.webshop_name" class="annytab-logotype" src="@imageUrls.Get("mobile_logotype")" /></a>
             </div>
 
             @* Gradient *@
@@ -112,8 +125,8 @@
             </div>
 
             @* Left container *@
-            <div class="annytab-layout-left-content">
-                <div style="padding:10px 10px 10px 10px;">
+            <div id="mobileMenu" class="annytab-layout-left-content">
+                <div class="annytab-layout-menu-padding">
 
                     @* Search box *@
                     <div class="annytab-search-box">
@@ -178,7 +191,7 @@
 
             @* Main middle container *@
             <div class="annytab-layout-main-content">
-                <div style="padding:10px 10px 10px 0px;">
+                <div style="padding:10px;">
                     @RenderBody()
                 </div>
             </div>
@@ -189,14 +202,14 @@
             @* The footer *@
             <div class="annytab-layout-footer">
                 <div style="padding:10px 10px 10px 10px">
-                    <span>@Html.Raw(copyright_information_tt + " | ")</span><a href="/home/layout/mobile" style="color:#ffffff;text-decoration:underline;">@mobile_tt</a>
+                    <span>@Html.Raw(copyright_information_tt + " | ")</span>
                     @if (pricesIncludesVat == true)
                     {
-                        @(" | ")<a href="/home/prices_includes_vat/false" style="color:#ffffff;text-decoration:underline;">@company_tt</a>
+                        <a href="/home/prices_includes_vat/false" style="color:#ffffff;text-decoration:underline;">@(company_tt + " (" + excluding_vat_tt + ")")</a>
                     }
                     else
                     {
-                        @(" | ")<a href="/home/prices_includes_vat/true" style="color:#ffffff;text-decoration:underline;">@private_person_tt</a>
+                        <a href="/home/prices_includes_vat/true" style="color:#ffffff;text-decoration:underline;">@(private_person_tt + " (" + including_vat_tt + ")")</a>
                     }
                 </div>
             </div>

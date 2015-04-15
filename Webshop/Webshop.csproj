@@ -297,6 +297,7 @@
   <ItemGroup>
     <Content Include="Content\annytab_css\admin_default.css" />
     <Content Include="Content\annytab_css\admin_layout.css" />
+    <Content Include="Content\annytab_css\front_medium_layout.css" />
     <Content Include="Content\images\annytab_design\cross.cur" />
     <Content Include="Content\images\annytab_design\cross.png" />
     <Content Include="Content\images\annytab_design\google_plus.png" />
@@ -360,7 +361,6 @@
     <Content Include="Scripts\annytab_admin\annytab.html-button-panel.js" />
     <Content Include="Scripts\annytab_front\annytab.home-functions.js" />
     <Content Include="Scripts\annytab_front\annytab.image-map.js" />
-    <Content Include="Scripts\annytab_front\annytab.mobile-layout-functions.js" />
     <Content Include="Scripts\annytab_front\annytab.standard-layout-functions.js" />
     <None Include="Scripts\jquery-2.1.3.intellisense.js" />
     <Content Include="Scripts\jquery-2.1.3.js" />
@@ -423,7 +423,6 @@
     </Content>
     <Content Include="Views\shared_admin\_standard_layout.cshtml" />
     <Content Include="Views\shared_front\_standard_layout.cshtml" />
-    <Content Include="Views\shared_front\_mobile_layout.cshtml" />
     <Content Include="Views\admin_default\index.cshtml" />
     <Content Include="Views\Web.config">
       <SubType>Designer</SubType>

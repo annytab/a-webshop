@@ -102,202 +102,197 @@ public class CustomTheme
         Dictionary<string, string> templates = CustomThemeTemplate.GetAllByCustomThemeId(id, "user_file_name", "ASC");
         
         // Add templates that does not exist
-        if (templates.ContainsKey("front_category_menu.cshtml") == false) // 1
+        if (templates.ContainsKey("front_category_menu.cshtml") == false)
         {
             CustomThemeTemplate.Add(new CustomThemeTemplate(id, "front_category_menu.cshtml", "/Views/shared_front/_category_menu.cshtml",
                 CustomThemeTemplate.GetMasterFileContent("/Views/shared_front/_category_menu.cshtml"), "Creates the category menu with leveling."));
         }
-        if (templates.ContainsKey("front_display_items.cshtml") == false) // 2
+        if (templates.ContainsKey("front_display_items.cshtml") == false)
         {
             CustomThemeTemplate.Add(new CustomThemeTemplate(id, "front_display_items.cshtml", "/Views/shared_front/_display_items.cshtml",
                 CustomThemeTemplate.GetMasterFileContent("/Views/shared_front/_display_items.cshtml"), "Creates the list of categories and products to show on the home page and the category page."));
         }
-        if (templates.ContainsKey("front_mobile_layout.cshtml") == false) // 3
-        {
-            CustomThemeTemplate.Add(new CustomThemeTemplate(id, "front_mobile_layout.cshtml", "/Views/shared_front/_mobile_layout.cshtml",
-                CustomThemeTemplate.GetMasterFileContent("/Views/shared_front/_mobile_layout.cshtml"), "Mobile layout for a mobile phone browser."));
-        }
-        if (templates.ContainsKey("front_paging_menu.cshtml") == false) // 4
+        if (templates.ContainsKey("front_paging_menu.cshtml") == false)
         {
             CustomThemeTemplate.Add(new CustomThemeTemplate(id, "front_paging_menu.cshtml", "/Views/shared_front/_paging_menu.cshtml",
                 CustomThemeTemplate.GetMasterFileContent("/Views/shared_front/_paging_menu.cshtml"), "Creates the paging menu that shows under listed items in many files."));
         }
-        if (templates.ContainsKey("front_product_accessories.cshtml") == false) // 5
+        if (templates.ContainsKey("front_product_accessories.cshtml") == false)
         {
             CustomThemeTemplate.Add(new CustomThemeTemplate(id, "front_product_accessories.cshtml", "/Views/shared_front/_product_accessories.cshtml",
                 CustomThemeTemplate.GetMasterFileContent("/Views/shared_front/_product_accessories.cshtml"), "List of product accessories under a product."));
         }
-        if (templates.ContainsKey("front_product_reviews.cshtml") == false) // 6
+        if (templates.ContainsKey("front_product_reviews.cshtml") == false)
         {
             CustomThemeTemplate.Add(new CustomThemeTemplate(id, "front_product_reviews.cshtml", "/Views/shared_front/_product_reviews.cshtml",
                 CustomThemeTemplate.GetMasterFileContent("/Views/shared_front/_product_reviews.cshtml"), "List of reviews under a product."));
         }
-        if (templates.ContainsKey("front_shared_scripts.cshtml") == false) // 7
+        if (templates.ContainsKey("front_shared_scripts.cshtml") == false)
         {
             CustomThemeTemplate.Add(new CustomThemeTemplate(id, "front_shared_scripts.cshtml", "/Views/shared_front/_shared_scripts.cshtml",
                 CustomThemeTemplate.GetMasterFileContent("/Views/shared_front/_shared_scripts.cshtml"), "Common scripts for google analytics, google plus, facebook and more."));
         }
-        if(templates.ContainsKey("front_standard_layout.cshtml") == false) // 8
+        if(templates.ContainsKey("front_standard_layout.cshtml") == false)
         {
             CustomThemeTemplate.Add(new CustomThemeTemplate(id, "front_standard_layout.cshtml", "/Views/shared_front/_standard_layout.cshtml",
                 CustomThemeTemplate.GetMasterFileContent("/Views/shared_front/_standard_layout.cshtml"), "Standard layout file for a normal browser."));
         }
-        if (templates.ContainsKey("customer_menu.cshtml") == false) // 9
+        if (templates.ContainsKey("customer_menu.cshtml") == false)
         {
             CustomThemeTemplate.Add(new CustomThemeTemplate(id, "customer_menu.cshtml", "/Views/customer/_menu.cshtml",
                 CustomThemeTemplate.GetMasterFileContent("/Views/customer/_menu.cshtml"), "A menu for a signed in customer"));
         }
-        if (templates.ContainsKey("customer_download_files.cshtml") == false) // 10
+        if (templates.ContainsKey("customer_download_files.cshtml") == false)
         {
             CustomThemeTemplate.Add(new CustomThemeTemplate(id, "customer_download_files.cshtml", "/Views/customer/download_files.cshtml",
                 CustomThemeTemplate.GetMasterFileContent("/Views/customer/download_files.cshtml"), "A list with downloadable files that a customer has ordered, these files can be downloaded by the customer."));
         }
-        if (templates.ContainsKey("edit_company.cshtml") == false) // 11
+        if (templates.ContainsKey("edit_company.cshtml") == false)
         {
             CustomThemeTemplate.Add(new CustomThemeTemplate(id, "edit_company.cshtml", "/Views/customer/edit_company.cshtml",
                 CustomThemeTemplate.GetMasterFileContent("/Views/customer/edit_company.cshtml"), "The form where a company customer can edit his information."));
         }
-        if (templates.ContainsKey("edit_person.cshtml") == false) // 12
+        if (templates.ContainsKey("edit_person.cshtml") == false)
         {
             CustomThemeTemplate.Add(new CustomThemeTemplate(id, "edit_person.cshtml", "/Views/customer/edit_person.cshtml",
                 CustomThemeTemplate.GetMasterFileContent("/Views/customer/edit_person.cshtml"), "The form where a private person customer can edit his information."));
         }
-        if (templates.ContainsKey("edit_customer_reviews.cshtml") == false) // 13
+        if (templates.ContainsKey("edit_customer_reviews.cshtml") == false)
         {
             CustomThemeTemplate.Add(new CustomThemeTemplate(id, "edit_customer_reviews.cshtml", "/Views/customer/edit_reviews.cshtml",
                 CustomThemeTemplate.GetMasterFileContent("/Views/customer/edit_reviews.cshtml"), "A list form where a customer can edit his reviews."));
         }
-        if (templates.ContainsKey("forgot_email_password.cshtml") == false) // 14
+        if (templates.ContainsKey("forgot_email_password.cshtml") == false)
         {
             CustomThemeTemplate.Add(new CustomThemeTemplate(id, "forgot_email_password.cshtml", "/Views/customer/forgot_email_password.cshtml",
                 CustomThemeTemplate.GetMasterFileContent("/Views/customer/forgot_email_password.cshtml"), "A form where a customer can get his email or his password."));
         }
-        if (templates.ContainsKey("customer_start_page.cshtml") == false) // 15
+        if (templates.ContainsKey("customer_start_page.cshtml") == false)
         {
             CustomThemeTemplate.Add(new CustomThemeTemplate(id, "customer_start_page.cshtml", "/Views/customer/index.cshtml",
                 CustomThemeTemplate.GetMasterFileContent("/Views/customer/index.cshtml"), "The start page for the customer."));
         }
-        if (templates.ContainsKey("customer_login.cshtml") == false) // 16
+        if (templates.ContainsKey("customer_login.cshtml") == false)
         {
             CustomThemeTemplate.Add(new CustomThemeTemplate(id, "customer_login.cshtml", "/Views/customer/login.cshtml",
                 CustomThemeTemplate.GetMasterFileContent("/Views/customer/login.cshtml"), "The form where a customer can log in to his account."));
         }
-        if (templates.ContainsKey("category.cshtml") == false) // 17
+        if (templates.ContainsKey("category.cshtml") == false)
         {
             CustomThemeTemplate.Add(new CustomThemeTemplate(id, "category.cshtml", "/Views/home/category.cshtml",
                 CustomThemeTemplate.GetMasterFileContent("/Views/home/category.cshtml"), "Displays a category with its categories and products."));
         }
-        if (templates.ContainsKey("contact_us.cshtml") == false) // 18
+        if (templates.ContainsKey("contact_us.cshtml") == false)
         {
             CustomThemeTemplate.Add(new CustomThemeTemplate(id, "contact_us.cshtml", "/Views/home/contact_us.cshtml",
                 CustomThemeTemplate.GetMasterFileContent("/Views/home/contact_us.cshtml"), "A contact us form."));
         }
-        if (templates.ContainsKey("error.cshtml") == false) // 19
+        if (templates.ContainsKey("error.cshtml") == false)
         {
             CustomThemeTemplate.Add(new CustomThemeTemplate(id, "error.cshtml", "/Views/home/error.cshtml",
                 CustomThemeTemplate.GetMasterFileContent("/Views/home/error.cshtml"), "The page that shows error messages."));
         }
-        if (templates.ContainsKey("home.cshtml") == false) // 20
+        if (templates.ContainsKey("home.cshtml") == false)
         {
             CustomThemeTemplate.Add(new CustomThemeTemplate(id, "home.cshtml", "/Views/home/index.cshtml",
                 CustomThemeTemplate.GetMasterFileContent("/Views/home/index.cshtml"), "The entry page for the webshop."));
         }
-        if (templates.ContainsKey("information.cshtml") == false) // 21
+        if (templates.ContainsKey("information.cshtml") == false)
         {
             CustomThemeTemplate.Add(new CustomThemeTemplate(id, "information.cshtml", "/Views/home/information.cshtml",
                 CustomThemeTemplate.GetMasterFileContent("/Views/home/information.cshtml"), "Displays the content of a static page."));
         }
-        if (templates.ContainsKey("product.cshtml") == false) // 22
+        if (templates.ContainsKey("product.cshtml") == false)
         {
             CustomThemeTemplate.Add(new CustomThemeTemplate(id, "product.cshtml", "/Views/home/product.cshtml",
                 CustomThemeTemplate.GetMasterFileContent("/Views/home/product.cshtml"), "Displays a product with information and buy button."));
         }
-        if (templates.ContainsKey("search.cshtml") == false) // 23
+        if (templates.ContainsKey("search.cshtml") == false)
         {
             CustomThemeTemplate.Add(new CustomThemeTemplate(id, "search.cshtml", "/Views/home/search.cshtml",
                 CustomThemeTemplate.GetMasterFileContent("/Views/home/search.cshtml"), "Displays a list of products according to a search."));
         }
-        if (templates.ContainsKey("terms_of_purchase.cshtml") == false) // 24
+        if (templates.ContainsKey("terms_of_purchase.cshtml") == false)
         {
             CustomThemeTemplate.Add(new CustomThemeTemplate(id, "terms_of_purchase.cshtml", "/Views/home/terms_of_purchase.cshtml",
                 CustomThemeTemplate.GetMasterFileContent("/Views/home/terms_of_purchase.cshtml"), "The terms of purchase page."));
         }
-        if (templates.ContainsKey("order_confirmation_body.cshtml") == false) // 25
+        if (templates.ContainsKey("order_confirmation_body.cshtml") == false)
         {
             CustomThemeTemplate.Add(new CustomThemeTemplate(id, "order_confirmation_body.cshtml", "/Views/order/_confirmation_body.cshtml",
                 CustomThemeTemplate.GetMasterFileContent("/Views/order/_confirmation_body.cshtml"), "The order confirmation printable area, used to view, print and email the order confirmation."));
         }
-        if (templates.ContainsKey("order_confirmation.cshtml") == false) // 26
+        if (templates.ContainsKey("order_confirmation.cshtml") == false)
         {
             CustomThemeTemplate.Add(new CustomThemeTemplate(id, "order_confirmation.cshtml", "/Views/order/confirmation.cshtml",
                 CustomThemeTemplate.GetMasterFileContent("/Views/order/confirmation.cshtml"), "The order confirmation wrapper file where the customer can view and print the order confirmation."));
         }
-        if (templates.ContainsKey("checkout.cshtml") == false) // 27
+        if (templates.ContainsKey("checkout.cshtml") == false)
         {
             CustomThemeTemplate.Add(new CustomThemeTemplate(id, "checkout.cshtml", "/Views/order/index.cshtml",
                 CustomThemeTemplate.GetMasterFileContent("/Views/order/index.cshtml"), "The checkout template, where the customer makes the order."));
         }
-        if (templates.ContainsKey("front_default_style.css") == false) // 28
+        if (templates.ContainsKey("front_default_style.css") == false)
         {
             CustomThemeTemplate.Add(new CustomThemeTemplate(id, "front_default_style.css", "/Content/annytab_css/front_default_style.css",
-                CustomThemeTemplate.GetMasterFileContent("/Content/annytab_css/front_default_style.css"), "Css styling for the standard and the mobile layout."));
+                CustomThemeTemplate.GetMasterFileContent("/Content/annytab_css/front_default_style.css"), "Css styling that is shared between layouts."));
         }
-        if (templates.ContainsKey("front_mobile_layout.css") == false) // 29
+        if (templates.ContainsKey("front_medium_layout.css") == false)
+        {
+            CustomThemeTemplate.Add(new CustomThemeTemplate(id, "front_medium_layout.css", "/Content/annytab_css/front_medium_layout.css",
+                CustomThemeTemplate.GetMasterFileContent("/Content/annytab_css/front_medium_layout.css"), "Css styling for a medium layout."));
+        }
+        if (templates.ContainsKey("front_mobile_layout.css") == false)
         {
             CustomThemeTemplate.Add(new CustomThemeTemplate(id, "front_mobile_layout.css", "/Content/annytab_css/front_mobile_layout.css",
-                CustomThemeTemplate.GetMasterFileContent("/Content/annytab_css/front_mobile_layout.css"), "Mobile layout css styling for the mobile layout file."));
+                CustomThemeTemplate.GetMasterFileContent("/Content/annytab_css/front_mobile_layout.css"), "Css styling for a mobile layout."));
         }
-        if (templates.ContainsKey("front_standard_layout.css") == false) // 30
+        if (templates.ContainsKey("front_standard_layout.css") == false)
         {
             CustomThemeTemplate.Add(new CustomThemeTemplate(id, "front_standard_layout.css", "/Content/annytab_css/front_standard_layout.css",
-                CustomThemeTemplate.GetMasterFileContent("/Content/annytab_css/front_standard_layout.css"), "Standard layout css styling for the standard layout file."));
+                CustomThemeTemplate.GetMasterFileContent("/Content/annytab_css/front_standard_layout.css"), "Css styling for the standard layout."));
         }
-        if (templates.ContainsKey("rateit.css") == false) // 31
+        if (templates.ContainsKey("rateit.css") == false)
         {
             CustomThemeTemplate.Add(new CustomThemeTemplate(id, "rateit.css", "/Content/annytab_css/rateit.css",
                 CustomThemeTemplate.GetMasterFileContent("/Content/annytab_css/rateit.css"), "The style for the rating component in product reviews."));
         }
-        if (templates.ContainsKey("annytab.category-functions.js") == false) // 32
+        if (templates.ContainsKey("annytab.category-functions.js") == false)
         {
             CustomThemeTemplate.Add(new CustomThemeTemplate(id, "annytab.category-functions.js", "/Scripts/annytab_front/annytab.category-functions.js",
                 CustomThemeTemplate.GetMasterFileContent("/Scripts/annytab_front/annytab.category-functions.js"), "Functions that apply to the category page, where a category is displayed."));
         }
-        if (templates.ContainsKey("annytab.default-functions.js") == false) // 33
+        if (templates.ContainsKey("annytab.default-functions.js") == false)
         {
             CustomThemeTemplate.Add(new CustomThemeTemplate(id, "annytab.default-functions.js", "/Scripts/annytab_front/annytab.default-functions.js",
                 CustomThemeTemplate.GetMasterFileContent("/Scripts/annytab_front/annytab.default-functions.js"), "Functions that apply to the entire website, both standard and mobile."));
         }
-        if (templates.ContainsKey("annytab.home-functions.js") == false) // 34
+        if (templates.ContainsKey("annytab.home-functions.js") == false)
         {
             CustomThemeTemplate.Add(new CustomThemeTemplate(id, "annytab.home-functions.js", "/Scripts/annytab_front/annytab.home-functions.js",
                 CustomThemeTemplate.GetMasterFileContent("/Scripts/annytab_front/annytab.home-functions.js"), "Functions that apply to the index page of the website, the home page."));
         }
-        if (templates.ContainsKey("annytab.mobile-layout-functions.js") == false) // 35
-        {
-            CustomThemeTemplate.Add(new CustomThemeTemplate(id, "annytab.mobile-layout-functions.js", "/Scripts/annytab_front/annytab.mobile-layout-functions.js",
-                CustomThemeTemplate.GetMasterFileContent("/Scripts/annytab_front/annytab.mobile-layout-functions.js"), "Functions that apply to the mobile layout for the website."));
-        }
-        if (templates.ContainsKey("annytab.order-functions.js") == false) // 36
+        if (templates.ContainsKey("annytab.order-functions.js") == false)
         {
             CustomThemeTemplate.Add(new CustomThemeTemplate(id, "annytab.order-functions.js", "/Scripts/annytab_front/annytab.order-functions.js",
                 CustomThemeTemplate.GetMasterFileContent("/Scripts/annytab_front/annytab.order-functions.js"), "Functions that apply to the checkout page."));
         }
-        if (templates.ContainsKey("annytab.product-functions.js") == false) // 37
+        if (templates.ContainsKey("annytab.product-functions.js") == false)
         {
             CustomThemeTemplate.Add(new CustomThemeTemplate(id, "annytab.product-functions.js", "/Scripts/annytab_front/annytab.product-functions.js",
                 CustomThemeTemplate.GetMasterFileContent("/Scripts/annytab_front/annytab.product-functions.js"), "Functions that apply to the product page, some functions relate to the recalculation of the product price."));
         }
-        if (templates.ContainsKey("annytab.standard-layout-functions.js") == false) // 38
+        if (templates.ContainsKey("annytab.standard-layout-functions.js") == false)
         {
             CustomThemeTemplate.Add(new CustomThemeTemplate(id, "annytab.standard-layout-functions.js", "/Scripts/annytab_front/annytab.standard-layout-functions.js",
                 CustomThemeTemplate.GetMasterFileContent("/Scripts/annytab_front/annytab.standard-layout-functions.js"), "Functions that apply to the standard layout for the website."));
         }
-        if (templates.ContainsKey("front_category_imap.cshtml") == false) // 39
+        if (templates.ContainsKey("front_category_imap.cshtml") == false)
         {
             CustomThemeTemplate.Add(new CustomThemeTemplate(id, "front_category_imap.cshtml", "/Views/shared_front/_category_imap.cshtml",
                 CustomThemeTemplate.GetMasterFileContent("/Views/shared_front/_category_imap.cshtml"), "Displays inspiration image maps for a category."));
         }
-        if (templates.ContainsKey("annytab.image-map.js") == false) // 40
+        if (templates.ContainsKey("annytab.image-map.js") == false)
         {
             CustomThemeTemplate.Add(new CustomThemeTemplate(id, "annytab.image-map.js", "/Scripts/annytab_front/annytab.image-map.js",
                 CustomThemeTemplate.GetMasterFileContent("/Scripts/annytab_front/annytab.image-map.js"), "A jQuery plugin that controls image maps."));

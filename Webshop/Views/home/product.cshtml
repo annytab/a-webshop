@@ -1,13 +1,5 @@
 ﻿@using System.Globalization
 @{
-
-    // Get the layout type from the cookie
-    ViewBag.LayoutType = "standard";
-    if (Request.Cookies["LayoutType"] != null)
-    {
-        ViewBag.LayoutType = Request.Cookies["LayoutType"].Value;
-    }
-
     // Get form values
     Domain domain = ViewBag.CurrentDomain;
     Language language = ViewBag.CurrentLanguage;
@@ -87,14 +79,7 @@
     }
     
     // Set the layout for the page
-    if (ViewBag.LayoutType == "mobile")
-    {
-        Layout = domain.custom_theme_id == 0 ? "/Views/shared_front/_mobile_layout.cshtml" : "/Views/theme/front_mobile_layout.cshtml";
-    }
-    else
-    {
-        Layout = domain.custom_theme_id == 0 ? "/Views/shared_front/_standard_layout.cshtml" : "/Views/theme/front_standard_layout.cshtml";
-    }
+    Layout = domain.custom_theme_id == 0 ? "/Views/shared_front/_standard_layout.cshtml" : "/Views/theme/front_standard_layout.cshtml";
 }
 
 @* Google markup (Product) *@
@@ -137,21 +122,21 @@
 
         @* Product image and description *@
         <div style="display:block;">
-            <p>
-                @* Main image *@
-                <div id="mainProductImageContainer" style="position:relative;float:left;width:290px;height:290px;margin:0px 4px 4px 0px;overflow:hidden;border-radius:4px;cursor:crosshair;">
-                    <img id="mainProductImage" itemprop="image" src="@Tools.GetProductMainImageUrl(product.id, domain.front_end_language, variantImageUrl, product.use_local_images)" alt="@product.title" style="position:absolute;top:0;left:0;width:290px;height:290px;" />
-                </div>
+            @* Main image *@
+            <div id="mainProductImageContainer" class="annytab-product-image">
+                <img id="mainProductImage" itemprop="image" src="@Tools.GetProductMainImageUrl(product.id, domain.front_end_language, variantImageUrl, product.use_local_images)" alt="@product.title" style="position:absolute;top:0;left:0;width:290px;height:290px;" />
+            </div>
+            <div class="annytab-product-description">
                 @* Review and rating *@
                 <div itemscope itemtype="http://data-vocabulary.org/Review-aggregate" style="margin-bottom:5px;">
                     <div class="rateit" title="@product.rating.ToString()" data-rateit-value="@product.rating.ToString(CultureInfo.InvariantCulture)" data-rateit-ispreset="true" data-rateit-readonly="true"></div>
                     <span itemprop="itemreviewed" style="display:none;">@product.title</span><span>@(" | ")</span><span class="annytab-basic-text-normal">@(rating_tt + ": ")</span>
                     <span class="annytab-basic-text-normal" itemprop="rating">@product.rating.ToString("##,0.##", cultureInfo)</span><span>@(" | ")</span>
                     <a href="#reviews" style="vertical-align:middle;">@(reviews_tt + " (")<span itemprop="count">@count</span>@(")")</a>
-                </div>                    
+                </div>
                 @* Product description *@
-                <span class="annytab-basic-bread-text" itemprop="description">@Html.Raw(product.main_content)</span>  
-            </p>
+                <span class="annytab-basic-bread-text" itemprop="description">@Html.Raw(product.main_content)</span>
+            </div>
         </div>
 
         <div class="annytab-basic-space"></div>
