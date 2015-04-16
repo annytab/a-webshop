@@ -13,8 +13,8 @@ function start()
     }
     
     // Register events
-    $(document).on("click", "#toggleMobileMenu", toggleMobileMenu)
-    $(document).mouseup(hideMobileMenu);
+    $(document).on("click", "#toggleMobileMenu", toggleMobileMenu);
+    //$(document).mouseup(hideMobileMenu);
 
     // Check if we should animate the cart update
     if ($("#cartUpdated").attr("data-cart-updated") == "true")
@@ -29,23 +29,20 @@ function start()
 // Toggle the visibility of the menu
 function toggleMobileMenu()
 {
-    if ($(window).width() < 1046)
-    {
-        // Get the mobile menu
-        var mobileMenu = $("#mobileMenu");
+    // Get the mobile menu
+    var mobileMenu = $("#mobileMenu");
 
-        // Toggle the visibility for the menu
-        mobileMenu.slideToggle(500);
-    }
-    
+    // Toggle the visibility for the menu
+    mobileMenu.slideToggle(500);
+
 } // End of the toggleMobileMenu method
 
 // Hide the mobile menu
 function hideMobileMenu(event)
 {
-    if ($(window).width() < 1046)
+    if ($(window).width() < 1000)
     {
-        /// Get the mobile menu
+        // Get the mobile menu
         var mobileMenu = $("#mobileMenu");
 
         if (mobileMenu.is(":hidden") == false && $("#toggleMobileMenu").is(event.target) == false

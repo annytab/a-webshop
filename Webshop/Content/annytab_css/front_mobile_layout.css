@@ -5,7 +5,7 @@
 .annytab-layout-standard-header{display:none;}
 .annytab-layout-mobile-header{clear:both;position:relative;overflow:hidden;width:auto;height:42px;text-align:center;background-color:#207298;margin:0px;}
 .annytab-layout-left-content{background-color:#dcdcdc;z-index:5;position:absolute;width:256px;top:42px;margin:0px;display:none;}
-.annytab-layout-menu-padding{padding:10px;}
+.annytab-layout-menu-padding{padding:10px 10px 0px 10px;}
 .annytab-layout-main-content{clear:both;max-width:1280px;margin:0px;}
 .annytab-layout-footer{clear:both;overflow:hidden;max-width:1280px;color:#ffffff;background-color:#207298;}
 .annytab-layout-right-content{display:none;}
