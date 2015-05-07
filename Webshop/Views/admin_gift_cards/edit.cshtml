@@ -1,0 +1,101 @@
+﻿@using System.Globalization
+@{
+    // Set the layout for the page
+    Layout = "/Views/shared_admin/_standard_layout.cshtml";
+
+    // Get values
+    GiftCard giftCard = ViewBag.GiftCard;
+    List<Language> languages = ViewBag.Languages;
+    List<Currency> currencies = Currency.GetAll("currency_code", "ASC");
+    KeyStringList tt = ViewBag.TranslatedTexts;
+    string returnUrl = ViewBag.ReturnUrl;
+    string error_message = ViewBag.ErrorMessage != null ? ViewBag.ErrorMessage : string.Empty;
+
+    // Get translated texts
+    string gift_card_tt = tt.Get("gift_card");
+    string new_tt = tt.Get("new");
+    string edit_tt = tt.Get("edit");
+    string id_tt = tt.Get("id");
+    string no_choice_tt = tt.Get("no_choice");
+    string language_tt = tt.Get("language");
+    string currency_tt = tt.Get("currency");
+    string amount_tt = tt.Get("amount");
+    string end_date_tt = tt.Get("end_date");
+    string save_tt = tt.Get("save");
+    string cancel_tt = tt.Get("cancel");
+
+    // Set the title for the page
+    if (giftCard.id == "")
+    {
+        ViewBag.Title = gift_card_tt + " - " + new_tt.ToLower();
+    }
+    else
+    {
+        ViewBag.Title = gift_card_tt + " - " + edit_tt.ToLower();
+    }
+}
+
+@*Title*@
+<h1>@ViewBag.Title</h1>
+
+@*Menu*@
+@Html.Partial("/Views/admin_gift_cards/_form_menu.cshtml")
+
+@*Main form*@
+@using (Html.BeginForm("edit", "admin_gift_cards", FormMethod.Post))
+{
+    @*Hidden data*@
+    <input name="returnUrl" type="hidden" value="@returnUrl" />
+    <div class="annytab-form-error-message" style="@(error_message != "" ? "display:block;" : "display:none;")">@Html.Raw(error_message)</div>
+
+    @*Input form table*@
+    <div class="annytab-input-form-table">
+        <div class="annytab-input-form-row">
+            <div class="annytab-input-form-column-label">@(id_tt + ":")</div>
+            <div class="annytab-input-form-column-input"><input id="txtId" name="txtId" type="text" class="annytab-form-textbox" value="@giftCard.id" /></div>
+        </div>
+        <div class="annytab-input-form-row">
+            <div class="annytab-input-form-column-label">@(language_tt + ":")</div>
+            <div class="annytab-input-form-column-input">
+                <select name="selectLanguage" class="annytab-form-select">
+                    <option value="0" @(giftCard.language_id == 0 ? Html.Raw("selected='selected'") : Html.Raw(""))>@("-- " + no_choice_tt + " --")</option>
+                    @foreach (Language language in languages)
+                    {
+                        <option value="@language.id" @(language.id == giftCard.language_id ? Html.Raw("selected='selected'") : Html.Raw(""))>@language.name</option>
+                    }
+                </select>
+            </div>
+        </div>
+        <div class="annytab-input-form-row">
+            <div class="annytab-input-form-column-label">@(currency_tt + ":")</div>
+            <div class="annytab-input-form-column-input">
+                <select name="selectCurrency" class="annytab-form-select">
+                    <option value="" @(giftCard.currency_code == "" ? Html.Raw("selected='selected'") : Html.Raw(""))>@("-- " + no_choice_tt + " --")</option>
+                    @foreach (Currency currency in currencies)
+                    {
+                        <option value="@currency.currency_code" @(currency.currency_code == giftCard.currency_code ? Html.Raw("selected='selected'") : Html.Raw(""))>@currency.currency_code</option>
+                    }
+                </select>
+            </div>
+        </div>
+        <div class="annytab-input-form-row">
+            <div class="annytab-input-form-column-label">@(amount_tt + ":")</div>
+            <div class="annytab-input-form-column-input"><input name="txtAmount" type="number" step="any" class="annytab-form-textbox" value="@giftCard.amount.ToString(CultureInfo.InvariantCulture)" /></div>
+        </div>
+        <div class="annytab-input-form-row">
+            <div class="annytab-input-form-column-label">@(end_date_tt + ":")</div>
+            <div class="annytab-input-form-column-input"><input id="txtEndDate" name="txtEndDate" type="text" class="annytab-form-textbox" value="@giftCard.end_date.ToString("yyyy-MM-dd")" /></div>
+        </div>
+    </div>
+
+    @*Button panel*@
+    <div style="display:block;border:1px solid #cccccc;margin:20px 0px 0px 0px;border-radius:4px;">
+        <input id="btnSave" type="submit" class="annytab-form-button" value="@save_tt" />
+        <input type="button" class="annytab-form-button" value="@cancel_tt" onclick="@Html.Raw("location.href='/admin_gift_cards" + returnUrl + "'")" />
+    </div>
+}
+
+@section scripts {
+    <link href="~/Content/jquery_css/jquery-ui.min.css" rel="stylesheet" />
+    <script type="text/javascript">$("#txtId").focus(); $("#txtEndDate").datepicker({ dateFormat: 'yy-mm-dd' });</script>
+}

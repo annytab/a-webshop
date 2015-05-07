@@ -106,7 +106,7 @@ public class CartItem
         {
             HttpContext.Current.Session.Remove("DiscountCodeId");
             HttpContext.Current.Session.Remove("ShoppingCart");
-            HttpContext.Current.Session["DiscountCodeError"] = "invalid_discount_code";
+            HttpContext.Current.Session["CodeError"] = "invalid_discount_code";
             return;
         }
 
@@ -148,7 +148,7 @@ public class CartItem
         {
             HttpContext.Current.Session.Remove("DiscountCodeId");
             HttpContext.Current.Session.Remove("ShoppingCart");
-            HttpContext.Current.Session["DiscountCodeError"] = "invalid_discount_code";
+            HttpContext.Current.Session["CodeError"] = "invalid_discount_code";
             return;
         }
 
@@ -175,6 +175,7 @@ public class CartItem
         // Delete the shopping cart session post
         HttpContext.Current.Session.Remove("ShoppingCart");
         HttpContext.Current.Session.Remove("DiscountCodeId");
+        HttpContext.Current.Session.Remove("GiftCards");
 
     } // End of the ClearShoppingCart method
 
@@ -200,25 +201,25 @@ public class CartItem
         if(discountCode == null)
         {
             // The discount code does not exist
-            HttpContext.Current.Session["DiscountCodeError"] = "invalid_discount_code";
+            HttpContext.Current.Session["CodeError"] = "invalid_discount_code";
             return;
         }
-        else if (DateTime.Now > discountCode.end_date)
+        else if (DateTime.Now.AddDays(-1) > discountCode.end_date)
         {
             // The discount code is not valid anymore
-            HttpContext.Current.Session["DiscountCodeError"] = "invalid_discount_code";
+            HttpContext.Current.Session["CodeError"] = "invalid_discount_code";
             return;
         }
         else if(discountCode.language_id != domain.front_end_language)
         {
             // The discount code is not valid for the language
-            HttpContext.Current.Session["DiscountCodeError"] = "invalid_discount_code";
+            HttpContext.Current.Session["CodeError"] = "invalid_discount_code";
             return;
         }
         else if(discountCode.currency_code != currency.currency_code)
         {
             // The discount code is not valid for the currency
-            HttpContext.Current.Session["DiscountCodeError"] = "invalid_discount_code";
+            HttpContext.Current.Session["CodeError"] = "invalid_discount_code";
             return;
         }
         else
@@ -230,13 +231,13 @@ public class CartItem
             if(discountCode.once_per_customer == true && customer == null)
             {
                 // The discount code does not exist
-                HttpContext.Current.Session["DiscountCodeError"] = "customer_not_signed_in";
+                HttpContext.Current.Session["CodeError"] = "customer_not_signed_in";
                 return;
             }
             else if (discountCode.once_per_customer == true && Order.GetOneByDiscountCodeAndCustomerId(discountCodeId, customer.id) != null)
             {
                 // The discount code is already used
-                HttpContext.Current.Session["DiscountCodeError"] = "invalid_discount_code";
+                HttpContext.Current.Session["CodeError"] = "invalid_discount_code";
                 return;
             }
 
@@ -247,7 +248,7 @@ public class CartItem
             if(shoppingCart == null)
             {
                 // Shopping cart is empty
-                HttpContext.Current.Session["DiscountCodeError"] = "empty_shopping_cart";
+                HttpContext.Current.Session["CodeError"] = "empty_shopping_cart";
                 return;
             }
 
@@ -265,7 +266,7 @@ public class CartItem
             // Check the order minimum
             if(net_sum < discountCode.minimum_order_value)
             {
-                HttpContext.Current.Session["DiscountCodeError"] = "invalid_discount_code";
+                HttpContext.Current.Session["CodeError"] = "invalid_discount_code";
                 return;
             }
 
@@ -294,7 +295,7 @@ public class CartItem
 
             // Set the discount code
             HttpContext.Current.Session["DiscountCodeId"] = discountCodeId;
-            HttpContext.Current.Session.Remove("DiscountCodeError");
+            HttpContext.Current.Session.Remove("CodeError");
         }
 
     } // End of the SetDiscountCode method

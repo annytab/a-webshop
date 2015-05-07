@@ -362,7 +362,6 @@ INSERT INTO dbo.static_texts (id, language_id, value) VALUES ('message_box_title
 INSERT INTO dbo.static_texts (id, language_id, value) VALUES ('message_box_title_5',1,'Försök att ta bort post');
 INSERT INTO dbo.static_texts (id, language_id, value) VALUES ('meta_description',1,'Metabeskrivning');
 INSERT INTO dbo.static_texts (id, language_id, value) VALUES ('mobile',1,'Mobil');
-INSERT INTO dbo.static_texts (id, language_id, value) VALUES ('mobile_display_view',1,'Mobil standardvy');
 INSERT INTO dbo.static_texts (id, language_id, value) VALUES ('mobile_phone_number',1,'Mobiltelefon');
 INSERT INTO dbo.static_texts (id, language_id, value) VALUES ('month',1,'Månad');
 INSERT INTO dbo.static_texts (id, language_id, value) VALUES ('mount_time_hours',1,'Monteringstid (tim)');
@@ -705,7 +704,6 @@ INSERT INTO dbo.static_texts (id, language_id, value) VALUES ('message_box_title
 INSERT INTO dbo.static_texts (id, language_id, value) VALUES ('message_box_title_5',2,'Attempt to delete item');
 INSERT INTO dbo.static_texts (id, language_id, value) VALUES ('meta_description',2,'Metadescription');
 INSERT INTO dbo.static_texts (id, language_id, value) VALUES ('mobile',2,'Mobile');
-INSERT INTO dbo.static_texts (id, language_id, value) VALUES ('mobile_display_view',2,'Mobile display view');
 INSERT INTO dbo.static_texts (id, language_id, value) VALUES ('mobile_phone_number',2,'Mobile phone');
 INSERT INTO dbo.static_texts (id, language_id, value) VALUES ('month',2,'Month');
 INSERT INTO dbo.static_texts (id, language_id, value) VALUES ('mount_time_hours',2,'Mount time (hours)');

@@ -15,7 +15,6 @@
 /// <reference path="annytab_front/annytab.default-functions.js" />
 /// <reference path="annytab_front/annytab.home-functions.js" />
 /// <reference path="annytab_front/annytab.image-map.js" />
-/// <reference path="annytab_front/annytab.mobile-layout-functions.js" />
 /// <reference path="annytab_front/annytab.order-functions.js" />
 /// <reference path="annytab_front/annytab.product-functions.js" />
 /// <reference path="annytab_front/annytab.standard-layout-functions.js" />

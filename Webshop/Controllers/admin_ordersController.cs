@@ -143,7 +143,7 @@ namespace Annytab.Webshop.Controllers
             // Check if the order is null
             if (order == null)
             {
-                return RedirectToAction("index", "admin_default");
+                return RedirectToAction("index");
             }
 
             // Set form data
@@ -161,6 +161,58 @@ namespace Annytab.Webshop.Controllers
             return View();
 
         } // End of the print method
+
+        // Get gift cards for the order
+        // GET: /admin_orders/gift_cards/5?returnUrl=?kw=df&so=ASC
+        [HttpGet]
+        public ActionResult gift_cards(Int32 id = 0, string returnUrl = "")
+        {
+            // Get the current domain
+            Domain currentDomain = Tools.GetCurrentDomain();
+            ViewBag.CurrentDomain = currentDomain;
+
+            // Get query parameters
+            ViewBag.QueryParams = new QueryParams(returnUrl);
+
+            // Check if the administrator is authorized
+            if (Administrator.IsAuthorized(new string[] { "Administrator", "Editor", "Translator" }) == true)
+            {
+                ViewBag.AdminSession = true;
+            }
+            else if (Administrator.IsAuthorized(Administrator.GetAllAdminRoles()) == true)
+            {
+                ViewBag.AdminSession = true;
+                ViewBag.AdminErrorCode = 1;
+                ViewBag.TranslatedTexts = StaticText.GetAll(currentDomain.back_end_language, "id", "ASC");
+                return View("index");
+            }
+            else
+            {
+                // Redirect the user to the start page
+                return RedirectToAction("index", "admin_login");
+            }
+
+            // Get the order
+            Order order = Order.GetOneById(id);
+
+            // Check if the order is null
+            if (order == null)
+            {
+                return RedirectToAction("index");
+            }
+
+            // Set form data
+            ViewBag.CurrentDomain = currentDomain;
+            ViewBag.Order = order;
+            ViewBag.OrderGiftCards = OrderGiftCard.GetByOrderId(order.id, "amount", "ASC");
+            ViewBag.TranslatedTexts = StaticText.GetAll(currentDomain.back_end_language, "id", "ASC");
+            ViewBag.CultureInfo = Tools.GetCultureInfo(Language.GetOneById(currentDomain.back_end_language));
+            ViewBag.ReturnUrl = returnUrl;
+
+            // Return the view
+            return View();
+
+        } // End of the gift_cards method
 
         #endregion
 

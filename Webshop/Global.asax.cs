@@ -43,38 +43,7 @@ namespace Annytab.Webshop
         /// </summary>
         protected void Session_Start()
         {
-            // Get webshop settings
-            KeyStringList webshopSettings = WebshopSetting.GetAllFromCache();
-            string redirectHttps = webshopSettings.Get("REDIRECT-HTTPS");
-
-            // Create a new cookie
-            HttpCookie aCookie = new HttpCookie("LayoutType");
-
-            // Make sure that the layout type is null
-            if (Request.Cookies["LayoutType"] == null)
-            {
-                // Get the user agent and convert the letters to lower case letters
-                string userAgent = Request.UserAgent;
-                userAgent = userAgent.ToLower();
-
-                // Redirect the user to the mobile website if one of the conditions below is on
-                if (userAgent.Contains("android") || userAgent.Contains("iphone") || userAgent.Contains("windows ce") ||
-                    userAgent.Contains("opera mini") || userAgent.Contains("windows phone"))
-                {
-                    aCookie.Value = "mobile"; // Mobile device
-                }
-                else
-                {
-                    aCookie.Value = "standard"; // Standard device
-                }
-
-                // Set the expiration and add the cookie
-                aCookie.Expires = DateTime.Now.AddDays(1);
-                aCookie.HttpOnly = true;
-                aCookie.Secure = redirectHttps.ToLower() == "true" ? true : false;
-                Response.Cookies.Add(aCookie);
-            }
-
+            
         } // End of the Session_Start method
 
         /// <summary>

@@ -307,7 +307,6 @@ namespace Annytab.Webshop.Controllers
             string currencyCode = collection["selectCurrency"];
             Int32 company_id = Convert.ToInt32(collection["selectCompany"]);
             byte default_display_view = Convert.ToByte(collection["selectDefaultDisplayView"]);
-            byte mobile_display_view = Convert.ToByte(collection["selectMobileDisplayView"]);
             Int32 custom_theme_id = Convert.ToByte(collection["selectTemplate"]);
             bool pricesIncludesVat = Convert.ToBoolean(collection["selectPricesIncludesVat"]);
             string analytics_tracking_id = collection["txtAnalyticsTrackingId"];
@@ -351,7 +350,6 @@ namespace Annytab.Webshop.Controllers
             domain.currency = currencyCode;
             domain.company_id = company_id;
             domain.default_display_view = default_display_view;
-            domain.mobile_display_view = mobile_display_view;
             domain.custom_theme_id = custom_theme_id;
             domain.prices_includes_vat = pricesIncludesVat;
             domain.analytics_tracking_id = analytics_tracking_id;

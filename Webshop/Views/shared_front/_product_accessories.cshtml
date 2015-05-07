@@ -1,6 +1,5 @@
 ﻿@using System.Globalization
-@{ 
-    
+@{     
     // Get form values
     Domain domain = ViewBag.CurrentDomain;
     Currency currency = ViewBag.Currency;
@@ -19,7 +18,7 @@
         userSettings.Add("sort_field", "id");
         userSettings.Add("sort_order", "ASC");
         userSettings.Add("page_size", "10");
-        userSettings.Add("display_view", ViewBag.LayoutType == "mobile" ? domain.mobile_display_view.ToString() : domain.default_display_view.ToString());
+        userSettings.Add("display_view", domain.default_display_view.ToString());
     }
 
     // Calculate the decimal multiplier

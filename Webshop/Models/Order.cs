@@ -51,6 +51,7 @@ public class Order
     public string order_status;
     public DateTime desired_date_of_delivery;
     public string discount_code;
+    public decimal gift_cards_amount;
 
     #endregion
 
@@ -102,6 +103,7 @@ public class Order
         this.order_status = "";
         this.desired_date_of_delivery = DateTime.Now;
         this.discount_code = "";
+        this.gift_cards_amount = 0;
 
     } // End of the constructor
 
@@ -152,6 +154,7 @@ public class Order
         this.order_status = reader["order_status"].ToString();
         this.desired_date_of_delivery = Convert.ToDateTime(reader["desired_date_of_delivery"]);
         this.discount_code = reader["discount_code"].ToString();
+        this.gift_cards_amount = Convert.ToDecimal(reader["gift_cards_amount"]);
 
     } // End of the constructor
 
@@ -175,12 +178,13 @@ public class Order
             + "invoice_address_1, invoice_address_2, invoice_post_code, invoice_city, invoice_country_id, "
             + "delivery_name, delivery_address_1, delivery_address_2, delivery_post_code, delivery_city, "
             + "delivery_country_id, net_sum, vat_sum, rounding_sum, total_sum, vat_code, payment_option, payment_token, payment_status, exported_to_erp, "
-            + "order_status, desired_date_of_delivery, discount_code) "
+            + "order_status, desired_date_of_delivery, discount_code, gift_cards_amount) "
             + "VALUES (@document_type, @order_date, @company_id, @country_code, @language_code, @currency_code, @conversion_rate, @customer_id, @customer_type, "
             + "@customer_org_number, @customer_vat_number, @customer_name, @customer_phone, @customer_mobile_phone, @customer_email, @invoice_name, @invoice_address_1, "
             + "@invoice_address_2, @invoice_post_code, @invoice_city, @invoice_country_id, @delivery_name, @delivery_address_1, "
             + "@delivery_address_2, @delivery_post_code, @delivery_city, @delivery_country_id, @net_sum, @vat_sum, @rounding_sum, @total_sum, @vat_code, "
-            + "@payment_option, @payment_token, @payment_status, @exported_to_erp, @order_status, @desired_date_of_delivery, @discount_code);SELECT SCOPE_IDENTITY();";
+            + "@payment_option, @payment_token, @payment_status, @exported_to_erp, @order_status, @desired_date_of_delivery, @discount_code, @gift_cards_amount);" 
+            + "SELECT SCOPE_IDENTITY();";
 
         // The using block is used to call dispose automatically even if there are an exception.
         using (SqlConnection cn = new SqlConnection(connection))
@@ -228,6 +232,7 @@ public class Order
                 cmd.Parameters.AddWithValue("@order_status", post.order_status);
                 cmd.Parameters.AddWithValue("@desired_date_of_delivery", post.desired_date_of_delivery);
                 cmd.Parameters.AddWithValue("@discount_code", post.discount_code);
+                cmd.Parameters.AddWithValue("@gift_cards_amount", post.gift_cards_amount);
 
                 // The Try/Catch/Finally statement is used to handle unusual exceptions in the code to
                 // avoid having our application crash in such cases
@@ -274,7 +279,7 @@ public class Order
             + "delivery_city = @delivery_city, delivery_country_id = @delivery_country_id, net_sum = @net_sum, vat_sum = @vat_sum, "
             + "rounding_sum = @rounding_sum, total_sum = @total_sum, vat_code = @vat_code, payment_option = @payment_option, "
             + "payment_token = @payment_token, payment_status = @payment_status, exported_to_erp = @exported_to_erp, order_status = @order_status, "
-            + "desired_date_of_delivery = @desired_date_of_delivery, discount_code = @discount_code WHERE id = @id;";
+            + "desired_date_of_delivery = @desired_date_of_delivery, discount_code = @discount_code, gift_cards_amount = @gift_cards_amount WHERE id = @id;";
 
         // The using block is used to call dispose automatically even if there are an exception.
         using (SqlConnection cn = new SqlConnection(connection))
@@ -323,6 +328,7 @@ public class Order
                 cmd.Parameters.AddWithValue("@order_status", post.order_status);
                 cmd.Parameters.AddWithValue("@desired_date_of_delivery", post.desired_date_of_delivery);
                 cmd.Parameters.AddWithValue("@discount_code", post.discount_code);
+                cmd.Parameters.AddWithValue("@gift_cards_amount", post.gift_cards_amount);
 
                 // The Try/Catch/Finally statement is used to handle unusual exceptions in the code to
                 // avoid having our application crash in such cases.
@@ -506,6 +512,47 @@ public class Order
         }
 
     } // End of the SetPaymentToken method
+
+    /// <summary>
+    /// Update the gift cards amount for the order
+    /// </summary>
+    /// <param name="orderId">The order id</param>
+    /// <param name="giftCardsAmount">The total sum of all gift cards that has been used for the order</param>
+    public static void UpdateGiftCardsAmount(Int32 orderId, decimal giftCardsAmount)
+    {
+        // Create the connection and the sql statement
+        string connection = Tools.GetConnectionString();
+        string sql = "UPDATE dbo.orders SET gift_cards_amount = @gift_cards_amount WHERE id = @id;";
+
+        // The using block is used to call dispose automatically even if there are an exception
+        using (SqlConnection cn = new SqlConnection(connection))
+        {
+            // The using block is used to call dispose automatically even if there are an exception
+            using (SqlCommand cmd = new SqlCommand(sql, cn))
+            {
+                // Add parameters
+                cmd.Parameters.AddWithValue("@id", orderId);
+                cmd.Parameters.AddWithValue("@gift_cards_amount", giftCardsAmount);
+
+                // The Try/Catch/Finally statement is used to handle unusual exceptions in the code to
+                // avoid having our application crash in such cases
+                try
+                {
+                    // Open the connection
+                    cn.Open();
+
+                    // Execute the update
+                    cmd.ExecuteNonQuery();
+
+                }
+                catch (Exception e)
+                {
+                    throw e;
+                }
+            }
+        }
+
+    } // End of the UpdateGiftCardsAmount method
 
     #endregion
 

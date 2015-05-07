@@ -8,15 +8,15 @@ using System.Web.Mvc;
 namespace Annytab.Webshop.Controllers
 {
     /// <summary>
-    /// This class controls the administration of discount codes
+    /// This class controls the administration of gift cards
     /// </summary>
     [ValidateInput(false)] 
-    public class admin_discount_codesController : Controller
+    public class admin_gift_cardsController : Controller
     {
         #region View methods
 
-        // Get a list of discount codes
-        // GET: /admin_discount_codes/
+        // Get a list of gift cards
+        // GET: /admin_gift_cards/
         [HttpGet]
         public ActionResult index()
         {
@@ -43,7 +43,7 @@ namespace Annytab.Webshop.Controllers
         } // End of the index method
 
         // Search in the list
-        // POST: /admin_discount_codes/search
+        // POST: /admin_gift_cards/search
         [HttpPost]
         public ActionResult search(FormCollection collection)
         {
@@ -54,12 +54,12 @@ namespace Annytab.Webshop.Controllers
             string page_size = collection["selectPageSize"];
 
             // Return the url with search parameters
-            return Redirect("/admin_discount_codes?kw=" + Server.UrlEncode(keywordString) + "&sf=" + sort_field + "&so=" + sort_order + "&pz=" + page_size);
+            return Redirect("/admin_gift_cards?kw=" + Server.UrlEncode(keywordString) + "&sf=" + sort_field + "&so=" + sort_order + "&pz=" + page_size);
 
         } // End of the search method
 
         // Get the edit form
-        // GET: /admin_discount_codes/edit/SXXXSWEEE?returnUrl=?kw=df&so=ASC
+        // GET: /admin_gift_cards/edit/SXXXSWEEE?returnUrl=?kw=df&so=ASC
         [HttpGet]
         public ActionResult edit(string id = "", string returnUrl = "")
         {
@@ -91,14 +91,14 @@ namespace Annytab.Webshop.Controllers
             // Add data to the view
             ViewBag.TranslatedTexts = StaticText.GetAll(currentDomain.back_end_language, "id", "ASC");
             ViewBag.Languages = Language.GetAll(currentDomain.back_end_language, "name", "ASC");
-            ViewBag.DiscountCode = DiscountCode.GetOneById(id);
+            ViewBag.GiftCard = GiftCard.GetOneById(id);
             ViewBag.ReturnUrl = returnUrl;
 
-            // Create a new empty discount code post if the discount code does not exist
-            if (ViewBag.DiscountCode == null)
+            // Create a new empty gift card post if the gift card does not exist
+            if (ViewBag.GiftCard == null)
             {
                 // Add data to the view
-                ViewBag.DiscountCode = new DiscountCode();
+                ViewBag.GiftCard = new GiftCard();
             }
 
             // Return the edit view
@@ -106,12 +106,64 @@ namespace Annytab.Webshop.Controllers
 
         } // End of the edit method
 
+        // Get orders for the gift card
+        // GET: /admin_gift_cards/orders/ZZSSSQSCXXX?returnUrl=?kw=df&so=ASC
+        [HttpGet]
+        public ActionResult orders(string id = "", string returnUrl = "")
+        {
+            // Get the current domain
+            Domain currentDomain = Tools.GetCurrentDomain();
+            ViewBag.CurrentDomain = currentDomain;
+
+            // Get query parameters
+            ViewBag.QueryParams = new QueryParams(returnUrl);
+
+            // Check if the administrator is authorized
+            if (Administrator.IsAuthorized(new string[] { "Administrator", "Editor", "Translator" }) == true)
+            {
+                ViewBag.AdminSession = true;
+            }
+            else if (Administrator.IsAuthorized(Administrator.GetAllAdminRoles()) == true)
+            {
+                ViewBag.AdminSession = true;
+                ViewBag.AdminErrorCode = 1;
+                ViewBag.TranslatedTexts = StaticText.GetAll(currentDomain.back_end_language, "id", "ASC");
+                return View("index");
+            }
+            else
+            {
+                // Redirect the user to the start page
+                return RedirectToAction("index", "admin_login");
+            }
+
+            // Get the gift card
+            GiftCard giftCard = GiftCard.GetOneById(id);
+
+            // Check if the gift card is null
+            if (giftCard == null)
+            {
+                return RedirectToAction("index");
+            }
+
+            // Set form data
+            ViewBag.CurrentDomain = currentDomain;
+            ViewBag.GiftCard = giftCard;
+            ViewBag.OrderGiftCards = OrderGiftCard.GetByGiftCardId(giftCard.id, "order_id", "ASC");
+            ViewBag.TranslatedTexts = StaticText.GetAll(currentDomain.back_end_language, "id", "ASC");
+            ViewBag.CultureInfo = Tools.GetCultureInfo(Language.GetOneById(currentDomain.back_end_language));
+            ViewBag.ReturnUrl = returnUrl;
+
+            // Return the view
+            return View();
+
+        } // End of the orders method
+
         #endregion
 
         #region Post methods
 
-        // Update the discount code
-        // POST: /admin_discount_codes/edit
+        // Update the gift card
+        // POST: /admin_gift_cards/edit
         [HttpPost]
         public ActionResult edit(FormCollection collection)
         {
@@ -145,82 +197,69 @@ namespace Annytab.Webshop.Controllers
             string id = collection["txtId"];
             Int32 language_id = Convert.ToInt32(collection["selectLanguage"]);
             string currency_code = collection["selectCurrency"];
-            decimal discount_value = 0;
-            decimal.TryParse(collection["txtDiscountValue"].Replace(",", "."), NumberStyles.Any, CultureInfo.InvariantCulture, out discount_value);
-            bool free_freight = Convert.ToBoolean(collection["cbFreeFreight"]);
-            bool once_per_customer = Convert.ToBoolean(collection["cbOncePerCustomer"]);
-            bool exclude_products_on_sale = Convert.ToBoolean(collection["cbExcludeProductsOnSale"]);
+            decimal amount = 0;
+            decimal.TryParse(collection["txtAmount"].Replace(",", "."), NumberStyles.Any, CultureInfo.InvariantCulture, out amount);
             DateTime end_date = Convert.ToDateTime(collection["txtEndDate"]);
-            decimal minimum_order_value = 0;
-            decimal.TryParse(collection["txtMinimumOrderValue"].Replace(",", "."), NumberStyles.Any, CultureInfo.InvariantCulture, out minimum_order_value);
 
             // Get translated texts
             KeyStringList tt = StaticText.GetAll(currentDomain.back_end_language, "id", "ASC");
 
-            // Get the discount code
-            DiscountCode discountCode = DiscountCode.GetOneById(id);
+            // Get the gift card
+            GiftCard giftCard = GiftCard.GetOneById(id);
             bool postExists = true;
 
-            // Check if the discount code exists
-            if (discountCode == null)
+            // Check if the gift card exists
+            if (giftCard == null)
             {
-                // Create an empty discount code
-                discountCode = new DiscountCode();
+                // Create an empty gift card
+                giftCard = new GiftCard();
                 postExists = false;
             }
 
             // Update values
-            discountCode.id = id;
-            discountCode.language_id = language_id;
-            discountCode.currency_code = currency_code;
-            discountCode.discount_value = discount_value;
-            discountCode.free_freight = free_freight;
-            discountCode.once_per_customer = once_per_customer;
-            discountCode.exclude_products_on_sale = exclude_products_on_sale;
-            discountCode.end_date = AnnytabDataValidation.TruncateDateTime(end_date);
-            discountCode.minimum_order_value = minimum_order_value;
+            giftCard.id = id;
+            giftCard.language_id = language_id;
+            giftCard.currency_code = currency_code;
+            giftCard.amount = amount;
+            giftCard.end_date = AnnytabDataValidation.TruncateDateTime(end_date);
 
             // Create a error message
             string errorMessage = string.Empty;
 
-            if (discountCode.id.Length == 0 || discountCode.id.Length > 50)
+            if (giftCard.id.Length == 0 || giftCard.id.Length > 50)
             {
                 errorMessage += "&#149; " + String.Format(tt.Get("error_field_certain_length"), tt.Get("id"), "1", "50") + "<br/>";
             }
-            if (discountCode.language_id == 0)
+            if (giftCard.language_id == 0)
             {
                 errorMessage += "&#149; " + String.Format(tt.Get("error_select_value"), tt.Get("language").ToLower()) + "<br/>";
             }
-            if (discountCode.currency_code == "")
+            if (giftCard.currency_code == "")
             {
                 errorMessage += "&#149; " + String.Format(tt.Get("error_select_value"), tt.Get("currency").ToLower()) + "<br/>";
             }
-            if (discountCode.discount_value < 0 || discountCode.discount_value > 9.999M)
+            if (giftCard.amount < 0 || giftCard.amount > 999999999999M)
             {
-                errorMessage += "&#149; " + String.Format(tt.Get("error_field_range"), tt.Get("discount"), "9.999") + "<br/>";
-            }
-            if (discountCode.minimum_order_value < 0 || discountCode.minimum_order_value > 999999999999.99M)
-            {
-                errorMessage += "&#149; " + String.Format(tt.Get("error_field_range"), tt.Get("minimum_order_value"), "999 999 999 999.99") + "<br/>";
+                errorMessage += "&#149; " + String.Format(tt.Get("error_field_range"), tt.Get("amount"), "999 999 999 999") + "<br/>";
             }
 
             // Check if there is errors
             if (errorMessage == string.Empty)
             {
-                // Check if we should add or update the discount code
+                // Check if we should add or update the gift card
                 if (postExists == false)
                 {
-                    // Add the discount code
-                    DiscountCode.Add(discountCode);
+                    // Add the gift card
+                    GiftCard.Add(giftCard);
                 }
                 else
                 {
-                    // Update the discount code
-                    DiscountCode.Update(discountCode);
+                    // Update the gift card
+                    GiftCard.Update(giftCard);
                 }
 
                 // Redirect the user to the list
-                return Redirect("/admin_discount_codes" + returnUrl);
+                return Redirect("/admin_gift_cards" + returnUrl);
             }
             else
             {
@@ -228,7 +267,7 @@ namespace Annytab.Webshop.Controllers
                 ViewBag.ErrorMessage = errorMessage;
                 ViewBag.TranslatedTexts = tt;
                 ViewBag.Languages = Language.GetAll(currentDomain.back_end_language, "id", "ASC");
-                ViewBag.DiscountCode = discountCode;
+                ViewBag.GiftCard = giftCard;
                 ViewBag.ReturnUrl = returnUrl;
 
                 // Return the edit view
@@ -237,8 +276,8 @@ namespace Annytab.Webshop.Controllers
 
         } // End of the edit method
 
-        // Delete the discount code
-        // POST: /admin_discount_codes/delete/XXXSSSWWSS?returnUrl=?kw=sok&qp=2
+        // Delete the gift card
+        // POST: /admin_gift_cards/delete/XXXSSSWWSS?returnUrl=?kw=sok&qp=2
         [HttpGet]
         public ActionResult delete(string id = "", string returnUrl = "")
         {
@@ -270,8 +309,8 @@ namespace Annytab.Webshop.Controllers
             // Create an error code variable
             Int32 errorCode = 0;
 
-            // Delete the discount code post and all the connected posts (CASCADE)
-            errorCode = DiscountCode.DeleteOnId(id);
+            // Delete the gift card post and all the connected posts (CASCADE)
+            errorCode = GiftCard.DeleteOnId(id);
 
             // Check if there is an error
             if (errorCode != 0)
@@ -282,7 +321,7 @@ namespace Annytab.Webshop.Controllers
             }
 
             // Redirect the user to the list
-            return Redirect("/admin_discount_codes" + returnUrl);
+            return Redirect("/admin_gift_cards" + returnUrl);
 
         } // End of the delete method
 

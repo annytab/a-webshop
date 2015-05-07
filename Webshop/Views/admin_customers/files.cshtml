@@ -51,7 +51,7 @@
     ViewBag.QueryParams = new QueryParams(returnUrl);
 
     // Set the page title
-    ViewBag.Title = files_tt;
+    ViewBag.Title = files_tt + " - (" + tt.Get("customer") + ": " + customer.id.ToString() + ")";
 }
 
 @*Title*@

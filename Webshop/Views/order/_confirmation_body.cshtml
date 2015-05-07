@@ -126,7 +126,7 @@
             <div class="order-text">@(desired_date_of_delivery_tt + ": ")</div>
             <div class="order-text">@(status_tt + ": ")</div>
             <div class="order-text">@(payment_option_tt + ": ")</div>
-            <div class="order-text">@(payment_status_tt + ": ")</div>
+            <div class="order-text" style="@(order.document_type == 0 ? "display:none;" : "display:inline;")">@(payment_status_tt + ": ")</div>
         </div>
         <div style="display:table-cell;padding:4px;width:50%;line-height:18px;">
             <div class="order-text">@Html.Raw(order.customer_email != "" ? order.customer_email : "&nbsp;")</div>
@@ -138,7 +138,7 @@
             <div class="order-text">@Html.Raw(order.desired_date_of_delivery != null ? order.desired_date_of_delivery.ToString("d", cultureInfo) : "&nbsp;")</div>
             <div class="order-text">@Html.Raw(order.order_status != "" ? tt.Get(order.order_status) : "&nbsp;")</div>
             <div class="order-text">@Html.Raw(paymentOption != null ? paymentOption.name : "&nbsp;")</div>
-            <div class="order-text">@Html.Raw(order.payment_status != "" ? tt.Get(order.payment_status) : "&nbsp;")</div>
+            <div class="order-text" style="@(order.document_type == 0 ? "display:none;" : "display:inline;")">@Html.Raw(order.payment_status != "" ? tt.Get(order.payment_status) : "&nbsp;")</div>
         </div>
     </div>
 

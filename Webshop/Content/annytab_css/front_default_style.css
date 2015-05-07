@@ -127,6 +127,7 @@ li li {padding-left:2px;}
 /* Shopping cart */
 .annytab-step-heading{margin:4px 0px 6px 0px;font-size:18px;font-weight:bold;line-height:24px;border-bottom:1px solid #207298;}
 .annytab-step-circle{background-color:#207298;border-radius:4px;text-align:center;color:#ffffff;width:24px;height:24px;margin:0px 6px 2px 0px;display:inline-block;}
+.annytab-step-space{display:block;clear:both;margin-bottom:20px;}
 .annytab-cart-image{width:64px;height:64px;}
 .annytab-cart-container{display:block;width:100%;margin:0px;overflow:auto;}
 .annytab-cart-table{display:table;width:680px;min-width:100%;}

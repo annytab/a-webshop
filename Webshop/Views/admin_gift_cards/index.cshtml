@@ -1,0 +1,92 @@
+﻿@using System.Globalization
+@{
+    // Set the layout for the page
+    Layout = "/Views/shared_admin/_standard_layout.cshtml";
+
+    // Get form data
+    Domain domain = ViewBag.CurrentDomain;
+    Language currentLanguage = Language.GetOneById(domain.back_end_language);
+    CultureInfo cultureInfo = Tools.GetCultureInfo(currentLanguage);
+    QueryParams parameters = ViewBag.QueryParams;
+    string queryString = QueryParams.GetQueryString(parameters);
+    KeyStringList tt = ViewBag.TranslatedTexts;
+
+    // Create a clean string with keywords
+    string cleanKeywords = parameters.keywords.Replace("+", "");
+
+    // Create an array with search words
+    string[] words = cleanKeywords.Split(' ');
+
+    // Count the number of posts
+    Int32 count = GiftCard.GetCountBySearch(words);
+
+    // Get the number of pages
+    Int32 numberOfPages = Convert.ToInt32(Math.Ceiling(((double)count / parameters.page_size)));
+    numberOfPages = numberOfPages == 0 ? 1 : numberOfPages;
+
+    // Get gift cards by keywords in a search
+    List<GiftCard> giftCards = GiftCard.GetBySearch(words, parameters.page_size, parameters.current_page, parameters.sort_field, parameters.sort_order);
+
+    // Get translated texts
+    string gift_card_tt = tt.Get("gift_card");
+    string list_tt = tt.Get("list");
+    string id_tt = tt.Get("id");
+    string language_tt = tt.Get("language");
+    string currency_tt = tt.Get("currency");
+    string amount_tt = tt.Get("amount");
+    string end_date_tt = tt.Get("end_date");
+    string orders_tt = tt.Get("orders");
+    string edit_tt = tt.Get("edit");
+    string delete_tt = tt.Get("delete");
+
+    // Set paging data
+    ViewBag.CurrentPage = parameters.current_page;
+    ViewBag.NumberOfPages = numberOfPages;
+    ViewBag.NavigateUrl = "/admin_gift_cards?kw=" + Server.UrlEncode(parameters.keywords) + "&sf=" + parameters.sort_field + "&so=" + parameters.sort_order + "&pz=" + parameters.page_size + "&qp={0}";
+
+    // Set the page title
+    ViewBag.Title = gift_card_tt + " - " + list_tt.ToLower();
+}
+
+@*Title*@
+<h1>@ViewBag.Title</h1>
+
+@*Menu*@
+@Html.Partial("~/Views/admin_gift_cards/_form_menu.cshtml")
+
+@*List of gift cards*@
+<div class="annytab-list-container">
+    <div class="annytab-list-table" style="width:969px;">
+        <div class="annytab-list-row">
+            <div class="annytab-list-column-head" style="text-align:left;width:200px;">@id_tt</div>
+            <div class="annytab-list-column-head" style="text-align:center;width:100px;">@language_tt</div>
+            <div class="annytab-list-column-head" style="text-align:center;width:100px;">@currency_tt</div>
+            <div class="annytab-list-column-head" style="text-align:right;width:100px;">@amount_tt</div>
+            <div class="annytab-list-column-head" style="text-align:right;width:100px;">@end_date_tt</div>
+            <div class="annytab-list-column-head" style="text-align:center;width:100px;">@orders_tt</div>
+            <div class="annytab-list-column-head" style="text-align:center;width:100px;">@edit_tt</div>
+            <div class="annytab-list-column-head" style="text-align:center;width:100px;">@delete_tt</div>
+        </div>
+
+        @for (int i = 0; i < giftCards.Count; i++)
+        {
+            @:<div class="@(i % 2 != 0 ? "annytab-list-row-main" : "annytab-list-row-alt")">
+            @:<div class="annytab-list-column" style="text-align:left;width:200px;">@giftCards[i].id.ToString()</div>
+            @:<div class="annytab-list-column" style="text-align:center;width:100px;">@giftCards[i].language_id.ToString()</div>
+            @:<div class="annytab-list-column" style="text-align:center;width:100px;">@giftCards[i].currency_code</div>
+            @:<div class="annytab-list-column" style="text-align:right;width:100px;">@giftCards[i].amount.ToString("##,0.##", cultureInfo)</div>
+            @:<div class="annytab-list-column" style="text-align:right;width:100px;">@giftCards[i].end_date.ToString("d", cultureInfo)</div>
+            @:<div class="annytab-list-column" style="text-align:center;width:100px;"><input type="button" class="annytab-form-button" value="@orders_tt" onclick="location.href='@Url.Action("orders", "admin_gift_cards", new { id = giftCards[i].id, returnUrl = queryString })'" /></div>
+            @:<div class="annytab-list-column" style="text-align:center;width:100px;"><input type="button" class="annytab-form-button" value="@edit_tt" onclick="location.href='@Url.Action("edit", "admin_gift_cards", new { id = giftCards[i].id, returnUrl = queryString })'" /></div>
+            @:<div class="annytab-list-column" style="text-align:center;width:100px;"><input data-id="deletePost" type="button" class="annytab-form-button" value="@delete_tt" @(Html.Raw("data-url='/admin_gift_cards/delete/" + giftCards[i].id + "?returnUrl=" + Server.UrlEncode(queryString) + "'")) /></div>
+            @:</div>
+        }
+    </div>
+</div>
+
+@*Paging menu*@
+@Html.Partial("/Views/shared_admin/_paging_menu.cshtml")
+
+@section scripts {
+    <script type="text/javascript">$("#txtSearch").focus();</script>
+}

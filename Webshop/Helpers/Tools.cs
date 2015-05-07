@@ -57,7 +57,6 @@ public static class Tools
             domain.currency = "SEK";
             domain.company_id = 1;
             domain.default_display_view = 0;
-            domain.mobile_display_view = 0;
             domain.custom_theme_id = 0;
             domain.prices_includes_vat = false;
             domain.analytics_tracking_id = "";
@@ -83,14 +82,57 @@ public static class Tools
         // Create a default stemmer
         Stemmer stemmer = new DefaultStemmer();
 
+        // Get the language code in lower case
+        string language_code = language.language_code.ToLower();
+
         // Get a stemmer depending on the language
-        if (language.language_code.ToLower() == "sv")
+        if (language_code == "da")
         {
-            stemmer = new SwedishStemmer();
-        }  
-        else if (language.language_code.ToLower() == "en")
+            stemmer = new DanishStemmer();
+        }
+        else if (language_code == "nl")
+        {
+            stemmer = new DutchStemmer();
+        }
+        else if (language_code == "en")
         {
             stemmer = new EnglishStemmer();
+        }
+        else if (language_code == "fi")
+        {
+            stemmer = new FinnishStemmer();
+        }
+        else if (language_code == "fr")
+        {
+            stemmer = new FrenchStemmer();
+        }
+        else if (language_code == "de")
+        {
+            stemmer = new GermanStemmer();
+        }
+        else if (language_code == "it")
+        {
+            stemmer = new ItalianStemmer();
+        }
+        else if (language_code == "no")
+        {
+            stemmer = new NorwegianStemmer();
+        }
+        else if (language_code == "pt")
+        {
+            stemmer = new PortugueseStemmer();
+        }
+        else if (language_code == "ro")
+        {
+            stemmer = new RomanianStemmer();
+        }
+        else if (language_code == "es")
+        {
+            stemmer = new SpanishStemmer();
+        }
+        else if (language_code == "sv")
+        {
+            stemmer = new SwedishStemmer();
         }
 
         // Return the stemmer
@@ -975,7 +1017,7 @@ public static class Tools
     public static string[] GetFirstAndLastName(string name)
     {
         // Create the string array to return
-        string[] names = new string[] { "Firstname", "Lastname" };
+        string[] names = new string[] { "", "" };
 
         // Split the name string by space
         string[] nameParts = name.Split(' ');
@@ -990,7 +1032,7 @@ public static class Tools
                 }
                 else
                 {
-                    names[0] += nameParts[i];
+                    names[0] += " " + nameParts[i];
                 }
             }
         }

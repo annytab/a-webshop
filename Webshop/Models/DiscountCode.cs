@@ -190,7 +190,8 @@ public class DiscountCode
         // Append keywords to the sql string
         for (int i = 0; i < keywords.Length; i++)
         {
-            sql += " AND (id LIKE @keyword_" + i.ToString() + " OR CAST(language_id AS nvarchar(20)) LIKE @keyword_" + i.ToString() + ")";
+            sql += " AND (id LIKE @keyword_" + i.ToString() + " OR CAST(language_id AS nvarchar(20)) LIKE @keyword_" + i.ToString()
+                + " OR currency_code LIKE @keyword_" + i.ToString() + ")";
         }
 
         // Add the final touch to the sql string
@@ -430,7 +431,8 @@ public class DiscountCode
         // Append keywords to the sql string
         for (int i = 0; i < keywords.Length; i++)
         {
-            sql += " AND (id LIKE @keyword_" + i.ToString() + " OR CAST(language_id AS nvarchar(20)) LIKE @keyword_" + i.ToString() + ")";
+            sql += " AND (id LIKE @keyword_" + i.ToString() + " OR CAST(language_id AS nvarchar(20)) LIKE @keyword_" + i.ToString()
+                + " OR currency_code LIKE @keyword_" + i.ToString() + ")";
         }
 
         // Add the final touch to the select string
@@ -561,8 +563,8 @@ public class DiscountCode
     public static string GetValidSortField(string sortField)
     {
         // Make sure that the sort field is valid
-        if (sortField != "id" && sortField != "language_id" && sortField != "currency_code" 
-            && sortField != "discount_value")
+        if (sortField != "id" && sortField != "language_id" && sortField != "currency_code"
+            && sortField != "discount_value" && sortField != "end_date")
         {
             sortField = "id";
         }

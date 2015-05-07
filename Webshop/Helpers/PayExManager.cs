@@ -70,7 +70,7 @@ public static class PayExManager
         {
             purchaseOperation = "AUTHORIZATION";
         }
-        Int64 price = (Int64)Math.Round(order.total_sum * 100, MidpointRounding.AwayFromZero);
+        Int64 price = (Int64)Math.Round((order.total_sum - order.gift_cards_amount) * 100, MidpointRounding.AwayFromZero);
         string priceArgList = "";
         string currency = order.currency_code;
         Int32 vat = 0;
@@ -88,6 +88,12 @@ public static class PayExManager
 
         // Set additional values
         string additionalValues = "USECSS=RESPONSIVEDESIGN";
+
+        // Change to PayEx Payment Gateway 2.0 if the payment type is CREDITCARD
+        if(paymentType == "CREDITCARD")
+        {
+            additionalValues = "RESPONSIVE=1";
+        }
 
         // Create the md5 hash
         string hash = GetMD5Hash(accountNumber.ToString() + purchaseOperation + price.ToString() + priceArgList + currency + vat 
@@ -164,6 +170,17 @@ public static class PayExManager
                     1, roundingAmount, 0, 0, hash);
         }
 
+        // Add the gift cards amount
+        if(order.gift_cards_amount > 0)
+        {
+            decimal amount = order.gift_cards_amount > payexSum ? payexSum : order.gift_cards_amount;
+            Int64 giftCardsAmount = (Int64)Math.Round(amount * -1 * 100, MidpointRounding.AwayFromZero);
+            hash = GetMD5Hash(accountNumber.ToString() + responseData["order_ref"] + "gc" + tt.Get("gift_cards") + "1"
+                    + giftCardsAmount.ToString() + "0" + "0" + settings.Get("PAYEX-ENCRYPTION-KEY"));
+            string errorMessage = pxOrder.AddSingleOrderLine2(accountNumber, responseData["order_ref"], "gc", tt.Get("gift_cards"), "", "", "", "",
+                    1, giftCardsAmount, 0, 0, hash);
+        }
+
         // Check if we should create an invoice
         if (paymentType == "INVOICE")
         {
@@ -208,7 +225,7 @@ public static class PayExManager
         {
             purchaseOperation = "AUTHORIZATION";
         }
-        Int64 price = (Int64)Math.Round(order.total_sum * 100, MidpointRounding.AwayFromZero);
+        Int64 price = (Int64)Math.Round((order.total_sum - order.gift_cards_amount) * 100, MidpointRounding.AwayFromZero);
         string priceArgList = "";
         string currency = order.currency_code;
         Int32 vat = 0;
@@ -226,6 +243,12 @@ public static class PayExManager
 
         // Set additional values
         string additionalValues = "USECSS=RESPONSIVEDESIGN";
+
+        // Change to PayEx Payment Gateway 2.0 if the payment type is CREDITCARD
+        if (paymentType == "CREDITCARD")
+        {
+            additionalValues = "RESPONSIVE=1";
+        }
 
         // Create the md5 hash
         string hash = GetMD5Hash(accountNumber.ToString() + purchaseOperation + price.ToString() + priceArgList + currency + vat
@@ -300,6 +323,17 @@ public static class PayExManager
                     + roundingAmount.ToString() + "0" + "0" + settings.Get("PAYEX-ENCRYPTION-KEY"));
             string errorMessage = pxOrder.AddSingleOrderLine2(accountNumber, responseData["order_ref"], "rd", tt.Get("rounding"), "", "", "", "",
                     1, roundingAmount, 0, 0, hash);
+        }
+
+        // Add the gift cards amount
+        if (order.gift_cards_amount > 0)
+        {
+            decimal amount = order.gift_cards_amount > payexSum ? payexSum : order.gift_cards_amount;
+            Int64 giftCardsAmount = (Int64)Math.Round(amount * -1 * 100, MidpointRounding.AwayFromZero);
+            hash = GetMD5Hash(accountNumber.ToString() + responseData["order_ref"] + "gc" + tt.Get("gift_cards") + "1"
+                    + giftCardsAmount.ToString() + "0" + "0" + settings.Get("PAYEX-ENCRYPTION-KEY"));
+            string errorMessage = pxOrder.AddSingleOrderLine2(accountNumber, responseData["order_ref"], "gc", tt.Get("gift_cards"), "", "", "", "",
+                    1, giftCardsAmount, 0, 0, hash);
         }
 
         // Check if we should create an invoice
@@ -917,7 +951,7 @@ public static class PayExManager
         string customerName = order.invoice_name;
         string streetAddress = order.invoice_address_1;
         string coAddress = "";
-        string postalCode = order.invoice_post_code;
+        string postalCode = order.invoice_post_code.Replace(" ", "");
         string city = order.invoice_city;
         string phoneNumber = order.customer_mobile_phone;
         string email = order.customer_email;
@@ -986,7 +1020,7 @@ public static class PayExManager
         string customerName = order.invoice_name;
         string streetAddress = order.invoice_address_1;
         string coAddress = "";
-        string postalCode = order.invoice_post_code;
+        string postalCode = order.invoice_post_code.Replace(" ", "");
         string city = order.invoice_city;
         string phoneNumber = order.customer_mobile_phone;
         string email = order.customer_email;
@@ -1084,7 +1118,7 @@ public static class PayExManager
         string companyName = order.invoice_name;
         string streetAddress = order.invoice_address_1;
         string coAddress = "";
-        string postalCode = order.invoice_post_code;
+        string postalCode = order.invoice_post_code.Replace(" ", "");
         string city = order.invoice_city;
         string country = order.country_code;
         string organizationNumber = order.customer_org_number;
@@ -1154,7 +1188,7 @@ public static class PayExManager
         string companyName = order.invoice_name;
         string streetAddress = order.invoice_address_1;
         string coAddress = "";
-        string postalCode = order.invoice_post_code;
+        string postalCode = order.invoice_post_code.Replace(" ", "");
         string city = order.invoice_city;
         string country = order.country_code;
         string organizationNumber = order.customer_org_number;

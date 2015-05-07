@@ -30,7 +30,7 @@ namespace Annytab.Webshop.ControllersApi
             {
                 return Request.CreateResponse<string>(HttpStatusCode.BadRequest, "The language does not exist");
             }
-            else if (Category.MasterPostExists(post.category_id) == false)
+            else if (post.category_id != 0 && Category.MasterPostExists(post.category_id) == false)
             {
                 return Request.CreateResponse<string>(HttpStatusCode.BadRequest, "The category does not exist");
             }
@@ -66,7 +66,7 @@ namespace Annytab.Webshop.ControllersApi
             {
                 return Request.CreateResponse<string>(HttpStatusCode.BadRequest, "The language does not exist");
             }
-            else if (Category.MasterPostExists(post.category_id) == false)
+            else if (post.category_id != 0 && Category.MasterPostExists(post.category_id) == false)
             {
                 return Request.CreateResponse<string>(HttpStatusCode.BadRequest, "The category does not exist");
             }

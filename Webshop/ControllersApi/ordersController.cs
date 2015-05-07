@@ -81,6 +81,7 @@ namespace Annytab.Webshop.ControllersApi
             post.order_status = AnnytabDataValidation.TruncateString(post.order_status, 50);
             post.desired_date_of_delivery = AnnytabDataValidation.TruncateDateTime(post.desired_date_of_delivery);
             post.discount_code = AnnytabDataValidation.TruncateString(post.discount_code, 50);
+            post.gift_cards_amount = AnnytabDataValidation.TruncateDecimal(post.gift_cards_amount, 0, 999999999999M);
 
             // Add the post
             Order.Add(post);
@@ -161,6 +162,7 @@ namespace Annytab.Webshop.ControllersApi
             post.order_status = AnnytabDataValidation.TruncateString(post.order_status, 50);
             post.desired_date_of_delivery = AnnytabDataValidation.TruncateDateTime(post.desired_date_of_delivery);
             post.discount_code = AnnytabDataValidation.TruncateString(post.discount_code, 50);
+            post.gift_cards_amount = AnnytabDataValidation.TruncateDecimal(post.gift_cards_amount, 0, 999999999999M);
 
             // Get the saved post
             Order savedPost = Order.GetOneById(post.id);
@@ -180,7 +182,7 @@ namespace Annytab.Webshop.ControllersApi
         } // End of the update method
 
         // Update the exported to erp flag
-        // PUT api/orders/set_as_exported
+        // PUT api/orders/set_as_exported/4
         [ApiAuthorize(Roles = "API_FULL_TRUST,API_MEDIUM_TRUST")]
         [HttpGet]
         public HttpResponseMessage set_as_exported(Int32 id = 0)
@@ -195,6 +197,26 @@ namespace Annytab.Webshop.ControllersApi
             return response;
 
         } // End of the set_as_exported method
+
+        // Update the gift cards amount
+        // PUT api/orders/update_gift_cards_amount/5?giftCardsAmount=344
+        [ApiAuthorize(Roles = "API_FULL_TRUST,API_MEDIUM_TRUST")]
+        [HttpGet]
+        public HttpResponseMessage update_gift_cards_amount(Int32 id = 0, decimal giftCardsAmount = 0)
+        {
+            // Make sure that the data is valid
+            giftCardsAmount = AnnytabDataValidation.TruncateDecimal(giftCardsAmount, 0, 999999999999M);
+
+            // Update the gift cards amount for the order
+            Order.UpdateGiftCardsAmount(id, giftCardsAmount);
+
+            // Create the response to return
+            HttpResponseMessage response = Request.CreateResponse<string>(HttpStatusCode.OK, "Order has been updated");
+
+            // Return the response
+            return response;
+
+        } // End of the update_gift_cards_amount method
 
         #endregion
 

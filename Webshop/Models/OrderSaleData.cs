@@ -387,7 +387,7 @@ public class OrderSaleData
             }    
 
             // Add the final touch to the sql string
-            sql += "GROUP BY YEAR(order_date), MONTH(order_date) ORDER BY YEAR(order_date), MONTH(order_date) DESC " 
+            sql += "GROUP BY YEAR(order_date), MONTH(order_date) ORDER BY YEAR(order_date) DESC, MONTH(order_date) DESC " 
                 + "OFFSET @pageNumber ROWS FETCH NEXT @pageSize ROWS ONLY;";
 
         // The using block is used to call dispose automatically even if there are an exception.
@@ -464,7 +464,7 @@ public class OrderSaleData
         }
 
         // Add the final touch to the sql string
-        sql += "GROUP BY YEAR(order_date), DATEPART(week, order_date) ORDER BY YEAR(order_date), DATEPART(week, order_date) DESC "
+        sql += "GROUP BY YEAR(order_date), DATEPART(week, order_date) ORDER BY YEAR(order_date) DESC, DATEPART(week, order_date) DESC "
             + "OFFSET @pageNumber ROWS FETCH NEXT @pageSize ROWS ONLY;";
 
         // The using block is used to call dispose automatically even if there are an exception.
@@ -541,7 +541,7 @@ public class OrderSaleData
         }
 
         // Add the final touch to the sql string
-        sql += "GROUP BY YEAR(order_date), DATEPART(dayofyear, order_date) ORDER BY YEAR(order_date), DATEPART(dayofyear, order_date) DESC "
+        sql += "GROUP BY YEAR(order_date), DATEPART(dayofyear, order_date) ORDER BY YEAR(order_date) DESC, DATEPART(dayofyear, order_date) DESC "
             + "OFFSET @pageNumber ROWS FETCH NEXT @pageSize ROWS ONLY;";
 
         // The using block is used to call dispose automatically even if there are an exception.

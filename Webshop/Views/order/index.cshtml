@@ -18,6 +18,7 @@
     bool pricesIncludesVat = ViewBag.PricesIncludesVat;
     DateTime desiredDateOfDelivery = ViewBag.DesiredDateOfDelivery;
     string discount_code_id = ViewBag.DiscountCodeId;
+    List<GiftCard> giftCards = ViewBag.GiftCards;
 
     // Get translated texts
     string check_out_tt = tt.Get("check_out");
@@ -68,6 +69,8 @@
     string desired_date_of_delivery_tt = tt.Get("desired_date_of_delivery");
     string discount_code_tt = tt.Get("discount_code");
     string invalid_discount_code_tt = tt.Get("invalid_discount_code");
+    string gift_cards_tt = tt.Get("gift_cards");
+    string amount_tt = tt.Get("amount");
     string add_tt = tt.Get("add");
     
     // Set meta data
@@ -168,11 +171,44 @@
     <div style="font-size:16px;font-weight:bold;line-height:28px;">@(total_sum_tt.ToUpper() + ": ")<span id="totalSum">@cartAmounts["total_amount"].ToString("##,0.##", cultureInfo)</span>@(" " + currency.currency_code)</div>
 </div>
 
-<div class="annytab-basic-space"></div>
+<div class="annytab-step-space"></div>
+
+@* Gift cards *@
+<div class="annytab-step-heading">
+    <div class="annytab-step-circle">2</div><span>@gift_cards_tt</span>
+</div>
+
+@using (Html.BeginForm("add_gift_card", "order", FormMethod.Post))
+{
+    <div class="annytab-basic-container" style="margin-bottom:6px;">
+        <input name="txtGiftCardCode" type="text" class="annytab-form-textbox" value="" />
+        <input name="btnAddGiftCard" type="submit" class="annytab-form-button" value="@add_tt" />
+    </div>
+}
+
+<div class="annytab-list-container">
+    <div class="annytab-list-table" style="@(giftCards.Count > 0 ? "display:table;" : "display:none;")width:100%;">
+        <div class="annytab-list-row">
+            <div class="annytab-list-column-head" style="text-align:left;width:400px;border-radius:4px 0px 0px 0px;">@id_tt</div>
+            <div class="annytab-list-column-head" style="text-align:right;width:200px;">@amount_tt</div>
+            <div class="annytab-list-column-head" style="text-align:center;width:100px;border-radius:0px 4px 0px 0px;">@delete_tt</div>
+        </div>
+        @for (int i = 0; i < giftCards.Count; i++)
+        {
+            @:<div class="@(i % 2 != 0 ? "annytab-list-row-main" : "annytab-list-row-alt")">
+                @:<div class="annytab-list-column" style="width:400px;text-align:left;"><input name="giftCardId" type="hidden" value="@giftCards[i].id" />@giftCards[i].id</div>
+                @:<div class="annytab-list-column" style="width:200px;text-align:right;">@(giftCards[i].amount.ToString("##,0.##", cultureInfo) + " " + giftCards[i].currency_code)</div>
+                @:<div class="annytab-cart-column" style="width:100px;text-align:center;"><a href="@("/order/delete_gift_card/" + Server.UrlEncode(giftCards[i].id))"><img src="/Content/images/annytab_design/square_cross_button_20.jpg" alt="@delete_tt" style="vertical-align:middle;border-radius:2px;" /></a></div>
+            @:</div>
+        }
+    </div>
+</div>
+
+<div class="annytab-step-space"></div>
 
 @* Customer address information *@
 <div class="annytab-step-heading">
-    <div class="annytab-step-circle">2</div><span>@address_information_tt</span>
+    <div class="annytab-step-circle">3</div><span>@address_information_tt</span>
 </div>
 
 @if(customer.id == 0)
@@ -221,7 +257,7 @@
             @(register_as_tt + ": ") <a href="/customer/edit_company">@company_tt</a> | <a href="/customer/edit_person">@private_person_tt</a>
         </div>
 
-        <div class="annytab-basic-space"></div>
+        <div class="annytab-step-space"></div>
     }
 }
 
@@ -358,12 +394,12 @@
             <div style="clear:both;"></div>
         </div>
     }
-    
-    <div class="annytab-basic-space"></div>
-    
+
+    <div class="annytab-step-space"></div>
+
     @* Additional services *@
     <div class="annytab-step-heading">
-        <div class="annytab-step-circle">3</div><span>@additional_services_tt</span>
+        <div class="annytab-step-circle">4</div><span>@additional_services_tt</span>
     </div>
 
     <div class="annytab-basic-container">
@@ -397,54 +433,54 @@
         <div style="clear:both;"></div>
     </div>
 
-    <div class="annytab-basic-space"></div>
-    
+    <div class="annytab-step-space"></div>
+
     @* Payment options *@
     <div class="annytab-step-heading">
-        <div class="annytab-step-circle">4</div><span>@payment_options_tt</span>
+        <div class="annytab-step-circle">5</div><span>@payment_options_tt</span>
     </div>
-    
+
     <div class="annytab-basic-container">
 
-        @foreach(PaymentOption paymentOption in paymentOptions)
+    @foreach(PaymentOption paymentOption in paymentOptions)
+    {
+        @* Calculate the fee *@
+        ValueAddedTax valueAddedTax = ValueAddedTax.GetOneById(paymentOption.value_added_tax_id);
+        decimal fee = paymentOption.fee * (currency.currency_base / currency.conversion_rate);
+        fee = Math.Round(fee * decimalMultiplier, MidpointRounding.AwayFromZero) / decimalMultiplier;
+        if (pricesIncludesVat == true)
         {
-            @* Calculate the fee *@
-            ValueAddedTax valueAddedTax = ValueAddedTax.GetOneById(paymentOption.value_added_tax_id);
-            decimal fee = paymentOption.fee * (currency.currency_base / currency.conversion_rate);
-            fee = Math.Round(fee * decimalMultiplier, MidpointRounding.AwayFromZero) / decimalMultiplier;
-            if (pricesIncludesVat == true)
-            {
-                fee += Math.Round(fee * valueAddedTax.value * decimalMultiplier, MidpointRounding.AwayFromZero) / decimalMultiplier;
-            }
-            
-            @* The payment option post *@
-            <div style="float:left;margin-right:8px;">
-                <input name="radioPaymentOption" type="radio" class="annytab-form-radio" value="@paymentOption.id" @(paymentOption.id == paymentOptionId ? Html.Raw("selected='selected'") : Html.Raw("")) />
-                <span class="annytab-form-label">@(paymentOption.name + ", " + fee.ToString("##,0.##", cultureInfo) + " " + currency.currency_code)</span><br />
-            </div>
+            fee += Math.Round(fee * valueAddedTax.value * decimalMultiplier, MidpointRounding.AwayFromZero) / decimalMultiplier;
         }
 
-        @if(paymentOptions.Count == 0)
-        {
-            @* Display a message if no payment options exists *@
-            <div style="float:left;margin-right:8px;">
-                <span>@no_payment_options_available_tt</span><br />
-            </div>
-        }
+        @* The payment option post *@
+        <div style="float:left;margin-right:8px;">
+            <input name="radioPaymentOption" type="radio" class="annytab-form-radio" value="@paymentOption.id" @(paymentOption.id == paymentOptionId ? Html.Raw("selected='selected'") : Html.Raw("")) />
+            <span class="annytab-form-label">@(paymentOption.name + ", " + fee.ToString("##,0.##", cultureInfo) + " " + currency.currency_code)</span><br />
+        </div>
+    }
+
+    @if(paymentOptions.Count == 0)
+    {
+        @* Display a message if no payment options exists *@
+        <div style="float:left;margin-right:8px;">
+            <span>@no_payment_options_available_tt</span><br />
+        </div>
+    }
 
         <div style="clear:both;"></div>
     </div>
-    
-    <div class="annytab-basic-space"></div>
-    
+
+    <div class="annytab-step-space"></div>
+
     @* Confirm the order *@
     <div class="annytab-step-heading">
-        <div class="annytab-step-circle">5</div><span>@confirm_order_tt</span>
+        <div class="annytab-step-circle">6</div><span>@confirm_order_tt</span>
     </div>
-    
+
     @* Terms of purchase *@
     <div style="margin:10px 0px 10px 0px;">@(approve_terms_of_purchase_text_tt + " ")<a href="/home/terms_of_purchase" target="_blank">@terms_of_purchase_text_tt</a>.</div>
-    
+
     @* Send order *@
     <div class="annytab-basic-container">
         <input id="btnCreateOrder" name="btnOrder" type="submit" value="@create_order_tt" class="annytab-basic-button" /><input id="btnSendRequest" name="btnRequest" type="submit" value="@send_request_tt" class="annytab-basic-button" />

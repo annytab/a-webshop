@@ -1,0 +1,61 @@
+﻿@using System.Globalization
+@{
+    // Set the layout for the page
+    Layout = "/Views/shared_admin/_standard_layout.cshtml";
+
+    // Get form values
+    Domain domain = ViewBag.CurrentDomain;
+    GiftCard giftCard = ViewBag.GiftCard;
+    List<OrderGiftCard> orderGiftCards = ViewBag.OrderGiftCards;
+    KeyStringList tt = ViewBag.TranslatedTexts;
+    Language currentLanguage = Language.GetOneById(domain.back_end_language);
+    CultureInfo cultureInfo = Tools.GetCultureInfo(currentLanguage);
+    string returnUrl = ViewBag.ReturnUrl;
+
+    // Get translated texts
+    string orders_tt = tt.Get("orders");
+    string id_tt = tt.Get("id");
+    string amount_tt = tt.Get("amount");
+    string ok_tt = tt.Get("ok");
+    string cancel_tt = tt.Get("cancel");
+
+    // Set the page title
+    ViewBag.Title = orders_tt + " - (" + tt.Get("gift_card") + ": " + giftCard.id + ")";
+}
+
+@*Title*@
+<h1>@ViewBag.Title</h1>
+
+@*Menu*@
+@Html.Partial("~/Views/admin_gift_cards/_form_menu.cshtml")
+
+@*List of gift cards*@
+<div class="annytab-list-container">
+    <div class="annytab-list-table" style="width:616px;">
+        <div class="annytab-list-row">
+            <div class="annytab-list-column-head" style="text-align:left;width:400px;padding:4px 10px 4px 10px;">@id_tt</div>
+            <div class="annytab-list-column-head" style="text-align:right;width:200px;padding:4px 10px 4px 10px;">@amount_tt</div>
+        </div>
+
+        @for (int i = 0; i < orderGiftCards.Count; i++)
+        {
+            // Get the order
+            Order order = Order.GetOneById(orderGiftCards[i].order_id);
+            
+            @:<div class="@(i % 2 != 0 ? "annytab-list-row-main" : "annytab-list-row-alt")">
+                @:<div class="annytab-list-column" style="text-align:left;width:400px;padding:10px;">@orderGiftCards[i].order_id</div>
+                @:<div class="annytab-list-column" style="text-align:right;width:200px;padding:10px;">@(orderGiftCards[i].amount.ToString("##,0.##", cultureInfo) + " " + order.currency_code)</div>
+            @:</div>
+        }
+    </div>
+</div>
+
+@*Button panel*@
+<div style="display:block;border:1px solid #cccccc;margin:20px 0px 0px 0px;border-radius:4px;">
+    <input type="button" class="annytab-form-button" value="@ok_tt" onclick="@Html.Raw("location.href='/admin_gift_cards" + returnUrl + "'")" />
+    <input type="button" class="annytab-form-button" value="@cancel_tt" onclick="@Html.Raw("location.href='/admin_gift_cards" + returnUrl + "'")" />
+</div>
+
+@section scripts {
+    <script type="text/javascript">$("#txtSearch").focus();</script>
+}

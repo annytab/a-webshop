@@ -64,28 +64,33 @@ namespace Annytab.Webshop.Controllers
             breadCrumbs.Add(new BreadCrumb(tt.Get("start_page"), "/"));
             breadCrumbs.Add(new BreadCrumb(tt.Get("check_out"), "/order"));
 
-            // Get the discount code and the discount code error
+            // Get the discount code, gift cards and errors
             string discountCodeId = Session["DiscountCodeId"] != null ? Session["DiscountCodeId"].ToString() : "";
-            string discountCodeError = Session["DiscountCodeError"] != null ? Session["DiscountCodeError"].ToString() : "";
+            List<GiftCard> giftCards = Session["GiftCards"] != null ? (List<GiftCard>)Session["GiftCards"] : new List<GiftCard>(0);
+            string codeError = Session["CodeError"] != null ? Session["CodeError"].ToString() : "";
 
             // Create a error message
             string errorMessage = "";
 
-            if (discountCodeError == "empty_shopping_cart")
+            if (codeError == "empty_shopping_cart")
             {
                 errorMessage += "&#149; " + tt.Get("error_cart_empty") + "<br/>";
             }
-            if (discountCodeError == "customer_not_signed_in")
+            if (codeError == "customer_not_signed_in")
             {
                 errorMessage += "&#149; " + tt.Get("log_in") + "<br/>";
             }
-            if (discountCodeError == "invalid_discount_code")
+            if (codeError == "invalid_discount_code")
             {
                 errorMessage += "&#149; " + tt.Get("invalid_discount_code") + "<br/>";
             }
+            if (codeError == "invalid_gift_card")
+            {
+                errorMessage += "&#149; " + tt.Get("invalid_gift_card") + "<br/>";
+            }
 
-            // Remove the discount code error
-            Session.Remove("DiscountCodeError");
+            // Remove the code error
+            Session.Remove("CodeError");
 
             // Set form values
             ViewBag.BreadCrumbs = breadCrumbs;
@@ -105,6 +110,7 @@ namespace Annytab.Webshop.Controllers
             ViewBag.CultureInfo = Tools.GetCultureInfo(ViewBag.CurrentLanguage);
             ViewBag.DesiredDateOfDelivery = DateTime.Now;
             ViewBag.DiscountCodeId = discountCodeId;
+            ViewBag.GiftCards = giftCards;
 
             // Return the view
             return currentDomain.custom_theme_id == 0 ? View() : View("/Views/theme/checkout.cshtml");
@@ -438,6 +444,13 @@ namespace Annytab.Webshop.Controllers
                 // Add the order
                 Int64 insertId = Order.Add(order);
                 order.id = Convert.ToInt32(insertId);
+
+                // Update the gift cards amount for the order
+                if(order.document_type != 0)
+                {
+                    order.gift_cards_amount = ProcessGiftCards(order.id, order.total_sum);
+                    Order.UpdateGiftCardsAmount(order.id, order.gift_cards_amount);
+                }
                 
                 // Add the order rows
                 for (int i = 0; i < orderRows.Count; i++)
@@ -462,6 +475,19 @@ namespace Annytab.Webshop.Controllers
 
                 // Send the order confirmation email
                 Tools.SendOrderConfirmation(customer.email, translatedTexts.Get("order_confirmation") + " " + order.id.ToString() + " - " + currentDomain.webshop_name, message);
+
+                // Check if the order has been paid by gift cards
+                if (order.total_sum <= order.gift_cards_amount)
+                {
+                    // Update the order status
+                    Order.UpdatePaymentStatus(order.id, "payment_status_paid");
+
+                    // Add customer files
+                    CustomerFile.AddCustomerFiles(order);
+
+                    // Return the order confirmation
+                    return RedirectToAction("confirmation", "order", new { id = order.id });
+                }
 
                 // Check the selected payment option
                 if(paymentOption.connection == 101)
@@ -531,6 +557,7 @@ namespace Annytab.Webshop.Controllers
                 ViewBag.CultureInfo = Tools.GetCultureInfo(ViewBag.CurrentLanguage);
                 ViewBag.DesiredDateOfDelivery = order.desired_date_of_delivery;
                 ViewBag.DiscountCodeId = order.discount_code;
+                ViewBag.GiftCards = Session["GiftCards"] != null ? (List<GiftCard>)Session["GiftCards"] : new List<GiftCard>(0);
 
                 // Return the index view
                 return currentDomain.custom_theme_id == 0 ? View("index") : View("/Views/theme/checkout.cshtml");
@@ -595,7 +622,7 @@ namespace Annytab.Webshop.Controllers
         } // End of the clear method
 
         // Set a discount code for the order
-        // POST: /order/index
+        // POST: /order/set_discount_code
         [HttpPost]
         public ActionResult set_discount_code(FormCollection collection)
         {
@@ -609,6 +636,121 @@ namespace Annytab.Webshop.Controllers
             return RedirectToAction("index", "order", new { cu = "true" });
 
         } // End of the set_discount_code method
+
+        // Add a gift card to the order
+        // POST: /order/add_gift_card
+        [HttpPost]
+        public ActionResult add_gift_card(FormCollection collection)
+        {
+            // Get all the form values
+            string gift_card_code = collection["txtGiftCardCode"];
+
+            // Get the current domain
+            Domain domain = Tools.GetCurrentDomain();
+
+            // Get the gift card
+            GiftCard giftCard = GiftCard.GetOneById(gift_card_code);
+
+            // Get the currency
+            Currency currency = Currency.GetOneById(domain.currency);
+
+            // Get the list of gift cards
+            List<GiftCard> giftCards = (List<GiftCard>)Session["GiftCards"];
+
+            // Make sure that the list not is null and check if the gift card has been added already
+            bool duplicateGiftCard = false;
+            if (giftCards != null)
+            {
+                // Loop the list
+                for (int i = 0; i < giftCards.Count; i++)
+                {
+                    // Check if the gift card already has been added
+                    if (giftCards[i].id == gift_card_code)
+                    {
+                        duplicateGiftCard = true;
+                        break;
+                    }
+                }
+            }
+
+            // Check if there is errors with the gift card
+            if (giftCard == null)
+            {
+                // The gift card does not exist
+                Session["CodeError"] = "invalid_gift_card";
+            }
+            else if(duplicateGiftCard == true)
+            {
+                // The gift card has already been added
+                Session["CodeError"] = "invalid_gift_card";
+            }
+            else if (DateTime.Now.AddDays(-1) > giftCard.end_date)
+            {
+                // The gift card is not valid anymore
+                Session["CodeError"] = "invalid_gift_card";
+            }
+            else if (giftCard.language_id != domain.front_end_language)
+            {
+                // The gift card is not valid for the language
+                Session["CodeError"] = "invalid_gift_card";
+            }
+            else if (giftCard.currency_code != currency.currency_code)
+            {
+                // The gift card is not valid for the currency
+                Session["CodeError"] = "invalid_gift_card";
+            }
+            else
+            {
+                // Make sure that the list not is null
+                if(giftCards == null)
+                {
+                    giftCards = new List<GiftCard>(10);
+                }
+
+                // Add the gift card to the list
+                giftCards.Add(giftCard);
+
+                // Recreate the session variable
+                Session["GiftCards"] = giftCards;
+                Session.Remove("CodeError");
+            }
+
+            // Redirect the user to the check out
+            return RedirectToAction("index", "order");
+
+        } // End of the add_gift_card method
+
+        // Delete a gift card
+        // GET: /order/delete_gift_card
+        [HttpGet]
+        public ActionResult delete_gift_card(string id = "")
+        {
+            // Get the list of gift cards
+            List<GiftCard> giftCards = (List<GiftCard>)Session["GiftCards"];
+
+            // Make sure that the list not is null
+            if(giftCards != null)
+            {
+                // Loop the list
+                for(int i = 0; i < giftCards.Count; i++)
+                {
+                    // Delete the gift card if it can be found
+                    if(giftCards[i].id == id)
+                    {
+                        giftCards.RemoveAt(i);
+                        break;
+                    }
+                }
+
+                // Recreate the session variable
+                Session["GiftCards"] = giftCards;
+                Session.Remove("CodeError");
+            }
+
+            // Redirect the user to the check out
+            return RedirectToAction("index", "order");
+
+        } // End of the clear method
 
         #endregion
 
@@ -782,14 +924,15 @@ namespace Annytab.Webshop.Controllers
                 paypalContext.Config = config;
 
                 // Create the amount details
-                decimal subTotal = order.net_sum + order.rounding_sum;
+                decimal subTotal = order.net_sum + order.rounding_sum - order.gift_cards_amount;
                 PayPal.Api.Payments.Details amountDetails = new PayPal.Api.Payments.Details();
                 amountDetails.subtotal = subTotal.ToString("F2", CultureInfo.InvariantCulture);
                 amountDetails.tax = order.vat_sum.ToString("F2", CultureInfo.InvariantCulture);
 
                 // Create the amount
+                decimal totalAmount = order.total_sum - order.gift_cards_amount;
                 PayPal.Api.Payments.Amount amount = new PayPal.Api.Payments.Amount();
-                amount.total = order.total_sum.ToString("F2", CultureInfo.InvariantCulture);
+                amount.total = totalAmount.ToString("F2", CultureInfo.InvariantCulture);
                 amount.currency = order.currency_code;
                 amount.details = amountDetails;
 
@@ -823,6 +966,19 @@ namespace Annytab.Webshop.Controllers
                     roundingItem.quantity = "1";
                     roundingItem.currency = order.currency_code;
                     transaction.item_list.items.Add(roundingItem);
+                }
+
+                // Add the gift cards amount
+                if (order.gift_cards_amount > 0)
+                {
+                    decimal giftCardAmount = order.gift_cards_amount * -1;
+                    PayPal.Api.Payments.Item giftCardsItem = new PayPal.Api.Payments.Item();
+                    giftCardsItem.sku = "gc";
+                    giftCardsItem.name = tt.Get("gift_cards");
+                    giftCardsItem.price = giftCardAmount.ToString("F2", CultureInfo.InvariantCulture);
+                    giftCardsItem.quantity = "1";
+                    giftCardsItem.currency = order.currency_code;
+                    transaction.item_list.items.Add(giftCardsItem);
                 }
                 
                 // Set the transaction amount
@@ -1004,12 +1160,11 @@ namespace Annytab.Webshop.Controllers
 
             // Create the sender
             PaysonIntegration.Utils.Sender sender = new PaysonIntegration.Utils.Sender(order.customer_email);
-            string[] firstAndLastName = Tools.GetFirstAndLastName(order.invoice_name);
-            sender.FirstName = firstAndLastName[0];
-            sender.LastName = firstAndLastName[1];
+            sender.FirstName = "@";
+            sender.LastName = "@";
 
             // Get the total amount
-            decimal totalAmount = order.total_sum;
+            decimal totalAmount = order.total_sum - order.gift_cards_amount;
 
             // Create the receiver
             List<PaysonIntegration.Utils.Receiver> receivers = new List<PaysonIntegration.Utils.Receiver>(1);
@@ -1037,6 +1192,14 @@ namespace Annytab.Webshop.Controllers
                 PaysonIntegration.Utils.OrderItem roundingItem = new PaysonIntegration.Utils.OrderItem(tt.Get("rounding"));
                 roundingItem.SetOptionalParameters("rd", 1, order.rounding_sum, 0);
                 orderItems.Add(roundingItem);
+            }
+
+            // Add the gift cards amount
+            if (order.gift_cards_amount > 0)
+            {
+                PaysonIntegration.Utils.OrderItem giftCardItem = new PaysonIntegration.Utils.OrderItem(tt.Get("gift_cards"));
+                giftCardItem.SetOptionalParameters("gc", 1, order.gift_cards_amount * -1, 0);
+                orderItems.Add(giftCardItem);
             }
 
             // Create funding constraints depending on the payment method
@@ -1068,12 +1231,22 @@ namespace Annytab.Webshop.Controllers
             // Create the api
             PaysonIntegration.PaysonApi paysonApi = new PaysonIntegration.PaysonApi(userId, md5Key, null, paysonTest);
 
-            // Create the payment
-            PaysonIntegration.Response.PayResponse response = paysonApi.MakePayRequest(payData);
+            // Create a respone
+            PaysonIntegration.Response.PayResponse response = null;
 
+            try
+            {
+                // Create the payment
+                response = paysonApi.MakePayRequest(payData);
+            }
+            catch(Exception ex)
+            {
+                string exMessage = ex.Message;
+            }
+            
             // Check if the response is successful
             string forwardUrl = "";
-            if (response.Success)
+            if (response != null && response.Success == true)
             {
                 // Update the order with the payment token
                 Order.SetPaymentToken(order.id, response.Token);
@@ -1121,10 +1294,22 @@ namespace Annytab.Webshop.Controllers
 
             // Create the payson api
             PaysonIntegration.PaysonApi paysonApi = new PaysonIntegration.PaysonApi(userId, md5Key, null, paysonTest);
-            PaysonIntegration.Response.PaymentDetailsResponse response = paysonApi.MakePaymentDetailsRequest(new PaysonIntegration.Data.PaymentDetailsData(token));
+
+            // Create the response
+            PaysonIntegration.Response.PaymentDetailsResponse response = null;
+
+            try
+            {
+                // Make the payment details request
+                response = paysonApi.MakePaymentDetailsRequest(new PaysonIntegration.Data.PaymentDetailsData(token));
+            }
+            catch(Exception ex)
+            {
+                string exMessage = ex.Message;
+            }
 
             // Check if the response is successful or not
-            if (response.Success)
+            if (response != null && response.Success == true)
             {
                 // Get the type and status of the payment
                 PaysonIntegration.Utils.PaymentType? paymentType = response.PaymentDetails.PaymentType;
@@ -1202,6 +1387,21 @@ namespace Annytab.Webshop.Controllers
                 orderBuilder.AddOrderRow(orderItem);
             }
 
+            // Add the gift cards amount
+            if (order.gift_cards_amount > 0)
+            {
+                Webpay.Integration.CSharp.Order.Row.OrderRowBuilder orderItem = new Webpay.Integration.CSharp.Order.Row.OrderRowBuilder();
+                orderItem.SetArticleNumber("gc");
+                orderItem.SetName(tt.Get("gift_cards"));
+                orderItem.SetQuantity(1);
+                orderItem.SetUnit("");
+                orderItem.SetAmountExVat(order.gift_cards_amount * -1);
+                orderItem.SetVatPercent(0);
+
+                // Add the order item
+                orderBuilder.AddOrderRow(orderItem);
+            }
+
             // Add the customer
             if(order.customer_type == 0) // Company
             {
@@ -1243,7 +1443,7 @@ namespace Annytab.Webshop.Controllers
             string testOrderString = "";
             if (webshopSettings.Get("SVEA-TEST").ToLower() == "true")
             {
-                testOrderString = ":" + Guid.NewGuid().ToString();
+                testOrderString = ":" + Tools.GeneratePassword();
             }
 
             // Set order values
@@ -1411,6 +1611,68 @@ namespace Annytab.Webshop.Controllers
             return htmlString;
 
         } // End of the RenderOrderConfirmationView method
+
+        /// <summary>
+        /// Process gift cards and return the total amount of processed gift cards
+        /// </summary>
+        /// <param name="orderId">The id of the order</param>
+        /// <param name="orderTotalSum">The total amount for the order</param>
+        /// <returns>The total amount of processed gift cards</returns>
+        private decimal ProcessGiftCards(Int32 orderId, decimal orderTotalSum)
+        {
+            // Create the decimal to return
+            decimal gift_cards_amount = 0;
+
+            // Get all of the gift cards
+            List<GiftCard> giftCards = (List<GiftCard>)Session["GiftCards"];
+
+            // Make sure that the list not is null
+            if (giftCards != null)
+            {
+                // Loop the list of gift cards
+                for (int i = 0; i < giftCards.Count; i++)
+                {
+                    // Create an order gift card post
+                    OrderGiftCard orderGiftCard = new OrderGiftCard();
+                    orderGiftCard.order_id = orderId;
+                    orderGiftCard.gift_card_id = giftCards[i].id;
+
+                    // Calculate the remaining difference
+                    decimal diff = orderTotalSum - gift_cards_amount;
+
+                    // Check if the gift card amount is greater than the order sum or not
+                    if (giftCards[i].amount <= diff)
+                    {
+                        // Update the gift card
+                        gift_cards_amount += giftCards[i].amount;
+                        orderGiftCard.amount = giftCards[i].amount;
+                        giftCards[i].amount = 0;
+                        GiftCard.Update(giftCards[i]);
+
+                        // Add the order gift card
+                        OrderGiftCard.Add(orderGiftCard);
+                    }
+                    else
+                    {
+                        // Update the gift card
+                        giftCards[i].amount -= diff;
+                        GiftCard.Update(giftCards[i]);
+                        gift_cards_amount += diff;
+
+                        // Add the order gift card
+                        orderGiftCard.amount = diff;
+                        OrderGiftCard.Add(orderGiftCard);
+
+                        // Break out from the loop
+                        break;
+                    }
+                }
+            }
+
+            // Return the amount for gift cards
+            return gift_cards_amount;
+
+        } // End of the ProcessGiftCards method
 
         #endregion
 

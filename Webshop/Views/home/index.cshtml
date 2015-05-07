@@ -14,7 +14,7 @@
         userSettings.Add("sort_field", "title");
         userSettings.Add("sort_order", "ASC");
         userSettings.Add("page_size", "10");
-        userSettings.Add("display_view", ViewBag.LayoutType == "mobile" ? domain.mobile_display_view.ToString() : domain.default_display_view.ToString());
+        userSettings.Add("display_view", domain.default_display_view.ToString());
     }
 
     // Set meta data
@@ -76,6 +76,9 @@
     <img id="rightArrow" src="/Content/images/annytab_design/right_arrow.png" class="annytab-slideshow-right-arrow" alt="Slideshow right arrow" />
 </div>
 
+@* Inspiration (image maps) *@
+@Html.Partial(domain.custom_theme_id == 0 ? "/Views/shared_front/_category_imap.cshtml" : "/Views/theme/front_category_imap.cshtml")
+
 <div class="annytab-basic-space"></div>
 
 @* Sorting *@
@@ -117,6 +120,20 @@
 @Html.Partial(domain.custom_theme_id == 0 ? "/Views/shared_front/_display_items.cshtml" : "/Views/theme/front_display_items.cshtml")
 
 @section scripts {
-    <script>$("#txtSearch").focus();</script>
     @Scripts.Render(domain.custom_theme_id == 0 ? "/Scripts/annytab_front/annytab.home-functions.js" : "/Scripts/theme/annytab.home-functions.js")
+    @Scripts.Render(domain.custom_theme_id == 0 ? "/Scripts/annytab_front/annytab.image-map.js" : "/Scripts/theme/annytab.image-map.js")
+    <script type="text/javascript">
+        $("#txtSearch").focus();
+        $("#annytabImapOuterContainer").imageMap({
+            imageMapId: "annytabImapContainer",
+            imageMapBackgroundImageId: "annytabImapImage",
+            imageMapButtonClass: "annytab-imap-image-button",
+            containerWidth: "auto",
+            containerHeight: "400px",
+            zoomInCursor: "url('/Content/images/annytab_design/zoom-in.cur'), auto",
+            zoomOutCursor: "url('/Content/images/annytab_design/zoom-out.cur'), auto",
+            showProductString: $("#hiddenShowProductString").val(),
+            fullscreenZ: "5"
+        });
+    </script>
 }

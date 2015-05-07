@@ -40,6 +40,7 @@
     string reviews_tt = tt.Get("reviews");
     string newsletters_tt = tt.Get("newsletters");
     string discount_codes_tt = tt.Get("discount_codes");
+    string gift_cards_tt = tt.Get("gift_cards");
     string log_out_tt = tt.Get("log_out");
     string message_box_title_1_tt = tt.Get("message_box_title_1");
     string message_box_title_2_tt = tt.Get("message_box_title_2");
@@ -104,6 +105,7 @@
                 <a href="/admin_product_reviews" class="annytab-basic-button">@reviews_tt</a>
                 <a href="/admin_newsletters" class="annytab-basic-button">@newsletters_tt</a>
                 <a href="/admin_discount_codes" class="annytab-basic-button">@discount_codes_tt</a>
+                <a href="/admin_gift_cards" class="annytab-basic-button">@gift_cards_tt</a>
                 <a href="/admin_login/logout" class="annytab-basic-button">@log_out_tt</a>
             </div>
         </div>
@@ -114,7 +116,7 @@
         </div>
         <div class="footer">
             <div style="padding:10px 10px 10px 10px;color:#808080;text-shadow:1px 1px 1px #ffffff;">
-                @Html.Raw(copyright_information_tt + " | v1.0.5")
+                @Html.Raw(copyright_information_tt + " | v1.0.6")
             </div>
         </div>
     </div>

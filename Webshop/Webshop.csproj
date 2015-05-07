@@ -40,9 +40,9 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
-    <Reference Include="Annytab.Stemmer, Version=1.1.3.0, Culture=neutral, processorArchitecture=MSIL">
+    <Reference Include="Annytab.Stemmer, Version=1.2.0.0, Culture=neutral, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\packages\Annytab.Stemmer.1.1.3.0\lib\net451\Annytab.Stemmer.dll</HintPath>
+      <HintPath>..\packages\Annytab.Stemmer.1.2.0.0\lib\net451\Annytab.Stemmer.dll</HintPath>
     </Reference>
     <Reference Include="Antlr3.Runtime, Version=3.5.0.2, Culture=neutral, PublicKeyToken=eb42632606e9261f, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
@@ -64,9 +64,9 @@
       <SpecificVersion>False</SpecificVersion>
       <HintPath>..\packages\NUnit.2.6.4\lib\nunit.framework.dll</HintPath>
     </Reference>
-    <Reference Include="PayPalCoreSDK, Version=1.6.0.0, Culture=neutral, PublicKeyToken=5b4afc1ccaef40fb, processorArchitecture=MSIL">
+    <Reference Include="PayPalCoreSDK, Version=1.6.2.0, Culture=neutral, PublicKeyToken=5b4afc1ccaef40fb, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\packages\PayPalCoreSDK.1.6.0\lib\net451\PayPalCoreSDK.dll</HintPath>
+      <HintPath>..\packages\PayPalCoreSDK.1.6.2\lib\net451\PayPalCoreSDK.dll</HintPath>
     </Reference>
     <Reference Include="PaysonIntegration">
       <HintPath>..\packages\PaysonApiIntegrationDotNet.1.21\lib\PaysonIntegration.dll</HintPath>
@@ -164,6 +164,7 @@
     <Compile Include="ControllersApi\currenciesController.cs" />
     <Compile Include="ControllersApi\customersController.cs" />
     <Compile Include="ControllersApi\custom_designController.cs" />
+    <Compile Include="ControllersApi\gift_cardsController.cs" />
     <Compile Include="ControllersApi\discount_codesController.cs" />
     <Compile Include="ControllersApi\domainsController.cs" />
     <Compile Include="ControllersApi\inspiration_image_mapsController.cs" />
@@ -176,6 +177,7 @@
     <Compile Include="ControllersApi\paymentsController.cs" />
     <Compile Include="ControllersApi\payment_optionsController.cs" />
     <Compile Include="ControllersApi\productsController.cs" />
+    <Compile Include="ControllersApi\orders_gift_cardsController.cs" />
     <Compile Include="ControllersApi\product_accessoriesController.cs" />
     <Compile Include="ControllersApi\product_bundlesController.cs" />
     <Compile Include="ControllersApi\product_optionsController.cs" />
@@ -190,6 +192,7 @@
     <Compile Include="Controllers\admin_campaignsController.cs" />
     <Compile Include="Controllers\admin_categoriesController.cs" />
     <Compile Include="Controllers\admin_companiesController.cs" />
+    <Compile Include="Controllers\admin_gift_cardsController.cs" />
     <Compile Include="Controllers\admin_discount_codesController.cs" />
     <Compile Include="Controllers\admin_inspirationController.cs" />
     <Compile Include="Controllers\admin_newslettersController.cs" />
@@ -233,8 +236,10 @@
     <Compile Include="Helpers\SqlSessionStateProvider.cs" />
     <Compile Include="Helpers\StringHtmlExtensions.cs" />
     <Compile Include="Helpers\SveaSettings.cs" />
+    <Compile Include="Models\GiftCard.cs" />
     <Compile Include="Models\DiscountCode.cs" />
     <Compile Include="Models\InspirationImageMap.cs" />
+    <Compile Include="Models\OrderGiftCard.cs" />
     <Compile Include="Models\WebshopSession.cs" />
     <Compile Include="Models\AdditionalService.cs" />
     <Compile Include="Models\Administrator.cs" />
@@ -343,6 +348,7 @@
     <Content Include="DatabaseFiles\db_version_0.sql" />
     <None Include="DeveloperFiles\db_drop_statements.sql" />
     <None Include="DeveloperFiles\db_update_settings.sql" />
+    <Content Include="DatabaseFiles\db_version_7.sql" />
     <Content Include="DatabaseFiles\db_version_6.sql" />
     <Content Include="DatabaseFiles\db_version_5.sql" />
     <Content Include="DatabaseFiles\db_version_4.sql" />
@@ -553,6 +559,11 @@
     <Content Include="Views\admin_inspiration\_form_menu.cshtml" />
     <Content Include="Views\admin_inspiration\image_map.cshtml" />
     <Content Include="Views\shared_front\_category_imap.cshtml" />
+    <Content Include="Views\admin_gift_cards\index.cshtml" />
+    <Content Include="Views\admin_gift_cards\_form_menu.cshtml" />
+    <Content Include="Views\admin_gift_cards\edit.cshtml" />
+    <Content Include="Views\admin_orders\gift_cards.cshtml" />
+    <Content Include="Views\admin_gift_cards\orders.cshtml" />
     <None Include="Web References\Payex.Production\pxorder.wsdl" />
     <Content Include="Web References\Payex.Production\Reference.map">
       <Generator>MSDiscoCodeGenerator</Generator>

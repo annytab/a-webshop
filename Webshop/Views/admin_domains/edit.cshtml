@@ -28,7 +28,6 @@
     string currency_tt = tt.Get("currency");
     string company_tt = tt.Get("company");
     string default_display_view_tt = tt.Get("default_display_view");
-    string mobile_display_view_tt = tt.Get("mobile_display_view");
     string view_tt = tt.Get("view");
     string theme_tt = tt.Get("theme");
     string default_tt = tt.Get("default");
@@ -158,23 +157,6 @@
                     <option value="7" @(domain.default_display_view == 7 ? Html.Raw("selected='selected'") : Html.Raw(""))>@(view_tt + " 7")</option>
                     <option value="8" @(domain.default_display_view == 8 ? Html.Raw("selected='selected'") : Html.Raw(""))>@(view_tt + " 8")</option>
                     <option value="9" @(domain.default_display_view == 9 ? Html.Raw("selected='selected'") : Html.Raw(""))>@(view_tt + " 9")</option>
-                </select>
-            </div>
-        </div>
-        <div class="annytab-input-form-row">
-            <div class="annytab-input-form-column-label">@(mobile_display_view_tt + ":")</div>
-            <div class="annytab-input-form-column-input">
-                <select name="selectMobileDisplayView" class="annytab-form-select">
-                    <option value="0" @(domain.mobile_display_view == 0 ? Html.Raw("selected='selected'") : Html.Raw(""))>@(view_tt + " 0")</option>
-                    <option value="1" @(domain.mobile_display_view == 1 ? Html.Raw("selected='selected'") : Html.Raw(""))>@(view_tt + " 1")</option>
-                    <option value="2" @(domain.mobile_display_view == 2 ? Html.Raw("selected='selected'") : Html.Raw(""))>@(view_tt + " 2")</option>
-                    <option value="3" @(domain.mobile_display_view == 3 ? Html.Raw("selected='selected'") : Html.Raw(""))>@(view_tt + " 3")</option>
-                    <option value="4" @(domain.mobile_display_view == 4 ? Html.Raw("selected='selected'") : Html.Raw(""))>@(view_tt + " 4")</option>
-                    <option value="5" @(domain.mobile_display_view == 5 ? Html.Raw("selected='selected'") : Html.Raw(""))>@(view_tt + " 5")</option>
-                    <option value="6" @(domain.mobile_display_view == 6 ? Html.Raw("selected='selected'") : Html.Raw(""))>@(view_tt + " 6")</option>
-                    <option value="7" @(domain.mobile_display_view == 7 ? Html.Raw("selected='selected'") : Html.Raw(""))>@(view_tt + " 7")</option>
-                    <option value="8" @(domain.mobile_display_view == 8 ? Html.Raw("selected='selected'") : Html.Raw(""))>@(view_tt + " 8")</option>
-                    <option value="9" @(domain.mobile_display_view == 9 ? Html.Raw("selected='selected'") : Html.Raw(""))>@(view_tt + " 9")</option>
                 </select>
             </div>
         </div>

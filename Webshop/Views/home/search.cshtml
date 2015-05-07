@@ -41,7 +41,7 @@
         userSettings.Add("sort_field", "title");
         userSettings.Add("sort_order", "ASC");
         userSettings.Add("page_size", "10");
-        userSettings.Add("display_view", ViewBag.LayoutType == "mobile" ? domain.mobile_display_view.ToString() : domain.default_display_view.ToString());
+        userSettings.Add("display_view", domain.default_display_view.ToString());
     }
 
     // Create a clean string with keywords

@@ -232,10 +232,6 @@ namespace Annytab.Webshop.Controllers
             {
                 errorMessage += "&#149; " + String.Format(tt.Get("error_field_length"), tt.Get("name"), "50") + "<br/>";
             }
-            if (imageMap.category_id == 0)
-            {
-                errorMessage += "&#149; " + String.Format(tt.Get("error_select_value"), tt.Get("category").ToLower()) + "<br/>";
-            }
             if (imageMap.image_name.Length > 100)
             {
                 errorMessage += "&#149; " + String.Format(tt.Get("error_field_length"), tt.Get("file_name"), "100") + "<br/>";

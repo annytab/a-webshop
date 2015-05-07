@@ -17,7 +17,7 @@
     string new_tt = tt.Get("new");
     string edit_tt = tt.Get("edit");
     string id_tt = tt.Get("id");
-    string no_choice_tt = tt.Get("no_choice");
+    string start_page_tt = tt.Get("start_page");
     string default_tt = tt.Get("default");
     string language_tt = tt.Get("language");
     string name_tt = tt.Get("name");
@@ -76,7 +76,7 @@
             <div class="annytab-input-form-column-label">@(category_tt + ":")</div>
             <div class="annytab-input-form-column-input">
                 <select name="selectCategory" class="annytab-form-select">
-                    <option value="0" @(imageMap.category_id == 0 ? Html.Raw("selected='selected'") : Html.Raw(""))>@("-- " + no_choice_tt + " --")</option>
+                    <option value="0" @(imageMap.category_id == 0 ? Html.Raw("selected='selected'") : Html.Raw(""))>@start_page_tt</option>
                     @CreateChildOptions(0, mainCategories, imageMap.category_id, domain.back_end_language)
                 </select>
             </div>
