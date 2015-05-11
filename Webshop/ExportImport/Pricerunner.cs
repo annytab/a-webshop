@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Web;
 using System.IO;
+using System.Text.RegularExpressions;
 
 /// <summary>
 /// This class handles the creation of a PriceRunner file
@@ -167,11 +168,13 @@ public static class PriceRunner
 
         // Remove html from the title and the main content
         string title = StringHtmlExtensions.StripHtml(product.title);
-        title = title.Replace("|", " ");
-        string main_content = StringHtmlExtensions.StripHtml(product.main_content);
+        title = title.Replace("|", "");
+        string main_content = Regex.Replace(product.main_content, @"(<br\s*[\/]>)+", " ");
+        main_content = StringHtmlExtensions.StripHtml(main_content);
+        main_content = Regex.Replace(main_content, @"\r\n?|\n", "");
+        main_content = main_content.Replace("|", "");
         main_content = AnnytabDataValidation.TruncateString(main_content, 5000);
-        main_content = main_content.Replace("|", " ");
-
+        
         // Calculate the price
         decimal basePrice = product.unit_price * (currency.currency_base / currency.conversion_rate);
         decimal regularPrice = Math.Round(basePrice * decimalMultiplier, MidpointRounding.AwayFromZero) / decimalMultiplier;
@@ -211,10 +214,10 @@ public static class PriceRunner
         line += product.product_code + "|";
 
         // Price
-        line += salePrice.ToString(CultureInfo.InvariantCulture) + " " + currency.currency_code + "|";
+        line += salePrice.ToString(CultureInfo.InvariantCulture) + "|";
 
         // Shipping Cost
-        line += freight.ToString(CultureInfo.InvariantCulture) + " " + currency.currency_code + "|";
+        line += freight.ToString(CultureInfo.InvariantCulture) + "|";
 
         // Product URL
         line += domain.web_address + "/home/product/" + product.page_name + "|";
@@ -263,7 +266,7 @@ public static class PriceRunner
     public static string GetAvailabilityStatus(string availabilityCode)
     {
         // Create the string to return
-        string availability = "";
+        string availability = "Out of Stock";
 
         // Get the availability status
         if (availabilityCode == "availability_in_stock")

@@ -226,7 +226,9 @@ public static class GoogleShopping
         // Remove html from the title and the main content
         string title = StringHtmlExtensions.StripHtml(product.title);
         title = AnnytabDataValidation.TruncateString(title, 150);
-        string main_content = StringHtmlExtensions.StripHtml(product.main_content);
+        string main_content = Regex.Replace(product.main_content, @"(<br\s*[\/]>)+", " ");
+        main_content = StringHtmlExtensions.StripHtml(main_content);
+        main_content = Regex.Replace(main_content, @"\r\n?|\n", "");
         main_content = AnnytabDataValidation.TruncateString(main_content, 5000);
 
         // Write item base information
@@ -448,7 +450,7 @@ public static class GoogleShopping
     public static string GetGoogleAvailabilityStatus(string availabilityCode)
     {
         // Create the string to return
-        string availability = "";
+        string availability = "out of stock";
 
         // Get the availability status
         if(availabilityCode == "availability_in_stock")

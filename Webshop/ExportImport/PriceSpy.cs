@@ -232,7 +232,7 @@ public static class PriceSpy
     public static string GetAvailabilityStatus(string availabilityCode)
     {
         // Create the string to return
-        string availability = "";
+        string availability = "out of stock";
 
         // Get the availability status
         if (availabilityCode == "availability_in_stock")
