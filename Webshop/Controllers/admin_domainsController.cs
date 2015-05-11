@@ -660,8 +660,6 @@ namespace Annytab.Webshop.Controllers
             // Get form values 
             Int32 domainId = Convert.ToInt32(collection["hiddenDomainId"]);
             string type = collection["selectType"];
-            string title = collection["txtTitle"];
-            string description = collection["txtDescription"];
 
             // Get the domain
             Domain domain = Domain.GetOneById(domainId);
@@ -669,7 +667,15 @@ namespace Annytab.Webshop.Controllers
             // Excecute the marketing file export
             if(type == "google_shopping")
             {
-                GoogleShopping.Create(domain, title, description);
+                GoogleShopping.Create(domain);
+            }
+            else if (type == "price_spy")
+            {
+                PriceSpy.Create(domain);
+            }
+            else if (type == "price_runner")
+            {
+                PriceRunner.Create(domain);
             }
 
             // Redirect the user the marketing form

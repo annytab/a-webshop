@@ -20,9 +20,7 @@ public static class GoogleShopping
     /// Create a google shopping file
     /// </summary>
     /// <param name="domain">A reference to the domain</param>
-    /// <param name="title">The title for the channel</param>
-    /// <param name="description">The description for the channel</param>
-    public static void Create(Domain domain, string title, string description)
+    public static void Create(Domain domain)
     {
 
         // Create the directory path
@@ -42,7 +40,6 @@ public static class GoogleShopping
         List<Product> products = Product.GetAllActive(domain.front_end_language, "title", "ASC");
         Currency currency = Currency.GetOneById(domain.currency);
         Int32 decimalMultiplier = (Int32)Math.Pow(10, currency.decimals);
-        KeyStringList tt = StaticText.GetAll(domain.front_end_language, "id", "ASC");
         Country country = Country.GetOneById(domain.country_id, domain.front_end_language);
 
         // Create variables
@@ -73,18 +70,24 @@ public static class GoogleShopping
 
             // Write information about the channel
             xmlTextWriter.WriteStartElement("title");
-            xmlTextWriter.WriteString(title);
+            xmlTextWriter.WriteString(domain.webshop_name);
             xmlTextWriter.WriteEndElement();
             xmlTextWriter.WriteStartElement("link");
             xmlTextWriter.WriteString(baseUrl);
             xmlTextWriter.WriteEndElement();
             xmlTextWriter.WriteStartElement("description");
-            xmlTextWriter.WriteString(description);
+            xmlTextWriter.WriteString("Products");
             xmlTextWriter.WriteEndElement();
 
             // Loop all the products
             for (int i = 0; i < products.Count; i++)
             {
+                // Do not include affiliate products
+                if(products[i].affiliate_link != "")
+                {
+                    continue;
+                }
+
                 // Get all the product options
                 List<ProductOptionType> productOptionTypes = ProductOptionType.GetByProductId(products[i].id, domain.front_end_language);
                 
@@ -141,13 +144,13 @@ public static class GoogleShopping
                         }
 
                         // Write the product item to the xml file
-                        WriteProductItem(xmlTextWriter, domain, country, tt, productCopy, currency, decimalMultiplier, googleVariants);
+                        WriteProductItem(xmlTextWriter, domain, country, productCopy, currency, decimalMultiplier, googleVariants);
                     }
                 }
                 else
                 {
                     // Write the product item to the xml file
-                    WriteProductItem(xmlTextWriter, domain, country, tt, products[i], currency, decimalMultiplier, new List<string[]>(0));
+                    WriteProductItem(xmlTextWriter, domain, country, products[i], currency, decimalMultiplier, new List<string[]>(0));
                 }
             }
 
@@ -182,15 +185,13 @@ public static class GoogleShopping
     /// <param name="writer">A reference to an xml text writer</param>
     /// <param name="domain">A reference to a domain</param>
     /// <param name="country">A referende to a country</param>
-    /// <param name="tt">A reference to a list of translated texts</param>
     /// <param name="product">A reference to a product</param>
     /// <param name="currency">A reference to a currency</param>
     /// <param name="decimalMultiplier">The decimal multiplier</param>
     /// <param name="googleVariants">A list with google variants</param>
-    private static void WriteProductItem(XmlTextWriter writer, Domain domain, Country country, KeyStringList tt,  Product product, Currency currency, 
+    private static void WriteProductItem(XmlTextWriter writer, Domain domain, Country country, Product product, Currency currency, 
         Int32 decimalMultiplier, List<string[]> googleVariants)
-    {
-        
+    {     
         // Get the value added tax
         ValueAddedTax valueAddedTax = ValueAddedTax.GetOneById(product.value_added_tax_id);
 
@@ -251,7 +252,7 @@ public static class GoogleShopping
         writer.WriteString(domain.web_address + Tools.GetProductMainImageUrl(product.id, domain.front_end_language, product.variant_image_filename, product.use_local_images));
         writer.WriteEndElement();
         writer.WriteStartElement("g:condition");
-        writer.WriteString(product.condition);
+        writer.WriteString(product.condition != "" ? product.condition : "new");
         writer.WriteEndElement();
 
         // Calculate the price
@@ -433,7 +434,7 @@ public static class GoogleShopping
         // Write the end of the item tag
         writer.WriteEndElement();
 
-    } // End of the CreateProductPost method
+    } // End of the WriteProductItem method
 
     #endregion
 

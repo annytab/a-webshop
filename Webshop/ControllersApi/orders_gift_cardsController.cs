@@ -116,7 +116,7 @@ namespace Annytab.Webshop.ControllersApi
         } // End of the get_by_id method
 
         // Get order gift cards by order id
-        // GET api/orders_gift_cards/get_by_order_id/5
+        // GET api/orders_gift_cards/get_by_order_id/5?sortField=gift_card_id&sortOrder=ASC
         [ApiAuthorize(Roles = "API_FULL_TRUST,API_MEDIUM_TRUST,API_MINIMAL_TRUST")]
         [HttpGet]
         public List<OrderGiftCard> get_by_order_id(Int32 id = 0, string sortField = "", string sortOrder = "")
@@ -130,7 +130,7 @@ namespace Annytab.Webshop.ControllersApi
         } // End of the get_by_order_id method
 
         // Get order gift cards by gift card id
-        // GET api/orders_gift_cards/get_by_gift_card_id/SSSEEGGG
+        // GET api/orders_gift_cards/get_by_gift_card_id/SSSEEGGG?sortField=amount&sortOrder=ASC
         [ApiAuthorize(Roles = "API_FULL_TRUST,API_MEDIUM_TRUST,API_MINIMAL_TRUST")]
         [HttpGet]
         public List<OrderGiftCard> get_by_gift_card_id(string id = "", string sortField = "", string sortOrder = "")
