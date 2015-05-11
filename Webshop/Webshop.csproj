@@ -227,12 +227,12 @@
     <Compile Include="Helpers\AnnytabDataValidation.cs" />
     <Compile Include="Helpers\AnnytabRequireHttpsAttribute.cs" />
     <Compile Include="Helpers\PayExManager.cs" />
-    <Compile Include="ExportImport\Pricerunner.cs" />
-    <Compile Include="ExportImport\PriceSpy.cs" />
+    <Compile Include="Helpers\Pricerunner.cs" />
+    <Compile Include="Helpers\PriceSpy.cs" />
     <Compile Include="Helpers\QueryParams.cs" />
     <Compile Include="Helpers\SessionAgent.cs" />
     <Compile Include="Helpers\DatabaseManager.cs" />
-    <Compile Include="ExportImport\GoogleShopping.cs" />
+    <Compile Include="Helpers\GoogleShopping.cs" />
     <Compile Include="Helpers\KeyStringList.cs" />
     <Compile Include="Helpers\SitemapManager.cs" />
     <Compile Include="Helpers\SqlSessionStateProvider.cs" />
