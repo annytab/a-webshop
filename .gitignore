@@ -107,21 +107,21 @@ csx
 AppPackages/
 
 # User specific files
-Webshop/app.config
-Webshop/DatabaseFiles/DatabaseVersion.xml.gz
+/Webshop/app.config
+/Webshop/DatabaseFiles/DatabaseVersion.xml.gz
 
 # Images and other files
-Webshop/Content/campaigns/
-Webshop/Content/categories/
-Webshop/Content/domains/
-Webshop/Content/products/
-Webshop/Content/images/user_design/
-Webshop/Content/user_files/
-Webshop/Content/themes/
-Webshop/Content/inspiration/
+/Webshop/Content/campaigns/
+/Webshop/Content/categories/
+/Webshop/Content/domains/
+/Webshop/Content/products/
+/Webshop/Content/images/user_design/
+/Webshop/Content/user_files/
+/Webshop/Content/themes/
+/Webshop/Content/inspiration/
 
 # Developer documents
-Webshop/DeveloperFiles/
+/Webshop/DeveloperFiles/
 
 # Others
 sql/
@@ -170,3 +170,6 @@ $RECYCLE.BIN/
 
 # Mac desktop service store files
 .DS_Store
+
+# Application host configuration
+/.vs/config/applicationhost.config
