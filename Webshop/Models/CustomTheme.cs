@@ -11,8 +11,6 @@ public class CustomTheme
 {
     #region Variables
 
-    public static string virtualThemeHash = "";
-
     public Int32 id;
     public string name;
 
@@ -824,7 +822,7 @@ public class CustomTheme
         AnnytabPathProvider provider = (AnnytabPathProvider)System.Web.Hosting.HostingEnvironment.VirtualPathProvider;
 
         // Remove the theme
-        provider.virtualThemes.Remove(themeId);
+        provider.RemoveThemeFromCache(themeId);
 
     } // End of the RemoveThemeCache method
 

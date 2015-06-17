@@ -424,7 +424,7 @@ public class Domain
             // Insert the domain in the cache
             if(domain != null)
             {
-                HttpContext.Current.Cache.Insert(domainName, domain, null, DateTime.MaxValue, System.Web.Caching.Cache.NoSlidingExpiration, System.Web.Caching.CacheItemPriority.Normal, null);
+                HttpContext.Current.Cache.Insert(domainName, domain, null, DateTime.UtcNow.AddHours(2), System.Web.Caching.Cache.NoSlidingExpiration, System.Web.Caching.CacheItemPriority.Normal, null);
             }     
         }
 

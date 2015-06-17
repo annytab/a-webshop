@@ -207,7 +207,7 @@ public class WebshopSetting
         webshopSettings = GetAll();
 
         // Create the cache
-        HttpContext.Current.Cache.Insert("WebshopSettings", webshopSettings);
+        HttpContext.Current.Cache.Insert("WebshopSettings", webshopSettings, null, DateTime.UtcNow.AddHours(2), System.Web.Caching.Cache.NoSlidingExpiration, System.Web.Caching.CacheItemPriority.Normal, null);
 
         // Return the settings for the webshop
         return webshopSettings;

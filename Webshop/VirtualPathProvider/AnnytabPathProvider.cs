@@ -13,7 +13,9 @@ public class AnnytabPathProvider : VirtualPathProvider
 {
     #region Variables
 
-    public Dictionary<string, Dictionary<string, string>> virtualThemes;
+    public static Dictionary<string, Dictionary<string, string>> virtualThemes;
+    public static DateTime absoluteExpiration;
+    public static string virtualThemeHash;
 
     #endregion
 
@@ -26,7 +28,9 @@ public class AnnytabPathProvider : VirtualPathProvider
         : base()
     {
         // Set values for instance variables
-        this.virtualThemes = new Dictionary<string, Dictionary<string, string>>(10);
+        virtualThemes = new Dictionary<string, Dictionary<string, string>>(10);
+        absoluteExpiration = new DateTime(2000, 1, 1);
+        virtualThemeHash = "";
 
     } // End of the constructor
 
@@ -65,9 +69,6 @@ public class AnnytabPathProvider : VirtualPathProvider
         // Make sure that the path is virtual
         if (IsPathVirtual(virtualPath) == true)
         {
-            // Get the file
-            //AnnytabFile file = (AnnytabFile)GetFile(virtualPath);
-
             // Determine whether the file exists on the virtual file system
             if (CheckIfFileExists(virtualPath) == true)
             {
@@ -96,7 +97,6 @@ public class AnnytabPathProvider : VirtualPathProvider
         if (IsPathVirtual(virtualDirectory))
         {
             // Get the directory and return true
-            //AnnytabDirectory directory = (AnnytabDirectory)GetDirectory(virtualDirectory);
             return true;
         }
         else
@@ -122,15 +122,25 @@ public class AnnytabPathProvider : VirtualPathProvider
         // Create the theme id
         string themeId = "Theme_" + domain.custom_theme_id;
 
-        // Get the list of virtual files
-        if (this.virtualThemes.ContainsKey(themeId) == false)
+        // Check if the expiration date has passed
+        if (DateTime.Now > absoluteExpiration)
         {
-            this.virtualThemes.Add(themeId, CustomTheme.GetAllTemplatesById(domain.custom_theme_id));
-            CustomTheme.virtualThemeHash = Guid.NewGuid().ToString();
+            RemoveThemeFromCache(themeId);
+        }
+
+        // Get the list of virtual files
+        if (virtualThemes.ContainsKey(themeId) == false)
+        {
+            // Add the theme
+            virtualThemes.Add(themeId, CustomTheme.GetAllTemplatesById(domain.custom_theme_id));
+
+            // Add the absolute expiration date and a new hash
+            absoluteExpiration = DateTime.Now.AddHours(4);
+            virtualThemeHash = Guid.NewGuid().ToString();
         }
 
         // Check if the file exists
-        if (this.virtualThemes.ContainsKey(themeId) == true && this.virtualThemes[themeId].ContainsKey(fileName) == true)
+        if (virtualThemes.ContainsKey(themeId) == true && virtualThemes[themeId].ContainsKey(fileName) == true)
         {
             return true;
         }
@@ -190,7 +200,7 @@ public class AnnytabPathProvider : VirtualPathProvider
         string themeId = "Theme_" + domain.custom_theme_id;
 
         // Get the dictionary
-        Dictionary<string, string> virtualFiles = this.virtualThemes[themeId];
+        Dictionary<string, string> virtualFiles = virtualThemes[themeId];
 
         // Return the content
         return virtualFiles[fileName];
@@ -210,11 +220,29 @@ public class AnnytabPathProvider : VirtualPathProvider
     {
         if (IsPathVirtual(virtualPath))
         {
-            return CustomTheme.virtualThemeHash;
+            return virtualThemeHash;
         }
 
         return Previous.GetFileHash(virtualPath, virtualPathDependencies);
     }
+
+    #endregion
+
+    #region Delete methods
+
+    /// <summary>
+    /// Remove a theme from cache
+    /// </summary>
+    /// <param name="themeId">The id of a theme</param>
+    public void RemoveThemeFromCache(string themeId)
+    {
+        // Remove the theme
+        if (virtualThemes.ContainsKey(themeId) == true)
+        {
+            virtualThemes.Remove(themeId);
+        }
+
+    } // End of the RemoveThemeFromCache method
 
     #endregion
 

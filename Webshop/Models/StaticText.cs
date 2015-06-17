@@ -344,7 +344,7 @@ public class StaticText
             if(tt != null)
             {
                 // Insert the texts to cache
-                HttpContext.Current.Cache.Insert(cacheId, tt, null, DateTime.MaxValue, System.Web.Caching.Cache.NoSlidingExpiration, System.Web.Caching.CacheItemPriority.Normal, null);
+                HttpContext.Current.Cache.Insert(cacheId, tt, null, DateTime.UtcNow.AddHours(2), System.Web.Caching.Cache.NoSlidingExpiration, System.Web.Caching.CacheItemPriority.Normal, null);
             }
         }
 
