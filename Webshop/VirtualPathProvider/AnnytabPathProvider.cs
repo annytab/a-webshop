@@ -156,7 +156,7 @@ public class AnnytabPathProvider : VirtualPathProvider
             virtualTheme = CustomTheme.GetAllTemplatesById(domain.custom_theme_id);
 
             // Add the virtual theme to cache
-            HttpContext.Current.Cache.Insert(themeId, virtualTheme, null, DateTime.UtcNow.AddHours(4), System.Web.Caching.Cache.NoSlidingExpiration, System.Web.Caching.CacheItemPriority.Normal, null);
+            HttpContext.Current.Cache.Insert(themeId, virtualTheme, null, DateTime.UtcNow.AddHours(12), System.Web.Caching.Cache.NoSlidingExpiration, System.Web.Caching.CacheItemPriority.Normal, null);
             SetVirtualThemeHash();
         }
 
@@ -263,24 +263,6 @@ public class AnnytabPathProvider : VirtualPathProvider
         return Previous.GetFileHash(virtualPath, virtualPathDependencies);
 
     } // End of the GetFileHash method
-
-    #endregion
-
-    #region Delete methods
-
-    /// <summary>
-    /// Remove a theme from cache
-    /// </summary>
-    /// <param name="themeId">The id of a theme</param>
-    public void RemoveThemeFromCache(string themeId)
-    {
-        // Remove the theme
-        if (HttpContext.Current.Cache[themeId] != null)
-        {
-            HttpContext.Current.Cache.Remove(themeId);
-        }
-
-    } // End of the RemoveThemeFromCache method
 
     #endregion
 

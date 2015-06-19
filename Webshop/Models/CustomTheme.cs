@@ -818,11 +818,8 @@ public class CustomTheme
         // Create the theme id
         string themeId = "Theme_" + customThemeId.ToString();
 
-        // Get the virtual path provider
-        AnnytabPathProvider provider = (AnnytabPathProvider)System.Web.Hosting.HostingEnvironment.VirtualPathProvider;
-
-        // Remove the theme
-        provider.RemoveThemeFromCache(themeId);
+        // Remove the theme from cache
+        Tools.RemoveKeyFromCache(themeId);
 
     } // End of the RemoveThemeCache method
 

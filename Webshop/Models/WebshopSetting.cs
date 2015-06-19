@@ -52,9 +52,6 @@ public class WebshopSetting
     /// <param name="value">The value</param>
     public static void Add(string key, string value)
     {
-        // Clear the cache
-        RemoveCachedSettings();
-
         // Create the connection and the sql statement
         string connection = Tools.GetConnectionString();
         string sql = "INSERT INTO dbo.webshop_settings (id, value) VALUES (@id, @value);";
@@ -87,6 +84,9 @@ public class WebshopSetting
             }
         }
 
+        // Clear the cache
+        Tools.RemoveKeyFromCache("WebshopSettings");
+
     } // End of the Add method
 
     #endregion
@@ -100,10 +100,6 @@ public class WebshopSetting
     /// <param name="value">The value</param>
     public static void Update(string key, string value)
     {
-
-        // Clear the cache
-        RemoveCachedSettings();
-
         // Create the connection and the sql statement
         string connection = Tools.GetConnectionString();
         string sql = "UPDATE dbo.webshop_settings SET value = @value WHERE id = @id;";
@@ -135,6 +131,9 @@ public class WebshopSetting
                 }
             }
         }
+
+        // Clear the cache
+        Tools.RemoveKeyFromCache("WebshopSettings");
 
     } // End of the Update method
 
@@ -206,9 +205,12 @@ public class WebshopSetting
         // Get the webshop settings
         webshopSettings = GetAll();
 
-        // Create the cache
-        HttpContext.Current.Cache.Insert("WebshopSettings", webshopSettings, null, DateTime.UtcNow.AddHours(2), System.Web.Caching.Cache.NoSlidingExpiration, System.Web.Caching.CacheItemPriority.Normal, null);
-
+        if(webshopSettings != null)
+        {
+            // Create the cache
+            HttpContext.Current.Cache.Insert("WebshopSettings", webshopSettings, null, DateTime.UtcNow.AddHours(6), System.Web.Caching.Cache.NoSlidingExpiration, System.Web.Caching.CacheItemPriority.Normal, null);
+        }
+        
         // Return the settings for the webshop
         return webshopSettings;
 
@@ -220,7 +222,6 @@ public class WebshopSetting
     /// <returns>A key string list of shop settings</returns>
     public static KeyStringList GetAll()
     {
-
         // Create the KeyStringList to return
         KeyStringList posts = new KeyStringList(20);
 
@@ -271,24 +272,6 @@ public class WebshopSetting
         return posts;
 
     } // End of the GetAll method
-
-    #endregion
-
-    #region Helper methods
-
-    /// <summary>
-    /// Remove the cached webshop settings
-    /// </summary>
-    private static void RemoveCachedSettings()
-    {
-        // Make sure that the webshop settings is different from null
-        if (HttpContext.Current.Cache["WebshopSettings"] != null)
-        {
-            // Remove the webshop settings
-            HttpContext.Current.Cache.Remove("WebshopSettings");
-        }
-
-    } // End of the RemoveCachedSettings method
 
     #endregion
 

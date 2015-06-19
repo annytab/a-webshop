@@ -53,7 +53,6 @@ public class StaticText
     /// <param name="languageId">A language id</param>
     public static void Add(StaticText post, Int32 languageId)
     {
-
         // Create the connection and the sql statement
         string connection = Tools.GetConnectionString();
         string sql = "INSERT INTO dbo.static_texts (id, language_id, value) " +
@@ -89,7 +88,7 @@ public class StaticText
         }
 
         // Remove the list from the cache
-        HttpContext.Current.Cache.Remove("StaticTexts_" + languageId.ToString());
+        Tools.RemoveKeyFromCache("StaticTexts_" + languageId.ToString());
 
     } // End of the Add method
 
@@ -138,7 +137,7 @@ public class StaticText
         }
 
         // Remove the list from the cache
-        HttpContext.Current.Cache.Remove("StaticTexts_" + languageId.ToString());
+        Tools.RemoveKeyFromCache("StaticTexts_" + languageId.ToString());
 
     } // End of the Update method
 
@@ -344,7 +343,7 @@ public class StaticText
             if(tt != null)
             {
                 // Insert the texts to cache
-                HttpContext.Current.Cache.Insert(cacheId, tt, null, DateTime.UtcNow.AddHours(2), System.Web.Caching.Cache.NoSlidingExpiration, System.Web.Caching.CacheItemPriority.Normal, null);
+                HttpContext.Current.Cache.Insert(cacheId, tt, null, DateTime.UtcNow.AddHours(6), System.Web.Caching.Cache.NoSlidingExpiration, System.Web.Caching.CacheItemPriority.Normal, null);
             }
         }
 
@@ -566,7 +565,7 @@ public class StaticText
         List<Language> languages = Language.GetAll("id", "ASC");
         for (int i = 0; i < languages.Count; i++ )
         {
-            HttpContext.Current.Cache.Remove("StaticTexts_" + languages[i].id.ToString());
+            Tools.RemoveKeyFromCache("StaticTexts_" + languages[i].id.ToString());
         }
             
         // Return the code for success
@@ -627,7 +626,7 @@ public class StaticText
         }
 
         // Remove the list from the cache
-        HttpContext.Current.Cache.Remove("StaticTexts_" + languageId.ToString());
+        Tools.RemoveKeyFromCache("StaticTexts_" + languageId.ToString());
 
         // Return the code for success
         return 0;
