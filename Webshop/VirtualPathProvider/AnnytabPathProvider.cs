@@ -13,7 +13,8 @@ public class AnnytabPathProvider : VirtualPathProvider
     #region Variables
 
     private string _virtualThemeHash;
-    private object lockObject = new object();
+    private object hashLock;
+    private object writeLock;
 
     #endregion
 
@@ -26,6 +27,9 @@ public class AnnytabPathProvider : VirtualPathProvider
         : base()
     {
         // Set values for instance variables
+        this._virtualThemeHash = "";
+        this.hashLock = new object();
+        this.writeLock = new object();
 
     } // End of the constructor
 
@@ -38,7 +42,7 @@ public class AnnytabPathProvider : VirtualPathProvider
     /// </summary>
     private void SetVirtualThemeHash()
     {
-        lock (lockObject)
+        lock (hashLock)
         {
             _virtualThemeHash = Guid.NewGuid().ToString();
         }
@@ -51,7 +55,7 @@ public class AnnytabPathProvider : VirtualPathProvider
     /// <returns></returns>
     private string GetVirtualThemeHash()
     {
-        lock (lockObject)
+        lock (hashLock)
         {
             return _virtualThemeHash;
         }
@@ -149,15 +153,28 @@ public class AnnytabPathProvider : VirtualPathProvider
         // Get the virtual theme from cache
         Dictionary<string, string> virtualTheme = (Dictionary<string, string>)HttpContext.Current.Cache[themeId];
 
-        // Check if the virtual theme is different from null
+        // Check if the virtual theme is null
         if (virtualTheme == null)
         {
-            // Create the virtual theme
-            virtualTheme = CustomTheme.GetAllTemplatesById(domain.custom_theme_id);
+            // Add a lock to only insert once
+            lock(writeLock)
+            {
+                // Check if the cache still is null
+                if(HttpContext.Current.Cache[themeId] == null)
+                {
+                    // Get the virtual theme
+                    virtualTheme = CustomTheme.GetAllTemplatesById(domain.custom_theme_id);
 
-            // Add the virtual theme to cache
-            HttpContext.Current.Cache.Insert(themeId, virtualTheme, null, DateTime.UtcNow.AddHours(12), System.Web.Caching.Cache.NoSlidingExpiration, System.Web.Caching.CacheItemPriority.Normal, null);
-            SetVirtualThemeHash();
+                    // Add the virtual theme to cache
+                    HttpContext.Current.Cache.Insert(themeId, virtualTheme, null, DateTime.UtcNow.AddHours(13), Cache.NoSlidingExpiration, CacheItemPriority.Normal, null);
+                    SetVirtualThemeHash();
+                }
+                else
+                {
+                    // Get the virtual theme from cache
+                    virtualTheme = (Dictionary<string, string>)HttpContext.Current.Cache[themeId];
+                }
+            }
         }
 
         // Check if the file exists

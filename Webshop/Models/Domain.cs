@@ -32,6 +32,9 @@ public class Domain
     public string google_app_secret;
     public bool noindex;
 
+    // Create a static write lock
+    private static object writeLock = new object();
+
     #endregion
 
     #region Constructors
@@ -415,17 +418,30 @@ public class Domain
         // Get the domain from cache
         Domain domain = (Domain)HttpContext.Current.Cache[domainName];
 
-        // Make sure that the domain not is null
+        // Check if the domain is null
         if(domain == null)
         {
-            // Get the domain from the database
-            domain = GetOneByName(domainName);
-
-            // Insert the domain in the cache
-            if(domain != null)
+            // Add a lock to only insert once
+            lock(writeLock)
             {
-                HttpContext.Current.Cache.Insert(domainName, domain, null, DateTime.UtcNow.AddHours(6), System.Web.Caching.Cache.NoSlidingExpiration, System.Web.Caching.CacheItemPriority.Normal, null);
-            }     
+                // Check if the cache still is null
+                if(HttpContext.Current.Cache[domainName] == null)
+                {
+                    // Get the domain from the database
+                    domain = GetOneByName(domainName);
+
+                    // Insert the domain in the cache
+                    if (domain != null)
+                    {
+                        HttpContext.Current.Cache.Insert(domainName, domain, null, DateTime.UtcNow.AddHours(5), System.Web.Caching.Cache.NoSlidingExpiration, System.Web.Caching.CacheItemPriority.Normal, null);
+                    }
+                }
+                else
+                {
+                    // Get the domain from cache
+                    domain = (Domain)HttpContext.Current.Cache[domainName];
+                }
+            }
         }
 
         // Return the domain

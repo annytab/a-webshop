@@ -15,6 +15,9 @@ public class StaticText
     public string id;
     public string value;
 
+    // Create a static write lock
+    private static object writeLock = new object();
+
     #endregion
 
     #region Constructors
@@ -334,16 +337,29 @@ public class StaticText
         // Get the static texts from cache
         KeyStringList tt = (KeyStringList)HttpContext.Current.Cache[cacheId];
 
-        // Make sure that the list not is null
+        // Check if static texts is null
         if(tt == null)
         {
-            // Get all the texts
-            tt = GetAllFromDatabase(languageId, sortField, sortOrder);
-
-            if(tt != null)
+            // Add a lock to only insert once
+            lock(writeLock)
             {
-                // Insert the texts to cache
-                HttpContext.Current.Cache.Insert(cacheId, tt, null, DateTime.UtcNow.AddHours(6), System.Web.Caching.Cache.NoSlidingExpiration, System.Web.Caching.CacheItemPriority.Normal, null);
+                // Check if the cache still is null
+                if(HttpContext.Current.Cache[cacheId] == null)
+                {
+                    // Get all the texts
+                    tt = GetAllFromDatabase(languageId, sortField, sortOrder);
+
+                    if (tt != null)
+                    {
+                        // Insert the texts to cache
+                        HttpContext.Current.Cache.Insert(cacheId, tt, null, DateTime.UtcNow.AddHours(6), System.Web.Caching.Cache.NoSlidingExpiration, System.Web.Caching.CacheItemPriority.Normal, null);
+                    }
+                }
+                else
+                {
+                    // Get static texts from the cache
+                    tt = (KeyStringList)HttpContext.Current.Cache[cacheId];
+                }
             }
         }
 

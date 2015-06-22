@@ -14,6 +14,9 @@ public class WebshopSetting
     public string id;
     public string value;
 
+    // Create a static write lock
+    private static object writeLock = new object();
+
     #endregion
 
     #region Constructors
@@ -196,21 +199,32 @@ public class WebshopSetting
         // Get the cached webshop settings
         KeyStringList webshopSettings = (KeyStringList)HttpContext.Current.Cache["WebshopSettings"];
 
-        // Check if the webshop settings is different from null
-        if (webshopSettings != null)
+        // Check if settings is null
+        if (webshopSettings == null)
         {
-            return webshopSettings;
+            // Add a lock to only insert once
+            lock(writeLock)
+            {
+                // Check if the cache still is null
+                if(HttpContext.Current.Cache["WebshopSettings"] == null)
+                {
+                    // Get the webshop settings
+                    webshopSettings = GetAll();
+
+                    if (webshopSettings != null)
+                    {
+                        // Create the cache
+                        HttpContext.Current.Cache.Insert("WebshopSettings", webshopSettings, null, DateTime.UtcNow.AddHours(5), System.Web.Caching.Cache.NoSlidingExpiration, System.Web.Caching.CacheItemPriority.Normal, null);
+                    }
+                }
+                else
+                {
+                    // Get settings from the cache
+                    webshopSettings = (KeyStringList)HttpContext.Current.Cache["WebshopSettings"];
+                }
+            }
         }
 
-        // Get the webshop settings
-        webshopSettings = GetAll();
-
-        if(webshopSettings != null)
-        {
-            // Create the cache
-            HttpContext.Current.Cache.Insert("WebshopSettings", webshopSettings, null, DateTime.UtcNow.AddHours(6), System.Web.Caching.Cache.NoSlidingExpiration, System.Web.Caching.CacheItemPriority.Normal, null);
-        }
-        
         // Return the settings for the webshop
         return webshopSettings;
 
