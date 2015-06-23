@@ -203,7 +203,7 @@ namespace Annytab.Webshop.Controllers
                     // Create the customer cookie
                     HttpCookie customerCookie = new HttpCookie("CustomerCookie");
                     customerCookie.Value = Tools.ProtectCookieValue(insertId.ToString(), "CustomerLogin");
-                    customerCookie.Expires = DateTime.Now.AddDays(1);
+                    customerCookie.Expires = DateTime.UtcNow.AddDays(1);
                     customerCookie.HttpOnly = true;
                     customerCookie.Secure = redirectHttps.ToLower() == "true" ? true : false;
                     Response.Cookies.Add(customerCookie);
@@ -216,7 +216,7 @@ namespace Annytab.Webshop.Controllers
                     // Create the customer cookie
                     HttpCookie customerCookie = new HttpCookie("CustomerCookie");
                     customerCookie.Value = Tools.ProtectCookieValue(customer.id.ToString(), "CustomerLogin");
-                    customerCookie.Expires = DateTime.Now.AddDays(1);
+                    customerCookie.Expires = DateTime.UtcNow.AddDays(1);
                     customerCookie.HttpOnly = true;
                     customerCookie.Secure = redirectHttps.ToLower() == "true" ? true : false;
                     Response.Cookies.Add(customerCookie);
@@ -346,7 +346,7 @@ namespace Annytab.Webshop.Controllers
                     // Create the customer cookie
                     HttpCookie customerCookie = new HttpCookie("CustomerCookie");
                     customerCookie.Value = Tools.ProtectCookieValue(insertId.ToString(), "CustomerLogin");
-                    customerCookie.Expires = DateTime.Now.AddDays(1);
+                    customerCookie.Expires = DateTime.UtcNow.AddDays(1);
                     customerCookie.HttpOnly = true;
                     customerCookie.Secure = redirectHttps.ToLower() == "true" ? true : false;
                     Response.Cookies.Add(customerCookie);
@@ -359,7 +359,7 @@ namespace Annytab.Webshop.Controllers
                     // Create the customer cookie
                     HttpCookie customerCookie = new HttpCookie("CustomerCookie");
                     customerCookie.Value = Tools.ProtectCookieValue(customer.id.ToString(), "CustomerLogin");
-                    customerCookie.Expires = DateTime.Now.AddDays(1);
+                    customerCookie.Expires = DateTime.UtcNow.AddDays(1);
                     customerCookie.HttpOnly = true;
                     customerCookie.Secure = redirectHttps.ToLower() == "true" ? true : false;
                     Response.Cookies.Add(customerCookie);
@@ -691,7 +691,7 @@ namespace Annytab.Webshop.Controllers
                     // Create the customer cookie
                     HttpCookie customerCookie = new HttpCookie("CustomerCookie");
                     customerCookie.Value = Tools.ProtectCookieValue(customer.id.ToString(), "CustomerLogin");
-                    customerCookie.Expires = DateTime.Now.AddDays(1);
+                    customerCookie.Expires = DateTime.UtcNow.AddDays(1);
                     customerCookie.HttpOnly = true;
                     customerCookie.Secure = redirectHttps.ToLower() == "true" ? true : false;
                     Response.Cookies.Add(customerCookie);
@@ -846,7 +846,7 @@ namespace Annytab.Webshop.Controllers
                     // Create the customer cookie
                     HttpCookie customerCookie = new HttpCookie("CustomerCookie");
                     customerCookie.Value = Tools.ProtectCookieValue(customer.id.ToString(), "CustomerLogin");
-                    customerCookie.Expires = DateTime.Now.AddDays(1);
+                    customerCookie.Expires = DateTime.UtcNow.AddDays(1);
                     customerCookie.HttpOnly = true;
                     customerCookie.Secure = redirectHttps.ToLower() == "true" ? true : false;
                     Response.Cookies.Add(customerCookie);
@@ -928,7 +928,7 @@ namespace Annytab.Webshop.Controllers
             review.product_id = productId;
             review.customer_id = customer.id;
             review.language_id = domain.front_end_language;
-            review.review_date = DateTime.Now;
+            review.review_date = DateTime.UtcNow;
             review.rating = AnnytabDataValidation.TruncateDecimal(userVote, 0, 999999.99M);
             review.review_text = reviewText;
 
@@ -988,7 +988,7 @@ namespace Annytab.Webshop.Controllers
             if(review != null && review.customer_id == customer.id)
             {
                 // Update values
-                review.review_date = DateTime.Now;
+                review.review_date = DateTime.UtcNow;
                 review.review_text = reviewText;
                 review.rating = AnnytabDataValidation.TruncateDecimal(userVote, 0, 999999.99M);
 
@@ -1123,7 +1123,7 @@ namespace Annytab.Webshop.Controllers
                 // Create the customer cookie
                 HttpCookie customerCookie = new HttpCookie("CustomerCookie");
                 customerCookie.Value = Tools.ProtectCookieValue(customer.id.ToString(), "CustomerLogin");
-                customerCookie.Expires = DateTime.Now.AddDays(1);
+                customerCookie.Expires = DateTime.UtcNow.AddDays(1);
                 customerCookie.HttpOnly = true;
                 customerCookie.Secure = redirectHttps.ToLower() == "true" ? true : false;
                 Response.Cookies.Add(customerCookie);
@@ -1263,7 +1263,7 @@ namespace Annytab.Webshop.Controllers
             // Delete the customer cookie
             HttpCookie customerCookie = new HttpCookie("CustomerCookie");
             customerCookie.Value = "";
-            customerCookie.Expires = DateTime.Now.AddDays(-1);
+            customerCookie.Expires = DateTime.UtcNow.AddDays(-1);
             Response.Cookies.Add(customerCookie);
 
             // Redirect the user to the login page

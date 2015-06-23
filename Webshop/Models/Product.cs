@@ -96,7 +96,7 @@ public class Product
         this.comparison_unit_id = 0;
         this.energy_efficiency_class = "";
         this.downloadable_files = false;
-        this.date_added = DateTime.Now;
+        this.date_added = DateTime.UtcNow;
         this.discount = 0;
         this.title = "";
         this.main_content = "";

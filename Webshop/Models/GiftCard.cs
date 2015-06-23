@@ -32,7 +32,7 @@ public class GiftCard
         this.language_id = 0;
         this.currency_code = "";
         this.amount = 0;
-        this.end_date = DateTime.Now;
+        this.end_date = DateTime.UtcNow;
 
     } // End of the constructor
 

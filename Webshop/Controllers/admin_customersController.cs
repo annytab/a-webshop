@@ -147,7 +147,7 @@ namespace Annytab.Webshop.Controllers
             // Create the customer cookie
             HttpCookie customerCookie = new HttpCookie("CustomerCookie");
             customerCookie.Value = Tools.ProtectCookieValue(id.ToString(), "CustomerLogin");
-            customerCookie.Expires = DateTime.Now.AddDays(1);
+            customerCookie.Expires = DateTime.UtcNow.AddDays(1);
             customerCookie.HttpOnly = true;
             customerCookie.Secure = redirectHttps.ToLower() == "true" ? true : false;
             Response.Cookies.Add(customerCookie);

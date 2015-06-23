@@ -34,9 +34,9 @@ public class WebshopSession
         // Set values for instance variables
         this.id = "";
         this.application_name = "";
-        this.created_date = DateTime.Now;
-        this.expires_date = DateTime.Now;
-        this.lock_date = DateTime.Now;
+        this.created_date = DateTime.UtcNow;
+        this.expires_date = DateTime.UtcNow;
+        this.lock_date = DateTime.UtcNow;
         this.lock_id = 0;
         this.timeout_limit = 0;
         this.locked = false;
@@ -581,7 +581,7 @@ public class WebshopSession
             using (SqlCommand cmd = new SqlCommand(sql, cn))
             {
                 // Add parameters
-                cmd.Parameters.AddWithValue("@expires_date", DateTime.Now);
+                cmd.Parameters.AddWithValue("@expires_date", DateTime.UtcNow);
 
                 // The Try/Catch/Finally statement is used to handle unusual exceptions in the code to
                 // avoid having our application crash in such cases.

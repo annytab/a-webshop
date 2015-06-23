@@ -264,7 +264,7 @@ namespace Annytab.Webshop.Controllers
                 // Update the newsletter
                 if(success == true)
                 {
-                    newsletter.sent_date = DateTime.Now;
+                    newsletter.sent_date = DateTime.UtcNow;
                     Newsletter.Update(newsletter);
                 }
             }

@@ -68,7 +68,7 @@
         </div>
         <div class="annytab-input-form-row">
             <div class="annytab-input-form-column-label">@(version_tt + " (yyyy-mm-dd):")</div>
-            <div class="annytab-input-form-column-input"><input id="txtVersionDate" name="txtVersionDate" type="text" class="annytab-form-textbox" value="@DateTime.Now.ToString("yyyy-MM-dd")" /></div>
+            <div class="annytab-input-form-column-input"><input id="txtVersionDate" name="txtVersionDate" type="text" class="annytab-form-textbox" value="@DateTime.UtcNow.ToString("yyyy-MM-dd")" /></div>
         </div>
         <div class="annytab-input-form-row">
             <div class="annytab-input-form-column-label">@(upload_files_tt + ": ")</div>

@@ -108,7 +108,7 @@ namespace Annytab.Webshop.Controllers
             ViewBag.CartAmounts = cartAmounts;
             ViewBag.PricesIncludesVat = Session["PricesIncludesVat"] != null ? Convert.ToBoolean(Session["PricesIncludesVat"]) : currentDomain.prices_includes_vat;
             ViewBag.CultureInfo = Tools.GetCultureInfo(ViewBag.CurrentLanguage);
-            ViewBag.DesiredDateOfDelivery = DateTime.Now;
+            ViewBag.DesiredDateOfDelivery = DateTime.UtcNow;
             ViewBag.DiscountCodeId = discountCodeId;
             ViewBag.GiftCards = giftCards;
 
@@ -280,7 +280,7 @@ namespace Annytab.Webshop.Controllers
             Order order = new Order();
             order.document_type = document_type;
             order.customer_id = customer.id;
-            order.order_date = DateTime.Now;
+            order.order_date = DateTime.UtcNow;
             order.company_id = currentDomain.company_id;
             order.country_code = currentLanguage.country_code;
             order.language_code = currentLanguage.language_code;
@@ -684,7 +684,7 @@ namespace Annytab.Webshop.Controllers
                 // The gift card has already been added
                 Session["CodeError"] = "invalid_gift_card";
             }
-            else if (DateTime.Now.AddDays(-1) > giftCard.end_date)
+            else if (DateTime.UtcNow.AddDays(-1) > giftCard.end_date)
             {
                 // The gift card is not valid anymore
                 Session["CodeError"] = "invalid_gift_card";

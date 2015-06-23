@@ -101,7 +101,7 @@ public class Order
         this.payment_status = "";
         this.exported_to_erp = false;
         this.order_status = "";
-        this.desired_date_of_delivery = DateTime.Now;
+        this.desired_date_of_delivery = DateTime.UtcNow;
         this.discount_code = "";
         this.gift_cards_amount = 0;
 

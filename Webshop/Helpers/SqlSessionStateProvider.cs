@@ -66,9 +66,9 @@ public class SqlSessionStateProvider : SessionStateStoreProviderBase
         WebshopSession webshopSession = new WebshopSession();
         webshopSession.id = id;
         webshopSession.application_name = this.applicationName;
-        webshopSession.created_date = DateTime.Now;
-        webshopSession.expires_date = DateTime.Now.AddMinutes((Double)timeout);
-        webshopSession.lock_date = DateTime.Now;
+        webshopSession.created_date = DateTime.UtcNow;
+        webshopSession.expires_date = DateTime.UtcNow.AddMinutes((Double)timeout);
+        webshopSession.lock_date = DateTime.UtcNow;
         webshopSession.lock_id = 0;
         webshopSession.timeout_limit = timeout;
         webshopSession.locked = false;
@@ -114,9 +114,9 @@ public class SqlSessionStateProvider : SessionStateStoreProviderBase
         WebshopSession webshopSession = new WebshopSession();
         webshopSession.id = id;
         webshopSession.application_name = this.applicationName;
-        webshopSession.created_date = DateTime.Now;
-        webshopSession.expires_date = DateTime.Now.AddMinutes((Double)item.Timeout);
-        webshopSession.lock_date = DateTime.Now;
+        webshopSession.created_date = DateTime.UtcNow;
+        webshopSession.expires_date = DateTime.UtcNow.AddMinutes((Double)item.Timeout);
+        webshopSession.lock_date = DateTime.UtcNow;
         webshopSession.lock_id = 0;
         webshopSession.timeout_limit = item.Timeout;
         webshopSession.locked = false;
@@ -153,7 +153,7 @@ public class SqlSessionStateProvider : SessionStateStoreProviderBase
         webshopSession.id = id;
         webshopSession.application_name = this.applicationName;
         webshopSession.lock_id = (Int32)lockId;
-        webshopSession.expires_date = DateTime.Now.AddMinutes(this.sessionStateConfiguration.Timeout.TotalMinutes);
+        webshopSession.expires_date = DateTime.UtcNow.AddMinutes(this.sessionStateConfiguration.Timeout.TotalMinutes);
         webshopSession.locked = false;
 
         // Update the lock
@@ -170,7 +170,7 @@ public class SqlSessionStateProvider : SessionStateStoreProviderBase
         WebshopSession webshopSession = new WebshopSession();
         webshopSession.id = id;
         webshopSession.application_name = this.applicationName;
-        webshopSession.expires_date = DateTime.Now.AddMinutes(this.sessionStateConfiguration.Timeout.TotalMinutes);
+        webshopSession.expires_date = DateTime.UtcNow.AddMinutes(this.sessionStateConfiguration.Timeout.TotalMinutes);
 
         // Update the expiration date
         WebshopSession.UpdateExpirationDate(webshopSession);
@@ -231,8 +231,8 @@ public class SqlSessionStateProvider : SessionStateStoreProviderBase
             // Update the webshop session
             webshopSession.id = id;
             webshopSession.application_name = this.applicationName;
-            webshopSession.expires_date = DateTime.Now;
-            webshopSession.lock_date = DateTime.Now;
+            webshopSession.expires_date = DateTime.UtcNow;
+            webshopSession.lock_date = DateTime.UtcNow;
             webshopSession.locked = true;
 
             // Lock the webshop session
@@ -247,7 +247,7 @@ public class SqlSessionStateProvider : SessionStateStoreProviderBase
 
         if(webshopSession != null)
         {
-            if (webshopSession.expires_date < DateTime.Now)
+            if (webshopSession.expires_date < DateTime.UtcNow)
             {
                 locked = false;
                 deleteData = true;
@@ -260,7 +260,7 @@ public class SqlSessionStateProvider : SessionStateStoreProviderBase
             // Set data
             serializedItems = webshopSession.session_items;
             lockId = webshopSession.lock_id;
-            lockAge = DateTime.Now.Subtract(webshopSession.lock_date);
+            lockAge = DateTime.UtcNow.Subtract(webshopSession.lock_date);
             actionFlags = (SessionStateActions)webshopSession.flags;
             timeout = webshopSession.timeout_limit;
         }

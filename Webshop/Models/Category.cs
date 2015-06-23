@@ -37,7 +37,7 @@ public class Category
         this.id = 0;
         this.parent_category_id = 0;
         this.meta_robots = "";
-        this.date_added = DateTime.Now;
+        this.date_added = DateTime.UtcNow;
         this.page_views = 0;
         this.title = "";
         this.main_content = "";

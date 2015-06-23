@@ -36,7 +36,7 @@ public class DiscountCode
         this.currency_code = "";
         this.discount_value = 0;
         this.free_freight = false;
-        this.end_date = DateTime.Now;
+        this.end_date = DateTime.UtcNow;
         this.once_per_customer = false;
         this.exclude_products_on_sale = false;
         this.minimum_order_value = 0;

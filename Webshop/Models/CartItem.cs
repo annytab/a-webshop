@@ -204,7 +204,7 @@ public class CartItem
             HttpContext.Current.Session["CodeError"] = "invalid_discount_code";
             return;
         }
-        else if (DateTime.Now.AddDays(-1) > discountCode.end_date)
+        else if (DateTime.UtcNow.AddDays(-1) > discountCode.end_date)
         {
             // The discount code is not valid anymore
             HttpContext.Current.Session["CodeError"] = "invalid_discount_code";

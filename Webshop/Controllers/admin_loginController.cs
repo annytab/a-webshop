@@ -67,7 +67,7 @@ namespace Annytab.Webshop.Controllers
                 // Create the administrator cookie
                 HttpCookie adminCookie = new HttpCookie("Administrator");
                 adminCookie.Value = Tools.ProtectCookieValue(administrator.id.ToString(), "Administration");
-                adminCookie.Expires = DateTime.Now.AddDays(1);
+                adminCookie.Expires = DateTime.UtcNow.AddDays(1);
                 adminCookie.HttpOnly = true;
                 adminCookie.Secure = redirectHttps.ToLower() == "true" ? true : false;
                 Response.Cookies.Add(adminCookie);
@@ -100,7 +100,7 @@ namespace Annytab.Webshop.Controllers
             // Delete the administrator cookie
             HttpCookie adminCookie = new HttpCookie("Administrator");
             adminCookie.Value = "";
-            adminCookie.Expires = DateTime.Now.AddDays(-1);
+            adminCookie.Expires = DateTime.UtcNow.AddDays(-1);
             adminCookie.HttpOnly = true;
             Response.Cookies.Add(adminCookie);
 
