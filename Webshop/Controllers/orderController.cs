@@ -157,7 +157,7 @@ namespace Annytab.Webshop.Controllers
             KeyStringList tt = StaticText.GetAll(currentDomain.front_end_language, "id", "ASC");
 
             // Create the bread crumb list
-            List<BreadCrumb> breadCrumbs = new List<BreadCrumb>(2);
+            List<BreadCrumb> breadCrumbs = new List<BreadCrumb>(3);
             breadCrumbs.Add(new BreadCrumb(tt.Get("start_page"), "/"));
             breadCrumbs.Add(new BreadCrumb(tt.Get("my_pages"), "/customer/"));
             breadCrumbs.Add(new BreadCrumb(tt.Get("order_confirmation"), "/order/confirmation/" + order.id.ToString()));
