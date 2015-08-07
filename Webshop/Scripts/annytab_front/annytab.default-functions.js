@@ -7,6 +7,13 @@ function start()
     // Register events
     $(document).on("keydown", "input:text, input:file, input[type=number], input:password, input:radio, input:button, input:checkbox, button, select", enterAsTab);
     $(document).bind("submit", showLoadingAnimation);
+    $(document).on("click", "#btnCookieConsent", setCookieConsent);
+
+    // Check if there is a cookie consent
+    if (readCookie("CookieConsent") == null)
+    {
+        $('.annytab-cookie-consent').fadeIn(200);
+    }
 
 } // End of the start method
 
@@ -59,3 +66,55 @@ function showLoadingAnimation()
     $("#animationContainer").fadeIn(200);
 
 } // End of the showLoadingAnimation method
+
+// Set the cookie consent
+function setCookieConsent()
+{
+    // Create a cookie
+    createCookie("CookieConsent", "", 360);
+
+    // Hide the cookie message
+    $('.annytab-cookie-consent').fadeOut(200);
+
+} // End of the setCookieConsent method
+
+// Create a cookie
+function createCookie(name, value, days)
+{
+    if (days)
+    {
+        var date = new Date();
+        date.setTime(date.getTime() + (days * 24 * 60 * 60 * 1000));
+        var expires = "; expires=" + date.toGMTString();
+    }
+    else
+    {
+        var expires = "";
+    }
+
+    document.cookie = name + "=" + value + expires + "; path=/";
+
+} // End of the createCookie method
+
+// Read a cookie
+function readCookie(name)
+{
+    var nameEQ = name + "=";
+    var ca = document.cookie.split(';');
+    for (var i = 0; i < ca.length; i++)
+    {
+        var c = ca[i];
+        while (c.charAt(0) == ' ') c = c.substring(1, c.length);
+        if (c.indexOf(nameEQ) == 0) return c.substring(nameEQ.length, c.length);
+    }
+
+    return null;
+
+} // End of the readCookie method
+
+// Delete a cookie
+function eraseCookie(name)
+{
+    createCookie(name, "", -1);
+
+} // End of the eraseCookie method

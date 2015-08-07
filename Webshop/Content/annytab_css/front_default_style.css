@@ -69,6 +69,7 @@ li li {padding-left:2px;}
 
 /* Code container (google prettify) */
 .annytab-code-container{overflow:auto;border:1px solid #cccccc;border-radius:4px;margin:0px;padding:0px;}
+.annytab-cookie-consent{display:none;width:100%;position:fixed;top:0px;left:0px;right:0px;z-index:10;color:#000000;background-color:#d9d9d9;border-bottom:1px solid #9e9e9e;padding:5px 0px 5px 0px;text-align:center;}
 
 /* Social content */
 .annytab-share-container{margin:6px 0px 6px 0px;}

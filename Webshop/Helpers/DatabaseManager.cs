@@ -15,7 +15,7 @@ public static class DatabaseManager
 {
     #region Variables
 
-    public static Int32 DATABASE_VERSION = 8; // The version number is +1 compared to the file version number
+    public static Int32 DATABASE_VERSION = 9; // The version number is +1 compared to the file version number
 
     #endregion
 

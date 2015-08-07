@@ -20,7 +20,7 @@
     {
         cartUpdated = "true";
     }
-    
+
     // Get translated texts
     string logotype_tt = tt.Get("logotype");
     string background_image_tt = tt.Get("background_image");
@@ -48,7 +48,8 @@
     string copyright_information_tt = tt.Get("copyright_information");
     string private_person_tt = tt.Get("private_person");
     string company_tt = tt.Get("company");
-    string mobile_tt = tt.Get("mobile");
+    string cookie_consent_tt = tt.Get("cookie_consent");
+    string ok_tt = tt.Get("ok");
 }
 
 <!DOCTYPE html>
@@ -80,6 +81,9 @@
     <link rel="stylesheet" type="text/css" href="@(domain.custom_theme_id == 0 ? "/Content/annytab_css/front_default_style.css" : "/Content/theme/front_default_style.css")" />
 </head>
 <body>
+    @*Cookie consent*@
+    <div class="annytab-cookie-consent"><span style="font-size:12px;line-height:27px;">@(cookie_consent_tt + " ")</span><button id="btnCookieConsent" type="button" class="annytab-form-button">@ok_tt</button></div>
+
     @* The background image *@
     <img id="backgroundImage" data-src="@imageUrls.Get("background_image")" class="annytab-background-image" alt="@background_image_tt" />
     
@@ -118,7 +122,7 @@
                 {
                     if (i > 0)
                     {
-                        <span> - </span>
+                        <span> // </span>
                     }
                     <a href="@breadCrumbs[i].link" rel="nofollow" style="font-size:12px;line-height:12px;">@breadCrumbs[i].name</a>
                 }
@@ -234,6 +238,8 @@
     <div id="animationContainer" class="annytab-loading-outer-container">
         <div id="animationImage" class="annytab-loading-inner-container"></div>
     </div>
+
+    <div id="fb-root"></div>
 
     @* Shared scripts *@
     @Html.Partial(domain.custom_theme_id == 0 ? "/Views/shared_front/_shared_scripts.cshtml" : "/Views/theme/front_shared_scripts.cshtml")
