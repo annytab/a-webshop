@@ -6,7 +6,7 @@ function start()
 {
     // Register events
     $(document).on("keydown", "input:text, input:file, input[type=number], input:password, input:radio, input:button, input:checkbox, button, select", enterAsTab);
-    $(document).bind("submit", showLoadingAnimation);
+    $(document).on("submit", showLoadingAnimation);
     $(document).on("click", "#btnCookieConsent", setCookieConsent);
 
     // Check if there is a cookie consent
@@ -67,11 +67,20 @@ function showLoadingAnimation()
 
 } // End of the showLoadingAnimation method
 
+// Stop the loading animation
+function stopLoadingAnimation()
+{
+    // Stop the loading animation
+    $("#animationImage").stop();
+    $("#animationContainer").fadeOut(200);
+
+} // End of the stopLoadingAnimation method
+
 // Set the cookie consent
 function setCookieConsent()
 {
     // Create a cookie
-    createCookie("CookieConsent", "", 360);
+    createCookie("CookieConsent", "true", 360);
 
     // Hide the cookie message
     $('.annytab-cookie-consent').fadeOut(200);
@@ -81,15 +90,17 @@ function setCookieConsent()
 // Create a cookie
 function createCookie(name, value, days)
 {
+    var expires = "";
+
     if (days)
     {
         var date = new Date();
         date.setTime(date.getTime() + (days * 24 * 60 * 60 * 1000));
-        var expires = "; expires=" + date.toGMTString();
+        expires = "; expires=" + date.toGMTString();
     }
     else
     {
-        var expires = "";
+        expires = "";
     }
 
     document.cookie = name + "=" + value + expires + "; path=/";

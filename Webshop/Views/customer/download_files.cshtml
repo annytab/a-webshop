@@ -54,7 +54,7 @@
     // Set paging data
     ViewBag.CurrentPage = page;
     ViewBag.NumberOfPages = numberOfPages;
-    ViewBag.NavigateUrl = "/customer/files?qp={0}";
+    ViewBag.NavigateUrl = "/customer/download_files?qp={0}";
 
     // Set the layout for the page
     Layout = domain.custom_theme_id == 0 ? "/Views/shared_front/_standard_layout.cshtml" : "/Views/theme/front_standard_layout.cshtml";
@@ -88,7 +88,7 @@
             {
                 continue;
             }
-                
+
             // Get all the files
             List<string> downloadableFiles = Tools.GetDownloadableFiles(customerFiles[i].product_id, customerFiles[i].language_id, product.use_local_files);
 
@@ -122,5 +122,15 @@
 @Html.Partial(domain.custom_theme_id == 0 ? "/Views/shared_front/_paging_menu.cshtml" : "/Views/theme/front_paging_menu.cshtml")
 
 @section scripts {
-    <script>$("#txtSearch").focus();</script>
+    <script type="text/javascript">
+        $("#txtSearch").focus();
+
+        // Close the loading animation if it is open
+        window.setInterval(function () {
+            if($("#animationContainer").is(":visible"))
+            {
+                stopLoadingAnimation();
+            }
+        }, 2000);
+    </script>
 }

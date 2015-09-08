@@ -50,7 +50,7 @@
             imageMapContainer.scrollLeft("0");
 
             // Make sure that there is points
-            if (imageMapPointData[0] == "")
+            if (imageMapPointData == null || imageMapPointData[0] == "")
             {
                 return;
             }
@@ -62,7 +62,7 @@
                 var mapPoint = imageMapPointData[i].split(";");
 
                 // Create the message box
-                var messageBox = "<div class='annytab-imap-box'><div class='annytab-imap-delete'>X</div>"
+                var messageBox = "<div class='annytab-imap-box'><div class='annytab-imap-delete'></div>"
                 + "<div class='annytab-imap-box-heading'>" + productTitlesData[i] + "</div></div>";
 
                 // Create the image map point

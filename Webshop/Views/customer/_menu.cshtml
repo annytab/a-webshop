@@ -25,9 +25,9 @@
         <button type="button" class="annytab-google-button" onclick="location.href='@Url.Action("google_login", "customer")'"><img src="~/Content/images/annytab_design/google_plus.png" alt="Google plus" style="height:24px;" />&nbsp;@connect_tt</button>
     }
     <button class="annytab-basic-button" onclick="location.href='@(customer.customer_type == 0 ? "/customer/edit_company": "/customer/edit_person")'">@(edit_tt + " " + address_information_tt.ToLower())</button>
-    <button class="annytab-basic-button" onclick="location.href='@("/customer/edit_reviews")'">@reviews_tt</button>
-    <button class="annytab-basic-button" onclick="location.href='@("/customer/download_files")'">@files_tt</button>
-    <button class="annytab-basic-button" onclick="location.href='@("/customer/logout")'">@log_out_tt</button>
+    <button class="annytab-basic-button" onclick="location.href='@Url.Content("/customer/edit_reviews")'">@reviews_tt</button>
+    <button class="annytab-basic-button" onclick="location.href='@Url.Content("/customer/download_files")'">@files_tt</button>
+    <button class="annytab-basic-button" onclick="location.href='@Url.Content("/customer/logout")'">@log_out_tt</button>
 </div>
 
 <div class="annytab-basic-space"></div>

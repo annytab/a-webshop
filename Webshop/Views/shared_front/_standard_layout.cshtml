@@ -48,6 +48,7 @@
     string copyright_information_tt = tt.Get("copyright_information");
     string private_person_tt = tt.Get("private_person");
     string company_tt = tt.Get("company");
+    string prices_tt = tt.Get("prices");
     string cookie_consent_tt = tt.Get("cookie_consent");
     string ok_tt = tt.Get("ok");
 }
@@ -146,7 +147,7 @@
                         <div class="annytab-menu-title">@shopping_cart_tt.ToUpper()</div>
                         <div>@(cartStatistics["total_quantity"].ToString("##,0.##", cultureInfo) + " " + units_in_cart_tt.ToLower())</div>
                         <div>@(cartStatistics["total_amount"].ToString("##,0.##", cultureInfo) + " " + domain.currency)@(pricesIncludesVat == true ? " (" + including_vat_tt.ToLower() + ")" : " (" + excluding_vat_tt.ToLower() + ")")</div>
-                        <div style="margin:4px 0px 0px 0px;"><a class="annytab-menu-link" href="@("/order")">@check_out_tt</a><span>@(" | ")</span><a class="annytab-menu-link" href="@("/order/clear")">@clear_tt</a></div>
+                        <div style="margin:4px 0px 0px 0px;"><a class="annytab-menu-link" href="@Url.Content("/order")">@check_out_tt</a><span>@(" | ")</span><a class="annytab-menu-link" href="@Url.Content("/order/clear")">@clear_tt</a></div>
                     </div>
 
                     @* Category menu *@
@@ -160,9 +161,9 @@
                         <div class="annytab-menu-title">@information_tt.ToUpper()</div>
                         @foreach (StaticPage page in informationPages)
                         {
-                            @:<div><a href="@("/home/information/" + page.page_name)" class="annytab-menu-link">@page.link_name</a></div>
+                            @:<div><a href="@Url.Content("/home/information/" + page.page_name)" class="annytab-menu-link">@page.link_name</a></div>
                         }
-                        <div><a href="@("/home/contact_us")" class="annytab-menu-link">@contact_us_tt</a></div>
+                        <div><a href="@Url.Content("/home/contact_us")" class="annytab-menu-link">@contact_us_tt</a></div>
                     </div>
 
                     @* Customer login *@
@@ -186,7 +187,7 @@
                     @* Campaigns left *@
                     @foreach (Campaign campaign in leftCampaigns)
                     {
-                        @:<div><a href="@("/home/campaign_tracker/" + campaign.id)"><img src="@Tools.GetCampaignImageUrl(campaign.image_name)" alt="@campaign.name" style="width:100%;vertical-align:middle;" /></a></div>
+                        @:<div><a href="@Url.Content("/home/campaign_tracker/" + campaign.id)"><img src="@Tools.GetCampaignImageUrl(campaign.image_name)" alt="@campaign.name" style="width:100%;vertical-align:middle;" /></a></div>
                     }
                     <div class="annytab-basic-space"></div>
 
@@ -209,11 +210,11 @@
                     <span>@Html.Raw(copyright_information_tt + " | ")</span>
                     @if (pricesIncludesVat == true)
                     {
-                        <a href="/home/prices_includes_vat/false" style="color:#ffffff;text-decoration:underline;">@(company_tt + " (" + excluding_vat_tt + ")")</a>
+                        <a href="@Url.Content("/home/prices_includes_vat/false?url=" + Request.Url.AbsoluteUri)" style="color:#ffffff;text-decoration:underline;">@(prices_tt + " (" + excluding_vat_tt.ToLower() + ")")</a>
                     }
                     else
                     {
-                        <a href="/home/prices_includes_vat/true" style="color:#ffffff;text-decoration:underline;">@(private_person_tt + " (" + including_vat_tt + ")")</a>
+                        <a href="@Url.Content("/home/prices_includes_vat/true?url=" + Request.Url.AbsoluteUri)" style="color:#ffffff;text-decoration:underline;">@(prices_tt + " (" + including_vat_tt.ToLower() + ")")</a>
                     }
                 </div>
             </div>
@@ -226,7 +227,7 @@
                 @* Campaigns right *@
                 @foreach (Campaign campaign in rightCampaigns)
                 {
-                    @:<div><a href="@("/home/campaign_tracker/" + campaign.id)"><img src="@Tools.GetCampaignImageUrl(campaign.image_name)" alt="@campaign.name" style="width:100%;vertical-align:middle;" /></a></div>
+                    @:<div><a href="@Url.Content("/home/campaign_tracker/" + campaign.id)"><img src="@Tools.GetCampaignImageUrl(campaign.image_name)" alt="@campaign.name" style="width:100%;vertical-align:middle;" /></a></div>
                 }
                 <div class="annytab-basic-space"></div>
 

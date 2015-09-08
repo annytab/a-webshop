@@ -28,6 +28,12 @@
         var imageDirectory = $(this).attr("data-directory");
         var imageData = $(this).attr("data-images");
 
+        // Return if no images can be found
+        if (imageData == "")
+        {
+            return this;
+        }
+
         // Create the image array
         imageArray = imageData.split("|");
 

@@ -461,8 +461,11 @@ namespace Annytab.Webshop.Controllers
                 // Get the confirmation message
                 string message = RenderOrderConfirmationView(order.id, this.ControllerContext);
 
+                // Create a session to indicate that ecommerce data should be sent to google
+                Session["SendToGoogleEcommerce"] = true;
+
                 // Check if the user wants to send a request
-                if(order.document_type == 0)
+                if (order.document_type == 0)
                 {
                     // Send the request email
                     Tools.SendOrderConfirmation(customer.email, translatedTexts.Get("request") + " " + order.id.ToString() + " - " + currentDomain.webshop_name, message);

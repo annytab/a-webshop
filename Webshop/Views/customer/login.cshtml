@@ -34,7 +34,7 @@
 @using (Html.BeginForm("login", "customer", FormMethod.Post))
 {
     @* Hidden data *@
-    <input name="hiddenReturnUrl" type="hidden" value="@("/customer")" />
+    <input name="hiddenReturnUrl" type="hidden" value="@Url.Content("/customer")" />
     
     @* Error box *@
     <div class="annytab-form-errorbox" style="@(error_message != "" ? "display:block;" : "display:none;")">@Html.Raw(error_message)</div>

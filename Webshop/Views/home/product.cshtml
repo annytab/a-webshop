@@ -116,7 +116,7 @@
         <input id="hiddenDecimalMultiplier" type="hidden" value="@Convert.ToInt32(Math.Pow(10, currency.decimals))" />
         <input id="hiddenValueAddedTaxPercent" type="hidden" value="@valueAddedTax.value.ToString(CultureInfo.InvariantCulture)" />
         <input id="hiddenPriceIncludesVat" type="hidden" value="@pricesIncludesVat.ToString()" />
-        <input id="hiddenVariantImageDirectory" type="hidden" value="@("/Content/products/" + (product.id / 100).ToString() + "/" + product.id.ToString() + "/" + languageId + "/other_images/")" />
+        <input id="hiddenVariantImageDirectory" type="hidden" value="@Url.Content("/Content/products/" + (product.id / 100).ToString() + "/" + product.id.ToString() + "/" + languageId + "/other_images/")" />
         <input id="hiddenVariantImageFileName" type="hidden" value="@(product.variant_image_filename)" />
         <input id="hiddenCultureCode" type="hidden" value="@cultureInfo.Name" />
 

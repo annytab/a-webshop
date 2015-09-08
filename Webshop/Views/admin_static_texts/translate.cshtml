@@ -45,10 +45,10 @@
             <div class="annytab-input-form-column-label">@(language_tt + ":")</div>
             <div class="annytab-input-form-column-input">
                 <select id="selectLanguage" name="selectLanguage" class="annytab-form-select">
-                    <option value="0" data-url="@("/admin_static_texts/translate/" + standardStaticText.id.ToString() + "?returnUrl=" + Server.UrlEncode(returnUrl))" @(languageId == 0 ? Html.Raw("selected='selected'") : Html.Raw(""))>@("-- " + no_choice_tt + " --")</option>
+                    <option value="0" data-url="@Url.Content("/admin_static_texts/translate/" + standardStaticText.id.ToString() + "?returnUrl=" + Server.UrlEncode(returnUrl))" @(languageId == 0 ? Html.Raw("selected='selected'") : Html.Raw(""))>@("-- " + no_choice_tt + " --")</option>
                     @foreach (Language language in languages)
                     {
-                        <option value="@language.id" data-url="@("/admin_static_texts/translate/" + standardStaticText.id.ToString() + "?returnUrl=" + Server.UrlEncode(returnUrl) + "&lang=" + language.id.ToString())" @(language.id == languageId ? Html.Raw("selected='selected'") : Html.Raw(""))>@language.name</option>
+                        <option value="@language.id" data-url="@Url.Content("/admin_static_texts/translate/" + standardStaticText.id.ToString() + "?returnUrl=" + Server.UrlEncode(returnUrl) + "&lang=" + language.id.ToString())" @(language.id == languageId ? Html.Raw("selected='selected'") : Html.Raw(""))>@language.name</option>
                     }
                 </select>
             </div>

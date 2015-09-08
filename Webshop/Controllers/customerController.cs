@@ -1074,7 +1074,7 @@ namespace Annytab.Webshop.Controllers
             languageId = product.use_local_files == true ? languageId : 0;
 
             // Create the file path
-            string filePath = Server.MapPath("/Content/images/products/" + (productId / 100).ToString() + "/" + productId.ToString() + "/" + languageId.ToString() + "/dc_files/" + fileName);
+            string filePath = Server.MapPath("/Content/products/" + (productId / 100).ToString() + "/" + productId.ToString() + "/" + languageId.ToString() + "/dc_files/" + fileName);
 
             // Check if the file exists
             if(System.IO.File.Exists(filePath))

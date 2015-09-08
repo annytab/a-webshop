@@ -723,13 +723,13 @@ namespace Annytab.Webshop.Controllers
         // Change the display prices to include vat or not to include vat
         // GET: /home/prices_includes_vat/true
         [HttpGet]
-        public ActionResult prices_includes_vat(string id = "0")
+        public ActionResult prices_includes_vat(string id = "false", string url = "/")
         {
             // Change the vat setting
             Session["PricesIncludesVat"] = id;
 
-            // Return an empty result
-            return Redirect("/");
+            // Redirect the user to the page that he was on
+            return Redirect(url);
 
         } // End of the prices_includes_vat method
 

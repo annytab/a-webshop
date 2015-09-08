@@ -21,7 +21,7 @@
 
         if (childCategories.Count > 0)
         {
-            @:<li><a href="@("/home/category/" + categories[i].page_name)" @(main == true ? Html.Raw("class='annytab-menu-link annytab-menu-arrow-down'") : Html.Raw("class='annytab-sub-menu-link annytab-menu-arrow-down'"))>@categories[i].title</a>
+            @:<li><a href="@Url.Content("/home/category/" + categories[i].page_name)" @(main == true ? Html.Raw("class='annytab-menu-link annytab-menu-arrow-down'") : Html.Raw("class='annytab-sub-menu-link annytab-menu-arrow-down'"))>@categories[i].title</a>
                 @:<ul>
                     @CreateMenu(false, childCategories, parentKeyCategories)
                 @:</ul>
@@ -29,7 +29,7 @@
         }
         else
         {
-            @:<li><a href="@("/home/category/" + categories[i].page_name)" @(main == true ? Html.Raw("class='annytab-menu-link annytab-menu-arrow-left'") : Html.Raw("class='annytab-sub-menu-link annytab-menu-arrow-left'"))>@categories[i].title</a>
+            @:<li><a href="@Url.Content("/home/category/" + categories[i].page_name)" @(main == true ? Html.Raw("class='annytab-menu-link annytab-menu-arrow-left'") : Html.Raw("class='annytab-sub-menu-link annytab-menu-arrow-left'"))>@categories[i].title</a>
             @:</li>
         }
 

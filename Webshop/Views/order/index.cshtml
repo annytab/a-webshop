@@ -149,12 +149,12 @@
             @* The cart item *@
             @:<div class="annytab-cart-row">
             @:<input data-id="unitValues" type="hidden" tabindex="-1" data-vat="@cartItems[i].vat_percent.ToString(CultureInfo.InvariantCulture)" data-quantity="@cartItems[i].quantity.ToString(CultureInfo.InvariantCulture)" data-price="@cartItems[i].unit_price.ToString(CultureInfo.InvariantCulture)" data-freight="@cartItems[i].unit_freight.ToString(CultureInfo.InvariantCulture)" />
-            @:<div class="annytab-cart-column" style="width:100px;text-align:center;"><a href="@("/home/product/" + product.page_name)"><img class="annytab-cart-image" alt="@productName[0]" src="@Tools.GetProductMainImageUrl(cartItems[i].product_id, domain.front_end_language, cartItems[i].variant_image_url, cartItems[i].use_local_images)" /></a></div>
+            @:<div class="annytab-cart-column" style="width:100px;text-align:center;"><a href="@Url.Content("/home/product/" + product.page_name)"><img class="annytab-cart-image" alt="@productName[0]" src="@Tools.GetProductMainImageUrl(cartItems[i].product_id, domain.front_end_language, cartItems[i].variant_image_url, cartItems[i].use_local_images)" /></a></div>
             @:<div class="annytab-cart-column" style="width:200px;text-align:left;vertical-align:top;">@Html.Raw(productString)</div>
-            @:<div class="annytab-cart-column" style="width:100px;text-align:center;"><a href="@("/order/remove_quantity/" + Server.UrlEncode(cartItems[i].product_code))"><img src="/Content/images/annytab_design/minus_button_12.jpg" alt="@quantity_tt" style="vertical-align:middle;" /></a><span style="vertical-align:middle;">@(" " + cartItems[i].quantity.ToString("##,0.##", cultureInfo) + " ")</span><a href="@("/order/add_quantity/" + Server.UrlEncode(cartItems[i].product_code))"><img src="/Content/images/annytab_design/plus_button_12.jpg" alt="@quantity_tt" style="vertical-align:middle;" /></a></div>
+            @:<div class="annytab-cart-column" style="width:100px;text-align:center;"><a href="@Url.Content("/order/remove_quantity/" + Server.UrlEncode(cartItems[i].product_code))"><img src="/Content/images/annytab_design/minus_button_12.jpg" alt="@quantity_tt" style="vertical-align:middle;" /></a><span style="vertical-align:middle;">@(" " + cartItems[i].quantity.ToString("##,0.##", cultureInfo) + " ")</span><a href="@Url.Content("/order/add_quantity/" + Server.UrlEncode(cartItems[i].product_code))"><img src="/Content/images/annytab_design/plus_button_12.jpg" alt="@quantity_tt" style="vertical-align:middle;" /></a></div>
             @:<div class="annytab-cart-column" style="width:100px;text-align:right;">@cartItems[i].unit_price.ToString("##,0.##", cultureInfo)</div>
             @:<div class="annytab-cart-column" style="width:100px;text-align:right;">@rowPriceSum.ToString("##,0.##", cultureInfo)</div>
-            @:<div class="annytab-cart-column" style="width:80px;text-align:center;"><a href="@("/order/delete_row/" + Server.UrlEncode(cartItems[i].product_code))"><img src="/Content/images/annytab_design/square_cross_button_20.jpg" alt="@delete_tt" style="vertical-align:middle;border-radius:2px;" /></a></div>
+            @:<div class="annytab-cart-column" style="width:80px;text-align:center;"><a href="@Url.Content("/order/delete_row/" + Server.UrlEncode(cartItems[i].product_code))"><img src="/Content/images/annytab_design/square_cross_button_20.jpg" alt="@delete_tt" style="vertical-align:middle;border-radius:2px;" /></a></div>
             @:</div>
         }
     </div>
@@ -198,7 +198,7 @@
             @:<div class="@(i % 2 != 0 ? "annytab-list-row-main" : "annytab-list-row-alt")">
                 @:<div class="annytab-list-column" style="width:400px;text-align:left;"><input name="giftCardId" type="hidden" value="@giftCards[i].id" />@giftCards[i].id</div>
                 @:<div class="annytab-list-column" style="width:200px;text-align:right;">@(giftCards[i].amount.ToString("##,0.##", cultureInfo) + " " + giftCards[i].currency_code)</div>
-                @:<div class="annytab-cart-column" style="width:100px;text-align:center;"><a href="@("/order/delete_gift_card/" + Server.UrlEncode(giftCards[i].id))"><img src="/Content/images/annytab_design/square_cross_button_20.jpg" alt="@delete_tt" style="vertical-align:middle;border-radius:2px;" /></a></div>
+                @:<div class="annytab-cart-column" style="width:100px;text-align:center;"><a href="@Url.Content("/order/delete_gift_card/" + Server.UrlEncode(giftCards[i].id))"><img src="/Content/images/annytab_design/square_cross_button_20.jpg" alt="@delete_tt" style="vertical-align:middle;border-radius:2px;" /></a></div>
             @:</div>
         }
     </div>
@@ -217,7 +217,7 @@
     using (Html.BeginForm("login", "customer", FormMethod.Post))
     {
         @* Hidden data *@
-        <input name="hiddenReturnUrl" type="hidden" value="@("/order")" />
+        <input name="hiddenReturnUrl" type="hidden" value="@Url.Content("/order")" />
     
         @* Login form *@
         <div class="annytab-basic-container">
@@ -247,14 +247,14 @@
 
         @* Forgot email or password *@
         <div class="annytab-basic-container">
-            <a href="/customer/forgot_email_password">@(forgot_tt + " " + email_tt.ToLower() + "/" + password_tt.ToLower() + "?")</a>
+            <a href="@Url.Content("/customer/forgot_email_password")">@(forgot_tt + " " + email_tt.ToLower() + "/" + password_tt.ToLower() + "?")</a>
         </div>
 
         <div class="annytab-basic-space"></div>
 
         @* Register as a new customer *@
         <div class="annytab-basic-container">
-            @(register_as_tt + ": ") <a href="/customer/edit_company">@company_tt</a> | <a href="/customer/edit_person">@private_person_tt</a>
+            @(register_as_tt + ": ") <a href="@Url.Content("/customer/edit_company")">@company_tt</a> | <a href="@Url.Content("/customer/edit_person")">@private_person_tt</a>
         </div>
 
         <div class="annytab-step-space"></div>
@@ -479,7 +479,7 @@
     </div>
 
     @* Terms of purchase *@
-    <div style="margin:10px 0px 10px 0px;">@(approve_terms_of_purchase_text_tt + " ")<a href="/home/terms_of_purchase" target="_blank">@terms_of_purchase_text_tt</a>.</div>
+    <div style="margin:10px 0px 10px 0px;">@(approve_terms_of_purchase_text_tt + " ")<a href="@Url.Content("/home/terms_of_purchase")" target="_blank">@terms_of_purchase_text_tt</a>.</div>
 
     @* Send order *@
     <div class="annytab-basic-container">

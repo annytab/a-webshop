@@ -87,7 +87,7 @@ input[type="submit"]{cursor:pointer;}
 .annytab-imap-box-heading{font-size:16px;line-height:16px;margin:0px;font-weight:bold;}
 .annytab-imap-draggable{display:inline-block;background-color:#207298;border-radius:50%;opacity:0.5;border:2px solid #ffffff;width:24px;height:24px;cursor:pointer;}
 .annytab-imap-image-point{display:inline;position:absolute;left:10px;top:10px;z-index:2;}
-.annytab-imap-delete{position:absolute;width:20px;height:20px;top:-10px;right:-10px;cursor:pointer;background-color:#000000;border-radius:50%;border:2px solid #ffffff;text-align:center;font-family:"Comic Sans MS";font-size:13px;line-height:20px;font-weight:bold;color:#ffffff;}
+.annytab-imap-delete{position:absolute;width:24px;height:24px;top:-12px;right:-12px;cursor:pointer;background-image:url('/Content/images/annytab_design/black_circle_cross.png');background-size:24px 24px;z-index:3;}
 
 /* Paging menu */
 .annytab-navigate-button{margin:0px 0px 0px 0px;padding:0px 10px 0px 10px;color:#ffffff;font-weight:bold;font-size:16px;height:24px;line-height:24px;cursor:pointer;border:0px;background-color:transparent;}

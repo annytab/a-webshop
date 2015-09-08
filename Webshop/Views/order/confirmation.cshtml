@@ -1,10 +1,15 @@
-﻿@{
+﻿@using System.Globalization
+@{
     // Get form data
     Domain domain = ViewBag.CurrentDomain;
     KeyStringList tt = ViewBag.TranslatedTexts;
+    Order order = ViewBag.Order;
+    List<OrderRow> orderRows = ViewBag.OrderRows;
 
     // Get translated texts
     string order_confirmation_tt = tt.Get("order_confirmation");
+    string order_tt = tt.Get("order");
+    string request_tt = tt.Get("request");
     string print_tt = tt.Get("print");
 
     // Set meta data
@@ -14,6 +19,14 @@
     ViewBag.MetaKeywords = order_confirmation_tt;
     ViewBag.MetaCanonical = domain.web_address + "/order/confirmation";
     ViewBag.MetaRobots = "noindex, nofollow";
+
+    // Check if we should send ecommerce data to google analytics
+    bool sendDataToGoogle = false;
+    if(Session["SendToGoogleEcommerce"] != null)
+    {
+        sendDataToGoogle = true;
+        Session.Remove("SendToGoogleEcommerce");
+    }
 
     // Set the layout for the page
     Layout = domain.custom_theme_id == 0 ? "/Views/shared_front/_standard_layout.cshtml" : "/Views/theme/front_standard_layout.cshtml";
@@ -30,6 +43,70 @@
 @Html.Partial(domain.custom_theme_id == 0 ? "/Views/order/_confirmation_body.cshtml" : "/Views/theme/order_confirmation_body.cshtml")
 
 @section scripts {
-    <script>$("#txtSearch").focus();</script>
+    <script type="text/javascript">
+
+        // Set focus to the search box
+        $("#txtSearch").focus();
+
+        @if(sendDataToGoogle == true)
+        {
+            // Include the ecommerce plugin
+            @:ga('require', 'ecommerce');
+
+            // Set the type of transaction, quotation or order
+            @:ga('set', 'dimension1', '@Html.Raw(order.document_type == 0 ? request_tt : order_tt)');
+
+            // Add the order
+            @:ga('ecommerce:addTransaction', {
+            @:'id': '@order.id.ToString()',
+            @:'affiliation': '@Html.Raw(domain.webshop_name)',
+            @:'revenue': '@order.net_sum.ToString(CultureInfo.InvariantCulture)',
+            @:'tax': '@order.vat_sum.ToString(CultureInfo.InvariantCulture)',
+            @:'currency': '@order.currency_code'});
+
+            // Loop all the order rows
+            for(int i = 0; i < orderRows.Count; i++)
+            {
+                // Create the category string
+                string categoryString = "";
+
+                // Get the product
+                Product product = Product.GetOneById(orderRows[i].product_id, domain.front_end_language);
+
+                if(product != null)
+                {
+                    // Get the category
+                    Category category = Category.GetOneById(product.category_id, domain.front_end_language);
+
+                    // Get a chain of parent categories
+                    List<Category> parentCategoryChain = Category.GetParentCategoryChain(category, domain.front_end_language);
+
+                    // Loop the category chain
+                    for (int j = 0; j < parentCategoryChain.Count; j++)
+                    {
+                        categoryString += parentCategoryChain[j].title;
+
+                        if (j < parentCategoryChain.Count - 1)
+                        {
+                            categoryString += " > ";
+                        }
+                    }
+                }
+
+                // Add the item
+                @:ga('ecommerce:addItem', { 'id': '@order.id',
+                @:'name': '@Html.Raw(orderRows[i].product_name)',
+                @:'sku': '@Html.Raw(orderRows[i].product_code)',
+                @:'category': '@Html.Raw(categoryString)',
+                @:'price': '@orderRows[i].unit_price.ToString(CultureInfo.InvariantCulture)',
+                @:'quantity': '@orderRows[i].quantity.ToString(CultureInfo.InvariantCulture)',
+                @:'currency': '@order.currency_code.ToString(CultureInfo.InvariantCulture)' });
+            }
+
+            // Send the data
+            @:ga('ecommerce:send');
+        }
+
+    </script>
     @Scripts.Render(domain.custom_theme_id == 0 ? "/Scripts/annytab_front/annytab.order-functions.js" : "/Scripts/theme/annytab.order-functions.js")
 }

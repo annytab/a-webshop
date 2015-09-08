@@ -9,10 +9,12 @@ a {color:#207298;text-decoration:none;}
 a img {border:0;padding:0px;margin:0px;}
 a:hover, a:visited:hover{text-decoration:underline;}
 img {vertical-align:middle;}
-ul {list-style:none;padding-left:0px;margin:0px;}
-ul ul {padding-left:5px;}
-li {padding-left:2px;}
-li li {padding-left:2px;}
+
+/* Menu */
+.annytab-menu-box ul {list-style:none;padding-left:0px;margin:0px;}
+.annytab-menu-box ul ul {padding-left:5px;}
+.annytab-menu-box li {padding-left:2px;}
+.annytab-menu-box li li {padding-left:2px;}
 
 /* Basic styles */
 .annytab-basic-container{display:block;margin:0px;padding:8px;background-color:#d9d9d9;border-radius:4px;}
@@ -103,12 +105,12 @@ li li {padding-left:2px;}
 .annytab-imap-box-heading{font-size:12px;line-height:14px;font-weight:bold;z-index:inherit;}
 .annytab-imap-point{display:inline;position:absolute;left:10px;top:10px;z-index:inherit;}
 .annytab-imap-circle{display:inline-block;background-color:#207298;border-radius:50%;opacity:0.5;border:2px solid #ffffff;width:24px;height:24px;cursor:pointer;z-index:inherit;}
-.annytab-imap-close{position:absolute;width:20px;height:20px;top:-10px;right:-10px;cursor:pointer;background-color:#000000;border-radius:50%;border:2px solid #ffffff;text-align:center;font-family:"Comic Sans MS";font-size:13px;line-height:20px;font-weight:bold;color:#ffffff;z-index:inherit;}
+.annytab-imap-close{position:absolute;width:24px;height:24px;top:-12px;right:-12px;cursor:pointer;background-image:url('/Content/images/annytab_design/black_circle_cross.png');background-size:24px 24px;z-index:3;}
 .annytab-imap-product-image{max-width:100%;margin:5px 2px 2px 2px;z-index:inherit;}
 .annytab-imap-product-button{display:block;font-size:14px;line-height:14px;background-image:url('/Content/images/annytab_design/blue_button.png');color:#ffffff;font-weight:bold;border-radius:4px;vertical-align:middle;padding:7px 0px 7px 0px;margin:10px 0px 0px 0px;text-decoration:none;cursor:pointer;border:0px;text-shadow:0px -1px 3px #000000;z-index:inherit;}
 .annytab-imap-product-button:hover{background-image:url('/Content/images/annytab_design/blue_button_hover.png');text-decoration:none;}
 .annytab-imap-price-tag{font-size:14px;color:#a30909;font-weight:bold;vertical-align:middle;margin:5px 0px 5px 0px;text-shadow:1px 1px 2px #808080;z-index:inherit;}
-.annytab-imap-select-image{display:block;padding:10px 0px 0px 10px;background-color:#cccccc;white-space:nowrap;position:relative;height:130px;border:1px solid #cccccc;border-radius:4px;overflow-x:scroll;overflow-y:hidden;}
+.annytab-imap-select-image{display:block;padding:10px 0px 0px 10px;background-color:#cccccc;white-space:nowrap;position:relative;border:1px solid #cccccc;border-radius:4px;overflow-x:auto;overflow-y:hidden;}
 .annytab-imap-image-button{display:inline-block;position:relative;background-repeat:no-repeat;margin:0px 10px 10px 0px;padding:0px;border:1px solid #CCCCCC;background-size:150px 100px;width:150px;height:100px;cursor:pointer;}
 .annytab-imap-image-button:hover{border:1px solid #ff0000;}
 
