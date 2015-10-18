@@ -71,7 +71,6 @@ img {vertical-align:middle;}
 
 /* Code container (google prettify) */
 .annytab-code-container{overflow:auto;border:1px solid #cccccc;border-radius:4px;margin:0px;padding:0px;}
-.annytab-cookie-consent{display:none;width:100%;position:fixed;top:0px;left:0px;right:0px;z-index:10;color:#000000;background-color:#d9d9d9;border-bottom:1px solid #9e9e9e;padding:5px 0px 5px 0px;text-align:center;}
 
 /* Social content */
 .annytab-share-container{margin:6px 0px 6px 0px;}
@@ -152,3 +151,7 @@ img {vertical-align:middle;}
 .annytab-list-row-alt{display:table-row;background-color:#f0f0f0;cursor:default;}
 .annytab-list-column-head{display:table-cell;height:22px;background-color:#d9d9d9;color:#3d3d3d;border-bottom:1px solid #9e9e9e;font-size:12px;padding:2px 5px 2px 5px;text-shadow:1px 1px 2px #ffffff;vertical-align:middle;}
 .annytab-list-column{display:table-cell;font-size:12px;padding:2px 5px 2px 5px;word-break:break-all;vertical-align:middle;border-bottom:1px solid #9e9e9e;}
+
+/* Cookie Consent */
+.annytab-cookie-consent{display:none;width:100%;position:fixed;top:0px;left:0px;right:0px;z-index:10;color:#000000;background-color:#d9d9d9;border-bottom:1px solid #9e9e9e;padding:0px;margin:0px;text-align:center;}
+.annytab-cookie-consent-text{font-size:12px;line-height:22px;}

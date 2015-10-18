@@ -83,7 +83,12 @@
 </head>
 <body>
     @* Cookie consent *@
-    <div class="annytab-cookie-consent"><span style="font-size:12px;line-height:27px;">@(cookie_consent_tt + " ")</span><button id="btnCookieConsent" type="button" class="annytab-form-button">@ok_tt</button></div>
+    <div class="annytab-cookie-consent">
+        <div style="padding:10px;">
+            <span class="annytab-cookie-consent-text">@(cookie_consent_tt + " ")</span>
+            <button id="btnCookieConsent" type="button" class="annytab-form-button" style="margin:0px;">@ok_tt</button>
+        </div>
+    </div>
 
     @* The background image *@
     <img id="backgroundImage" data-src="@imageUrls.Get("background_image")" class="annytab-background-image" alt="@background_image_tt" />
