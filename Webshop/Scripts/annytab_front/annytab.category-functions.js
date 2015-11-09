@@ -2,6 +2,7 @@
 var imageSlideShow;
 var currentSlideId = parseInt(0);
 var lastSlideId;
+var automaticSlideshow;
 
 // Initialize when the form is loaded
 $(document).ready(start);
@@ -13,10 +14,23 @@ function start()
     imageSlideShow = $('#imageSlideShow');
 
     // Register events
-    imageSlideShow.mouseenter(showArrows);
-    imageSlideShow.mouseleave(hideArrows);
-    imageSlideShow.find('#leftArrow').click(previousSlide);
-    imageSlideShow.find('#rightArrow').click(nextSlide);
+    $('.annytab-slideshow-left-arrow').click(function () {
+        previousSlide();
+        clearInterval(automaticSlideshow);
+    });
+    $('.annytab-slideshow-right-arrow').click(function () {
+        nextSlide();
+        clearInterval(automaticSlideshow);
+    });
+    $(".annytab-slideshow-pager-image").click(function () {
+        switchSlide($(this));
+        clearInterval(automaticSlideshow);
+    });
+    $(".annytab-slideshow-image").on("click", function () {
+        showFullscreenImage();
+        clearInterval(automaticSlideshow);
+    });
+    $(".annytab-fullscreen-close").on("click", closeFullscreenImage);
     $("#toggleImapVisibility").click(toggleImapVisibility);
 
     // Get all the image slides
@@ -31,9 +45,17 @@ function start()
     // Get the next slide every 10 seconds
     if (lastSlideId > 0)
     {
+        // Show arrows
+        $(".annytab-slideshow-left-arrow").fadeIn(2000);
+        $(".annytab-slideshow-right-arrow").fadeIn(2000);
+
+        // Show the container
         imageSlideShow.slideDown(500);
+        $(".annytab-slideshow-pager-container").fadeIn(200);
+
+        // Set slideshow behaviour
         nextSlide();
-        setInterval(function () { nextSlide() }, 10000);
+        automaticSlideshow = setInterval(function () { nextSlide() }, 10000);
     }
 
 } // End of the start method
@@ -63,6 +85,9 @@ function nextSlide()
     previousSlide.fadeOut(500);
     nextSlide.fadeIn(1000);
 
+    // Set the fullscreen image
+    $("#fullscreenImage").attr("src", nextSlide.attr("src"));
+
 } // End of the nextSlide method
 
 // Show the previous slide
@@ -90,23 +115,49 @@ function previousSlide()
     previousSlide.fadeOut(500);
     nextSlide.fadeIn(1000);
 
+    // Set the fullscreen image
+    $("#fullscreenImage").attr("src", nextSlide.attr("src"));
+
 } // End of the previousSlide method
 
-// Fade in arrows
-function showArrows()
+// Switch the slide to the clicked slide
+function switchSlide(pagerImage)
 {
-    imageSlideShow.find("#leftArrow").fadeIn(2000);
-    imageSlideShow.find("#rightArrow").fadeIn(2000);
+    // Get the slide to show
+    var clickedSlideId = parseInt(pagerImage.attr('data-img'));
 
-} // End of the showArrows method
+    // Calculate the id for slides
+    var previousSlideId = currentSlideId
+    currentSlideId = clickedSlideId;
 
-// Fade out arrows
-function hideArrows()
+    // Get slides
+    var previousSlide = imageSlideShow.find("img[data-img='" + previousSlideId + "']");
+    var nextSlide = imageSlideShow.find("img[data-img='" + currentSlideId + "']");
+
+    // Fade out the old slide and fade in the new slide
+    previousSlide.fadeOut(500);
+    nextSlide.fadeIn(1000);
+
+    // Set the fullscreen image
+    $("#fullscreenImage").attr("src", nextSlide.attr("src"));
+
+} // End of the switchSlide method
+
+// Show the image on fullscreen
+function showFullscreenImage()
 {
-    imageSlideShow.find("#leftArrow").fadeOut(2000);
-    imageSlideShow.find("#rightArrow").fadeOut(2000);
+    // Toggle the visibility
+    $("#fullscreenContainer").fadeIn(1000);
 
-} // End of the hideArrows method
+} // Show a fullscreen image
+
+// Show the image on fullscreen
+function closeFullscreenImage()
+{
+    // Toggle the visibility
+    $("#fullscreenContainer").fadeOut(1000);
+
+} // Show a fullscreen image
 
 // Toggle the visibility for the image map
 function toggleImapVisibility()

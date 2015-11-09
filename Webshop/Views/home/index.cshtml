@@ -68,12 +68,18 @@
 
 @* Slideshow of campaigns *@
 <div id="imageSlideShow" class="annytab-slideshow-container">
-    <img id="leftArrow" src="/Content/images/annytab_design/left_arrow.png" class="annytab-slideshow-left-arrow" alt="Slideshow left arrow" />
     @for (int i = 0; i < slideShowCampaigns.Count; i++)
     {
         @:<a href="@Url.Content("/home/campaign_tracker/" + slideShowCampaigns[i].id)"><img data-img="@i.ToString()" src="@Tools.GetCampaignImageUrl(slideShowCampaigns[i].image_name)" alt="@slideShowCampaigns[i].name" class="annytab-slideshow-image" /></a>
     }
-    <img id="rightArrow" src="/Content/images/annytab_design/right_arrow.png" class="annytab-slideshow-right-arrow" alt="Slideshow right arrow" />
+    <img id="leftArrow" src="/Content/images/annytab_design/left_arrow.png" class="annytab-slideshow-left-arrow" alt="<" />
+    <img id="rightArrow" src="/Content/images/annytab_design/right_arrow.png" class="annytab-slideshow-right-arrow" alt=">" />
+</div>
+<div class="annytab-slideshow-pager-container">
+    @for (int i = 0; i < slideShowCampaigns.Count; i++)
+    {
+        @:<img data-img="@i.ToString()" src="@Tools.GetCampaignImageUrl(slideShowCampaigns[i].image_name)" alt="@slideShowCampaigns[i].name" class="annytab-slideshow-pager-image" />
+    }
 </div>
 
 @* Inspiration (image maps) *@
@@ -105,10 +111,10 @@
             <option value="80" @(userSettings["page_size"] == "80" ? Html.Raw("selected='selected'") : Html.Raw(""))>80</option>
         </select>
         <select name="selectDisplayView" class="annytab-form-select" style="width:80px;">
-            <option value="0" @(userSettings["display_view"] == "0" ? Html.Raw("selected='selected'") : Html.Raw(""))>@(view_tt + " - " + "1:1")</option>
-            <option value="1" @(userSettings["display_view"] == "1" ? Html.Raw("selected='selected'") : Html.Raw(""))>@(view_tt + " - " + "2:1")</option>
-            <option value="2" @(userSettings["display_view"] == "2" ? Html.Raw("selected='selected'") : Html.Raw(""))>@(view_tt + " - " + "3:1")</option>
-            <option value="3" @(userSettings["display_view"] == "3" ? Html.Raw("selected='selected'") : Html.Raw(""))>@(view_tt + " - " + "4:1")</option>
+            <option value="0" @(userSettings["display_view"] == "0" ? Html.Raw("selected='selected'") : Html.Raw(""))>@(view_tt + " - " + "1")</option>
+            <option value="1" @(userSettings["display_view"] == "1" ? Html.Raw("selected='selected'") : Html.Raw(""))>@(view_tt + " - " + "2")</option>
+            <option value="2" @(userSettings["display_view"] == "2" ? Html.Raw("selected='selected'") : Html.Raw(""))>@(view_tt + " - " + "3")</option>
+            <option value="3" @(userSettings["display_view"] == "3" ? Html.Raw("selected='selected'") : Html.Raw(""))>@(view_tt + " - " + "4")</option>
         </select>
         <input type="submit" value="@sort_tt" class="annytab-form-button" />
     }

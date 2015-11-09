@@ -87,7 +87,16 @@
 
     @* Fullscreen image container *@
     <div id="fullscreenContainer" class="annytab-fullscreen-container">
-        <img id="fullscreenImage" src="" alt="@product.title" class="annytab-fullscreen-image" />
+        <div class="annytab-fullscreen-margin">
+            <div class="annytab-fullscreen-wrapper">
+                <div class="annytab-fullscreen-padding">
+                    <img id="leftArrow" src="/Content/images/annytab_design/left_arrow.png" class="annytab-slideshow-left-arrow" alt="<" />
+                    <img id="fullscreenImage" src="" alt="@product.title" class="annytab-fullscreen-image" />
+                    <img id="rightArrow" src="/Content/images/annytab_design/right_arrow.png" class="annytab-slideshow-right-arrow" alt=">" />
+                    <img src="/Content/images/annytab_design/black_circle_cross.png" alt="x" class="annytab-fullscreen-close" />
+                </div>
+            </div>
+        </div>
     </div>
 
     @* Product title *@

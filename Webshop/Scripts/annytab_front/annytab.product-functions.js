@@ -1,7 +1,8 @@
 ﻿// Variables
-//var imageSlideShow;
-//var currentSlideId = parseInt(0);
-//var lastSlideId;
+var imageSlideShow;
+var imageSlides = [];
+var currentSlideId = parseInt(0);
+var lastSlideId = 0;
 var mainProductImageContainer;
 var mainProductImage;
 var xCenter = 150;
@@ -23,26 +24,30 @@ function start()
     mainProductImageContainer.on("mousemove", zoomProductImage);
     mainProductImageContainer.on("mouseout", unzoomProductImage);
     mainProductImage.on("click", showFullscreenImage);
-    $("#fullscreenImage").on("click", closeFullscreenImage);
+    $(".annytab-fullscreen-close").on("click", closeFullscreenImage);
 
-    //// Get the image slideshow div
-    //imageSlideShow = $('#imageSlideShow');
+    // Get the slideshow div
+    imageSlideShow = $('#fullscreenContainer');
 
-    //// Register events
-    //imageSlideShow.mouseenter(showArrows);
-    //imageSlideShow.mouseleave(hideArrows);
-    //imageSlideShow.find('#leftArrow').click(previousSlide);
-    //imageSlideShow.find('#rightArrow').click(nextSlide);
+    // Register events
+    imageSlideShow.find('#leftArrow').click(previousSlide);
+    imageSlideShow.find('#rightArrow').click(nextSlide);
+  
+    // Get all images for the slideshow
+    $("#productImageContainer").find('img[data-id="otherProductImage"]').each(function (index, value) {
+        imageSlides.push($(this).attr('src'));
+    });
 
-    //// Get the length of all the image slides
-    //lastSlideId = imageSlideShow.find("img[data-img]").length;
+    // Get the length of all the image slides
+    lastSlideId = imageSlides.length;
 
-    //// Get the next slide every 10 seconds
-    //if (lastSlideId > 0)
-    //{
-    //    setInterval(function () { nextSlide() }, 10000);
-    //}
-
+    // Show arrows if there is more than one slide
+    if(lastSlideId > 0)
+    {
+        imageSlideShow.find("#leftArrow").fadeIn(2000);
+        imageSlideShow.find("#rightArrow").fadeIn(2000);
+    }
+    
 } // End of the start method
 
 // Change the product price and the code
@@ -142,20 +147,8 @@ function nextSlide()
         currentSlideId = parseInt(0);
     }
 
-    // Calculate the id of the previous slide
-    var previousSlideId = currentSlideId - 1;
-    if (previousSlideId < 0)
-    {
-        previousSlideId = parseInt(lastSlideId - 1)
-    }
-
-    // Get slides
-    var previousSlide = imageSlideShow.find("img[data-img='" + previousSlideId + "']");
-    var nextSlide = imageSlideShow.find("img[data-img='" + currentSlideId + "']");
-
-    // Fade out the old slide and fade in the new slide
-    previousSlide.fadeOut(500);
-    nextSlide.fadeIn(1000);
+    // Set the image source
+    $("#fullscreenImage").attr("src", imageSlides[currentSlideId]);
 
 } // End of the nextSlide method
 
@@ -169,38 +162,10 @@ function previousSlide()
         currentSlideId = parseInt(lastSlideId - 1);
     }
 
-    // Calculate the id of the previous slide
-    var previousSlideId = currentSlideId + 1;
-    if (previousSlideId >= lastSlideId)
-    {
-        previousSlideId = parseInt(0)
-    }
-
-    // Get slides
-    var previousSlide = imageSlideShow.find("img[data-img='" + previousSlideId + "']");
-    var nextSlide = imageSlideShow.find("img[data-img='" + currentSlideId + "']");
-
-    // Fade out the old slide and fade in the new slide
-    previousSlide.fadeOut(500);
-    nextSlide.fadeIn(1000);
+    // Set the image source
+    $("#fullscreenImage").attr("src", imageSlides[currentSlideId]);
 
 } // End of the previousSlide method
-
-// Fade in arrows
-function showArrows()
-{
-    imageSlideShow.find("#leftArrow").fadeIn(2000);
-    imageSlideShow.find("#rightArrow").fadeIn(2000);
-
-} // End of the showArrows method
-
-// Fade out arrows
-function hideArrows()
-{
-    imageSlideShow.find("#leftArrow").fadeOut(2000);
-    imageSlideShow.find("#rightArrow").fadeOut(2000);
-
-} // End of the hideArrows method
 
 // Zoom the product image
 function zoomProductImage(event)
@@ -281,6 +246,6 @@ function showFullscreenImage()
 function closeFullscreenImage()
 {
     // Toggle the visibility
-    $("#fullscreenContainer").slideUp(1000);
+    $("#fullscreenContainer").fadeOut(1000);
 
 } // Show a fullscreen image

@@ -150,8 +150,8 @@
                     @* Shopping cart *@
                     <div id="cartContainer" class="annytab-menu-box">
                         <div class="annytab-menu-title">@shopping_cart_tt.ToUpper()</div>
-                        <div>@(cartStatistics["total_quantity"].ToString("##,0.##", cultureInfo) + " " + units_in_cart_tt.ToLower())</div>
-                        <div>@(cartStatistics["total_amount"].ToString("##,0.##", cultureInfo) + " " + domain.currency)@(pricesIncludesVat == true ? " (" + including_vat_tt.ToLower() + ")" : " (" + excluding_vat_tt.ToLower() + ")")</div>
+                        <div class="annytab-basic-bread-text">@(cartStatistics["total_quantity"].ToString("##,0.##", cultureInfo) + " " + units_in_cart_tt.ToLower())</div>
+                        <div class="annytab-basic-bread-text">@(cartStatistics["total_amount"].ToString("##,0.##", cultureInfo) + " " + domain.currency)@(pricesIncludesVat == true ? " (" + including_vat_tt.ToLower() + ")" : " (" + excluding_vat_tt.ToLower() + ")")</div>
                         <div style="margin:4px 0px 0px 0px;"><a class="annytab-menu-link" href="@Url.Content("/order")">@check_out_tt</a><span>@(" | ")</span><a class="annytab-menu-link" href="@Url.Content("/order/clear")">@clear_tt</a></div>
                     </div>
 

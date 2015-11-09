@@ -2,7 +2,7 @@
 @{    
     // Paging variables
     Int32 page = 1;
-    
+
     // Get the page number
     if (Request.Params["qp"] != null)
     {
@@ -16,7 +16,7 @@
             page = 1;
         }
     }
-    
+
     // Get form data
     Domain domain = ViewBag.CurrentDomain;
     Category category = ViewBag.CurrentCategory;
@@ -28,7 +28,7 @@
 
     // Calculate the decimal multiplier
     Int32 decimalMultiplier = (Int32)Math.Pow(10, currency.decimals);
-     
+
     // Count the number of posts
     Int32 count = DisplayItem.GetCount(category.id, domain.front_end_language);
 
@@ -53,191 +53,122 @@
     string from_short_tt = tt.Get("from_short");
     string regular_price_short_tt = tt.Get("regular_price_short");
     string discount_tt = tt.Get("discount");
-
-    // A counter for columns
-    Int32 columnCounter = 0;
 }
 
 @* Loop and add all display items *@
-@for (int i = 0; i < displayItems.Count; i++)
-{
-    
-    @* Text variables *@
-    string title = displayItems[i].title;
-    string description = displayItems[i].description.TruncateHtml(500, " ...");
-    string url = "";
-    string src = "";
-    string link_text = "";
-    string short_link_text = show_tt;
-    string price = "";
-    string ordinary_price = "";
-    string discount_percent = "";
+<div class="annytab-view-container">
+    @for (int i = 0; i < displayItems.Count; i++)
+    {
+        @* Text variables *@
+        string title = displayItems[i].title;
+        string description = displayItems[i].description.TruncateHtml(500, " ...");
+        string url = "";
+        string src = "";
+        string link_text = "";
+        string short_link_text = show_tt;
+        string price = "";
+        string ordinary_price = "";
+        string discount_percent = "";
 
-    @* Set post data *@
-    if (displayItems[i].type_code == 0)
-    {
-        url = "/home/category/" + displayItems[i].page_name;
-        src = Tools.GetCategoryMainImageUrl(displayItems[i].id, domain.front_end_language, displayItems[i].use_local_images);
-        link_text = show_tt + " " + category_tt.ToLower();
-        price = "&#8212;";
-    }
-    else if (displayItems[i].type_code == 1)
-    {
-        ValueAddedTax valueAddedTax = ValueAddedTax.GetOneById(displayItems[i].value_added_tax_id);
-        decimal productPrice = displayItems[i].unit_price;
-        productPrice *= (currency.currency_base / currency.conversion_rate);
-        decimal ordinaryPrice = Math.Round(productPrice * decimalMultiplier, MidpointRounding.AwayFromZero) / decimalMultiplier;
-        productPrice = Math.Round(productPrice * (1 - displayItems[i].discount) * decimalMultiplier, MidpointRounding.AwayFromZero) / decimalMultiplier;
-        if (pricesIncludesVat == true)
+        @* Set post data *@
+        if (displayItems[i].type_code == 0)
         {
-            ordinaryPrice += Math.Round(ordinaryPrice * valueAddedTax.value * decimalMultiplier, MidpointRounding.AwayFromZero) / decimalMultiplier;
-            productPrice += Math.Round(productPrice * valueAddedTax.value * decimalMultiplier, MidpointRounding.AwayFromZero) / decimalMultiplier;
+            url = "/home/category/" + displayItems[i].page_name;
+            src = Tools.GetCategoryMainImageUrl(displayItems[i].id, domain.front_end_language, displayItems[i].use_local_images);
+            link_text = show_tt + " " + category_tt.ToLower();
+            price = "&#8212;";
         }
-        
-        url = "/home/product/" + displayItems[i].page_name;
-        src = Tools.GetProductMainImageUrl(displayItems[i].id, domain.front_end_language, "", displayItems[i].use_local_images);
-        link_text = show_tt + " " + product_tt.ToLower();
-        price = displayItems[i].from_price == true ? from_short_tt.ToLower() + " " : "";
-        price += productPrice.ToString("##,0.##", cultureInfo) + " " + domain.currency;
-        ordinary_price = " (" + regular_price_short_tt + " ";
-        ordinary_price += displayItems[i].from_price == true ? from_short_tt.ToLower() + " " : "";
-        ordinary_price += ordinaryPrice.ToString("##,0.##", cultureInfo) + " " + domain.currency + ") ";
-        discount_percent = (displayItems[i].discount * 100).ToString("##,0", cultureInfo) + "% " + discount_tt.ToUpper();
-    }
-
-    @* The item post *@
-    if (userSettings["display_view"] == "0")
-    {
-        <div class="annytab-view0-container">
-            <div class="annytab-view0-left">
-                <a href="@url"><img class="annytab-view0-image" alt="@title" src="@src" /></a>
-            </div>
-            <div class="annytab-view0-right">
-                <a href="@url" class="annytab-view0-title">@title</a><br />
-                <div class="annytab-price-tag-small" style="margin:5px 0px 5px 0px;">@Html.Raw(price)</div>
-                <div style="@(displayItems[i].discount > 0.000M ? "display:block;" : "display:none;")vertical-align:middle;margin-bottom:5px;font-size:12px;line-height:12px;">
-                    <span style="color:#a30909;">@discount_percent</span><span>@ordinary_price</span>
-                </div>
-                <div class="annytab-basic-bread-text">@Html.Raw(description)</div>
-            </div>
-        </div>
-    }
-    else if (userSettings["display_view"] == "1")
-    {
-        columnCounter++;
-        if (columnCounter == 1)
+        else if (displayItems[i].type_code == 1)
         {
-            @:<div class="annytab-view1-container">
-        }
-
-        <div class="annytab-view1-productbox">
-            <div class="annytab-view1-title"><a href="@url">@title</a></div>
-            <a href="@url"><img class="annytab-view1-image" alt="@title" src="@src" /></a>
-            <div style="position:absolute;left:10px;bottom:10px;right:10px;">
-                <div class="annytab-price-tag-small" style="margin-bottom:5px;">@Html.Raw(price)</div>
-                <div style="@(displayItems[i].discount > 0.000M ? "display:block;" : "display:none;")vertical-align:middle;margin-bottom:5px;font-size:12px;line-height:12px;">
-                    <div style="color:#a30909;margin-bottom:5px;">@discount_percent</div>
-                    <div>@ordinary_price</div>
-                </div>
-                <a class="annytab-basic-button" style="display:block;padding:10px;" href="@url">@link_text</a>
-            </div>
-            <div class="annytab-view1-bottom-space"></div>
-        </div>
-        
-        if (columnCounter < 2 && i != displayItems.Count - 1)
-        {
-            @:<div class="annytab-view1-divider"></div>
-        }
-
-        if (columnCounter == 2 || i == displayItems.Count - 1)
-        {
-            for (int j = columnCounter; j < 2; j++ )
+            ValueAddedTax valueAddedTax = ValueAddedTax.GetOneById(displayItems[i].value_added_tax_id);
+            decimal productPrice = displayItems[i].unit_price;
+            productPrice *= (currency.currency_base / currency.conversion_rate);
+            decimal ordinaryPrice = Math.Round(productPrice * decimalMultiplier, MidpointRounding.AwayFromZero) / decimalMultiplier;
+            productPrice = Math.Round(productPrice * (1 - displayItems[i].discount) * decimalMultiplier, MidpointRounding.AwayFromZero) / decimalMultiplier;
+            if (pricesIncludesVat == true)
             {
-                @:<div class="annytab-view1-divider"></div>
-                @:<div style="display:table-cell;"></div>
+                ordinaryPrice += Math.Round(ordinaryPrice * valueAddedTax.value * decimalMultiplier, MidpointRounding.AwayFromZero) / decimalMultiplier;
+                productPrice += Math.Round(productPrice * valueAddedTax.value * decimalMultiplier, MidpointRounding.AwayFromZero) / decimalMultiplier;
             }
-            @:</div>
-            columnCounter = 0;
-        }
-    }
-    else if (userSettings["display_view"] == "2")
-    {
-        columnCounter++;
-        if (columnCounter == 1)
-        {
-            @:<div class="annytab-view1-container">
+
+            url = "/home/product/" + displayItems[i].page_name;
+            src = Tools.GetProductMainImageUrl(displayItems[i].id, domain.front_end_language, "", displayItems[i].use_local_images);
+            link_text = show_tt + " " + product_tt.ToLower();
+            price = displayItems[i].from_price == true ? from_short_tt.ToLower() + " " : "";
+            price += productPrice.ToString("##,0.##", cultureInfo) + " " + domain.currency;
+            ordinary_price = " (" + regular_price_short_tt + " ";
+            ordinary_price += displayItems[i].from_price == true ? from_short_tt.ToLower() + " " : "";
+            ordinary_price += ordinaryPrice.ToString("##,0.##", cultureInfo) + " " + domain.currency + ") ";
+            discount_percent = (displayItems[i].discount * 100).ToString("##,0", cultureInfo) + "% " + discount_tt.ToUpper();
         }
 
-        <div class="annytab-view1-productbox">
-            <div class="annytab-view1-title"><a href="@url">@title</a></div>
-            <a href="@url"><img class="annytab-view1-image" alt="@title" src="@src" /></a>
-            <div style="position:absolute;left:10px;bottom:10px;right:10px;">
-                <div class="annytab-price-tag-small" style="margin-bottom:5px;">@Html.Raw(price)</div>
-                <div style="@(displayItems[i].discount > 0.000M ? "display:block;" : "display:none;")vertical-align:middle;margin-bottom:5px;font-size:12px;line-height:12px;">
-                    <div style="color:#a30909;margin-bottom:5px;">@discount_percent</div>
-                    <div>@ordinary_price</div>
+        @* The item post *@
+        if (userSettings["display_view"] == "0")
+        {
+            <div class="annytab-view0-productbox">
+                <div class="annytab-view0-left">
+                    <a href="@url"><img class="annytab-view0-image" alt="@title" src="@src" /></a>
                 </div>
-                <a class="annytab-basic-button" style="display:block;padding:10px;" href="@url">@link_text</a>
-            </div>
-            <div class="annytab-view1-bottom-space"></div>
-        </div>
-
-        if (columnCounter < 3  && i != displayItems.Count - 1)
-        {
-            @:<div class="annytab-view1-divider"></div>
-        }
-
-        if (columnCounter == 3 || i == displayItems.Count - 1)
-        {
-            for (int j = columnCounter; j < 3; j++ )
-            {
-                @:<div class="annytab-view1-divider"></div>
-                @:<div style="display:table-cell;"></div>
-            }
-            @:</div>
-            columnCounter = 0;
-        }
-    }
-    else if (userSettings["display_view"] == "3")
-    {
-        columnCounter++;
-        if (columnCounter == 1)
-        {
-            @:<div class="annytab-view1-container">
-        }
-
-        <div class="annytab-view1-productbox">
-            <div class="annytab-view1-title"><a href="@url">@title</a></div>
-            <a href="@url"><img class="annytab-view1-image" alt="@title" src="@src" /></a>
-            <div style="position:absolute;left:10px;bottom:10px;right:10px;">
-                <div class="annytab-price-tag-small" style="margin-bottom:5px;">@Html.Raw(price)</div>
-                <div style="@(displayItems[i].discount > 0.000M ? "display:block;" : "display:none;")vertical-align:middle;margin-bottom:5px;font-size:12px;line-height:12px;">
-                    <div style="color:#a30909;margin-bottom:5px;">@discount_percent</div>
-                    <div>@ordinary_price</div>
+                <div class="annytab-view0-right">
+                    <a href="@url" class="annytab-view0-title">@title</a><br />
+                    <div class="annytab-price-tag-small" style="margin:5px 0px 5px 0px;">@Html.Raw(price)</div>
+                    <div style="@(displayItems[i].discount > 0.000M ? "display:block;" : "display:none;")vertical-align:middle;margin-bottom:5px;font-size:12px;line-height:12px;">
+                        <span style="color:#a30909;">@discount_percent</span><span>@ordinary_price</span>
+                    </div>
+                    <div class="annytab-basic-bread-text">@Html.Raw(description)</div>
                 </div>
-                <a class="annytab-basic-button" style="display:block;padding:10px;" href="@url">@short_link_text</a>
             </div>
-            <div class="annytab-view1-bottom-space"></div>
-        </div>
-
-        if (columnCounter < 4 && i != displayItems.Count - 1)
-        {
-            @:<div class="annytab-view1-divider"></div>
         }
-
-        if (columnCounter == 4 || i == displayItems.Count - 1)
+        else if (userSettings["display_view"] == "1")
         {
-            for (int j = columnCounter; j < 4; j++ )
-            {
-                @:<div class="annytab-view1-divider"></div>
-                @:<div style="display:table-cell;"></div>
-                
-            }
-            @:</div>
-            columnCounter = 0;
+            <div class="annytab-view1-productbox">
+                <div class="annytab-view1-title"><a href="@url">@title</a></div>
+                <a href="@url"><img class="annytab-view1-image" alt="@title" src="@src" /></a>
+                <div style="position:absolute;left:10px;bottom:10px;right:10px;">
+                    <div class="annytab-price-tag-small" style="margin-bottom:5px;">@Html.Raw(price)</div>
+                    <div style="@(displayItems[i].discount > 0.000M ? "display:block;" : "display:none;")vertical-align:middle;margin-bottom:5px;font-size:12px;line-height:12px;">
+                        <div style="color:#a30909;margin-bottom:5px;">@discount_percent</div>
+                        <div>@ordinary_price</div>
+                    </div>
+                    <a class="annytab-basic-button" style="display:block;padding:10px;" href="@url">@link_text</a>
+                </div>
+                <div class="annytab-view1-bottom-space"></div>
+            </div>
+        }
+        else if (userSettings["display_view"] == "2")
+        {
+            <div class="annytab-view2-productbox">
+                <div class="annytab-view2-title"><a href="@url">@title</a></div>
+                <a href="@url"><img class="annytab-view2-image" alt="@title" src="@src" /></a>
+                <div style="position:absolute;left:10px;bottom:10px;right:10px;">
+                    <div class="annytab-price-tag-small" style="margin-bottom:5px;">@Html.Raw(price)</div>
+                    <div style="@(displayItems[i].discount > 0.000M ? "display:block;" : "display:none;")vertical-align:middle;margin-bottom:5px;font-size:12px;line-height:12px;">
+                        <div style="color:#a30909;margin-bottom:5px;">@discount_percent</div>
+                        <div>@ordinary_price</div>
+                    </div>
+                    <a class="annytab-basic-button" style="display:block;padding:10px;" href="@url">@link_text</a>
+                </div>
+                <div class="annytab-view2-bottom-space"></div>
+            </div>
+        }
+        else if (userSettings["display_view"] == "3")
+        {
+            <div class="annytab-view3-productbox">
+                <div class="annytab-view3-title"><a href="@url">@title</a></div>
+                <a href="@url"><img class="annytab-view3-image" alt="@title" src="@src" /></a>
+                <div style="position:absolute;left:10px;bottom:10px;right:10px;">
+                    <div class="annytab-price-tag-small" style="margin-bottom:5px;">@Html.Raw(price)</div>
+                    <div style="@(displayItems[i].discount > 0.000M ? "display:block;" : "display:none;")vertical-align:middle;margin-bottom:5px;font-size:12px;line-height:12px;">
+                        <div style="color:#a30909;margin-bottom:5px;">@discount_percent</div>
+                        <div>@ordinary_price</div>
+                    </div>
+                    <a class="annytab-basic-button" style="display:block;padding:10px;" href="@url">@link_text</a>
+                </div>
+                <div class="annytab-view3-bottom-space"></div>
+            </div>
         }
     }
-}
+</div>
 
 <div class="annytab-basic-space"></div>
 

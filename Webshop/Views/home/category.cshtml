@@ -16,7 +16,7 @@
         userSettings.Add("page_size", "10");
         userSettings.Add("display_view", domain.default_display_view.ToString());
     }
-    
+
     // Set the meta data
     ViewBag.Title = category.title;
     ViewBag.MetaTitle = category.title;
@@ -45,10 +45,24 @@
     string sort_tt = tt.Get("sort");
     string on_tt = tt.Get("on");
     string view_tt = tt.Get("view");
-    
+
     // Set the layout for the page
     Layout = domain.custom_theme_id == 0 ? "/Views/shared_front/_standard_layout.cshtml" : "/Views/theme/front_standard_layout.cshtml";
 }
+
+@* Fullscreen image container *@
+<div id="fullscreenContainer" class="annytab-fullscreen-container">
+    <div class="annytab-fullscreen-margin">
+        <div class="annytab-fullscreen-wrapper">
+            <div class="annytab-fullscreen-padding">
+                <img src="/Content/images/annytab_design/left_arrow.png" class="annytab-slideshow-left-arrow" style="left:20px;" alt="<" />
+                <img id="fullscreenImage" src="" alt="@category.title" class="annytab-fullscreen-image" />
+                <img src="/Content/images/annytab_design/right_arrow.png" class="annytab-slideshow-right-arrow" style="right:20px;" alt=">" />
+                <img src="/Content/images/annytab_design/black_circle_cross.png" alt="x" class="annytab-fullscreen-close" />
+            </div>
+        </div>
+    </div>
+</div>
 
 @* Title *@
 <h1>@category.title</h1>
@@ -66,13 +80,19 @@
 <p class="annytab-basic-bread-text">@Html.Raw(category.main_content)</p>
 
 @* Image slideshow *@
-<div id="imageSlideShow" class="annytab-slideshow-container">
-    <img id="leftArrow" src="/Content/images/annytab_design/left_arrow.png" class="annytab-slideshow-left-arrow" alt="Slideshow left arrow" />
+<div id="imageSlideShow" class="annytab-slideshow-container">  
     @for (int i = 0; i < environmentImages.Count; i++)
     {
         @:<img data-img="@i.ToString()" src="@environmentImages[i]" alt="@(category.title + " " + image_tt.ToLower())" class="annytab-slideshow-image" />
     }
-    <img id="rightArrow" src="/Content/images/annytab_design/right_arrow.png" class="annytab-slideshow-right-arrow" alt="Slideshow right arrow" />
+    <img src="/Content/images/annytab_design/left_arrow.png" class="annytab-slideshow-left-arrow" alt="<" />
+    <img src="/Content/images/annytab_design/right_arrow.png" class="annytab-slideshow-right-arrow" alt=">" />
+</div>
+<div class="annytab-slideshow-pager-container">
+    @for (int i = 0; i < environmentImages.Count; i++)
+    {
+        @:<img data-img="@i.ToString()" src="@environmentImages[i]" alt="@(category.title + " " + image_tt.ToLower())" class="annytab-slideshow-pager-image" />
+    }
 </div>
 
 @* Inspiration (image maps) *@
@@ -105,10 +125,10 @@
             <option value="80" @(userSettings["page_size"] == "80" ? Html.Raw("selected='selected'") : Html.Raw(""))>80</option>
         </select>
         <select name="selectDisplayView" class="annytab-form-select" style="width:80px;">
-            <option value="0" @(userSettings["display_view"] == "0" ? Html.Raw("selected='selected'") : Html.Raw(""))>@(view_tt + " - " + "1:1")</option>
-            <option value="1" @(userSettings["display_view"] == "1" ? Html.Raw("selected='selected'") : Html.Raw(""))>@(view_tt + " - " + "2:1")</option>
-            <option value="2" @(userSettings["display_view"] == "2" ? Html.Raw("selected='selected'") : Html.Raw(""))>@(view_tt + " - " + "3:1")</option>
-            <option value="3" @(userSettings["display_view"] == "3" ? Html.Raw("selected='selected'") : Html.Raw(""))>@(view_tt + " - " + "4:1")</option>
+            <option value="0" @(userSettings["display_view"] == "0" ? Html.Raw("selected='selected'") : Html.Raw(""))>@(view_tt + " - " + "1")</option>
+            <option value="1" @(userSettings["display_view"] == "1" ? Html.Raw("selected='selected'") : Html.Raw(""))>@(view_tt + " - " + "2")</option>
+            <option value="2" @(userSettings["display_view"] == "2" ? Html.Raw("selected='selected'") : Html.Raw(""))>@(view_tt + " - " + "3")</option>
+            <option value="3" @(userSettings["display_view"] == "3" ? Html.Raw("selected='selected'") : Html.Raw(""))>@(view_tt + " - " + "4")</option>
         </select>
         <input type="submit" value="@sort_tt" class="annytab-form-button" />
     }

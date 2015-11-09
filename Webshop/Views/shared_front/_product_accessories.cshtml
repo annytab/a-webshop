@@ -54,10 +54,14 @@
 
             @* The accessory post *@
             @:<div class="annytab-basic-inner-container" style="min-height:128px;">
-                @:<a href="@Url.Content("/home/product/" + accessory.page_name)"><img class="annytab-list-product-image" alt="@accessory.title" src="@Tools.GetProductMainImageUrl(accessory.id, domain.front_end_language, "", accessory.use_local_images)" /></a>
-                @:<a href="@Url.Content("/home/product/" + accessory.page_name)" class="annytab-list-product-title">@accessory.title</a><br />
-                @:<div class="annytab-price-tag-small" style="margin:5px 0px 5px 0px;">@price</div>
-                @:<span class="annytab-basic-bread-text">@Html.Raw(accessory.meta_description)</span><br /><br />         
+            @:<div class="annytab-list-product-left">
+            @:<a href="@Url.Content("/home/product/" + accessory.page_name)"><img class="annytab-list-product-image" alt="@accessory.title" src="@Tools.GetProductMainImageUrl(accessory.id, domain.front_end_language, "", accessory.use_local_images)" /></a>
+            @:</div>
+            @:<div class="annytab-list-product-right">
+            @:<a href="@Url.Content("/home/product/" + accessory.page_name)" class="annytab-list-product-title">@accessory.title</a><br />
+            @:<div class="annytab-price-tag-small" style="margin:5px 0px 5px 0px;">@price</div>
+            @:<span class="annytab-basic-bread-text">@Html.Raw(accessory.meta_description)</span><br /><br />
+            @:</div>
             @:</div>
         }
     </div>
