@@ -318,7 +318,9 @@
     <Content Include="Content\images\annytab_design\gradient_up_10.jpg" />
     <Content Include="Content\images\annytab_design\left_arrow.png" />
     <Content Include="Content\images\annytab_design\minus_button_12.jpg" />
+    <Content Include="Content\images\annytab_design\minus_button_20.jpg" />
     <Content Include="Content\images\annytab_design\plus_button_12.jpg" />
+    <Content Include="Content\images\annytab_design\plus_button_20.jpg" />
     <Content Include="Content\images\annytab_design\right_arrow.png" />
     <Content Include="Content\images\annytab_design\square_32.jpg" />
     <Content Include="Content\images\annytab_design\square_cross_button_20.jpg" />
