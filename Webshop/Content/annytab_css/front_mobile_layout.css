@@ -18,7 +18,7 @@
 
 /* Display categories and products */
 .annytab-view-container{display:block;padding:0px;margin:0px -5px 0px -5px;text-align:center;background-color:#ffffff;overflow:visible;}
-.annytab-view0-productbox{clear:both;max-width:100%;padding:0px;margin:8px 5px 8px 5px;background-color:#ffffff;border:1px solid #cccccc;border-radius:4px;}
+.annytab-view0-productbox{clear:both;max-width:100%;padding:0px;margin:8px 5px 8px 5px;text-align:left;background-color:#ffffff;border:1px solid #cccccc;border-radius:4px;}
 .annytab-view0-left{display:table-cell;width:30%;padding:4px;}
 .annytab-view0-right{display:table-cell;vertical-align:top;width:70%;padding:4px 4px 4px 6px;word-wrap:break-word;}
 .annytab-view0-image{max-width:100%;width:100%;height:auto;}
