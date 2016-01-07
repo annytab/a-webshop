@@ -211,16 +211,17 @@
 
             @* The footer *@
             <div class="annytab-layout-footer">
-                <div style="padding:10px 10px 10px 10px">
-                    <span>@Html.Raw(copyright_information_tt + " | ")</span>
+                <div style="padding:5px 10px 5px 10px;font-size:12px;line-height:24px;">
+                    <div style="color:#adadad;text-shadow:1px -1px 1px #000000;font-size:14px;">@Html.Raw(domain.webshop_name + " " + copyright_information_tt)</div>
                     @if (pricesIncludesVat == true)
                     {
-                        <a href="@Url.Content("/home/prices_includes_vat/false?url=" + Request.Url.AbsoluteUri)" style="color:#ffffff;text-decoration:underline;">@(prices_tt + " (" + excluding_vat_tt.ToLower() + ")")</a>
+                        <a href="@Url.Content("/home/prices_includes_vat/false?url=" + Request.Url.AbsoluteUri)" style="color:#adadad;">@Html.Raw(prices_tt + " (" + excluding_vat_tt.ToLower() + ") &#8635;")</a>
                     }
                     else
                     {
-                        <a href="@Url.Content("/home/prices_includes_vat/true?url=" + Request.Url.AbsoluteUri)" style="color:#ffffff;text-decoration:underline;">@(prices_tt + " (" + including_vat_tt.ToLower() + ")")</a>
+                        <a href="@Url.Content("/home/prices_includes_vat/true?url=" + Request.Url.AbsoluteUri)" style="color:#adadad;">@Html.Raw(prices_tt + " (" + including_vat_tt.ToLower() + ") &#8635;")</a>
                     }
+                    <a href="http://www.a-webshop.com" rel="nofollow" style="display:block;color:#adadad;">Powered by a-webshop.com</a>
                 </div>
             </div>
         </div>
@@ -238,6 +239,10 @@
 
             </div>
         </div>
+
+        @* Bottom spacing *@
+        <div style="display:block;clear:both;margin-bottom:20px;"></div>
+
     </div>
 
     @* Loading animation *@

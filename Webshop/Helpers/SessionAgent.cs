@@ -1,8 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Web;
-using System.Threading;
+﻿using System.Threading;
 
 /// <summary>
 /// This class is used to remove expired sessions

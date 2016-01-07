@@ -154,16 +154,17 @@
     @for (int i = 0; i < products.Count; i++)
     {
         @* Calculate the product price *@
-        ValueAddedTax valueAddedTax = ValueAddedTax.GetOneById(products[i].value_added_tax_id);
-        decimal productPrice = products[i].unit_price;
-        productPrice *= (currency.currency_base / currency.conversion_rate);
-        decimal ordinaryPrice = Math.Round(productPrice * decimalMultiplier, MidpointRounding.AwayFromZero) / decimalMultiplier;
-        productPrice = Math.Round(productPrice * (1 - products[i].discount) * decimalMultiplier, MidpointRounding.AwayFromZero) / decimalMultiplier;
-        if (pricesIncludesVat == true)
-        {
-            ordinaryPrice += Math.Round(ordinaryPrice * valueAddedTax.value * decimalMultiplier, MidpointRounding.AwayFromZero) / decimalMultiplier;
-            productPrice += Math.Round(productPrice * valueAddedTax.value * decimalMultiplier, MidpointRounding.AwayFromZero) / decimalMultiplier;
-        }
+    ValueAddedTax valueAddedTax = ValueAddedTax.GetOneById(products[i].value_added_tax_id);
+    Unit unit = Unit.GetOneById(products[i].unit_id, domain.front_end_language);
+    decimal productPrice = products[i].unit_price;
+    productPrice *= (currency.currency_base / currency.conversion_rate);
+    decimal ordinaryPrice = Math.Round(productPrice * decimalMultiplier, MidpointRounding.AwayFromZero) / decimalMultiplier;
+    productPrice = Math.Round(productPrice * (1 - products[i].discount) * decimalMultiplier, MidpointRounding.AwayFromZero) / decimalMultiplier;
+    if (pricesIncludesVat == true)
+    {
+        ordinaryPrice += Math.Round(ordinaryPrice * valueAddedTax.value * decimalMultiplier, MidpointRounding.AwayFromZero) / decimalMultiplier;
+        productPrice += Math.Round(productPrice * valueAddedTax.value * decimalMultiplier, MidpointRounding.AwayFromZero) / decimalMultiplier;
+    }
 
         @* Get the form data *@
         string title = products[i].title;
@@ -171,7 +172,7 @@
         string url = "/home/product/" + products[i].page_name;
         string description = products[i].main_content.TruncateHtml(500, " ...");
         string price = products[i].from_price == true ? from_short_tt.ToLower() + " " : "";
-        price += productPrice.ToString("##,0.##", cultureInfo) + " " + domain.currency;
+        price += productPrice.ToString("##,0.##", cultureInfo) + " " + domain.currency + " / " + unit.unit_code;
         string link_text = show_tt + " " + product_tt.ToLower();
         string short_link_text = show_tt;
         string ordinary_price = " (" + regular_price_short_tt + " ";

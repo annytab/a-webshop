@@ -44,7 +44,7 @@ img {vertical-align:middle;}
 
 /* Display categories and products */
 .annytab-transparent-container{display:block;margin:0px;padding:0px 4px 0px 4px;}
-.annytab-price-tag{font-weight:bold;font-size:28px;color:#a30909;text-shadow:2px 2px 5px #808080;vertical-align:middle;}
+.annytab-price-tag{font-weight:bold;font-size:28px;line-height:30px;color:#a30909;text-shadow:2px 2px 5px #808080;vertical-align:middle;}
 .annytab-price-tag-small{font-size:14px;color:#a30909;font-weight:bold;vertical-align:middle;margin:5px 0px 5px 0px;text-shadow:1px 1px 2px #808080;}
 .annytab-list-product-left{display:table-cell;width:30%;padding:4px;}
 .annytab-list-product-right{display:table-cell;vertical-align:top;width:70%;padding:4px 4px 4px 6px;word-wrap:break-word;}

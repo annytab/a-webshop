@@ -95,7 +95,7 @@
             src = Tools.GetProductMainImageUrl(displayItems[i].id, domain.front_end_language, "", displayItems[i].use_local_images);
             link_text = show_tt + " " + product_tt.ToLower();
             price = displayItems[i].from_price == true ? from_short_tt.ToLower() + " " : "";
-            price += productPrice.ToString("##,0.##", cultureInfo) + " " + domain.currency;
+            price += productPrice.ToString("##,0.##", cultureInfo) + " " + domain.currency + " / " + displayItems[i].unit_code;
             ordinary_price = " (" + regular_price_short_tt + " ";
             ordinary_price += displayItems[i].from_price == true ? from_short_tt.ToLower() + " " : "";
             ordinary_price += ordinaryPrice.ToString("##,0.##", cultureInfo) + " " + domain.currency + ") ";

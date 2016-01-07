@@ -41,16 +41,17 @@
         @foreach (Product accessory in accessories)
         {
             @* Calculate the product price *@
-            ValueAddedTax valueAddedTax = ValueAddedTax.GetOneById(product.value_added_tax_id);
-            decimal accessoryPrice = accessory.unit_price;
-            accessoryPrice *= (currency.currency_base / currency.conversion_rate);
-            accessoryPrice = Math.Round(accessoryPrice * decimalMultiplier, MidpointRounding.AwayFromZero) / decimalMultiplier;
-            if (pricesIncludesVat == true)
-            {
-                accessoryPrice += Math.Round(accessoryPrice * valueAddedTax.value * decimalMultiplier, MidpointRounding.AwayFromZero) / decimalMultiplier;
-            }
-            string price = accessory.from_price == true ? from_short_tt.ToLower() + " " : "";
-            price += accessoryPrice.ToString("##,0.##", cultureInfo) + " " + domain.currency;
+        ValueAddedTax valueAddedTax = ValueAddedTax.GetOneById(product.value_added_tax_id);
+        Unit unit = Unit.GetOneById(product.unit_id, domain.front_end_language);
+        decimal accessoryPrice = accessory.unit_price;
+        accessoryPrice *= (currency.currency_base / currency.conversion_rate);
+        accessoryPrice = Math.Round(accessoryPrice * decimalMultiplier, MidpointRounding.AwayFromZero) / decimalMultiplier;
+        if (pricesIncludesVat == true)
+        {
+            accessoryPrice += Math.Round(accessoryPrice * valueAddedTax.value * decimalMultiplier, MidpointRounding.AwayFromZero) / decimalMultiplier;
+        }
+        string price = accessory.from_price == true ? from_short_tt.ToLower() + " " : "";
+        price += accessoryPrice.ToString("##,0.##", cultureInfo) + " " + domain.currency + " / " + unit.unit_code;
 
             @* The accessory post *@
             @:<div class="annytab-basic-inner-container" style="min-height:128px;">

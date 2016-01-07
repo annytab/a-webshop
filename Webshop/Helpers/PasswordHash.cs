@@ -1,7 +1,5 @@
 ﻿using System;
-using System.Text;
 using System.Security.Cryptography;
-
 
 /// <summary>
 /// Salted password hashing with PBKDF2-SHA1.

@@ -222,7 +222,7 @@ namespace Annytab.Webshop.Controllers
             }
 
             // Get the unit
-            Unit unit = Unit.GetOneById(currentProduct.id, currentDomain.front_end_language);
+            Unit unit = Unit.GetOneById(currentProduct.unit_id, currentDomain.front_end_language);
 
             // Set form values
             ViewBag.BreadCrumbs = breadCrumbs;

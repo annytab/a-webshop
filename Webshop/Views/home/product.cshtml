@@ -196,8 +196,8 @@
         @* Price *@
         <div style="display:table-cell;width:100%;margin:0px;" itemscope itemprop="offerDetails" itemtype="http://data-vocabulary.org/Offer">
             <span id="txtProductPrice" itemprop="price" class="annytab-price-tag">@productPrice.ToString("##,0.##", cultureInfo)</span>
-            &nbsp;<span itemprop="priceCurrency" class="annytab-price-tag">@(currency.currency_code)</span>
-            <span style="font-size:14px;color:#808080;vertical-align:middle;">@(pricesIncludesVat == true ? " (" + including_vat_tt.ToLower() + ")" : " (" + excluding_vat_tt.ToLower() + ")")</span>
+            &nbsp;<span itemprop="priceCurrency" class="annytab-price-tag">@(currency.currency_code + " / " + unit.unit_code + " ")</span>
+            <span style="font-size:14px;line-height:22px;color:#808080;vertical-align:bottom;">@(pricesIncludesVat == true ? including_vat_tt.ToLower() : excluding_vat_tt.ToLower())</span>
         </div>
         
         @* Discount and ordinary price *@

@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
 using System.Web;
 using System.IO;
 using System.Xml;
@@ -66,7 +65,7 @@ public static class DatabaseManager
         {
             return false;
         }
-            
+
         // The using block is used to call dispose automatically even if there are an exception.
         using (SqlConnection cn = new SqlConnection(connection))
         {

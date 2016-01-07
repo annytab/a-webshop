@@ -1,7 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Web;
 using System.Data.SqlClient;
 
 /// <summary>
@@ -24,6 +22,7 @@ public class DisplayItem
     public Int32 page_views;
     public decimal buys;
     public bool from_price;
+    public string unit_code;
     public byte type_code; // 0: category, 1: product
     
     #endregion
@@ -49,6 +48,7 @@ public class DisplayItem
         this.page_views = 0;
         this.buys = 0;
         this.from_price = false;
+        this.unit_code = "";
         this.type_code = 0;
 
     } // End of the constructor
@@ -73,6 +73,7 @@ public class DisplayItem
         this.page_views = Convert.ToInt32(reader["page_views"]);
         this.buys = Convert.ToDecimal(reader["buys"]);
         this.from_price = Convert.ToBoolean(reader["from_price"]);
+        this.unit_code = reader["unit_code"].ToString();
         this.type_code = Convert.ToByte(reader["type_code"]);
 
     } // End of the constructor
@@ -162,13 +163,14 @@ public class DisplayItem
         // Create the connection string and the sql statement.
         string connection = Tools.GetConnectionString();
         string sql = "SELECT C.id AS id, D.title AS title, D.main_content AS main_content, 0 AS unit_price, 0 AS discount, 0 AS value_added_tax_id, D.page_name AS page_name, "
-            + "D.use_local_images AS use_local_images, C.date_added AS date_added, 0 AS rating, C.page_views AS page_views, 0 AS buys, 0 AS from_price, "
+            + "D.use_local_images AS use_local_images, C.date_added AS date_added, 0 AS rating, C.page_views AS page_views, 0 AS buys, 0 AS from_price, '' AS unit_code, "
             + "0 AS type_code FROM dbo.categories_detail AS D INNER JOIN dbo.categories AS C ON D.category_id = C.id "
             + "WHERE C.parent_category_id = @category_id AND D.language_id = @language_id AND D.inactive = 0 "
             + "UNION ALL "
             + "SELECT P.id AS id, D.title AS title, D.main_content AS main_content, P.unit_price AS unit_price, P.discount AS discount, D.value_added_tax_id AS value_added_tax_id, "
             + "D.page_name AS page_name, D.use_local_images AS use_local_images, P.date_added AS date_added, D.rating AS rating, P.page_views AS page_views, "
-            + "P.buys AS buys, P.from_price AS from_price, 1 AS type_code FROM dbo.products_detail AS D INNER JOIN dbo.products AS P ON D.product_id = P.id "
+            + "P.buys AS buys, P.from_price AS from_price, U.unit_code AS unit_code, 1 AS type_code FROM dbo.products_detail AS D " 
+            + "INNER JOIN dbo.products AS P ON D.product_id = P.id INNER JOIN dbo.units_detail AS U ON U.unit_id = P.unit_id AND U.language_id = @language_id "
             + "WHERE P.category_id = @category_id AND D.language_id = @language_id AND D.inactive = 0 "
             + "ORDER BY " + sortField + " " + sortOrder + " OFFSET @pageNumber ROWS FETCH NEXT @pageSize ROWS ONLY;";
         
@@ -177,13 +179,14 @@ public class DisplayItem
         {
             sql = "SELECT C.id AS id, D.title AS title, D.main_content AS main_content, 0 AS unit_price, 0 AS discount, 0 AS unit_price_with_vat, 0 AS value_added_tax_id, "
             + "D.page_name AS page_name, D.use_local_images AS use_local_images, C.date_added AS date_added, 0 AS rating, C.page_views AS page_views, 0 AS buys, "
-            + "0 AS from_price, 0 AS type_code FROM dbo.categories_detail AS D INNER JOIN dbo.categories AS C ON D.category_id = C.id "
+            + "0 AS from_price, '' AS unit_code, 0 AS type_code FROM dbo.categories_detail AS D INNER JOIN dbo.categories AS C ON D.category_id = C.id "
             + "WHERE C.parent_category_id = @category_id AND D.language_id = @language_id AND D.inactive = 0 "
             + "UNION ALL "
             + "SELECT P.id AS id, D.title AS title, D.main_content AS main_content, P.unit_price AS unit_price, P.discount AS discount, (P.unit_price * (1 - P.discount) * (1 + V.value)) AS unit_price_with_vat, "
             + "D.value_added_tax_id AS value_added_tax_id, D.page_name AS page_name, D.use_local_images AS use_local_images, P.date_added AS date_added, "
-            + "D.rating AS rating, P.page_views AS page_views, P.buys AS buys, P.from_price AS from_price, 1 AS type_code FROM dbo.products_detail AS D INNER JOIN dbo.products AS P "
-            + "ON D.product_id = P.id INNER JOIN dbo.value_added_taxes AS V ON D.value_added_tax_id = V.id WHERE P.category_id = @category_id "
+            + "D.rating AS rating, P.page_views AS page_views, P.buys AS buys, P.from_price AS from_price, U.unit_code AS unit_code, 1 AS type_code FROM dbo.products_detail AS D "
+            + "INNER JOIN dbo.products AS P ON D.product_id = P.id INNER JOIN dbo.units_detail AS U ON U.unit_id = P.unit_id AND U.language_id = @language_id "
+            + "INNER JOIN dbo.value_added_taxes AS V ON D.value_added_tax_id = V.id WHERE P.category_id = @category_id "
             + "AND D.language_id = @language_id AND D.inactive = 0 ORDER BY unit_price_with_vat " + sortOrder + " OFFSET @pageNumber ROWS FETCH NEXT @pageSize ROWS ONLY;";
         }
 
@@ -191,13 +194,14 @@ public class DisplayItem
         if (sortField.ToLower() == "unit_price" && pricesIncludesVat == false)
         {
             sql = "SELECT C.id AS id, D.title AS title, D.main_content AS main_content, 0 AS unit_price, 0 AS discount, 0 AS discount_price, 0 AS value_added_tax_id, D.page_name AS page_name, "
-            + "D.use_local_images AS use_local_images, C.date_added AS date_added, 0 AS rating, C.page_views AS page_views, 0 AS buys, 0 AS from_price, "
+            + "D.use_local_images AS use_local_images, C.date_added AS date_added, 0 AS rating, C.page_views AS page_views, 0 AS buys, 0 AS from_price, '' AS unit_code, "
             + "0 AS type_code FROM dbo.categories_detail AS D INNER JOIN dbo.categories AS C ON D.category_id = C.id "
             + "WHERE C.parent_category_id = @category_id AND D.language_id = @language_id AND D.inactive = 0 "
             + "UNION ALL "
             + "SELECT P.id AS id, D.title AS title, D.main_content AS main_content, P.unit_price AS unit_price, P.discount AS discount, (P.unit_price * (1 - P.discount)) AS discount_price, "
             + "D.value_added_tax_id AS value_added_tax_id, D.page_name AS page_name, D.use_local_images AS use_local_images, P.date_added AS date_added, D.rating AS rating, "
-            + "P.page_views AS page_views, P.buys AS buys, P.from_price AS from_price, 1 AS type_code FROM dbo.products_detail AS D INNER JOIN dbo.products AS P ON D.product_id = P.id "
+            + "P.page_views AS page_views, P.buys AS buys, P.from_price AS from_price, U.unit_code AS unit_code, 1 AS type_code FROM dbo.products_detail AS D "
+            + "INNER JOIN dbo.products AS P ON D.product_id = P.id INNER JOIN dbo.units_detail AS U ON U.unit_id = P.unit_id AND U.language_id = @language_id "
             + "WHERE P.category_id = @category_id AND D.language_id = @language_id AND D.inactive = 0 "
             + "ORDER BY discount_price " + sortOrder + " OFFSET @pageNumber ROWS FETCH NEXT @pageSize ROWS ONLY;";
         }
