@@ -41,8 +41,8 @@
         @foreach (Product accessory in accessories)
         {
             @* Calculate the product price *@
-        ValueAddedTax valueAddedTax = ValueAddedTax.GetOneById(product.value_added_tax_id);
-        Unit unit = Unit.GetOneById(product.unit_id, domain.front_end_language);
+        ValueAddedTax valueAddedTax = ValueAddedTax.GetOneById(accessory.value_added_tax_id);
+        Unit unit = Unit.GetOneById(accessory.unit_id, domain.front_end_language);
         decimal accessoryPrice = accessory.unit_price;
         accessoryPrice *= (currency.currency_base / currency.conversion_rate);
         accessoryPrice = Math.Round(accessoryPrice * decimalMultiplier, MidpointRounding.AwayFromZero) / decimalMultiplier;

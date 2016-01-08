@@ -57,7 +57,7 @@
 <html lang="@(language.language_code.ToLower() + "-" + language.country_code.ToUpper())" prefix="og: http://ogp.me/ns#">
 <head>
     @* Title and meta tags *@
-    <title>@ViewBag.Title</title>
+    <title>@(ViewBag.Title + " - " + domain.webshop_name)</title>
     <meta name="description" content="@ViewBag.MetaDescription" />
     <meta name="keywords" content="@ViewBag.MetaKeywords" />
     <link rel="canonical" href="@ViewBag.MetaCanonical" />
@@ -67,7 +67,7 @@
     <meta name="google" content="notranslate">
 
     @* Facebook meta tags *@
-    <meta property="og:title" content="@ViewBag.MetaTitle" />
+    <meta property="og:title" content="@(ViewBag.MetaTitle + " - " + domain.webshop_name)" />
     <meta property="og:description" content="@ViewBag.MetaDescription" />
     <meta property="og:type" content="website">
     <meta property="og:url" content="@ViewBag.MetaCanonical" />
@@ -211,7 +211,7 @@
 
             @* The footer *@
             <div class="annytab-layout-footer">
-                <div style="padding:5px 10px 5px 10px;font-size:12px;line-height:24px;">
+                <div style="padding:10px 10px 10px 10px;font-size:12px;line-height:24px;">
                     <div style="color:#adadad;text-shadow:1px -1px 1px #000000;font-size:14px;">@Html.Raw(domain.webshop_name + " " + copyright_information_tt)</div>
                     @if (pricesIncludesVat == true)
                     {
@@ -241,7 +241,7 @@
         </div>
 
         @* Bottom spacing *@
-        <div style="display:block;clear:both;margin-bottom:20px;"></div>
+        <div class="annytab-layout-bottom-spacing"></div>
 
     </div>
 
