@@ -176,7 +176,7 @@ public class Currency
                 // Add parameters for search keywords
                 for (int i = 0; i < keywords.Length; i++)
                 {
-                    cmd.Parameters.AddWithValue("@keyword_" + i.ToString(), "%" + keywords[i].ToString() + "%");
+                    cmd.Parameters.AddWithValue("@keyword_" + i.ToString(), keywords[i].ToString() + "%");
                 }
 
                 // The Try/Catch/Finally statement is used to handle unusual exceptions in the code to
@@ -419,7 +419,7 @@ public class Currency
                 // Add parameters for search keywords
                 for (int i = 0; i < keywords.Length; i++)
                 {
-                    cmd.Parameters.AddWithValue("@keyword_" + i.ToString(), "%" + keywords[i].ToString() + "%");
+                    cmd.Parameters.AddWithValue("@keyword_" + i.ToString(), keywords[i].ToString() + "%");
                 }
 
                 // Create a reader

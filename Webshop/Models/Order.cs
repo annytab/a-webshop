@@ -573,8 +573,7 @@ public class Order
         // Append keywords to the sql string
         for (int i = 0; i < keywords.Length; i++)
         {
-            sql += " AND (CAST(id AS nvarchar(20)) LIKE @keyword_" + i.ToString() + " OR customer_name LIKE @keyword_" + i.ToString()
-                + " OR invoice_name LIKE @keyword_" + i.ToString() + ")";
+            sql += " AND (customer_name LIKE @keyword_" + i.ToString() + " OR invoice_name LIKE @keyword_" + i.ToString() + ")";
         }
 
         // Add the final touch to the sql string
@@ -636,7 +635,6 @@ public class Order
             // The using block is used to call dispose automatically even if there are an exception.
             using (SqlCommand cmd = new SqlCommand(sql, cn))
             {
-
                 // Add parameters
                 cmd.Parameters.AddWithValue("@customer_id", customerId);
 
@@ -678,11 +676,11 @@ public class Order
         string sql = "SELECT COUNT(id) FROM dbo.orders WHERE document_type = @document_type ";
 
         // Filter by country code
-        if(countryCode != "")
+        if (countryCode != "")
         {
             sql += "AND country_code = @country_code ";
         }
-            
+
         // Add the final touch to the sql string
         sql += "AND YEAR(order_date) = @year;";
 
@@ -738,7 +736,7 @@ public class Order
         {
             sql += "AND country_code = @country_code ";
         }
-        
+
         // Add the final touch to the sql string
         sql += "AND YEAR(order_date) = @year AND MONTH(order_date) = @month;";
 
@@ -1134,7 +1132,6 @@ public class Order
             // The using block is used to call dispose automatically even if there are an exception.
             using (SqlCommand cmd = new SqlCommand(sql, cn))
             {
-
                 // Create a reader
                 SqlDataReader reader = null;
 
@@ -1334,8 +1331,7 @@ public class Order
         // Append keywords to the sql string
         for (int i = 0; i < keywords.Length; i++)
         {
-            sql += " AND (CAST(id AS nvarchar(20)) LIKE @keyword_" + i.ToString() + " OR customer_name LIKE @keyword_" + i.ToString()
-                + " OR invoice_name LIKE @keyword_" + i.ToString() + ")";
+            sql += " AND (customer_name LIKE @keyword_" + i.ToString() + " OR invoice_name LIKE @keyword_" + i.ToString() + ")";
         }
 
         // Add the final touch to the sql string
@@ -1424,7 +1420,6 @@ public class Order
             // The using block is used to call dispose automatically even if there are an exception.
             using (SqlCommand cmd = new SqlCommand(sql, cn))
             {
-
                 // Add parameters
                 cmd.Parameters.AddWithValue("@customer_id", customerId);
                 cmd.Parameters.AddWithValue("@pageNumber", (pageNumber - 1) * pageSize);
@@ -1497,7 +1492,6 @@ public class Order
             // The using block is used to call dispose automatically even if there are an exception.
             using (SqlCommand cmd = new SqlCommand(sql, cn))
             {
-
                 // Add parameters
                 cmd.Parameters.AddWithValue("@discount_code", discountCodeId);
                 cmd.Parameters.AddWithValue("@pageNumber", (pageNumber - 1) * pageSize);
@@ -1652,7 +1646,7 @@ public class Order
         {
             sql += "AND country_code = @country_code ";
         }
-        
+
         sql += "AND YEAR(order_date) = @year AND MONTH(order_date) = @month ORDER BY " + sortField + " " + sortOrder + " "
             + "OFFSET @pageNumber ROWS FETCH NEXT @pageSize ROWS ONLY;";
 
@@ -1951,7 +1945,8 @@ public class Order
     {
         // Create the connection and the sql statement
         string connection = Tools.GetConnectionString();
-        string sql = "DELETE FROM dbo.orders WHERE id = @id;";
+        string sql = "DELETE FROM dbo.orders_gift_cards WHERE order_id = @id;DELETE FROM dbo.order_rows WHERE order_id = @id;" 
+            + "DELETE FROM dbo.orders WHERE id = @id;";
 
         // The using block is used to call dispose automatically even if there is a exception
         using (SqlConnection cn = new SqlConnection(connection))
@@ -1959,6 +1954,9 @@ public class Order
             // The using block is used to call dispose automatically even if there is a exception
             using (SqlCommand cmd = new SqlCommand(sql, cn))
             {
+                // Set command timeout to 90 seconds
+                cmd.CommandTimeout = 90;
+
                 // Add parameters
                 cmd.Parameters.AddWithValue("@id", id);
 

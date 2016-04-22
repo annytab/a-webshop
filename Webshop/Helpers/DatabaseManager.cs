@@ -6,6 +6,7 @@ using System.Xml;
 using System.Text;
 using System.IO.Compression;
 using System.Data.SqlClient;
+using System.Threading;
 
 /// <summary>
 /// This class handles the creation of the database and upgrades of the database
@@ -14,7 +15,7 @@ public static class DatabaseManager
 {
     #region Variables
 
-    public static Int32 DATABASE_VERSION = 9; // The version number is +1 compared to the file version number
+    public static Int32 DATABASE_VERSION = 10; // The version number is +1 compared to the file version number
 
     #endregion
 
@@ -66,31 +67,55 @@ public static class DatabaseManager
             return false;
         }
 
-        // The using block is used to call dispose automatically even if there are an exception.
-        using (SqlConnection cn = new SqlConnection(connection))
+        // Make retries up to 10 times
+        for (int r = 0; r < 10; r++)
         {
-            // The Using block is used to call dispose automatically even if there are an exception.
-            using (SqlCommand cmd = new SqlCommand(sql, cn))
+            // The using block is used to call dispose automatically even if there are an exception.
+            using (SqlConnection cn = new SqlConnection(connection))
             {
-
-                // The Try/Catch/Finally statement is used to handle unusual exceptions in the code to
-                // avoid having our application crash in such cases
-                try
+                // The Using block is used to call dispose automatically even if there are an exception.
+                using (SqlCommand cmd = new SqlCommand(sql, cn))
                 {
-                    // Open the connection
-                    cn.Open();
+                    // Set command timeout to 1 hour
+                    cmd.CommandTimeout = 3600;
 
-                    // Execute the insert
-                    cmd.ExecuteNonQuery();
+                    // The Try/Catch/Finally statement is used to handle unusual exceptions in the code to
+                    // avoid having our application crash in such cases
+                    try
+                    {
+                        // Open the connection
+                        cn.Open();
 
-                }
-                catch (Exception e)
-                {
-                    string exMessage = e.Message;
-                    return false;
+                        // Execute the insert
+                        cmd.ExecuteNonQuery();
+
+                    }
+                    catch (SqlException sqlEx)
+                    {
+                        // Sleep times should be random
+                        Random rnd = new Random();
+
+                        // Deadlock or timeout, 1205 = Deadlock, -2 = TimeOut
+                        if (sqlEx.Number == 1205 || sqlEx.Number == -2)
+                        {
+                            Thread.Sleep(rnd.Next(5000, 10000));
+                            continue;
+                        }
+                    }
+                    catch (Exception e)
+                    {
+                        string exMessage = e.Message;
+                        return false;
+                    }
                 }
             }
-        }
+
+            // No exceptions (break out from the loop)
+            break;
+
+        } // End of the for(int r = 0; r < 10; r++)
+
+        
 
         // Return that the upgrade was successful
         return true;

@@ -322,8 +322,8 @@ public class Customer
         // Append keywords to the sql string
         for (int i = 0; i < keywords.Length; i++)
         {
-            sql += " AND (CAST(id AS nvarchar(20)) LIKE @keyword_" + i.ToString() + " OR invoice_name LIKE @keyword_" + i.ToString()
-                + " OR org_number LIKE @keyword_" + i.ToString() + " OR contact_name LIKE @keyword_" + i.ToString() + ")";
+            sql += " AND (invoice_name LIKE @keyword_" + i.ToString() + " OR org_number LIKE @keyword_" + i.ToString() 
+                + " OR contact_name LIKE @keyword_" + i.ToString() + ")";
         }
 
         // Add the final touch to the sql string
@@ -849,8 +849,8 @@ public class Customer
         // Append keywords to the sql string
         for (int i = 0; i < keywords.Length; i++)
         {
-            sql += " AND (CAST(id AS nvarchar(20)) LIKE @keyword_" + i.ToString() + " OR invoice_name LIKE @keyword_" + i.ToString()
-                + " OR org_number LIKE @keyword_" + i.ToString() + " OR contact_name LIKE @keyword_" + i.ToString() + ")";
+            sql += " AND (invoice_name LIKE @keyword_" + i.ToString() + " OR org_number LIKE @keyword_" + i.ToString() 
+                + " OR contact_name LIKE @keyword_" + i.ToString() + ")";
         }
 
         // Add the final touch to the select string
@@ -964,7 +964,6 @@ public class Customer
             // The using block is used to call dispose automatically even if there are an exception.
             using (SqlCommand cmd = new SqlCommand(sql, cn))
             {
-
                 // Add parameters
                 cmd.Parameters.AddWithValue("@language_id", languageId);
 
@@ -1022,7 +1021,7 @@ public class Customer
     {
         // Create the connection and the sql statement
         string connection = Tools.GetConnectionString();
-        string sql = "DELETE FROM dbo.customers WHERE id = @id;";
+        string sql = "DELETE FROM dbo.customers_files WHERE customer_id = @id;DELETE FROM dbo.customers WHERE id = @id;";
 
         // The using block is used to call dispose automatically even if there is a exception
         using (SqlConnection cn = new SqlConnection(connection))
@@ -1030,6 +1029,9 @@ public class Customer
             // The using block is used to call dispose automatically even if there is a exception
             using (SqlCommand cmd = new SqlCommand(sql, cn))
             {
+                // Set command timeout to 90 seconds
+                cmd.CommandTimeout = 90;
+
                 // Add parameters
                 cmd.Parameters.AddWithValue("@id", id);
 

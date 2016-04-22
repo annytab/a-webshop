@@ -32,7 +32,6 @@ public static class PriceRunner
         string filepath = directoryPath + "PriceRunner.txt";
 
         // Get all data that we need
-        List<Product> products = Product.GetAllActive(domain.front_end_language, "title", "ASC");
         Currency currency = Currency.GetOneById(domain.currency);
         Int32 decimalMultiplier = (Int32)Math.Pow(10, currency.decimals);
         Country country = Country.GetOneById(domain.country_id, domain.front_end_language);
@@ -48,70 +47,81 @@ public static class PriceRunner
             // Write the heading for the file
             writer.WriteLine("Category|Product name|SKU|Price|Shipping Cost|Product URL|Manufacturer SKU|Manufacturer|EAN or UPC|Description|Image URL|Stock Status|Delivery time|Product state|ISBN");
 
-            // Loop all the products
-            for (int i = 0; i < products.Count; i++)
+            // Get products
+            Int32 page = 1;
+            List<Product> products = Product.GetActiveReliable(domain.front_end_language, 50, page, "title", "ASC");
+
+            while(products.Count > 0)
             {
-                // Do not include affiliate products
-                if (products[i].affiliate_link != "")
+                // Loop all the products
+                for (int i = 0; i < products.Count; i++)
                 {
-                    continue;
-                }
-
-                // Get all the product options
-                List<ProductOptionType> productOptionTypes = ProductOptionType.GetByProductId(products[i].id, domain.front_end_language);
-
-                // Check if the product has product options or not
-                if (productOptionTypes.Count > 0)
-                {
-                    // Get all the product options
-                    Dictionary<Int32, List<ProductOption>> productOptions = new Dictionary<Int32, List<ProductOption>>(productOptionTypes.Count);
-
-                    // Loop all the product option types
-
-                    for (int j = 0; j < productOptionTypes.Count; j++)
+                    // Do not include affiliate products
+                    if (products[i].affiliate_link != "")
                     {
-                        List<ProductOption> listProductOptions = ProductOption.GetByProductOptionTypeId(productOptionTypes[j].id, domain.front_end_language);
-                        productOptions.Add(j, ProductOption.GetByProductOptionTypeId(productOptionTypes[j].id, domain.front_end_language));
+                        continue;
                     }
 
-                    // Get all the product combinations
-                    List<ProductOption[]> productCombinations = new List<ProductOption[]>();
-                    ProductOption.GetProductCombinations(productCombinations, productOptions, 0, new ProductOption[productOptions.Count]);
+                    // Get all the product options
+                    List<ProductOptionType> productOptionTypes = ProductOptionType.GetByProductId(products[i].id, domain.front_end_language);
 
-                    // Loop all the product combinations
-                    foreach (ProductOption[] optionArray in productCombinations)
+                    // Check if the product has product options or not
+                    if (productOptionTypes.Count > 0)
                     {
-                        // Get a product copy
-                        Product productCopy = products[i].Clone();
+                        // Get all the product options
+                        Dictionary<Int32, List<ProductOption>> productOptions = new Dictionary<Int32, List<ProductOption>>(productOptionTypes.Count);
 
-                        // Loop all the product options in the array
-                        Int32 optionCounter = 0;
-                        foreach (ProductOption option in optionArray)
+                        // Loop all the product option types
+
+                        for (int j = 0; j < productOptionTypes.Count; j++)
                         {
-                            // Adjust product values
-                            productCopy.product_code += option.product_code_suffix;
-                            productCopy.manufacturer_code += option.mpn_suffix;
-                            productCopy.title += " - " + option.title;
-                            productCopy.unit_price += option.price_addition;
-                            productCopy.unit_freight += option.freight_addition;
-                            productCopy.variant_image_filename = productCopy.variant_image_filename.Replace("[" + optionCounter.ToString() + "]", option.product_code_suffix);
-
-                            // Get the product option type
-                            ProductOptionType productOptionType = ProductOptionType.GetOneById(option.product_option_type_id, domain.front_end_language);
-
-                            // Add to the option counter
-                            optionCounter++;
+                            List<ProductOption> listProductOptions = ProductOption.GetByProductOptionTypeId(productOptionTypes[j].id, domain.front_end_language);
+                            productOptions.Add(j, ProductOption.GetByProductOptionTypeId(productOptionTypes[j].id, domain.front_end_language));
                         }
 
+                        // Get all the product combinations
+                        List<ProductOption[]> productCombinations = new List<ProductOption[]>();
+                        ProductOption.GetProductCombinations(productCombinations, productOptions, 0, new ProductOption[productOptions.Count]);
+
+                        // Loop all the product combinations
+                        foreach (ProductOption[] optionArray in productCombinations)
+                        {
+                            // Get a product copy
+                            Product productCopy = products[i].Clone();
+
+                            // Loop all the product options in the array
+                            Int32 optionCounter = 0;
+                            foreach (ProductOption option in optionArray)
+                            {
+                                // Adjust product values
+                                productCopy.product_code += option.product_code_suffix;
+                                productCopy.manufacturer_code += option.mpn_suffix;
+                                productCopy.title += " - " + option.title;
+                                productCopy.unit_price += option.price_addition;
+                                productCopy.unit_freight += option.freight_addition;
+                                productCopy.variant_image_filename = productCopy.variant_image_filename.Replace("[" + optionCounter.ToString() + "]", option.product_code_suffix);
+
+                                // Get the product option type
+                                ProductOptionType productOptionType = ProductOptionType.GetOneById(option.product_option_type_id, domain.front_end_language);
+
+                                // Add to the option counter
+                                optionCounter++;
+                            }
+
+                            // Write the product item to the file
+                            WriteProductItem(writer, domain, country, productCopy, currency, decimalMultiplier);
+                        }
+                    }
+                    else
+                    {
                         // Write the product item to the file
-                        WriteProductItem(writer, domain, country, productCopy, currency, decimalMultiplier);
+                        WriteProductItem(writer, domain, country, products[i], currency, decimalMultiplier);
                     }
                 }
-                else
-                {
-                    // Write the product item to the file
-                    WriteProductItem(writer, domain, country, products[i], currency, decimalMultiplier);
-                }
+
+                // Get more products
+                page = page + 1;
+                products = Product.GetActiveReliable(domain.front_end_language, 50, page, "title", "ASC");
             }
         }
         catch (Exception e)

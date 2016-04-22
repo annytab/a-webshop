@@ -154,7 +154,7 @@ public class WebshopSetting
 
         // Create the connection and the sql statement
         string connection = Tools.GetConnectionString();
-        string sql = "SELECT * FROM dbo.webshop_settings WHERE id = @id;";
+        string sql = "SELECT value FROM dbo.webshop_settings WHERE id = @id;";
 
         // The using block is used to call dispose automatically even if there are an exception
         using (SqlConnection cn = new SqlConnection(connection))

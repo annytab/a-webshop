@@ -106,7 +106,6 @@ public class Unit
     /// <param name="languageId">The language id</param>
     public static void AddLanguagePost(Unit post, Int32 languageId)
     {
-
         // Create the connection and the sql statement
         string connection = Tools.GetConnectionString();
         string sql = "INSERT INTO dbo.units_detail (unit_id, language_id, unit_code, name) "
@@ -250,14 +249,13 @@ public class Unit
 
         // Create the connection string and the select statement
         string connection = Tools.GetConnectionString();
-        string sql = "SELECT COUNT(id) AS count FROM dbo.units_detail AS D INNER JOIN "
-            + "dbo.units AS U ON D.unit_id = U.id WHERE D.language_id = @language_id";
+        string sql = "SELECT COUNT(D.unit_id) AS count FROM dbo.units_detail AS D INNER JOIN "
+            + "dbo.units AS U ON D.unit_id = U.id AND D.language_id = @language_id";
 
         // Append keywords to the sql string
         for (int i = 0; i < keywords.Length; i++)
         {
-            sql += " AND (CAST(U.id AS nvarchar(20)) LIKE @keyword_" + i.ToString() + " OR U.unit_code_si LIKE @keyword_" + i.ToString()
-                + " OR D.unit_code LIKE @keyword_" + i.ToString() + " OR D.name LIKE @keyword_" + i.ToString() + ")";
+            sql += " AND (D.unit_code LIKE @keyword_" + i.ToString() + " OR D.name LIKE @keyword_" + i.ToString() + ")";
         }
 
         // Add the final touch to the sql string
@@ -365,7 +363,7 @@ public class Unit
         // Create the connection and the sql statement
         string connection = Tools.GetConnectionString();
         string sql = "SELECT * FROM dbo.units_detail AS D INNER JOIN dbo.units AS U ON "
-            + "D.unit_id = U.id WHERE U.id = @id AND D.language_id = @language_id;";
+            + "D.unit_id = U.id AND D.unit_id = @id AND D.language_id = @language_id;";
 
         // The using block is used to call dispose automatically even if there is a exception.
         using (SqlConnection cn = new SqlConnection(connection))
@@ -433,7 +431,7 @@ public class Unit
         // Create the connection string and the sql statement
         string connection = Tools.GetConnectionString();
         string sql = "SELECT * FROM dbo.units_detail AS D INNER JOIN dbo.units AS U ON "
-            + "D.unit_id = U.id WHERE D.language_id = @language_id ORDER BY " 
+            + "D.unit_id = U.id AND D.language_id = @language_id ORDER BY " 
             + sortField + " " + sortOrder + ";";
 
         // The using block is used to call dispose automatically even if there is a exception
@@ -442,7 +440,6 @@ public class Unit
             // The using block is used to call dispose automatically even if there is a exception
             using (SqlCommand cmd = new SqlCommand(sql, cn))
             {
-
                 // Add parameters
                 cmd.Parameters.AddWithValue("@language_id", languageId);
 
@@ -502,7 +499,7 @@ public class Unit
         // Create the connection string and the sql statement
         string connection = Tools.GetConnectionString();
         string sql = "SELECT * FROM dbo.units_detail AS D INNER JOIN dbo.units AS U ON "
-            + "D.unit_id = U.id WHERE D.language_id = @language_id ORDER BY " 
+            + "D.unit_id = U.id AND D.language_id = @language_id ORDER BY " 
             + sortField + " " + sortOrder + ";";
 
         // The using block is used to call dispose automatically even if there is a exception
@@ -511,7 +508,6 @@ public class Unit
             // The using block is used to call dispose automatically even if there is a exception
             using (SqlCommand cmd = new SqlCommand(sql, cn))
             {
-
                 // Add parameters
                 cmd.Parameters.AddWithValue("@language_id", languageId);
 
@@ -575,13 +571,12 @@ public class Unit
         // Create the connection string and the select statement
         string connection = Tools.GetConnectionString();
         string sql = "SELECT * FROM dbo.units_detail AS D INNER JOIN dbo.units AS U ON "
-            + "D.unit_id = U.id WHERE D.language_id = @language_id";
+            + "D.unit_id = U.id AND D.language_id = @language_id";
 
         // Append keywords to the sql string
         for (int i = 0; i < keywords.Length; i++)
         {
-            sql += " AND (CAST(U.id AS nvarchar(20)) LIKE @keyword_" + i.ToString() + " OR U.unit_code_si LIKE @keyword_" + i.ToString()
-                + " OR D.unit_code LIKE @keyword_" + i.ToString() + " OR D.name LIKE @keyword_" + i.ToString() + ")";
+            sql += " AND (D.unit_code LIKE @keyword_" + i.ToString() + " OR D.name LIKE @keyword_" + i.ToString() + ")";
         }
 
         // Add the final touch to the select string
@@ -655,7 +650,7 @@ public class Unit
     {
         // Create the connection and the sql statement
         string connection = Tools.GetConnectionString();
-        string sql = "DELETE FROM dbo.units WHERE id = @id;";
+        string sql = "DELETE FROM dbo.units_detail WHERE unit_id = @id;DELETE FROM dbo.units WHERE id = @id;";
 
         // The using block is used to call dispose automatically even if there is a exception.
         using (SqlConnection cn = new SqlConnection(connection))
@@ -663,6 +658,9 @@ public class Unit
             // The using block is used to call dispose automatically even if there is a exception.
             using (SqlCommand cmd = new SqlCommand(sql, cn))
             {
+                // Set command timeout to 90 seconds
+                cmd.CommandTimeout = 90;
+
                 // Add parameters
                 cmd.Parameters.AddWithValue("@id", id);
 

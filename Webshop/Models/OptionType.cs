@@ -286,13 +286,13 @@ public class OptionType
 
         // Create the connection string and the select statement
         string connection = Tools.GetConnectionString();
-        string sql = "SELECT COUNT(id) AS count FROM dbo.option_types_detail AS D INNER JOIN "
-            + "dbo.option_types AS O ON D.option_type_id = O.id WHERE D.language_id = @language_id";
+        string sql = "SELECT COUNT(D.option_type_id) AS count FROM dbo.option_types_detail AS D INNER JOIN "
+            + "dbo.option_types AS O ON D.option_type_id = O.id AND D.language_id = @language_id";
 
         // Append keywords to the sql string
         for (int i = 0; i < keywords.Length; i++)
         {
-            sql += " AND (CAST(O.id AS nvarchar(20)) LIKE @keyword_" + i.ToString() + " OR D.title LIKE @keyword_" + i.ToString() + ")";
+            sql += " AND (D.title LIKE @keyword_" + i.ToString() + ")";
         }
 
         // Add the final touch to the sql string
@@ -400,7 +400,7 @@ public class OptionType
         // Create the connection and the sql statement
         string connection = Tools.GetConnectionString();
         string sql = "SELECT * FROM dbo.option_types_detail AS D INNER JOIN dbo.option_types AS O ON " 
-            + "D.option_type_id = O.id WHERE O.id = @id AND D.language_id = @language_id;";
+            + "D.option_type_id = O.id AND D.option_type_id = @id AND D.language_id = @language_id;";
 
         // The using block is used to call dispose automatically even if there is a exception.
         using (SqlConnection cn = new SqlConnection(connection))
@@ -462,7 +462,7 @@ public class OptionType
         // Create the connection string and the sql statement.
         string connection = Tools.GetConnectionString();
         string sql = "SELECT * FROM dbo.option_types_detail AS D INNER JOIN dbo.option_types AS O ON "
-            + "D.option_type_id = O.id WHERE D.language_id = @language_id ORDER BY O.id ASC;";
+            + "D.option_type_id = O.id AND D.language_id = @language_id ORDER BY O.id ASC;";
 
         // The using block is used to call dispose automatically even if there is a exception.
         using (SqlConnection cn = new SqlConnection(connection))
@@ -470,7 +470,6 @@ public class OptionType
             // The using block is used to call dispose automatically even if there is a exception.
             using (SqlCommand cmd = new SqlCommand(sql, cn))
             {
-
                 // Add parameters
                 cmd.Parameters.AddWithValue("@language_id", languageId);
 
@@ -533,12 +532,12 @@ public class OptionType
         // Create the connection string and the select statement
         string connection = Tools.GetConnectionString();
         string sql = "SELECT * FROM dbo.option_types_detail AS D INNER JOIN dbo.option_types AS O ON "
-            + "D.option_type_id = O.id WHERE D.language_id = @language_id";
+            + "D.option_type_id = O.id AND D.language_id = @language_id";
 
         // Append keywords to the sql string
         for (int i = 0; i < keywords.Length; i++)
         {
-            sql += " AND (CAST(O.id AS nvarchar(20)) LIKE @keyword_" + i.ToString() + " OR D.title LIKE @keyword_" + i.ToString() + ")";
+            sql += " AND (D.title LIKE @keyword_" + i.ToString() + ")";
         }
 
         // Add the final touch to the select string
@@ -612,7 +611,7 @@ public class OptionType
     {
         // Create the connection and the sql statement
         string connection = Tools.GetConnectionString();
-        string sql = "DELETE FROM dbo.option_types WHERE id = @id;";
+        string sql = "DELETE FROM dbo.option_types_detail WHERE option_type_id = @id;DELETE FROM dbo.option_types WHERE id = @id;";
 
         // The using block is used to call dispose automatically even if there is a exception.
         using (SqlConnection cn = new SqlConnection(connection))
@@ -620,6 +619,9 @@ public class OptionType
             // The using block is used to call dispose automatically even if there is a exception.
             using (SqlCommand cmd = new SqlCommand(sql, cn))
             {
+                // Set command timeout to 90 seconds
+                cmd.CommandTimeout = 90;
+
                 // Add parameters
                 cmd.Parameters.AddWithValue("@id", id);
 
@@ -676,6 +678,9 @@ public class OptionType
             // The using block is used to call dispose automatically even if there is a exception.
             using (SqlCommand cmd = new SqlCommand(sql, cn))
             {
+                // Set command timeout to 90 seconds
+                cmd.CommandTimeout = 90;
+
                 // Add parameters
                 cmd.Parameters.AddWithValue("@id", id);
                 cmd.Parameters.AddWithValue("@language_id", languageId);

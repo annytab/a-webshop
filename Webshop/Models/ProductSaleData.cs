@@ -58,7 +58,7 @@ public class ProductSaleData
         // Create the connection string and the select statement
         string connection = Tools.GetConnectionString();
         string sql = "SELECT COUNT(*) FROM (SELECT R.product_code FROM dbo.order_rows AS R INNER JOIN dbo.orders AS O ON R.order_id = O.id "
-            + "WHERE O.document_type = @document_type ";
+            + "AND O.document_type = @document_type ";
 
         // Filter by country code
         if (countryCode != "")
@@ -115,14 +115,14 @@ public class ProductSaleData
         // Create the connection string and the select statement
         string connection = Tools.GetConnectionString();
         string sql = "SELECT COUNT(*) FROM (SELECT R.product_code FROM dbo.order_rows AS R INNER JOIN dbo.orders AS O ON R.order_id = O.id "
-            + "WHERE O.document_type = @document_type ";
+            + "AND O.document_type = @document_type ";
 
         // Filter by country code
-        if(countryCode != "")
+        if (countryCode != "")
         {
             sql += "AND O.country_code = @country_code ";
         }
-        
+
         sql += "AND YEAR(O.order_date) = @year AND MONTH(O.order_date) = @month GROUP BY R.product_code) AS count;";
 
         // The using block is used to call dispose automatically even if there are an exception.
@@ -173,7 +173,7 @@ public class ProductSaleData
         // Create the connection string and the select statement
         string connection = Tools.GetConnectionString();
         string sql = "SELECT COUNT(*) FROM (SELECT R.product_code FROM dbo.order_rows AS R INNER JOIN dbo.orders AS O ON R.order_id = O.id "
-            + "WHERE O.document_type = @document_type ";
+            + "AND O.document_type = @document_type ";
 
         // Filter by country code
         if (countryCode != "")
@@ -231,7 +231,7 @@ public class ProductSaleData
         // Create the connection string and the select statement
         string connection = Tools.GetConnectionString();
         string sql = "SELECT COUNT(*) FROM (SELECT R.product_code FROM dbo.order_rows AS R INNER JOIN dbo.orders AS O ON R.order_id = O.id "
-            + "WHERE O.document_type = @document_type ";
+            + "AND O.document_type = @document_type ";
 
         // Filter by country code
         if (countryCode != "")
@@ -297,7 +297,7 @@ public class ProductSaleData
         string connection = Tools.GetConnectionString();
         string sql = "SELECT R.product_code, R.product_name, SUM(R.quantity) as quantity "
             + "FROM dbo.order_rows AS R INNER JOIN dbo.orders AS O ON R.order_id = O.id "
-            + "WHERE O.document_type = @document_type ";
+            + "AND O.document_type = @document_type ";
 
         // Filter by country code
         if (countryCode != "")
@@ -376,15 +376,15 @@ public class ProductSaleData
         // Create the connection string and the select statement
         string connection = Tools.GetConnectionString();
         string sql = "SELECT R.product_code, R.product_name, SUM(R.quantity) as quantity "
-            + "FROM dbo.order_rows AS R INNER JOIN dbo.orders AS O ON R.order_id = O.id " 
-            + "WHERE O.document_type = @document_type ";
+            + "FROM dbo.order_rows AS R INNER JOIN dbo.orders AS O ON R.order_id = O.id "
+            + "AND O.document_type = @document_type ";
 
         // Filter by country code
         if (countryCode != "")
         {
             sql += "AND O.country_code = @country_code ";
         }
-        
+
         sql += "AND YEAR(O.order_date) = @year AND MONTH(O.order_date) = @month GROUP BY R.product_code, R.product_name ORDER BY quantity DESC "
             + "OFFSET @pageNumber ROWS FETCH NEXT @pageSize ROWS ONLY;";
 
@@ -458,7 +458,7 @@ public class ProductSaleData
         string connection = Tools.GetConnectionString();
         string sql = "SELECT R.product_code, R.product_name, SUM(R.quantity) as quantity "
             + "FROM dbo.order_rows AS R INNER JOIN dbo.orders AS O ON R.order_id = O.id "
-            + "WHERE O.document_type = @document_type ";
+            + "AND O.document_type = @document_type ";
 
         // Filter by country code
         if (countryCode != "")
@@ -539,7 +539,7 @@ public class ProductSaleData
         string connection = Tools.GetConnectionString();
         string sql = "SELECT R.product_code, R.product_name, SUM(R.quantity) as quantity "
             + "FROM dbo.order_rows AS R INNER JOIN dbo.orders AS O ON R.order_id = O.id "
-            + "WHERE O.document_type = @document_type ";
+            + "AND O.document_type = @document_type ";
 
         // Filter by country code
         if (countryCode != "")

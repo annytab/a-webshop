@@ -393,7 +393,6 @@ public class StaticText
             // The using block is used to call dispose automatically even if there is a exception
             using (SqlCommand cmd = new SqlCommand(sql, cn))
             {
-
                 // Add parameters
                 cmd.Parameters.AddWithValue("@language_id", languageId);
 

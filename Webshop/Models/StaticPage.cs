@@ -279,14 +279,13 @@ public class StaticPage
 
         // Create the connection string and the select statement
         string connection = Tools.GetConnectionString();
-        string sql = "SELECT COUNT(P.id) AS count FROM dbo.static_pages_detail AS D INNER JOIN dbo.static_pages "
-            + "AS P ON D.static_page_id = P.id WHERE D.language_id = @language_id";
+        string sql = "SELECT COUNT(D.static_page_id) AS count FROM dbo.static_pages_detail AS D INNER JOIN dbo.static_pages "
+            + "AS P ON D.static_page_id = P.id AND D.language_id = @language_id";
 
         // Append keywords to the sql string
         for (int i = 0; i < keywords.Length; i++)
         {
-            sql += " AND (CAST(P.id AS nvarchar(20)) LIKE @keyword_" + i.ToString() + " OR D.title LIKE @keyword_" + i.ToString()
-                + " OR D.meta_description LIKE @keyword_" + i.ToString() + ")";
+            sql += " AND (D.title LIKE @keyword_" + i.ToString() + ")";
         }
 
         // Add the final touch to the sql string
@@ -394,7 +393,7 @@ public class StaticPage
         // Create the connection and the sql statement
         string connection = Tools.GetConnectionString();
         string sql = "SELECT * FROM dbo.static_pages_detail AS D INNER JOIN dbo.static_pages AS P ON D.static_page_id = P.id " 
-            + "WHERE P.id = @id AND D.language_id = @language_id;";
+            + "AND D.static_page_id = @id AND D.language_id = @language_id;";
 
         // The using block is used to call dispose automatically even if there is a exception
         using (SqlConnection cn = new SqlConnection(connection))
@@ -457,7 +456,7 @@ public class StaticPage
         // Create the connection and the sql statement
         string connection = Tools.GetConnectionString();
         string sql = "SELECT * FROM dbo.static_pages_detail AS D INNER JOIN dbo.static_pages AS P ON D.static_page_id = P.id "
-            + "WHERE P.connected_to_page = @connected_to_page AND D.language_id = @language_id;";
+            + "AND P.connected_to_page = @connected_to_page AND D.language_id = @language_id;";
 
         // The using block is used to call dispose automatically even if there is a exception
         using (SqlConnection cn = new SqlConnection(connection))
@@ -520,7 +519,7 @@ public class StaticPage
         // Create the connection and the sql statement
         string connection = Tools.GetConnectionString();
         string sql = "SELECT * FROM dbo.static_pages_detail AS D INNER JOIN dbo.static_pages AS P ON D.static_page_id = P.id " 
-            + "WHERE D.page_name = @page_name AND D.language_id = @language_id;";
+            + "AND D.page_name = @page_name AND D.language_id = @language_id;";
 
         // The using block is used to call dispose automatically even if there is a exception
         using (SqlConnection cn = new SqlConnection(connection))
@@ -588,7 +587,7 @@ public class StaticPage
         // Create the connection string and the sql statement
         string connection = Tools.GetConnectionString();
         string sql = "SELECT * FROM dbo.static_pages_detail AS D INNER JOIN dbo.static_pages AS P ON D.static_page_id = P.id "
-            + "WHERE D.language_id = @language_id ORDER BY " + sortField + " " + sortOrder + ";";
+            + "AND D.language_id = @language_id ORDER BY " + sortField + " " + sortOrder + ";";
 
         // The using block is used to call dispose automatically even if there is a exception
         using (SqlConnection cn = new SqlConnection(connection))
@@ -655,7 +654,7 @@ public class StaticPage
         // Create the connection string and the sql statement
         string connection = Tools.GetConnectionString();
         string sql = "SELECT * FROM dbo.static_pages_detail AS D INNER JOIN dbo.static_pages AS P ON D.static_page_id = P.id "
-            + "WHERE D.language_id = @language_id AND D.inactive = 0 ORDER BY " + sortField + " " + sortOrder + ";";
+            + "AND D.language_id = @language_id AND D.inactive = 0 ORDER BY " + sortField + " " + sortOrder + ";";
 
         // The using block is used to call dispose automatically even if there is a exception
         using (SqlConnection cn = new SqlConnection(connection))
@@ -722,7 +721,7 @@ public class StaticPage
         // Create the connection string and the sql statement
         string connection = Tools.GetConnectionString();
         string sql = "SELECT * FROM dbo.static_pages_detail AS D INNER JOIN dbo.static_pages AS P ON D.static_page_id = P.id "
-            + "WHERE P.connected_to_page = @connected_to_page AND D.language_id = @language_id AND " 
+            + "AND P.connected_to_page = @connected_to_page AND D.language_id = @language_id AND " 
             + "D.inactive = @inactive ORDER BY " + sortField + " " + sortOrder + ";";
 
         // The using block is used to call dispose automatically even if there is a exception
@@ -795,13 +794,12 @@ public class StaticPage
         // Create the connection string and the select statement
         string connection = Tools.GetConnectionString();
         string sql = "SELECT * FROM dbo.static_pages_detail AS D INNER JOIN dbo.static_pages AS P ON D.static_page_id = P.id " 
-            + "WHERE D.language_id = @language_id";
+            + "AND D.language_id = @language_id";
 
         // Append keywords to the sql string
         for (int i = 0; i < keywords.Length; i++)
         {
-            sql += " AND (CAST(P.id AS nvarchar(20)) LIKE @keyword_" + i.ToString() + " OR D.title LIKE @keyword_" + i.ToString()
-                + " OR D.meta_description LIKE @keyword_" + i.ToString() + ")";
+            sql += " AND (D.title LIKE @keyword_" + i.ToString() + ")";
         }
 
         // Add the final touch to the sql string
@@ -875,7 +873,7 @@ public class StaticPage
     {
         // Create the connection and the sql statement
         string connection = Tools.GetConnectionString();
-        string sql = "DELETE FROM dbo.static_pages WHERE id = @id;";
+        string sql = "DELETE FROM dbo.static_pages_detail WHERE static_page_id = @id;DELETE FROM dbo.static_pages WHERE id = @id;";
 
         // The using block is used to call dispose automatically even if there are an exception.
         using (SqlConnection cn = new SqlConnection(connection))
@@ -883,6 +881,9 @@ public class StaticPage
             // The using block is used to call dispose automatically even if there are an exception.
             using (SqlCommand cmd = new SqlCommand(sql, cn))
             {
+                // Set command timeout to 90 seconds
+                cmd.CommandTimeout = 90;
+
                 // Add parameters
                 cmd.Parameters.AddWithValue("@id", id);
 
@@ -939,6 +940,9 @@ public class StaticPage
             // The using block is used to call dispose automatically even if there is a exception.
             using (SqlCommand cmd = new SqlCommand(sql, cn))
             {
+                // Set command timeout to 90 seconds
+                cmd.CommandTimeout = 90;
+
                 // Add parameters
                 cmd.Parameters.AddWithValue("@id", id);
                 cmd.Parameters.AddWithValue("@language_id", languageId);

@@ -389,7 +389,7 @@ public class CustomTheme
         // Append keywords to the sql string
         for (int i = 0; i < keywords.Length; i++)
         {
-            sql += " AND (CAST(id AS nvarchar(20)) LIKE @keyword_" + i.ToString() + " OR name LIKE @keyword_" + i.ToString() + ")";
+            sql += " AND (name LIKE @keyword_" + i.ToString() + ")";
         }
 
         // Add the final touch to the sql string
@@ -627,7 +627,7 @@ public class CustomTheme
         // Append keywords to the sql string
         for (int i = 0; i < keywords.Length; i++)
         {
-            sql += " AND (CAST(id AS nvarchar(20)) LIKE @keyword_" + i.ToString() + " OR name LIKE @keyword_" + i.ToString() + ")";
+            sql += " AND (name LIKE @keyword_" + i.ToString() + ")";
         }
 
         // Add the final touch to the select string
@@ -728,7 +728,7 @@ public class CustomTheme
 
         // Create the connection and the sql statement
         string connection = Tools.GetConnectionString();
-        string sql = "DELETE FROM dbo.custom_themes WHERE id = @id;";
+        string sql = "DELETE FROM dbo.custom_themes_templates WHERE custom_theme_id = @id;DELETE FROM dbo.custom_themes WHERE id = @id;";
 
         // The using block is used to call dispose automatically even if there is a exception
         using (SqlConnection cn = new SqlConnection(connection))
@@ -736,6 +736,9 @@ public class CustomTheme
             // The using block is used to call dispose automatically even if there is a exception
             using (SqlCommand cmd = new SqlCommand(sql, cn))
             {
+                // Set command timeout to 90 seconds
+                cmd.CommandTimeout = 90;
+
                 // Add parameters
                 cmd.Parameters.AddWithValue("@id", id);
 

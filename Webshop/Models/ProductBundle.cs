@@ -6,8 +6,7 @@ using System.Data.SqlClient;
 /// This class represent a product bundle
 /// </summary>
 public class ProductBundle
-{
-    
+{   
     #region Variables
 
     public Int32 bundle_product_id;
@@ -281,7 +280,6 @@ public class ProductBundle
             // The using block is used to call dispose automatically even if there is a exception
             using (SqlCommand cmd = new SqlCommand(sql, cn))
             {
-
                 // Add parameters
                 cmd.Parameters.AddWithValue("@bundle_product_id", bundleProductId);
 

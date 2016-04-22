@@ -254,8 +254,7 @@ public class Domain
         // Append keywords to the sql string
         for (int i = 0; i < keywords.Length; i++)
         {
-            sql += " AND (CAST(id AS nvarchar(20)) LIKE @keyword_" + i.ToString() + " OR webshop_name LIKE @keyword_" + i.ToString()
-                + " OR domain_name LIKE @keyword_" + i.ToString() + ")";
+            sql += " AND (webshop_name LIKE @keyword_" + i.ToString() + " OR domain_name LIKE @keyword_" + i.ToString() + ")";
         }
 
         // Add the final touch to the sql string
@@ -597,8 +596,7 @@ public class Domain
         // Append keywords to the sql string
         for (int i = 0; i < keywords.Length; i++)
         {
-            sql += " AND (CAST(id AS nvarchar(20)) LIKE @keyword_" + i.ToString() + " OR webshop_name LIKE @keyword_" + i.ToString()
-                + " OR domain_name LIKE @keyword_" + i.ToString() + ")";
+            sql += " AND (webshop_name LIKE @keyword_" + i.ToString() + " OR domain_name LIKE @keyword_" + i.ToString() + ")";
         }
 
         // Add the final touch to the select string

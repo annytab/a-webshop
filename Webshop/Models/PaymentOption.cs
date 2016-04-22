@@ -278,14 +278,13 @@ public class PaymentOption
 
         // Create the connection string and the select statement
         string connection = Tools.GetConnectionString();
-        string sql = "SELECT COUNT(id) AS count FROM dbo.payment_options_detail AS D INNER JOIN "
-            + "dbo.payment_options AS P ON D.payment_option_id = P.id WHERE D.language_id = @language_id";
+        string sql = "SELECT COUNT(D.payment_option_id) AS count FROM dbo.payment_options_detail AS D INNER JOIN "
+            + "dbo.payment_options AS P ON D.payment_option_id = P.id AND D.language_id = @language_id";
 
         // Append keywords to the sql string
         for (int i = 0; i < keywords.Length; i++)
         {
-            sql += " AND (CAST(P.id AS nvarchar(20)) LIKE @keyword_" + i.ToString() + " OR P.product_code LIKE @keyword_" + i.ToString()
-                + " OR D.name LIKE @keyword_" + i.ToString() + ")";
+            sql += " AND (P.product_code LIKE @keyword_" + i.ToString() + " OR D.name LIKE @keyword_" + i.ToString() + ")";
         }
 
         // Add the final touch to the sql string
@@ -393,7 +392,7 @@ public class PaymentOption
         // Create the connection and the sql statement
         string connection = Tools.GetConnectionString();
         string sql = "SELECT * FROM dbo.payment_options_detail AS D INNER JOIN dbo.payment_options AS P ON "
-            + "D.payment_option_id = P.id WHERE P.id = @id AND D.language_id = @language_id;";
+            + "D.payment_option_id = P.id AND D.payment_option_id = @id AND D.language_id = @language_id;";
 
         // The using block is used to call dispose automatically even if there is a exception.
         using (SqlConnection cn = new SqlConnection(connection))
@@ -461,7 +460,7 @@ public class PaymentOption
         // Create the connection string and the sql statement
         string connection = Tools.GetConnectionString();
         string sql = "SELECT * FROM dbo.payment_options_detail AS D INNER JOIN dbo.payment_options AS P ON "
-            + "D.payment_option_id = P.id WHERE D.language_id = @language_id ORDER BY " + sortField + " " + sortOrder + ";";
+            + "D.payment_option_id = P.id AND D.language_id = @language_id ORDER BY " + sortField + " " + sortOrder + ";";
 
         // The using block is used to call dispose automatically even if there is a exception
         using (SqlConnection cn = new SqlConnection(connection))
@@ -528,7 +527,7 @@ public class PaymentOption
         // Create the connection string and the sql statement
         string connection = Tools.GetConnectionString();
         string sql = "SELECT * FROM dbo.payment_options_detail AS D INNER JOIN dbo.payment_options AS P ON "
-            + "D.payment_option_id = P.id WHERE D.language_id = @language_id AND D.inactive = 0 ORDER BY " 
+            + "D.payment_option_id = P.id AND D.language_id = @language_id AND D.inactive = 0 ORDER BY " 
             + sortField + " " + sortOrder + ";";
 
         // The using block is used to call dispose automatically even if there is a exception
@@ -599,13 +598,12 @@ public class PaymentOption
         // Create the connection string and the select statement
         string connection = Tools.GetConnectionString();
         string sql = "SELECT * FROM dbo.payment_options_detail AS D INNER JOIN dbo.payment_options AS P ON "
-            + "D.payment_option_id = P.id WHERE D.language_id = @language_id";
+            + "D.payment_option_id = P.id AND D.language_id = @language_id";
 
         // Append keywords to the sql string
         for (int i = 0; i < keywords.Length; i++)
         {
-            sql += " AND (CAST(P.id AS nvarchar(20)) LIKE @keyword_" + i.ToString() + " OR P.product_code LIKE @keyword_" + i.ToString()
-                + " OR D.name LIKE @keyword_" + i.ToString() + ")";
+            sql += " AND (P.product_code LIKE @keyword_" + i.ToString() + " OR D.name LIKE @keyword_" + i.ToString() + ")";
         }
 
         // Add the final touch to the select string
@@ -679,7 +677,7 @@ public class PaymentOption
     {
         // Create the connection and the sql statement
         string connection = Tools.GetConnectionString();
-        string sql = "DELETE FROM dbo.payment_options WHERE id = @id;";
+        string sql = "DELETE FROM dbo.payment_options_detail WHERE payment_option_id = @id;DELETE FROM dbo.payment_options WHERE id = @id;";
 
         // The using block is used to call dispose automatically even if there is a exception.
         using (SqlConnection cn = new SqlConnection(connection))
@@ -687,6 +685,9 @@ public class PaymentOption
             // The using block is used to call dispose automatically even if there is a exception.
             using (SqlCommand cmd = new SqlCommand(sql, cn))
             {
+                // Set command timeout to 90 seconds
+                cmd.CommandTimeout = 90;
+
                 // Add parameters
                 cmd.Parameters.AddWithValue("@id", id);
 
@@ -743,6 +744,9 @@ public class PaymentOption
             // The using block is used to call dispose automatically even if there is a exception.
             using (SqlCommand cmd = new SqlCommand(sql, cn))
             {
+                // Set command timeout to 90 seconds
+                cmd.CommandTimeout = 90;
+
                 // Add parameters
                 cmd.Parameters.AddWithValue("@id", id);
                 cmd.Parameters.AddWithValue("@language_id", languageId);

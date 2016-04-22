@@ -21,7 +21,6 @@ public static class SitemapManager
     /// <param name="changeFrequency">The change frequency</param>
     public static void CreateSitemap(Domain domain, string priorityCategories, string priorityProducts, string changeFrequency)
     {
-
         // Create the directory path
         string directoryPath = HttpContext.Current.Server.MapPath("/Content/domains/" + domain.id.ToString() + "/sitemaps/");
 
@@ -37,7 +36,7 @@ public static class SitemapManager
 
         // Get categories, products and static pages
         List<Category> categories = Category.GetAll(domain.front_end_language, "title", "ASC");
-        List<Product> products = Product.GetAll(domain.front_end_language, "title", "ASC");
+        //List<Product> products = Product.GetAll(domain.front_end_language, "title", "ASC");
 
         // Create variables
         GZipStream gzipStream = null;
@@ -73,11 +72,22 @@ public static class SitemapManager
                 CreateUrlPost(xmlTextWriter, baseUrl + "/home/category/" + categories[i].page_name, priorityCategories, changeFrequency, DateTime.UtcNow);
             }
 
-            // Loop products
-            for (int i = 0; i < products.Count; i++)
+            // Get products
+            Int32 page = 1;
+            List<Product> products = Product.GetActiveReliable(domain.front_end_language, 50, page, "title", "ASC");
+
+            while(products.Count > 0)
             {
-                // Create the url post
-                CreateUrlPost(xmlTextWriter, baseUrl + "/home/product/" + products[i].page_name, priorityProducts, changeFrequency, DateTime.UtcNow);
+                // Loop products
+                for (int i = 0; i < products.Count; i++)
+                {
+                    // Create the url post
+                    CreateUrlPost(xmlTextWriter, baseUrl + "/home/product/" + products[i].page_name, priorityProducts, changeFrequency, DateTime.UtcNow);
+                }
+
+                // Get more products
+                page = page + 1;
+                products = Product.GetActiveReliable(domain.front_end_language, 50, page, "title", "ASC");
             }
 
             // Write the end tag for the xml document </urlset>

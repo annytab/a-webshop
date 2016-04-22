@@ -182,8 +182,10 @@ public class ProductReview
         // Append keywords to the sql string
         for (int i = 0; i < keywords.Length; i++)
         {
-            sql += " AND (CAST(id AS nvarchar(20)) LIKE @keyword_" + i.ToString() + " OR CAST(product_id AS nvarchar(20)) LIKE @keyword_" + i.ToString()
-                + " OR CAST(customer_id AS nvarchar(20)) LIKE @keyword_" + i.ToString() + ")";
+            if (keywords[i].ToString() != "")
+            {
+                sql += " AND (id = @keyword_" + i.ToString() + " OR product_id = @keyword_" + i.ToString() + " OR customer_id = @keyword_" + i.ToString() + ")";
+            } 
         }
 
         // Add the final touch to the sql string
@@ -198,7 +200,12 @@ public class ProductReview
                 // Add parameters for search keywords
                 for (int i = 0; i < keywords.Length; i++)
                 {
-                    cmd.Parameters.AddWithValue("@keyword_" + i.ToString(), "%" + keywords[i].ToString() + "%");
+                    if (keywords[i].ToString() != "")
+                    {
+                        Int32 number = 0;
+                        Int32.TryParse(keywords[i].ToString(), out number);
+                        cmd.Parameters.AddWithValue("@keyword_" + i.ToString(), number);
+                    }
                 }
 
                 // The Try/Catch/Finally statement is used to handle unusual exceptions in the code to
@@ -244,7 +251,6 @@ public class ProductReview
             // The using block is used to call dispose automatically even if there are an exception.
             using (SqlCommand cmd = new SqlCommand(sql, cn))
             {
-
                 // Add parameters
                 cmd.Parameters.AddWithValue("@customer_id", customerId);
 
@@ -293,7 +299,6 @@ public class ProductReview
             // The using block is used to call dispose automatically even if there are an exception.
             using (SqlCommand cmd = new SqlCommand(sql, cn))
             {
-
                 // Add parameters
                 cmd.Parameters.AddWithValue("@product_id", productId);
                 cmd.Parameters.AddWithValue("@language_id", languageId);
@@ -520,8 +525,10 @@ public class ProductReview
         // Append keywords to the sql string
         for (int i = 0; i < keywords.Length; i++)
         {
-            sql += " AND (CAST(id AS nvarchar(20)) LIKE @keyword_" + i.ToString() + " OR CAST(product_id AS nvarchar(20)) LIKE @keyword_" + i.ToString()
-                + " OR CAST(customer_id AS nvarchar(20)) LIKE @keyword_" + i.ToString() + ")";
+            if (keywords[i].ToString() != "")
+            {
+                sql += " AND (id = @keyword_" + i.ToString() + " OR product_id = @keyword_" + i.ToString() + " OR customer_id = @keyword_" + i.ToString() + ")";
+            }
         }
 
         // Add the final touch to the select string
@@ -540,7 +547,12 @@ public class ProductReview
                 // Add parameters for search keywords
                 for (int i = 0; i < keywords.Length; i++)
                 {
-                    cmd.Parameters.AddWithValue("@keyword_" + i.ToString(), "%" + keywords[i].ToString() + "%");
+                    if (keywords[i].ToString() != "")
+                    {
+                        Int32 number = 0;
+                        Int32.TryParse(keywords[i].ToString(), out number);
+                        cmd.Parameters.AddWithValue("@keyword_" + i.ToString(), number);
+                    }
                 }
 
                 // Create a reader
@@ -684,7 +696,6 @@ public class ProductReview
             // The using block is used to call dispose automatically even if there are an exception.
             using (SqlCommand cmd = new SqlCommand(sql, cn))
             {
-
                 // Add parameters
                 cmd.Parameters.AddWithValue("@product_id", productId);
                 cmd.Parameters.AddWithValue("@language_id", languageId);

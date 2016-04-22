@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Data.SqlClient;
+using System.Threading;
 
 /// <summary>
 /// This class represent a product for a specific language
@@ -856,14 +857,13 @@ public class Product
 
         // Create the connection string and the select statement
         string connection = Tools.GetConnectionString();
-        string sql = "SELECT COUNT(id) AS count FROM dbo.products_detail AS D INNER JOIN dbo.products AS P ON D.product_id = P.id "
-            + "WHERE D.language_id = @language_id";
+        string sql = "SELECT COUNT(D.product_id) AS count FROM dbo.products_detail AS D INNER JOIN dbo.products AS P ON D.product_id = P.id "
+            + "AND D.language_id = @language_id";
 
         // Append keywords to the sql string
         for (int i = 0; i < keywords.Length; i++)
         {
-            sql += " AND (CAST(P.id AS nvarchar(20)) LIKE @keyword_" + i.ToString() + " OR D.title LIKE @keyword_" + i.ToString()
-                + " OR D.meta_description LIKE @keyword_" + i.ToString() + ")";
+            sql += " AND (D.title LIKE @keyword_" + i.ToString() + " OR D.meta_keywords LIKE @keyword_" + i.ToString() + ")";
         }
 
         // Add the final touch to the sql string
@@ -920,14 +920,13 @@ public class Product
 
         // Create the connection string and the select statement
         string connection = Tools.GetConnectionString();
-        string sql = "SELECT COUNT(id) AS count FROM dbo.products_detail AS D INNER JOIN dbo.products AS P ON D.product_id = P.id "
-            + "WHERE D.language_id = @language_id AND D.inactive = 0";
+        string sql = "SELECT COUNT(D.product_id) AS count FROM dbo.products_detail AS D INNER JOIN dbo.products AS P ON D.product_id = P.id "
+            + "AND D.language_id = @language_id AND D.inactive = 0";
 
         // Append keywords to the sql string
         for (int i = 0; i < keywords.Length; i++)
         {
-            sql += " AND (P.brand LIKE @keyword_" + i.ToString() + " OR D.title LIKE @keyword_" + i.ToString() 
-                + " OR D.meta_description LIKE @keyword_" + i.ToString() + " OR D.meta_keywords LIKE @keyword_" + i.ToString() + ")";
+            sql += " AND (D.title LIKE @keyword_" + i.ToString() + " OR D.meta_keywords LIKE @keyword_" + i.ToString() + ")";
         }
 
         // Add the final touch to the sql string
@@ -1035,7 +1034,7 @@ public class Product
         // Create the connection and the sql statement
         string connection = Tools.GetConnectionString();
         string sql = "SELECT * FROM dbo.products_detail AS D INNER JOIN dbo.products AS P ON D.product_id = P.id "
-            + "WHERE P.id = @id AND D.language_id = @language_id;";
+            + "AND D.product_id = @id AND D.language_id = @language_id;";
 
         // The using block is used to call dispose automatically even if there are an exception.
         using (SqlConnection cn = new SqlConnection(connection))
@@ -1097,7 +1096,7 @@ public class Product
         // Create the connection and the sql statement
         string connection = Tools.GetConnectionString();
         string sql = "SELECT * FROM dbo.products_detail AS D INNER JOIN dbo.products AS P ON D.product_id "
-            + "= P.id WHERE D.page_name = @page_name AND D.language_id = @language_id;";
+            + "= P.id AND D.page_name = @page_name AND D.language_id = @language_id;";
 
         // The using block is used to call dispose automatically even if there are an exception.
         using (SqlConnection cn = new SqlConnection(connection))
@@ -1165,7 +1164,7 @@ public class Product
         // Create the connection string and the select statement
         string connection = Tools.GetConnectionString();
         string sql = "SELECT * FROM dbo.products_detail AS D INNER JOIN dbo.products AS P ON D.product_id = P.id "
-            + "WHERE D.language_id = @language_id ORDER BY " + sortField + " " + sortOrder + ";";
+            + "AND D.language_id = @language_id ORDER BY " + sortField + " " + sortOrder + ";";
 
         // The using block is used to call dispose automatically even if there are an exception.
         using (SqlConnection cn = new SqlConnection(connection))
@@ -1215,6 +1214,104 @@ public class Product
     } // End of the GetAll method
 
     /// <summary>
+    /// Get active products as a chunk
+    /// </summary>
+    /// <param name="languageId">The id of the language</param>
+    /// <param name="pageSize">The number of pages on one page</param>
+    /// <param name="pageNumber">The page number of a page from 1 and above</param>
+    /// <param name="sortField">The field to sort on</param>
+    /// <param name="sortOrder">The sort order ASC or DESC</param>
+    /// <returns>A list of products</returns>
+    public static List<Product> GetActiveReliable(Int32 languageId, Int32 pageSize, Int32 pageNumber, string sortField, string sortOrder)
+    {
+        // Make sure that sort variables are valid
+        sortField = GetValidSortField(sortField);
+        sortOrder = GetValidSortOrder(sortOrder);
+
+        // Create the list to return
+        List<Product> posts = new List<Product>(pageSize);
+
+        // Create the connection string and the select statement
+        string connection = Tools.GetConnectionString();
+        string sql = "SELECT * FROM dbo.products_detail AS D INNER JOIN dbo.products AS P ON D.product_id = P.id "
+            + "AND D.language_id = @language_id AND D.inactive = 0 ";
+
+        // Add the final touch to the sql string
+        sql += "ORDER BY " + sortField + " " + sortOrder + " OFFSET @pageNumber ROWS FETCH NEXT @pageSize ROWS ONLY;";
+
+        // Make retries up to 10 times
+        for (int r = 0; r < 10; r++)
+        {
+            // The using block is used to call dispose automatically even if there are an exception.
+            using (SqlConnection cn = new SqlConnection(connection))
+            {
+                // The using block is used to call dispose automatically even if there are an exception.
+                using (SqlCommand cmd = new SqlCommand(sql, cn))
+                {
+                    // Set command timeout to 60 seconds
+                    cmd.CommandTimeout = 60;
+
+                    // Add parameters
+                    cmd.Parameters.AddWithValue("@language_id", languageId);
+                    cmd.Parameters.AddWithValue("@pageNumber", (pageNumber - 1) * pageSize);
+                    cmd.Parameters.AddWithValue("@pageSize", pageSize);
+
+                    // Create a reader
+                    SqlDataReader reader = null;
+
+                    // The Try/Catch/Finally statement is used to handle unusual exceptions in the code to
+                    // avoid having our application crash in such cases
+                    try
+                    {
+                        // Open the connection.
+                        cn.Open();
+
+                        // Fill the reader with data from the select command.
+                        reader = cmd.ExecuteReader();
+
+                        // Loop through the reader as long as there is something to read.
+                        while (reader.Read())
+                        {
+                            posts.Add(new Product(reader));
+                        }
+
+                    }
+                    catch (SqlException sqlEx)
+                    {
+                        // Sleep times should be random
+                        Random rnd = new Random();
+
+                        // Deadlock or timeout, 1205 = Deadlock, -2 = TimeOut
+                        if (sqlEx.Number == 1205 || sqlEx.Number == -2)
+                        {
+                            Thread.Sleep(rnd.Next(5000, 10000));
+                            continue;
+                        }
+                    }
+                    catch (Exception e)
+                    {
+                        throw e;
+                    }
+                    finally
+                    {
+                        // Call Close when done reading to avoid memory leakage.
+                        if (reader != null)
+                            reader.Close();
+                    }
+                }
+            }
+
+            // No exceptions (break out from the loop)
+            break;
+
+        } // End of the for(int r = 0; r < 10; r++)
+
+        // Return the list of posts
+        return posts;
+
+    } // End of the GetActiveReliable method
+
+    /// <summary>
     /// Get all the active products for a specific language
     /// </summary>
     /// <param name="languageId">The id of the language</param>
@@ -1233,7 +1330,7 @@ public class Product
         // Create the connection string and the select statement
         string connection = Tools.GetConnectionString();
         string sql = "SELECT * FROM dbo.products_detail AS D INNER JOIN dbo.products AS P ON D.product_id = P.id "
-            + "WHERE D.language_id = @language_id AND D.inactive = 0 ORDER BY " + sortField + " " + sortOrder + ";";
+            + "AND D.language_id = @language_id AND D.inactive = 0 ORDER BY " + sortField + " " + sortOrder + ";";
 
         // The using block is used to call dispose automatically even if there are an exception.
         using (SqlConnection cn = new SqlConnection(connection))
@@ -1381,7 +1478,7 @@ public class Product
         // Create the connection string and the sql statement.
         string connection = Tools.GetConnectionString();
         string sql = "SELECT * FROM dbo.products_detail AS D INNER JOIN dbo.products AS P ON D.product_id = P.id "
-            + "WHERE P.category_id = @category_id AND D.language_id = @language_id "
+            + "AND P.category_id = @category_id AND D.language_id = @language_id "
             + "ORDER BY " + sortField + " " + sortOrder + ";";
 
         // The using block is used to call dispose automatically even if there is a exception.
@@ -1451,7 +1548,7 @@ public class Product
         // Create the connection string and the sql statement.
         string connection = Tools.GetConnectionString();
         string sql = "SELECT * FROM dbo.products_detail AS D INNER JOIN dbo.products AS P ON D.product_id = P.id "
-            + "WHERE P.category_id = @category_id AND D.language_id = @language_id AND D.inactive = 0 "
+            + "AND P.category_id = @category_id AND D.language_id = @language_id AND D.inactive = 0 "
             + "ORDER BY " + sortField + " " + sortOrder + ";";
 
         // The using block is used to call dispose automatically even if there is a exception.
@@ -1460,7 +1557,6 @@ public class Product
             // The using block is used to call dispose automatically even if there is a exception.
             using (SqlCommand cmd = new SqlCommand(sql, cn))
             {
-
                 // Add parameters
                 cmd.Parameters.AddWithValue("@category_id", categoryId);
                 cmd.Parameters.AddWithValue("@language_id", languageId);
@@ -1524,13 +1620,12 @@ public class Product
         // Create the connection string and the select statement
         string connection = Tools.GetConnectionString();
         string sql = "SELECT * FROM dbo.products_detail AS D INNER JOIN dbo.products AS P ON D.product_id = P.id " 
-            + "WHERE D.language_id = @language_id";
+            + "AND D.language_id = @language_id";
 
         // Append keywords to the sql string
         for (int i = 0; i < keywords.Length; i++)
         {
-            sql += " AND (CAST(P.id AS nvarchar(20)) LIKE @keyword_" + i.ToString() + " OR D.title LIKE @keyword_" + i.ToString()
-                + " OR D.meta_description LIKE @keyword_" + i.ToString() + ")";
+            sql += " AND (D.title LIKE @keyword_" + i.ToString() + " OR D.meta_keywords LIKE @keyword_" + i.ToString() + ")";
         }
 
         // Add the final touch to the sql string
@@ -1614,13 +1709,12 @@ public class Product
         // Create the connection string and the select statement
         string connection = Tools.GetConnectionString();
         string sql = "SELECT * FROM dbo.products_detail AS D INNER JOIN dbo.products AS P ON D.product_id = P.id "
-            + "WHERE D.language_id = @language_id AND D.inactive = 0 ";
+            + "AND D.language_id = @language_id AND D.inactive = 0 ";
 
         // Append keywords to the sql string
         for (int i = 0; i < keywords.Length; i++)
         {
-            sql += "AND (P.brand LIKE @keyword_" + i.ToString() + " OR D.title LIKE @keyword_" + i.ToString()
-                + " OR D.meta_description LIKE @keyword_" + i.ToString() + " OR D.meta_keywords LIKE @keyword_" + i.ToString() + ") ";
+            sql += "AND (D.title LIKE @keyword_" + i.ToString() + " OR D.meta_keywords LIKE @keyword_" + i.ToString() + ") ";
         }
 
         // Add the final touch to the sql string
@@ -1630,13 +1724,12 @@ public class Product
         if (sortField.ToLower() == "unit_price" && pricesIncludesVat == true)
         {
             sql = "SELECT *, (P.unit_price * (1 - P.discount) * (1 + V.value)) AS unit_price_with_vat FROM dbo.products_detail AS D INNER JOIN dbo.products AS P ON D.product_id = P.id "
-            + "INNER JOIN dbo.value_added_taxes AS V ON D.value_added_tax_id = V.id WHERE D.language_id = @language_id ";
+            + "INNER JOIN dbo.value_added_taxes AS V ON D.value_added_tax_id = V.id AND D.language_id = @language_id ";
 
             // Append keywords to the sql string
             for (int i = 0; i < keywords.Length; i++)
             {
-                sql += "AND (P.brand LIKE @keyword_" + i.ToString() + " OR D.title LIKE @keyword_" + i.ToString()
-                    + " OR D.meta_description LIKE @keyword_" + i.ToString() + " OR D.meta_keywords LIKE @keyword_" + i.ToString() + ") ";
+                sql += "AND (D.title LIKE @keyword_" + i.ToString() + " OR D.meta_keywords LIKE @keyword_" + i.ToString() + ") ";
             }
 
             // Add the final touch to the sql string
@@ -1647,13 +1740,12 @@ public class Product
         if (sortField.ToLower() == "unit_price" && pricesIncludesVat == false)
         {
             sql = "SELECT *, (P.unit_price * (1 - P.discount)) AS discount_price FROM dbo.products_detail AS D INNER JOIN dbo.products AS P ON D.product_id = P.id "
-            + "WHERE D.language_id = @language_id AND D.inactive = 0 ";
+            + "AND D.language_id = @language_id AND D.inactive = 0 ";
 
             // Append keywords to the sql string
             for (int i = 0; i < keywords.Length; i++)
             {
-                sql += "AND (P.brand LIKE @keyword_" + i.ToString() + " OR D.title LIKE @keyword_" + i.ToString()
-                    + " OR D.meta_description LIKE @keyword_" + i.ToString() + " OR D.meta_keywords LIKE @keyword_" + i.ToString() + ") ";
+                sql += "AND (D.title LIKE @keyword_" + i.ToString() + " OR D.meta_keywords LIKE @keyword_" + i.ToString() + ") ";
             }
 
             // Add the final touch to the sql string
@@ -1763,7 +1855,10 @@ public class Product
     {
         // Create the connection and the sql statement
         string connection = Tools.GetConnectionString();
-        string sql = "DELETE FROM dbo.products WHERE id = @id;";
+        string sql = "DELETE FROM dbo.product_reviews WHERE product_id = @id;DELETE FROM dbo.product_bundles WHERE bundle_product_id = @id;" 
+            + "DELETE FROM dbo.product_bundles WHERE product_id = @id;DELETE FROM dbo.product_accessories WHERE product_id = @id;" 
+            + "DELETE FROM dbo.product_accessories WHERE accessory_id = @id;DELETE FROM dbo.products_detail WHERE product_id = @id;"
+            + "DELETE FROM dbo.products WHERE id = @id;";
 
         // The using block is used to call dispose automatically even if there are an exception.
         using (SqlConnection cn = new SqlConnection(connection))
@@ -1771,6 +1866,9 @@ public class Product
             // The using block is used to call dispose automatically even if there are an exception.
             using (SqlCommand cmd = new SqlCommand(sql, cn))
             {
+                // Set command timeout to 90 seconds
+                cmd.CommandTimeout = 90;
+
                 // Add parameters
                 cmd.Parameters.AddWithValue("@id", id);
 
@@ -1819,7 +1917,8 @@ public class Product
     {
         // Create the connection and the sql statement
         string connection = Tools.GetConnectionString();
-        string sql = "DELETE FROM dbo.products_detail WHERE product_id = @id AND language_id = @language_id;";
+        string sql = "DELETE FROM dbo.product_reviews WHERE product_id = @id AND language_id = @language_id;" 
+            + "DELETE FROM dbo.products_detail WHERE product_id = @id AND language_id = @language_id;";
 
         // The using block is used to call dispose automatically even if there is a exception.
         using (SqlConnection cn = new SqlConnection(connection))
@@ -1827,6 +1926,9 @@ public class Product
             // The using block is used to call dispose automatically even if there is a exception.
             using (SqlCommand cmd = new SqlCommand(sql, cn))
             {
+                // Set command timeout to 90 seconds
+                cmd.CommandTimeout = 90;
+
                 // Add parameters
                 cmd.Parameters.AddWithValue("@id", id);
                 cmd.Parameters.AddWithValue("@language_id", languageId);

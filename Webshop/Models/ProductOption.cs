@@ -316,9 +316,8 @@ public class ProductOption
         string connection = Tools.GetConnectionString();
         string sql = "SELECT P.product_option_type_id, P.option_id, P.mpn_suffix, P.price_addition, P.freight_addition, "
             + "O.product_code_suffix, D.title, 1 as selected FROM dbo.product_options AS P INNER JOIN "
-            + "dbo.options AS O ON P.option_id = O.id INNER JOIN dbo.options_detail AS D ON P.option_id = D.option_id "
-            + "WHERE P.product_option_type_id = @product_option_type_id AND P.option_id = @option_id AND " 
-            + "D.language_id = @language_id;";
+            + "dbo.options AS O ON P.option_id = O.id AND P.product_option_type_id = @product_option_type_id AND "
+            + "P.option_id = @option_id INNER JOIN dbo.options_detail AS D ON P.option_id = D.option_id AND D.language_id = @language_id;";
 
         // The using block is used to call dispose automatically even if there are an exception.
         using (SqlConnection cn = new SqlConnection(connection))
@@ -383,7 +382,7 @@ public class ProductOption
         string sql = "SELECT P.product_option_type_id, P.option_id, P.mpn_suffix, P.price_addition, P.freight_addition, "
             + "O.product_code_suffix, D.title, 1 as selected FROM dbo.product_options AS P INNER JOIN "
             + "dbo.options AS O ON P.option_id = O.id INNER JOIN dbo.options_detail AS D ON P.option_id = D.option_id "
-            + "WHERE D.language_id = @language_id ORDER BY P.product_option_type_id ASC, O.sort_order ASC;";
+            + "AND D.language_id = @language_id ORDER BY P.product_option_type_id ASC, O.sort_order ASC;";
 
         // The using block is used to call dispose automatically even if there are an exception.
         using (SqlConnection cn = new SqlConnection(connection))
@@ -391,7 +390,6 @@ public class ProductOption
             // The using block is used to call dispose automatically even if there is a exception.
             using (SqlCommand cmd = new SqlCommand(sql, cn))
             {
-
                 // Add parameters
                 cmd.Parameters.AddWithValue("@language_id", languageId);
 
@@ -447,8 +445,8 @@ public class ProductOption
         string connection = Tools.GetConnectionString();
         string sql = "SELECT P.product_option_type_id, P.option_id, P.mpn_suffix, P.price_addition, P.freight_addition, "
             + "O.product_code_suffix, D.title, 1 as selected FROM dbo.product_options AS P INNER JOIN "
-            + "dbo.options AS O ON P.option_id = O.id INNER JOIN dbo.options_detail AS D ON P.option_id = D.option_id "
-            + "WHERE P.product_option_type_id = @product_option_type_id AND "
+            + "dbo.options AS O ON P.option_id = O.id AND P.product_option_type_id = @product_option_type_id " 
+            + "INNER JOIN dbo.options_detail AS D ON P.option_id = D.option_id AND "
             + "D.language_id = @language_id ORDER BY O.sort_order ASC;";
 
         // The using block is used to call dispose automatically even if there are an exception.
@@ -457,7 +455,6 @@ public class ProductOption
             // The using block is used to call dispose automatically even if there is a exception.
             using (SqlCommand cmd = new SqlCommand(sql, cn))
             {
-
                 // Add parameters
                 cmd.Parameters.AddWithValue("@product_option_type_id", productOptionTypeId);
                 cmd.Parameters.AddWithValue("@language_id", languageId);
@@ -515,7 +512,7 @@ public class ProductOption
         string connection = Tools.GetConnectionString();
         string sql = "SELECT 0 AS product_option_type_id, D.option_id, '' AS mpn_suffix, 0 AS price_addition, 0 AS freight_addition, "
             + "O.product_code_suffix, D.title, 0 AS selected FROM dbo.options_detail AS D INNER JOIN dbo.options AS O ON D.option_id "
-            + "= O.id WHERE O.option_type_id = @option_type_id AND D.language_id = @language_id";
+            + "= O.id AND O.option_type_id = @option_type_id AND D.language_id = @language_id";
 
         // Do not include product options
         if (productOptions != null)
@@ -535,7 +532,6 @@ public class ProductOption
             // The using block is used to call dispose automatically even if there is a exception.
             using (SqlCommand cmd = new SqlCommand(sql, cn))
             {
-
                 // Add parameters
                 cmd.Parameters.AddWithValue("@option_type_id", optionTypeId);
                 cmd.Parameters.AddWithValue("@language_id", languageId);
@@ -595,7 +591,6 @@ public class ProductOption
     /// <param name="current">The current product option array</param>
     public static void GetProductCombinations(List<ProductOption[]> productCombinations, Dictionary<Int32, List<ProductOption>> productOptions, Int32 depth, ProductOption[] current)
     {
-
         // Loop the dictionary list
         for (int i = 0; i < productOptions[depth].Count; i++)
         {
@@ -682,6 +677,61 @@ public class ProductOption
         return 0;
 
     } // End of the DeleteOnId method
+
+    /// <summary>
+    /// Delete a product option post on option id
+    /// </summary>
+    /// <param name="option_id">The option id</param>
+    /// <returns>An error code</returns>
+    public static Int32 DeleteOnOptionId(Int32 option_id)
+    {
+        // Create the connection and the sql statement
+        string connection = Tools.GetConnectionString();
+        string sql = "DELETE FROM dbo.product_options WHERE option_id = @option_id;";
+
+        // The using block is used to call dispose automatically even if there is a exception.
+        using (SqlConnection cn = new SqlConnection(connection))
+        {
+            // The using block is used to call dispose automatically even if there is a exception.
+            using (SqlCommand cmd = new SqlCommand(sql, cn))
+            {
+                // Add parameters
+                cmd.Parameters.AddWithValue("@option_id", option_id);
+
+                // The Try/Catch/Finally statement is used to handle unusual exceptions in the code to
+                // avoid having our application crash in such cases.
+                try
+                {
+                    // Open the connection
+                    cn.Open();
+
+                    // Execute the update
+                    cmd.ExecuteNonQuery();
+
+                }
+                catch (SqlException e)
+                {
+                    // Check for a foreign key constraint error
+                    if (e.Number == 547)
+                    {
+                        return 5;
+                    }
+                    else
+                    {
+                        throw e;
+                    }
+                }
+                catch (Exception e)
+                {
+                    throw e;
+                }
+            }
+        }
+
+        // Return the code for success
+        return 0;
+
+    } // End of the DeleteOnOptionId method
 
     #endregion
 

@@ -244,14 +244,13 @@ public class Country
 
         // Create the connection string and the select statement
         string connection = Tools.GetConnectionString();
-        string sql = "SELECT COUNT(id) AS count FROM dbo.countries_detail AS D INNER JOIN "
-            + "dbo.countries AS C ON D.country_id = C.id WHERE D.language_id = @language_id";
+        string sql = "SELECT COUNT(D.country_id) AS count FROM dbo.countries_detail AS D INNER JOIN "
+            + "dbo.countries AS C ON D.country_id = C.id AND D.language_id = @language_id";
 
         // Append keywords to the sql string
         for (int i = 0; i < keywords.Length; i++)
         {
-            sql += " AND (CAST(C.id AS nvarchar(20)) LIKE @keyword_" + i.ToString() + " OR C.country_code LIKE @keyword_" + i.ToString()
-                + " OR D.name LIKE @keyword_" + i.ToString() + ")";
+            sql += " AND (C.country_code LIKE @keyword_" + i.ToString() + " OR D.name LIKE @keyword_" + i.ToString() + ")";
         }
 
         // Add the final touch to the sql string
@@ -359,7 +358,7 @@ public class Country
         // Create the connection and the sql statement
         string connection = Tools.GetConnectionString();
         string sql = "SELECT * FROM dbo.countries_detail AS D INNER JOIN dbo.countries AS C ON "
-            + "D.country_id = C.id WHERE C.id = @id AND D.language_id = @language_id;";
+            + "D.country_id = C.id AND D.country_id = @id AND D.language_id = @language_id;";
 
         // The using block is used to call dispose automatically even if there is a exception.
         using (SqlConnection cn = new SqlConnection(connection))
@@ -427,7 +426,7 @@ public class Country
         // Create the connection string and the sql statement
         string connection = Tools.GetConnectionString();
         string sql = "SELECT * FROM dbo.countries_detail AS D INNER JOIN dbo.countries AS C ON "
-            + "D.country_id = C.id WHERE D.language_id = @language_id ORDER BY " 
+            + "D.country_id = C.id AND D.language_id = @language_id ORDER BY " 
             + sortField + " " + sortOrder + ";";
 
         // The using block is used to call dispose automatically even if there is a exception
@@ -436,7 +435,6 @@ public class Country
             // The using block is used to call dispose automatically even if there is a exception
             using (SqlCommand cmd = new SqlCommand(sql, cn))
             {
-
                 // Add parameters
                 cmd.Parameters.AddWithValue("@language_id", languageId);
 
@@ -499,13 +497,12 @@ public class Country
         // Create the connection string and the select statement
         string connection = Tools.GetConnectionString();
         string sql = "SELECT * FROM dbo.countries_detail AS D INNER JOIN dbo.countries AS C ON "
-            + "D.country_id = C.id WHERE D.language_id = @language_id";
+            + "D.country_id = C.id AND D.language_id = @language_id";
 
         // Append keywords to the sql string
         for (int i = 0; i < keywords.Length; i++)
         {
-            sql += " AND (CAST(C.id AS nvarchar(20)) LIKE @keyword_" + i.ToString() + " OR C.country_code LIKE @keyword_" + i.ToString()
-                + " OR D.name LIKE @keyword_" + i.ToString() + ")";
+            sql += " AND (C.country_code LIKE @keyword_" + i.ToString() + " OR D.name LIKE @keyword_" + i.ToString() + ")";
         }
 
         // Add the final touch to the select string
@@ -579,7 +576,7 @@ public class Country
     {
         // Create the connection and the sql statement
         string connection = Tools.GetConnectionString();
-        string sql = "DELETE FROM dbo.countries WHERE id = @id;";
+        string sql = "DELETE FROM dbo.countries_detail WHERE country_id = @id;DELETE FROM dbo.countries WHERE id = @id;";
 
         // The using block is used to call dispose automatically even if there is a exception.
         using (SqlConnection cn = new SqlConnection(connection))
@@ -587,6 +584,9 @@ public class Country
             // The Using block is used to call dispose automatically even if there is a exception.
             using (SqlCommand cmd = new SqlCommand(sql, cn))
             {
+                // Set command timeout to 90 seconds
+                cmd.CommandTimeout = 90;
+
                 // Add parameters
                 cmd.Parameters.AddWithValue("@id", id);
 
@@ -643,6 +643,9 @@ public class Country
             // The Using block is used to call dispose automatically even if there is a exception.
             using (SqlCommand cmd = new SqlCommand(sql, cn))
             {
+                // Set command timeout to 90 seconds
+                cmd.CommandTimeout = 90;
+
                 // Add parameters
                 cmd.Parameters.AddWithValue("@id", id);
                 cmd.Parameters.AddWithValue("@language_id", languageId);

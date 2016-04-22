@@ -165,7 +165,6 @@ public class ValueAddedTax
             // The using block is used to call dispose automatically even if there are an exception.
             using (SqlCommand cmd = new SqlCommand(sql, cn))
             {
-
                 // Add parameters for search keywords
                 for (int i = 0; i < keywords.Length; i++)
                 {

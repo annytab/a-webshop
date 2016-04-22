@@ -1482,6 +1482,13 @@ namespace Annytab.Webshop.Controllers
             // Check if we should delete the full post or just the translation
             if (languageId == 0 || languageId == currentDomain.back_end_language)
             {
+                // Delete all product option types
+                List<ProductOptionType> productOptionTypes = ProductOptionType.GetByProductId(id);
+                for(int i = 0; i < productOptionTypes.Count; i++)
+                {
+                    ProductOptionType.DeleteOnId(productOptionTypes[i].id);
+                }
+
                 // Delete the product and all the posts connected to this product (CASCADE)
                 errorCode = Product.DeleteOnId(id);
 

@@ -49,7 +49,6 @@ public class ProductAccessory
     /// <param name="post">A reference to a product accessory post</param>
     public static void Add(ProductAccessory post)
     {
-
         // Create the connection and the sql statement
         string connection = Tools.GetConnectionString();
         string sql = "INSERT INTO dbo.product_accessories (product_id, accessory_id) "
@@ -171,7 +170,6 @@ public class ProductAccessory
             // The using block is used to call dispose automatically even if there is a exception
             using (SqlCommand cmd = new SqlCommand(sql, cn))
             {
-
                 // Create a reader
                 SqlDataReader reader = null;
 
@@ -229,7 +227,7 @@ public class ProductAccessory
         // Create the connection string and the sql statement
         string connection = Tools.GetConnectionString();
         string sql = "SELECT * FROM dbo.product_accessories AS A INNER JOIN dbo.products AS P ON A.accessory_id "
-            + "= P.id INNER JOIN dbo.products_detail AS D ON P.id = D.product_id WHERE A.product_id = @product_id "
+            + "= P.id AND A.product_id = @product_id INNER JOIN dbo.products_detail AS D ON P.id = D.product_id "
             + "AND D.language_id = @language_id ORDER BY " + sortField + " " + sortOrder + ";";
 
         // The using block is used to call dispose automatically even if there is a exception

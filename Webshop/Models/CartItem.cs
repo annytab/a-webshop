@@ -555,14 +555,30 @@ public class CartItem
                 orderRow.supplier_erp_id = product.supplier_erp_id;
                 orderRow.sort_order = rowCounter;
 
-                // Add to the row counter
-                rowCounter += 1;
-
                 // Update product buys
                 Product.UpdateBuys(product.id, AnnytabDataValidation.TruncateDecimal(bundleItems[j].quantity + product.buys, 0, 9999999999.99M));
 
-                // Add the row to the list
-                orderRows.Add(orderRow);
+                // Check if the order row exists
+                bool orderRowExists = false;
+                foreach(OrderRow row in orderRows)
+                {
+                    if (row.product_code == product.product_code)
+                    {
+                        row.quantity += bundleItems[j].quantity;
+                        orderRowExists = true;
+                        break;
+                    }
+                }
+
+                // Add the order row if it does not exist
+                if(orderRowExists == false)
+                {
+                    // Add to the row counter
+                    rowCounter += 1;
+
+                    // Add the row to the list
+                    orderRows.Add(orderRow);
+                }
             }
         }
 

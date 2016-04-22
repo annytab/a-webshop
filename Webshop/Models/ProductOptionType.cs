@@ -276,8 +276,8 @@ public class ProductOptionType
         // Create the connection and the sql statement
         string connection = Tools.GetConnectionString();
         string sql = "SELECT T.id, T.product_id, T.option_type_id, O.google_name, D.title, T.sort_order, 1 as selected FROM dbo.product_option_types "
-            + "AS T INNER JOIN dbo.option_types_detail AS D ON T.option_type_id = D.option_type_id INNER JOIN dbo.option_types AS O ON D.option_type_id = O.id "
-            + "WHERE T.id = @id AND D.language_id = @language_id;";
+            + "AS T INNER JOIN dbo.option_types_detail AS D ON T.option_type_id = D.option_type_id AND T.id = @id AND D.language_id = @language_id " 
+            + "INNER JOIN dbo.option_types AS O ON D.option_type_id = O.id;";
 
         // The using block is used to call dispose automatically even if there is a exception
         using (SqlConnection cn = new SqlConnection(connection))
@@ -339,8 +339,8 @@ public class ProductOptionType
         // Create the connection string and the sql statement.
         string connection = Tools.GetConnectionString();
         string sql = "SELECT T.id, T.product_id, T.option_type_id, O.google_name, D.title, T.sort_order, 1 as selected FROM dbo.product_option_types "
-            + "AS T INNER JOIN dbo.option_types_detail AS D ON T.option_type_id = D.option_type_id INNER JOIN dbo.option_types AS O ON D.option_type_id = O.id "
-            + "WHERE D.language_id = @language_id ORDER BY T.sort_order ASC;";
+            + "AS T INNER JOIN dbo.option_types_detail AS D ON T.option_type_id = D.option_type_id AND D.language_id = @language_id " 
+            + "INNER JOIN dbo.option_types AS O ON D.option_type_id = O.id ORDER BY T.sort_order ASC;";
 
         // The using block is used to call dispose automatically even if there is a exception.
         using (SqlConnection cn = new SqlConnection(connection))
@@ -348,7 +348,6 @@ public class ProductOptionType
             // The using block is used to call dispose automatically even if there is a exception.
             using (SqlCommand cmd = new SqlCommand(sql, cn))
             {
-
                 // Add parameters
                 cmd.Parameters.AddWithValue("@language_id", languageId);
 
@@ -403,8 +402,9 @@ public class ProductOptionType
         // Create the connection string and the sql statement.
         string connection = Tools.GetConnectionString();
         string sql = "SELECT T.id, T.product_id, T.option_type_id, O.google_name, D.title, T.sort_order, 1 as selected FROM dbo.product_option_types "
-            + "AS T INNER JOIN dbo.option_types_detail AS D ON T.option_type_id = D.option_type_id INNER JOIN dbo.option_types AS O ON D.option_type_id = O.id "
-            + "WHERE T.product_id = @product_id AND D.language_id = @language_id ORDER BY T.sort_order ASC;";
+            + "AS T INNER JOIN dbo.option_types_detail AS D ON T.option_type_id = D.option_type_id AND T.product_id = @product_id " 
+            + "AND D.language_id = @language_id INNER JOIN dbo.option_types AS O ON D.option_type_id = O.id "
+            + "ORDER BY T.sort_order ASC;";
 
         // The using block is used to call dispose automatically even if there is a exception.
         using (SqlConnection cn = new SqlConnection(connection))
@@ -412,7 +412,6 @@ public class ProductOptionType
             // The using block is used to call dispose automatically even if there is a exception.
             using (SqlCommand cmd = new SqlCommand(sql, cn))
             {
-
                 // Add parameters
                 cmd.Parameters.AddWithValue("@product_id", productId);
                 cmd.Parameters.AddWithValue("@language_id", languageId);
@@ -455,6 +454,137 @@ public class ProductOptionType
     } // End of the GetByProductId method
 
     /// <summary>
+    /// Get product option types based on product id
+    /// </summary>
+    /// <param name="productId">The product id</param>
+    /// <param name="languageId">The language id</param>
+    /// <returns>A list of product option type posts</returns>
+    public static List<ProductOptionType> GetByProductId(Int32 productId)
+    {
+        // Create the list to return
+        List<ProductOptionType> posts = new List<ProductOptionType>(10);
+
+        // Create the connection string and the sql statement.
+        string connection = Tools.GetConnectionString();
+        string sql = "SELECT * FROM dbo.product_option_types WHERE product_id = @product_id ORDER BY id ASC;";
+
+        // The using block is used to call dispose automatically even if there is a exception.
+        using (SqlConnection cn = new SqlConnection(connection))
+        {
+            // The using block is used to call dispose automatically even if there is a exception.
+            using (SqlCommand cmd = new SqlCommand(sql, cn))
+            {
+                // Add parameters
+                cmd.Parameters.AddWithValue("@product_id", productId);
+
+                // Create a reader
+                SqlDataReader reader = null;
+
+                // The Try/Catch/Finally statement is used to handle unusual exceptions in the code to
+                // avoid having our application crash in such cases.
+                try
+                {
+                    // Open the connection.
+                    cn.Open();
+
+                    // Fill the reader with data from the select command.
+                    reader = cmd.ExecuteReader();
+
+                    // Loop through the reader as long as there is something to read.
+                    while (reader.Read())
+                    {
+                        ProductOptionType productOptionType = new ProductOptionType();
+                        productOptionType.id = Convert.ToInt32(reader["id"]);
+                        productOptionType.product_id = Convert.ToInt32(reader["product_id"]);
+                        productOptionType.option_type_id = Convert.ToInt32(reader["option_type_id"]);
+                        productOptionType.sort_order = Convert.ToInt16(reader["sort_order"]);
+                        posts.Add(productOptionType);
+                    }
+                }
+                catch (Exception e)
+                {
+                    throw e;
+                }
+                finally
+                {
+                    // Call Close when done reading to avoid memory leakage.
+                    if (reader != null)
+                        reader.Close();
+                }
+            }
+        }
+
+        // Return the list of posts
+        return posts;
+
+    } // End of the GetByProductId method
+
+    /// <summary>
+    /// Get product option types based on option type id
+    /// </summary>
+    /// <param name="optionTypeId">A option type id</param>
+    /// <returns>A list of product option type posts</returns>
+    public static List<ProductOptionType> GetByOptionTypeId(Int32 optionTypeId)
+    {
+        // Create the list to return
+        List<ProductOptionType> posts = new List<ProductOptionType>(10);
+
+        // Create the connection string and the sql statement.
+        string connection = Tools.GetConnectionString();
+        string sql = "SELECT * FROM dbo.product_option_types WHERE option_type_id = @option_type_id ORDER BY id ASC;";
+
+        // The using block is used to call dispose automatically even if there is a exception.
+        using (SqlConnection cn = new SqlConnection(connection))
+        {
+            // The using block is used to call dispose automatically even if there is a exception.
+            using (SqlCommand cmd = new SqlCommand(sql, cn))
+            {
+                // Add parameters
+                cmd.Parameters.AddWithValue("@option_type_id", optionTypeId);
+
+                // Create a reader
+                SqlDataReader reader = null;
+
+                // The Try/Catch/Finally statement is used to handle unusual exceptions in the code to
+                // avoid having our application crash in such cases.
+                try
+                {
+                    // Open the connection.
+                    cn.Open();
+
+                    // Fill the reader with data from the select command.
+                    reader = cmd.ExecuteReader();
+
+                    // Loop through the reader as long as there is something to read.
+                    while (reader.Read())
+                    {
+                        ProductOptionType productOptionType = new ProductOptionType();
+                        productOptionType.id = Convert.ToInt32(reader["id"]);
+                        productOptionType.product_id = Convert.ToInt32(reader["product_id"]);
+                        productOptionType.option_type_id = Convert.ToInt32(reader["option_type_id"]);
+                        productOptionType.sort_order = Convert.ToInt16(reader["sort_order"]);
+                        posts.Add(productOptionType);
+                    }
+                }
+                catch (Exception e)
+                {
+                    throw e;
+                }
+                finally
+                {
+                    // Call Close when done reading to avoid memory leakage.
+                    if (reader != null)
+                        reader.Close();
+                }
+            }
+        }
+
+        // Return the list of posts
+        return posts;
+
+    } // End of the GetByOptionTypeId method
+
+    /// <summary>
     /// Get all option types that not are included in the list of product option types
     /// </summary>
     /// <param name="productOptionTypes">A list of product option types</param>
@@ -468,7 +598,7 @@ public class ProductOptionType
         // Create the connection string and the sql statement.
         string connection = Tools.GetConnectionString();
         string sql = "SELECT 0 AS id, 0 as product_id, D.option_type_id, O.google_name, D.title, 0 AS sort_order, 0 AS selected "
-            + "FROM dbo.option_types_detail AS D INNER JOIN dbo.option_types AS O ON D.option_type_id = O.id WHERE D.language_id = @language_id";
+            + "FROM dbo.option_types_detail AS D INNER JOIN dbo.option_types AS O ON D.option_type_id = O.id AND D.language_id = @language_id";
 
         // Do not include product option types
         if (productOptionTypes != null)
@@ -488,7 +618,6 @@ public class ProductOptionType
             // The using block is used to call dispose automatically even if there is a exception.
             using (SqlCommand cmd = new SqlCommand(sql, cn))
             {
-
                 // Add parameters
                 cmd.Parameters.AddWithValue("@language_id", languageId);
 
@@ -551,7 +680,7 @@ public class ProductOptionType
     {
         // Create the connection and the sql statement
         string connection = Tools.GetConnectionString();
-        string sql = "DELETE FROM dbo.product_option_types WHERE id = @id;";
+        string sql = "DELETE FROM dbo.product_options WHERE product_option_type_id = @id;DELETE FROM dbo.product_option_types WHERE id = @id;";
 
         // The using block is used to call dispose automatically even if there is a exception.
         using (SqlConnection cn = new SqlConnection(connection))
@@ -559,6 +688,9 @@ public class ProductOptionType
             // The using block is used to call dispose automatically even if there is a exception.
             using (SqlCommand cmd = new SqlCommand(sql, cn))
             {
+                // Set command timeout to 90 seconds
+                cmd.CommandTimeout = 90;
+
                 // Add parameters
                 cmd.Parameters.AddWithValue("@id", id);
 
