@@ -507,35 +507,11 @@ namespace Annytab.Webshop.Controllers
             // Check if we should delete the full post or just the translation
             if (languageId == 0 || languageId == currentDomain.back_end_language)
             {
-                // Delete options by option type id
-                List<Option> options = Option.GetByOptionTypeId(id);
-                for(int i = 0; i < options.Count; i++)
-                {
-                    ProductOption.DeleteOnOptionId(options[i].id);
-                    Option.DeleteOnId(options[i].id);   
-                }
-
-                // Delete product option types
-                List<ProductOptionType> productOptionTypes = ProductOptionType.GetByOptionTypeId(id);
-                for (int i = 0; i < productOptionTypes.Count; i++)
-                {
-                    ProductOptionType.DeleteOnId(productOptionTypes[i].id);
-                }
-
                 // Delete the option type and all the connected posts (CASCADE)
                 errorCode = OptionType.DeleteOnId(id);
             }
             else
             {
-                // Get all the translated options for the option type
-                List<Option> options = Option.GetByOptionTypeId(id, languageId);
-
-                // Delete translated options
-                for (int i = 0; i < options.Count; i++)
-                {
-                    Option.DeleteLanguagePostOnId(options[i].id, languageId);
-                }
-
                 // Delete the option type post
                 errorCode = OptionType.DeleteLanguagePostOnId(id, languageId);
             }

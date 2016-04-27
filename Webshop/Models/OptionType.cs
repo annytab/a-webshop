@@ -609,6 +609,21 @@ public class OptionType
     /// <returns>An error code</returns>
     public static Int32 DeleteOnId(int id)
     {
+        // Delete options by option type id
+        List<Option> options = Option.GetByOptionTypeId(id);
+        for (int i = 0; i < options.Count; i++)
+        {
+            ProductOption.DeleteOnOptionId(options[i].id);
+            Option.DeleteOnId(options[i].id);
+        }
+
+        // Delete product option types
+        List<ProductOptionType> productOptionTypes = ProductOptionType.GetByOptionTypeId(id);
+        for (int i = 0; i < productOptionTypes.Count; i++)
+        {
+            ProductOptionType.DeleteOnId(productOptionTypes[i].id);
+        }
+
         // Create the connection and the sql statement
         string connection = Tools.GetConnectionString();
         string sql = "DELETE FROM dbo.option_types_detail WHERE option_type_id = @id;DELETE FROM dbo.option_types WHERE id = @id;";
@@ -668,6 +683,15 @@ public class OptionType
     /// <returns>An error code</returns>
     public static Int32 DeleteLanguagePostOnId(Int32 id, Int32 languageId)
     {
+        // Get all the translated options for the option type
+        List<Option> options = Option.GetByOptionTypeId(id, languageId);
+
+        // Delete translated options
+        for (int i = 0; i < options.Count; i++)
+        {
+            Option.DeleteLanguagePostOnId(options[i].id, languageId);
+        }
+
         // Create the connection and the sql statement
         string connection = Tools.GetConnectionString();
         string sql = "DELETE FROM dbo.option_types_detail WHERE option_type_id = @id AND language_id = @language_id;";

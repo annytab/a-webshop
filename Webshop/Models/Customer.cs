@@ -1019,6 +1019,37 @@ public class Customer
     /// <returns>An error code</returns>
     public static Int32 DeleteOnId(Int32 id)
     {
+        // Delete reviews by customer id (Update product rating)
+        Int32 page = 1;
+        List<ProductReview> productReviews = ProductReview.GetByCustomerId(id, 10, page, "id", "ASC");
+        while (productReviews.Count > 0)
+        {
+            for (int i = 0; i < productReviews.Count; i++)
+            {
+                ProductReview.DeleteOnId(productReviews[i].id);
+                Product.UpdateRating(productReviews[i].product_id, productReviews[i].language_id);
+            }
+
+            // Increase the page number and get more posts
+            page = page + 1;
+            productReviews = ProductReview.GetByCustomerId(id, 10, page, "id", "ASC");
+        }
+
+        // Delete orders by customer id
+        page = 1;
+        List<Order> orders = Order.GetByCustomerId(id, 10, page, "id", "ASC");
+        while (orders.Count > 0)
+        {
+            for (int i = 0; i < orders.Count; i++)
+            {
+                Order.DeleteOnId(orders[i].id);
+            }
+
+            // Increase the page number and get more posts
+            page = page + 1;
+            orders = Order.GetByCustomerId(id, 10, page, "id", "ASC");
+        }
+
         // Create the connection and the sql statement
         string connection = Tools.GetConnectionString();
         string sql = "DELETE FROM dbo.customers_files WHERE customer_id = @id;DELETE FROM dbo.customers WHERE id = @id;";

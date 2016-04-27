@@ -968,7 +968,53 @@ public class Product
         // Return the count
         return count;
 
-    } // End of the GetCountBySearch method
+    } // End of the GetActiveCountBySearch method
+
+    /// <summary>
+    /// Count the number of products by a category id
+    /// </summary>
+    /// <param name="categoryId">The id of the category</param>
+    /// <returns>The number of products as an int</returns>
+    public static Int32 GetCountByCategoryId(Int32 categoryId)
+    {
+        // Create the variable to return
+        Int32 count = 0;
+
+        // Create the connection string and the select statement
+        string connection = Tools.GetConnectionString();
+        string sql = "SELECT COUNT(id) AS count FROM dbo.products WHERE category_id = @category_id;";
+
+        // The using block is used to call dispose automatically even if there is a exception
+        using (SqlConnection cn = new SqlConnection(connection))
+        {
+            // The using block is used to call dispose automatically even if there is a exception
+            using (SqlCommand cmd = new SqlCommand(sql, cn))
+            {
+                // Add parameters
+                cmd.Parameters.AddWithValue("@category_id", categoryId);
+
+                // The Try/Catch/Finally statement is used to handle unusual exceptions in the code to
+                // avoid having our application crash in such cases.
+                try
+                {
+                    // Open the connection
+                    cn.Open();
+
+                    // Execute the select statment
+                    count = Convert.ToInt32(cmd.ExecuteScalar());
+
+                }
+                catch (Exception e)
+                {
+                    throw e;
+                }
+            }
+        }
+
+        // Return the count
+        return count;
+
+    } // End of the GetCountByCategoryId method
 
     #endregion
 
@@ -1853,6 +1899,13 @@ public class Product
     /// <returns>An error code</returns>
     public static Int32 DeleteOnId(Int32 id)
     {
+        // Delete all product option types
+        List<ProductOptionType> productOptionTypes = ProductOptionType.GetByProductId(id);
+        for (int i = 0; i < productOptionTypes.Count; i++)
+        {
+            ProductOptionType.DeleteOnId(productOptionTypes[i].id);
+        }
+
         // Create the connection and the sql statement
         string connection = Tools.GetConnectionString();
         string sql = "DELETE FROM dbo.product_reviews WHERE product_id = @id;DELETE FROM dbo.product_bundles WHERE bundle_product_id = @id;" 

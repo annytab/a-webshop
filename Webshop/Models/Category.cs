@@ -417,6 +417,52 @@ public class Category
 
     } // End of the GetCountBySearch method
 
+    /// <summary>
+    /// Count the number of categories by parent category id
+    /// </summary>
+    /// <param name="parentId">The id of the parent category</param>
+    /// <returns>The number of categories as an int</returns>
+    public static Int32 GetCountByParentCategoryId(Int32 parentId)
+    {
+        // Create the variable to return
+        Int32 count = 0;
+
+        // Create the connection string and the select statement
+        string connection = Tools.GetConnectionString();
+        string sql = "SELECT COUNT(id) AS count FROM dbo.categories WHERE parent_category_id = @parent_category_id;";
+
+        // The using block is used to call dispose automatically even if there are an exception.
+        using (SqlConnection cn = new SqlConnection(connection))
+        {
+            // The using block is used to call dispose automatically even if there are an exception.
+            using (SqlCommand cmd = new SqlCommand(sql, cn))
+            {
+                // Add parameters
+                cmd.Parameters.AddWithValue("@parent_category_id", parentId);
+
+                // The Try/Catch/Finally statement is used to handle unusual exceptions in the code to
+                // avoid having our application crash in such cases.
+                try
+                {
+                    // Open the connection
+                    cn.Open();
+
+                    // Execute the select statment
+                    count = Convert.ToInt32(cmd.ExecuteScalar());
+
+                }
+                catch (Exception e)
+                {
+                    throw e;
+                }
+            }
+        }
+
+        // Return the count
+        return count;
+
+    } // End of the GetCountByParentCategoryId method
+
     #endregion
 
     #region Get methods
@@ -1025,6 +1071,12 @@ public class Category
     /// <returns>An error code</returns>
     public static Int32 DeleteOnId(Int32 id)
     {
+        // Make sure that the category not has connected posts
+        if(Category.GetCountByParentCategoryId(id) > 0 || Product.GetCountByCategoryId(id) > 0)
+        {
+            return 5;
+        }
+
         // Create the connection and the sql statement
         string connection = Tools.GetConnectionString();
         string sql = "DELETE FROM dbo.categories_detail WHERE category_id = @id;DELETE FROM dbo.categories WHERE id = @id;";

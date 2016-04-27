@@ -353,6 +353,7 @@
     <Content Include="DatabaseFiles\db_version_0.sql" />
     <None Include="DeveloperFiles\db_drop_statements.sql" />
     <None Include="DeveloperFiles\db_update_settings.sql" />
+    <Content Include="DatabaseFiles\db_version_10.sql" />
     <Content Include="DatabaseFiles\db_version_9.sql" />
     <Content Include="DatabaseFiles\db_version_8.sql" />
     <Content Include="DatabaseFiles\db_version_7.sql" />

@@ -533,37 +533,6 @@ namespace Annytab.Webshop.Controllers
             // Create an error code variable
             Int32 errorCode = 0;
 
-            // Delete reviews by customer id (Update product rating)
-            Int32 page = 1;
-            List<ProductReview> productReviews = ProductReview.GetByCustomerId(id, 10, page, "id", "ASC");
-            while(productReviews.Count > 0)
-            {
-                for (int i = 0; i < productReviews.Count; i++)
-                {
-                    ProductReview.DeleteOnId(productReviews[i].id);
-                    Product.UpdateRating(productReviews[i].product_id, productReviews[i].language_id);
-                }
-
-                // Increase the page number and get more posts
-                page = page + 1;
-                productReviews = ProductReview.GetByCustomerId(id, 10, page, "id", "ASC");
-            }
-            
-            // Delete orders by customer id
-            page = 1;
-            List<Order> orders = Order.GetByCustomerId(id, 10, page, "id", "ASC");
-            while(orders.Count > 0)
-            {
-                for(int i = 0; i < orders.Count; i++)
-                {
-                    Order.DeleteOnId(orders[i].id);
-                }
-
-                // Increase the page number and get more posts
-                page = page + 1;
-                orders = Order.GetByCustomerId(id, 10, page, "id", "ASC");
-            }
-
             // Delete the customer post and all the connected posts (CASCADE)
             errorCode = Customer.DeleteOnId(id);
 
