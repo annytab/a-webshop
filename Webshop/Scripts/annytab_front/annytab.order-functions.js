@@ -8,7 +8,7 @@ function start()
     $(document).on("click", "#btnShowDiscountCode", toggleDiscountCode);
     $(document).on("click", "#copyInvoiceAddress", copyInvoiceAddress);
     $(document).on("change", "select[data-id='selectCountry']", changeTotalSumInCart);
-    $("#txtVatNumber").on("change", changeTotalSumInCart);
+    //$("#txtVatNumber").on("change", changeTotalSumInCart);
     $(document).on("click", "#btnPrint", printDocument);
 
     // Change total sums in the cart
@@ -64,55 +64,8 @@ function changeTotalSumInCart()
         vatCode = 2;
     }
 
-    // Get the VAT-number control
-    var vatNumber = $("#txtVatNumber");
-
-    // Set the color of the vat number to black
-    vatNumber.css("color", "#000000");
-
-    // Check the VAT-number if the sale is to another EU-country
-    if (vatCode == 1)
-    {
-        // Split up the vat number in a country code and a number
-        var countryCode = vatNumber.val().length > 3 ? vatNumber.val().substring(0, 2) : "XX";
-        var number = vatNumber.val().length > 3 ? vatNumber.val().substring(2) : "NNNN";
-
-        // Get the response
-        var url = "http://isvat.appspot.com/" + countryCode + "/" + number + "/?callback=?";
-        $.ajax({
-            url: url,
-            type: "GET",
-            dataType: "json",
-            success: function (data)
-            {
-                if (data == false)
-                {
-                    // Insert a vat number if the string is empty
-                    if (vatNumber.val().length == 0)
-                    {
-                        vatNumber.val("**********");
-                    }
-
-                    // Set the color of the vat number to red
-                    vatNumber.css("color", "#ff0000");
-
-                    // Calculate and set total sums in the cart
-                    calculateAndSetTotalSumsInCart(0);
-                }
-                else
-                {
-                    // Calculate and set total sums in the cart
-                    calculateAndSetTotalSumsInCart(vatCode);
-                }
-            },
-            timeout: 20000
-        });
-    }
-    else
-    {
-        // Calculate and set total sums in the cart
-        calculateAndSetTotalSumsInCart(vatCode);
-    }
+    // Calculate and set total sums in the cart
+    calculateAndSetTotalSumsInCart(vatCode);
 
 } // End of the changeTotalSumInCart method
 
