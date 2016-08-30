@@ -384,7 +384,7 @@ namespace Annytab.Webshop.Controllers
             List<BreadCrumb> breadCrumbs = new List<BreadCrumb>(3);
             breadCrumbs.Add(new BreadCrumb(tt.Get("start_page"), "/"));
             breadCrumbs.Add(new BreadCrumb(tt.Get("my_pages"), "/customer"));
-            breadCrumbs.Add(new BreadCrumb(tt.Get("forgot") + " " + tt.Get("email") + "/" + tt.Get("password"), "/customer/forgot_email_password"));
+            breadCrumbs.Add(new BreadCrumb(tt.Get("forgot") + " " + tt.Get("password").ToLower(), "/customer/forgot_email_password"));
 
             // Set values
             ViewBag.BreadCrumbs = breadCrumbs;
@@ -1161,7 +1161,6 @@ namespace Annytab.Webshop.Controllers
         {
             // Get form data
             string email = collection["txtEmail"];
-            string orgPersonNumber = collection["txtOrgPersonNumber"];
 
             // Get the current domain
             Domain currentDomain = Tools.GetCurrentDomain();
@@ -1176,42 +1175,26 @@ namespace Annytab.Webshop.Controllers
             string password = Tools.GeneratePassword();
             
             // Create a error message
-            string error_message = string.Empty;
+            string error_message = "";
 
             // Check if the customer exists
             if(customer != null)
             {
                 // Create the mail message
-                string subject = translatedTexts.Get("forgot") + " " + translatedTexts.Get("email") + "/" + translatedTexts.Get("password");
-                string message = translatedTexts.Get("email") + ": " + customer.email + "<br />" + translatedTexts.Get("password") + ": " + password + "<br />";
+                string subject = translatedTexts.Get("forgot") + " " + translatedTexts.Get("password").ToLower() + " - " + currentDomain.webshop_name;
+                string message = translatedTexts.Get("email") + ": " + customer.email + "<br />" 
+                    + translatedTexts.Get("password") + ": " + password + "<br /><br />"
+                    + "<a href=\"" + currentDomain.web_address + "/customer/login\">" + translatedTexts.Get("log_in") + "</a><br />";
 
                 // Try to send the email message
-                if(Tools.SendEmailToCustomer(customer.email, subject, message) == false)
+                if (Tools.SendEmailToCustomer(customer.email, subject, message) == false)
                 {
                     error_message += "&#149; " + translatedTexts.Get("error_send_email");
                 }
             }
             else
             {
-                // Try to get the customer on organization number
-                customer = Customer.GetOneByOrgNumber(orgPersonNumber);
-
-                if(customer != null)
-                {
-                    // Create the mail message
-                    string subject = translatedTexts.Get("forgot") + " " + translatedTexts.Get("email") + "/" + translatedTexts.Get("password");
-                    string message = translatedTexts.Get("email") + ": " + customer.email + "<br />" + translatedTexts.Get("password") + ": " + password + "<br />";
-
-                    // Try to send the email message
-                    if (Tools.SendEmailToCustomer(customer.email, subject, message) == false)
-                    {
-                        error_message += "&#149; " + translatedTexts.Get("error_send_email");
-                    }
-                }
-                else
-                {
-                    error_message += "&#149; " + translatedTexts.Get("error_customer_exists");
-                } 
+                error_message += "&#149; " + translatedTexts.Get("error_customer_exists");
             }
 
             // Check if there is a error message
@@ -1229,7 +1212,7 @@ namespace Annytab.Webshop.Controllers
                 List<BreadCrumb> breadCrumbs = new List<BreadCrumb>(3);
                 breadCrumbs.Add(new BreadCrumb(translatedTexts.Get("start_page"), "/"));
                 breadCrumbs.Add(new BreadCrumb(translatedTexts.Get("my_pages"), "/customer"));
-                breadCrumbs.Add(new BreadCrumb(translatedTexts.Get("forgot") + " " + translatedTexts.Get("email") + "/" + translatedTexts.Get("password"), "/customer/forgot_email_password"));
+                breadCrumbs.Add(new BreadCrumb(translatedTexts.Get("forgot") + " " + translatedTexts.Get("password").ToLower(), "/customer/forgot_email_password"));
 
                 // Set values
                 ViewBag.BreadCrumbs = breadCrumbs;
