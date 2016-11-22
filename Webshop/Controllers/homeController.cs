@@ -566,14 +566,135 @@ namespace Annytab.Webshop.Controllers
 
         } // End of the add_product method
 
+        // Add to the cart
+        // POST: /home/add_to_cart
+        [HttpPost]
+        public ActionResult add_to_cart(FormCollection collection)
+        {
+            // Get form data
+            Int32 productId = Convert.ToInt32(collection["pid"]);
+            decimal quantity = 0;
+            decimal.TryParse(collection["qty"].Replace(",", "."), NumberStyles.Any, CultureInfo.InvariantCulture, out quantity);
+            string[] productOptionTypeIds = collection["optionTypes"].Split('|');
+            string[] selectedOptionIds = collection["optionIds"].Split('|');
+
+            // Get the current domain
+            Domain domain = Tools.GetCurrentDomain();
+
+            // Get the currency
+            Currency currency = Currency.GetOneById(domain.currency);
+
+            // Get the product by id
+            Product product = Product.GetOneById(productId, domain.front_end_language);
+
+            // Get translated texts
+            KeyStringList tt = StaticText.GetAll(domain.front_end_language, "id", "ASC");
+
+            // Make sure that the product not is null
+            if (product == null)
+            {
+                return new EmptyResult();
+            }
+
+            // Get product values
+            string productName = product.title;
+            string productCode = product.product_code;
+            string manufacturerCode = product.manufacturer_code;
+            decimal unitPrice = product.unit_price;
+            decimal unitFreight = product.unit_freight + product.toll_freight_addition;
+            string variantImageUrl = product.variant_image_filename;
+
+            // Update the added to cart statistic
+            if (product.added_in_basket <= Int32.MaxValue - 1)
+            {
+                Product.UpdateAddedInBasket(product.id, product.added_in_basket + 1);
+            }
+
+            // The count of option ids
+            Int32 optionIdCount = selectedOptionIds != null && selectedOptionIds[0] != "" ? selectedOptionIds.Length : 0;
+
+            // Loop option identities and add to the price, freight and product code
+            for (int i = 0; i < optionIdCount; i++)
+            {
+                // Convert the ids
+                Int32 optionTypeId = Convert.ToInt32(productOptionTypeIds[i]);
+                Int32 optionId = Convert.ToInt32(selectedOptionIds[i]);
+
+                // Get the product option type and the product option
+                ProductOptionType productOptionType = ProductOptionType.GetOneById(optionTypeId, domain.front_end_language);
+                ProductOption productOption = ProductOption.GetOneById(optionTypeId, optionId, domain.front_end_language);
+
+                // Add to values
+                productName += "," + productOptionType.title + ": " + productOption.title;
+                productCode += productOption.product_code_suffix;
+                manufacturerCode += productOption.mpn_suffix;
+                unitPrice += productOption.price_addition;
+                unitFreight += productOption.freight_addition;
+                variantImageUrl = variantImageUrl.Replace("[" + i + "]", productOption.product_code_suffix);
+            }
+
+            // Add delivery time to the product name
+            productName += "," + tt.Get("delivery_time") + ": " + product.delivery_time;
+
+            // Adjust the price and the freight with the conversion rate
+            unitPrice *= (currency.currency_base / currency.conversion_rate);
+            unitFreight *= (currency.currency_base / currency.conversion_rate);
+
+            // Round the price to the minor unit for the currency
+            Int32 decimalMultiplier = (Int32)Math.Pow(10, currency.decimals);
+            unitPrice = Math.Round(unitPrice * (1 - product.discount) * decimalMultiplier, MidpointRounding.AwayFromZero) / decimalMultiplier;
+            unitFreight = Math.Round(unitFreight * decimalMultiplier, MidpointRounding.AwayFromZero) / decimalMultiplier;
+
+            // Get the value added tax
+            ValueAddedTax vat = ValueAddedTax.GetOneById(product.value_added_tax_id);
+
+            // Create a cart item
+            CartItem cartItem = new CartItem();
+            cartItem.product_code = productCode;
+            cartItem.product_id = product.id;
+            cartItem.manufacturer_code = manufacturerCode;
+            cartItem.product_name = productName;
+            cartItem.quantity = quantity;
+            cartItem.unit_price = unitPrice;
+            cartItem.unit_freight = unitFreight;
+            cartItem.vat_percent = vat.value;
+            cartItem.variant_image_url = variantImageUrl;
+            cartItem.use_local_images = product.use_local_images;
+
+            // Add the cart item to the shopping cart
+            CartItem.AddToShoppingCart(cartItem);
+
+            // Check if prices should include VAT or not
+            bool pricesIncludesVat = Session["PricesIncludesVat"] != null ? Convert.ToBoolean(Session["PricesIncludesVat"]) : domain.prices_includes_vat;
+
+            // Get the current culture info
+            CultureInfo cultureInfo = Tools.GetCultureInfo(Language.GetOneById(domain.front_end_language));
+
+            // Get cart statistics
+            Dictionary<string, decimal> cartStatistics = CartItem.GetCartStatistics(domain, pricesIncludesVat);
+
+            // Create the dictionary to return
+            Dictionary<string, string> cartData = new Dictionary<string, string>(3);
+            cartData.Add("cart_quantity", cartStatistics["total_quantity"].ToString("##,0.##", cultureInfo));
+            cartData.Add("cart_amount", cartStatistics["total_amount"].ToString("##,0.##", cultureInfo) + " " + domain.currency + (pricesIncludesVat == true ? " (" + tt.Get("including_vat").ToLower() + ")" : " (" + tt.Get("excluding_vat").ToLower() + ")"));
+            cartData.Add("units_in_cart", tt.Get("units_in_cart").ToLower());
+
+            // Return a dictionary with cart data
+            return Json(cartData);
+
+        } // End of the add_to_cart method
+
         // Send an email to the webmaster
         // POST: /home/add_product
         [HttpPost]
         public ActionResult contact_us(FormCollection collection)
         {
+            // Get the current domain
+            Domain domain = Tools.GetCurrentDomain();
+
             // Get the form data
             string email = collection["txtEmail"];
-            string subject = collection["txtSubject"];
+            string subject = collection["txtSubject"] + " - " + domain.webshop_name;
             string message = collection["txtMessage"];
 
             // Modify the message

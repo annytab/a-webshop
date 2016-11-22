@@ -577,7 +577,7 @@ namespace Annytab.Webshop.Controllers
             CartItem.UpdateCartQuantity(id, 1);
 
             // Redirect the user to the start page
-            return RedirectToAction("index", "order", new { cu = "true" });
+            return RedirectToAction("index", "order");
 
         } // End of the add_quantity method
 
@@ -590,7 +590,7 @@ namespace Annytab.Webshop.Controllers
             CartItem.UpdateCartQuantity(id, -1);
 
             // Redirect the user to the start page
-            return RedirectToAction("index", "order", new { cu = "true" });
+            return RedirectToAction("index", "order");
 
         } // End of the remove_quantity method
 
@@ -603,7 +603,7 @@ namespace Annytab.Webshop.Controllers
             CartItem.DeleteCartItem(id);
 
             // Redirect the user to the start page
-            return RedirectToAction("index", "order", new { cu = "true" });
+            return RedirectToAction("index", "order");
 
         } // End of the delete_row method
 
@@ -616,7 +616,7 @@ namespace Annytab.Webshop.Controllers
             CartItem.ClearShoppingCart();
 
             // Redirect the user to the start page
-            return RedirectToAction("index", "home", new { cu = "true" });
+            return RedirectToAction("index", "home");
 
         } // End of the clear method
 
@@ -632,7 +632,7 @@ namespace Annytab.Webshop.Controllers
             CartItem.SetDiscountCode(discount_code);
 
             // Redirect the user to the start page
-            return RedirectToAction("index", "order", new { cu = "true" });
+            return RedirectToAction("index", "order");
 
         } // End of the set_discount_code method
 

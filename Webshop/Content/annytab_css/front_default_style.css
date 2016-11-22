@@ -50,6 +50,7 @@ img {vertical-align:middle;}
 .annytab-list-product-right{display:table-cell;vertical-align:top;width:70%;padding:4px 4px 4px 6px;word-wrap:break-word;}
 .annytab-list-product-image{max-width:100%;width:100%;height:auto;}
 .annytab-list-product-title{font-size:16px;line-height:20px;font-weight:bold;text-shadow:2px 2px 2px #cccccc;}
+.annytab-add-to-cart-text{display:none;position:absolute;text-align:center;background:#4cff00;padding:11px 30px 11px 30px;top:0px;left:0px;color:#ffffff;font-size:26px;line-height:26px;font-weight:bolder;}
 
 /* Slideshow */
 .annytab-slideshow-container{display:none;position:relative;margin:10px 0px 0px 0px;overflow:hidden;padding-bottom:35%;border-radius:4px;}

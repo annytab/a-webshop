@@ -111,190 +111,187 @@
         <div class="annytab-share-button"><script type="IN/Share" data-url="@ViewBag.MetaCanonical"></script></div>
     </div> 
 
-    @* Form to add product *@
-    @using (Html.BeginForm("add_product", "home", FormMethod.Post))
-    {
-        @* Hidden data *@
-        <input name="hiddenProductId" type="hidden" value="@product.id.ToString()" />
-        <input id="hiddenProductPrice" type="hidden" value="@product.unit_price.ToString(CultureInfo.InvariantCulture)" />
-        <input id="hiddenDiscount" type="hidden" value="@product.discount.ToString(CultureInfo.InvariantCulture)" />
-        <input id="hiddenProductCode" type="hidden" value="@product.product_code" />
-        <input id="hiddenManufacturerCode" type="hidden" value="@product.manufacturer_code" />
-        <input id="hiddenConversionRate" type="hidden" value="@currency.conversion_rate.ToString(CultureInfo.InvariantCulture)" />
-        <input id="hiddenCurrencyBase" type="hidden" value="@currency.currency_base.ToString(CultureInfo.InvariantCulture)" />
-        <input id="hiddenDecimalMultiplier" type="hidden" value="@Convert.ToInt32(Math.Pow(10, currency.decimals))" />
-        <input id="hiddenValueAddedTaxPercent" type="hidden" value="@valueAddedTax.value.ToString(CultureInfo.InvariantCulture)" />
-        <input id="hiddenPriceIncludesVat" type="hidden" value="@pricesIncludesVat.ToString()" />
-        <input id="hiddenVariantImageDirectory" type="hidden" value="@Url.Content("/Content/products/" + (product.id / 100).ToString() + "/" + product.id.ToString() + "/" + languageId + "/other_images/")" />
-        <input id="hiddenVariantImageFileName" type="hidden" value="@(product.variant_image_filename)" />
-        <input id="hiddenCultureCode" type="hidden" value="@cultureInfo.Name" />
+    @* Hidden data *@
+    <input id="hiddenProductId" name="hiddenProductId" type="hidden" value="@product.id.ToString()" />
+    <input id="hiddenProductPrice" type="hidden" value="@product.unit_price.ToString(CultureInfo.InvariantCulture)" />
+    <input id="hiddenDiscount" type="hidden" value="@product.discount.ToString(CultureInfo.InvariantCulture)" />
+    <input id="hiddenProductCode" type="hidden" value="@product.product_code" />
+    <input id="hiddenManufacturerCode" type="hidden" value="@product.manufacturer_code" />
+    <input id="hiddenConversionRate" type="hidden" value="@currency.conversion_rate.ToString(CultureInfo.InvariantCulture)" />
+    <input id="hiddenCurrencyBase" type="hidden" value="@currency.currency_base.ToString(CultureInfo.InvariantCulture)" />
+    <input id="hiddenDecimalMultiplier" type="hidden" value="@Convert.ToInt32(Math.Pow(10, currency.decimals))" />
+    <input id="hiddenValueAddedTaxPercent" type="hidden" value="@valueAddedTax.value.ToString(CultureInfo.InvariantCulture)" />
+    <input id="hiddenPriceIncludesVat" type="hidden" value="@pricesIncludesVat.ToString()" />
+    <input id="hiddenVariantImageDirectory" type="hidden" value="@Url.Content("/Content/products/" + (product.id / 100).ToString() + "/" + product.id.ToString() + "/" + languageId + "/other_images/")" />
+    <input id="hiddenVariantImageFileName" type="hidden" value="@(product.variant_image_filename)" />
+    <input id="hiddenCultureCode" type="hidden" value="@cultureInfo.Name" />
 
-        @* Product image and description *@
-        <div style="display:block;">
-            @* Main image *@
-            <div id="mainProductImageContainer" class="annytab-product-image">
-                <img id="mainProductImage" itemprop="image" src="@Tools.GetProductMainImageUrl(product.id, domain.front_end_language, variantImageUrl, product.use_local_images)" alt="@product.title" style="position:absolute;top:0;left:0;width:290px;height:290px;" />
-            </div>
-            <div class="annytab-product-description">
-                @* Review and rating *@
-                <div itemscope itemtype="http://data-vocabulary.org/Review-aggregate" style="margin-bottom:5px;">
-                    <div class="rateit" title="@product.rating.ToString()" data-rateit-value="@product.rating.ToString(CultureInfo.InvariantCulture)" data-rateit-ispreset="true" data-rateit-readonly="true"></div>
-                    <span itemprop="itemreviewed" style="display:none;">@product.title</span><span>@(" | ")</span><span class="annytab-basic-text-normal">@(rating_tt + ": ")</span>
-                    <span class="annytab-basic-text-normal" itemprop="rating">@product.rating.ToString("##,0.##", cultureInfo)</span><span>@(" | ")</span>
-                    <a href="#reviews" style="vertical-align:middle;">@(reviews_tt + " (")<span itemprop="count">@count</span>@(")")</a>
-                </div>
-                @* Product description *@
-                <span class="annytab-basic-bread-text" itemprop="description">@Html.Raw(product.main_content)</span>
-            </div>
+    @* Product image and description *@
+    <div style="display:block;">
+        @* Main image *@
+        <div id="mainProductImageContainer" class="annytab-product-image">
+            <img id="mainProductImage" itemprop="image" src="@Tools.GetProductMainImageUrl(product.id, domain.front_end_language, variantImageUrl, product.use_local_images)" alt="@product.title" style="position:absolute;top:0;left:0;width:290px;height:290px;" />
         </div>
+        <div class="annytab-product-description">
+            @* Review and rating *@
+            <div itemscope itemtype="http://data-vocabulary.org/Review-aggregate" style="margin-bottom:5px;">
+                <div class="rateit" title="@product.rating.ToString()" data-rateit-value="@product.rating.ToString(CultureInfo.InvariantCulture)" data-rateit-ispreset="true" data-rateit-readonly="true"></div>
+                <span itemprop="itemreviewed" style="display:none;">@product.title</span><span>@(" | ")</span><span class="annytab-basic-text-normal">@(rating_tt + ": ")</span>
+                <span class="annytab-basic-text-normal" itemprop="rating">@product.rating.ToString("##,0.##", cultureInfo)</span><span>@(" | ")</span>
+                <a href="#reviews" style="vertical-align:middle;">@(reviews_tt + " (")<span itemprop="count">@count</span>@(")")</a>
+            </div>
+            @* Product description *@
+            <span class="annytab-basic-bread-text" itemprop="description">@Html.Raw(product.main_content)</span>
+        </div>
+    </div>
 
-        <div class="annytab-basic-space"></div>
+    <div class="annytab-basic-space"></div>
         
-        @* Other images *@
-        <div id="productImageContainer" class="annytab-basic-container" style="padding:10px 0px 0px 10px;@(otherProductImageUrls.Count > 0 ? "display:block;" : "display:none;")">
-            @foreach (string imageUrl in otherProductImageUrls)
+    @* Other images *@
+    <div id="productImageContainer" class="annytab-basic-container" style="padding:10px 0px 0px 10px;@(otherProductImageUrls.Count > 0 ? "display:block;" : "display:none;")">
+        @foreach (string imageUrl in otherProductImageUrls)
+        {
+            @:<img data-id="otherProductImage" src="@imageUrl" alt="@product.title" style="display:inline;margin:0px 10px 10px 0px;width:80px;height:80px;border-radius:4px;cursor:pointer;" />
+        }
+    </div>
+
+    <div class="annytab-basic-space"></div>
+
+    @* Product options *@
+    <div class="annytab-basic-container" style="@(productOptionTypes.Count > 0 ? "display:block;" : "display:none;")">
+        <div id="productOptions" style="display:table;width:100%;">
+            @for (int i = 0; i < productOptionTypes.Count; i++)
             {
-                @:<img data-id="otherProductImage" src="@imageUrl" alt="@product.title" style="display:inline;margin:0px 10px 10px 0px;width:80px;height:80px;border-radius:4px;cursor:pointer;" />
+                @* Get the list of product options *@
+                List<ProductOption> listProductOptions = productOptions.ContainsKey(productOptionTypes[i].option_type_id) ? productOptions[productOptionTypes[i].option_type_id] : new List<ProductOption>(0);
+
+                @* Add the product option type id if there is product options *@
+                if (listProductOptions.Count > 0)
+                {
+                    @:<input name="productOptionTypeId" type="hidden" value="@productOptionTypes[i].id" />
+                }
+
+                @:<div style="display:table-row;">
+                    @:<div style="display:table-cell;width:100px;"><span style="margin:0px;font-size:12px;vertical-align:middle;">@productOptionTypes[i].title</span></div>
+                    @:<div style="display:table-cell;text-align:right;">
+                        @:<select data-id="selectProductOption" name="selectProductOption" style="margin:1px 0px 1px 0px;vertical-align:middle;width:150px;background-color:#d9d9d9;border:1px solid #207298;border-radius:2px;">
+                            foreach (ProductOption productOption in listProductOptions)
+                            {
+                                <option value="@productOption.option_id" data-suffix="@productOption.product_code_suffix" data-mpn-suffix="@productOption.mpn_suffix"
+                                        data-price="@productOption.price_addition.ToString(CultureInfo.InvariantCulture)">@productOption.title
+                                </option>
+                            }
+                        @:</select>
+                    @:</div>
+                @:</div>
             }
         </div>
+    </div>
 
-        <div class="annytab-basic-space"></div>
+    <div class="annytab-basic-space"></div>
 
-        @* Product options *@
-        <div class="annytab-basic-container" style="@(productOptionTypes.Count > 0 ? "display:block;" : "display:none;")">
-            <div id="productOptions" style="display:table;width:100%;">
-                @for (int i = 0; i < productOptionTypes.Count; i++)
-                {
-                    @* Get the list of product options *@
-                    List<ProductOption> listProductOptions = productOptions.ContainsKey(productOptionTypes[i].option_type_id) ? productOptions[productOptionTypes[i].option_type_id] : new List<ProductOption>(0);
-
-                    @* Add the product option type id if there is product options *@
-                    if (listProductOptions.Count > 0)
-                    {
-                        @:<input name="productOptionTypeId" type="hidden" value="@productOptionTypes[i].id" />
-                    }
-
-                    @:<div style="display:table-row;">
-                        @:<div style="display:table-cell;width:100px;"><span style="margin:0px;font-size:12px;vertical-align:middle;">@productOptionTypes[i].title</span></div>
-                        @:<div style="display:table-cell;text-align:right;">
-                            @:<select data-id="selectProductOption" name="selectProductOption" style="margin:1px 0px 1px 0px;vertical-align:middle;width:150px;background-color:#d9d9d9;border:1px solid #207298;border-radius:2px;">
-                                foreach (ProductOption productOption in listProductOptions)
-                                {
-                                    <option value="@productOption.option_id" data-suffix="@productOption.product_code_suffix" data-mpn-suffix="@productOption.mpn_suffix"
-                                            data-price="@productOption.price_addition.ToString(CultureInfo.InvariantCulture)">@productOption.title
-                                    </option>
-                                }
-                            @:</select>
-                        @:</div>
-                    @:</div>
-                }
-            </div>
-        </div>
-
-        <div class="annytab-basic-space"></div>
-
-        @* Price *@
-        <div style="display:table-cell;width:100%;margin:0px;" itemscope itemprop="offerDetails" itemtype="http://data-vocabulary.org/Offer">
-            <span id="txtProductPrice" itemprop="price" class="annytab-price-tag">@productPrice.ToString("##,0.##", cultureInfo)</span>
-            &nbsp;<span itemprop="priceCurrency" class="annytab-price-tag">@(currency.currency_code + " / " + unit.unit_code + " ")</span>
-            <span style="font-size:14px;line-height:20px;color:#808080;vertical-align:bottom;">@(pricesIncludesVat == true ? including_vat_tt.ToLower() : excluding_vat_tt.ToLower())</span>
-        </div>
+    @* Price *@
+    <div style="display:table-cell;width:100%;margin:0px;" itemscope itemprop="offerDetails" itemtype="http://data-vocabulary.org/Offer">
+        <span id="txtProductPrice" itemprop="price" class="annytab-price-tag">@productPrice.ToString("##,0.##", cultureInfo)</span>
+        &nbsp;<span itemprop="priceCurrency" class="annytab-price-tag">@(currency.currency_code + " / " + unit.unit_code + " ")</span>
+        <span style="font-size:14px;line-height:20px;color:#808080;vertical-align:bottom;">@(pricesIncludesVat == true ? including_vat_tt.ToLower() : excluding_vat_tt.ToLower())</span>
+    </div>
         
-        @* Discount and ordinary price *@
-        <div style="@(product.discount > 0.000M ? "display:block;" : "display:none;")margin:5px 0px 5px 0px;font-size:16px;line-height:16px;">
-            <span style="color:#a30909;">@((product.discount * 100).ToString("##,0", cultureInfo) + "% " + discount_tt.ToUpper())</span>
-            <span>@(" (" + regular_price_short_tt + " ")</span>
-            <span id="txtOrdinaryPrice">@ordinaryPrice.ToString("##,0.##", cultureInfo)</span>
-            <span>@(" " + currency.currency_code + ")")</span>
-        </div>
+    @* Discount and ordinary price *@
+    <div style="@(product.discount > 0.000M ? "display:block;" : "display:none;")margin:5px 0px 5px 0px;font-size:16px;line-height:16px;">
+        <span style="color:#a30909;">@((product.discount * 100).ToString("##,0", cultureInfo) + "% " + discount_tt.ToUpper())</span>
+        <span>@(" (" + regular_price_short_tt + " ")</span>
+        <span id="txtOrdinaryPrice">@ordinaryPrice.ToString("##,0.##", cultureInfo)</span>
+        <span>@(" " + currency.currency_code + ")")</span>
+    </div>
 
-        <div class="annytab-basic-space"></div>
+    <div class="annytab-basic-space"></div>
 
-        @* Buy button panel *@
+    @* Buy button panel *@
+    <div class="annytab-basic-container" style="position:relative;">
+        <input id="txtQuantity" name="txtQuantity" type="number" value="1" min="1" step="1" class="annytab-form-textbox" style="width:50px;height:24px;font-size:16px;line-height:24px;vertical-align:middle;@(product.affiliate_link != "" ? "display:none" : "")" />
+        <input id="btnAddToCart" type="button" class="annytab-basic-button" value="@buy_button_text" style="padding:7px 40px 7px 40px;" data-affiliate="@product.affiliate_link" />
+        <div class="annytab-add-to-cart-text"></div>
+    </div>
+        
+    <div class="annytab-basic-space"></div>
+        
+        @* 360 degree image *@
+    <div id="spinImageContainer" style="@(spinImageNames != "" ? "display:block;" : "display:none;");overflow-x:auto;">
         <div class="annytab-basic-container">
-            <input id="txtQuantity" name="txtQuantity" type="number" value="1" min="1" step="1" class="annytab-form-textbox" style="width:50px;height:24px;font-size:16px;line-height:24px;vertical-align:middle;@(product.affiliate_link != "" ? "display:none" : "")" />
-            <input type="submit" class="annytab-basic-button" value="@buy_button_text" style="padding:7px 40px 7px 40px;" />
+            <span class="annytab-form-heading">@spin_image_360_tt</span>
         </div>
-        
-        <div class="annytab-basic-space"></div>
-        
-         @* 360 degree image *@
-        <div id="spinImageContainer" style="@(spinImageNames != "" ? "display:block;" : "display:none;");overflow-x:auto;">
-            <div class="annytab-basic-container">
-                <span class="annytab-form-heading">@spin_image_360_tt</span>
-            </div>
-            <div class="annytab-spin-image-container">
-                <img data-directory="@spinImageDirectory" data-images="@spinImageNames" alt="@spin_image_360_tt" class="annytab-spin-image" />
-                <div id="annytabSpinSlider" class="annytab-spin-slider"></div>     
-            </div>
+        <div class="annytab-spin-image-container">
+            <img data-directory="@spinImageDirectory" data-images="@spinImageNames" alt="@spin_image_360_tt" class="annytab-spin-image" />
+            <div id="annytabSpinSlider" class="annytab-spin-slider"></div>     
         </div>
+    </div>
 
-        @* Product facts *@
-        <div class="annytab-basic-container">
-            <span class="annytab-form-heading">@facts_tt</span>
-        </div>
+    @* Product facts *@
+    <div class="annytab-basic-container">
+        <span class="annytab-form-heading">@facts_tt</span>
+    </div>
 
-        <div class="annytab-fact-table">
-            <div style="@(productCode != "" ? "display:table-row;" : "display:none;")">
-                <div class="annytab-fact-cell-heading">@(product_code_tt + ": ")</div>
-                <div class="annytab-fact-cell-text"><span id="txtProductCode" itemprop="sku">@productCode</span></div>
-            </div>
-            <div style="@(manufacturerCode != "" ? "display:table-row;" : "display:none;")">
-                <div class="annytab-fact-cell-heading">@(manufacturer_code_tt + ": ")</div>
-                <div class="annytab-fact-cell-text"><span id="txtManufacturerCode" itemprop="mpn">@manufacturerCode</span></div>
-            </div>
-            <div style="@(product.gtin != "" ? "display:table-row;" : "display:none;")">
-                <div class="annytab-fact-cell-heading">@(gtin_tt + ": ")</div>
-                <div class="annytab-fact-cell-text">@product.gtin</div>
-            </div>
-            <div style="@(comparisonPrice != 0 ? "display:table-row;" : "display:none;")">
-                <div class="annytab-fact-cell-heading">@(comparison_price_tt + ": ")</div>
-                <div class="annytab-fact-cell-text"><span>@(comparisonPrice.ToString("##,0.##", cultureInfo) + " " + currency.currency_code + " / " + product.unit_pricing_base_measure.ToString() + " " + (comparisonUnit != null ? comparisonUnit.unit_code : "?"))</span></div>
-            </div>
-            <div style="@(product.brand != "" ? "display:table-row;" : "display:none;")">
-                <div class="annytab-fact-cell-heading">@(brand_tt + ": ")</div>
-                <div class="annytab-fact-cell-text"><span itemprop="brand">@product.brand</span></div>
-            </div>
-            <div style="@(product.condition != "" ? "display:table-row;" : "display:none;")">
-                <div class="annytab-fact-cell-heading">@(condition_tt + ": ")</div>
-                <div class="annytab-fact-cell-text">@tt.Get(product.condition)</div>
-            </div>
-            <div style="@(product.availability_status != "" ? "display:table-row;" : "display:none;")">
-                <div class="annytab-fact-cell-heading">@(availability_status_tt + ": ")</div>
-                <div class="annytab-fact-cell-text">@tt.Get(product.availability_status)</div>
-            </div>
-            <div style="@(product.availability_status == "availability_preorder" ? "display:table-row;" : "display:none;")">
-                <div class="annytab-fact-cell-heading">@(availability_date_tt + ": ")</div>
-                <div class="annytab-fact-cell-text">@product.availability_date.ToShortDateString()</div>
-            </div>
-            <div style="@(product.delivery_time != "" ? "display:table-row;" : "display:none;")">
-                <div class="annytab-fact-cell-heading">@(delivery_time_tt + ": ")</div>
-                <div class="annytab-fact-cell-text">@product.delivery_time</div>
-            </div>
-            <div style="@(product.gender != "" ? "display:table-row;" : "display:none;")">
-                <div class="annytab-fact-cell-heading">@(gender_tt + ": ")</div>
-                <div class="annytab-fact-cell-text">@tt.Get(product.gender)</div>
-            </div>
-            <div style="@(product.age_group != "" ? "display:table-row;" : "display:none;")">
-                <div class="annytab-fact-cell-heading">@(age_group_tt + ": ")</div>
-                <div class="annytab-fact-cell-text">@tt.Get(product.age_group)</div>
-            </div>
-            <div style="@(product.size_type != "" ? "display:table-row;" : "display:none;")">
-                <div class="annytab-fact-cell-heading">@(size_type_tt + ": ")</div>
-                <div class="annytab-fact-cell-text">@tt.Get(product.size_type)</div>
-            </div>
-            <div style="@(product.size_system != "" ? "display:table-row;" : "display:none;")">
-                <div class="annytab-fact-cell-heading">@(size_system_tt + ": ")</div>
-                <div class="annytab-fact-cell-text">@product.size_system</div>
-            </div>
-            <div style="@(product.energy_efficiency_class != "" ? "display:table-row;" : "display:none;")">
-                <div class="annytab-fact-cell-heading">@(energy_efficiency_class_tt + ": ")</div>
-                <div class="annytab-fact-cell-text">@product.energy_efficiency_class</div>
-            </div>
+    <div class="annytab-fact-table">
+        <div style="@(productCode != "" ? "display:table-row;" : "display:none;")">
+            <div class="annytab-fact-cell-heading">@(product_code_tt + ": ")</div>
+            <div class="annytab-fact-cell-text"><span id="txtProductCode" itemprop="sku">@productCode</span></div>
         </div>
+        <div style="@(manufacturerCode != "" ? "display:table-row;" : "display:none;")">
+            <div class="annytab-fact-cell-heading">@(manufacturer_code_tt + ": ")</div>
+            <div class="annytab-fact-cell-text"><span id="txtManufacturerCode" itemprop="mpn">@manufacturerCode</span></div>
+        </div>
+        <div style="@(product.gtin != "" ? "display:table-row;" : "display:none;")">
+            <div class="annytab-fact-cell-heading">@(gtin_tt + ": ")</div>
+            <div class="annytab-fact-cell-text">@product.gtin</div>
+        </div>
+        <div style="@(comparisonPrice != 0 ? "display:table-row;" : "display:none;")">
+            <div class="annytab-fact-cell-heading">@(comparison_price_tt + ": ")</div>
+            <div class="annytab-fact-cell-text"><span>@(comparisonPrice.ToString("##,0.##", cultureInfo) + " " + currency.currency_code + " / " + product.unit_pricing_base_measure.ToString() + " " + (comparisonUnit != null ? comparisonUnit.unit_code : "?"))</span></div>
+        </div>
+        <div style="@(product.brand != "" ? "display:table-row;" : "display:none;")">
+            <div class="annytab-fact-cell-heading">@(brand_tt + ": ")</div>
+            <div class="annytab-fact-cell-text"><span itemprop="brand">@product.brand</span></div>
+        </div>
+        <div style="@(product.condition != "" ? "display:table-row;" : "display:none;")">
+            <div class="annytab-fact-cell-heading">@(condition_tt + ": ")</div>
+            <div class="annytab-fact-cell-text">@tt.Get(product.condition)</div>
+        </div>
+        <div style="@(product.availability_status != "" ? "display:table-row;" : "display:none;")">
+            <div class="annytab-fact-cell-heading">@(availability_status_tt + ": ")</div>
+            <div class="annytab-fact-cell-text">@tt.Get(product.availability_status)</div>
+        </div>
+        <div style="@(product.availability_status == "availability_preorder" ? "display:table-row;" : "display:none;")">
+            <div class="annytab-fact-cell-heading">@(availability_date_tt + ": ")</div>
+            <div class="annytab-fact-cell-text">@product.availability_date.ToShortDateString()</div>
+        </div>
+        <div style="@(product.delivery_time != "" ? "display:table-row;" : "display:none;")">
+            <div class="annytab-fact-cell-heading">@(delivery_time_tt + ": ")</div>
+            <div class="annytab-fact-cell-text">@product.delivery_time</div>
+        </div>
+        <div style="@(product.gender != "" ? "display:table-row;" : "display:none;")">
+            <div class="annytab-fact-cell-heading">@(gender_tt + ": ")</div>
+            <div class="annytab-fact-cell-text">@tt.Get(product.gender)</div>
+        </div>
+        <div style="@(product.age_group != "" ? "display:table-row;" : "display:none;")">
+            <div class="annytab-fact-cell-heading">@(age_group_tt + ": ")</div>
+            <div class="annytab-fact-cell-text">@tt.Get(product.age_group)</div>
+        </div>
+        <div style="@(product.size_type != "" ? "display:table-row;" : "display:none;")">
+            <div class="annytab-fact-cell-heading">@(size_type_tt + ": ")</div>
+            <div class="annytab-fact-cell-text">@tt.Get(product.size_type)</div>
+        </div>
+        <div style="@(product.size_system != "" ? "display:table-row;" : "display:none;")">
+            <div class="annytab-fact-cell-heading">@(size_system_tt + ": ")</div>
+            <div class="annytab-fact-cell-text">@product.size_system</div>
+        </div>
+        <div style="@(product.energy_efficiency_class != "" ? "display:table-row;" : "display:none;")">
+            <div class="annytab-fact-cell-heading">@(energy_efficiency_class_tt + ": ")</div>
+            <div class="annytab-fact-cell-text">@product.energy_efficiency_class</div>
+        </div>
+    </div>
         
-        <div class="annytab-basic-space"></div>
-    }
+    <div class="annytab-basic-space"></div>
 
     @* Extras *@
     <div style="@(product.extra_content != "" ? "display:block;" : "display:none;")">

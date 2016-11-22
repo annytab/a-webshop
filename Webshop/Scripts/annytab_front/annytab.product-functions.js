@@ -25,6 +25,7 @@ function start()
     mainProductImageContainer.on("mouseout", unzoomProductImage);
     mainProductImage.on("click", showFullscreenImage);
     $(".annytab-fullscreen-close").on("click", closeFullscreenImage);
+    $("#btnAddToCart").click(addToCart);
 
     // Get the slideshow div
     imageSlideShow = $('#fullscreenContainer');
@@ -249,3 +250,48 @@ function closeFullscreenImage()
     $("#fullscreenContainer").fadeOut(1000);
 
 } // Show a fullscreen image
+
+// Add a product to the shopping cart
+function addToCart()
+{
+    // Get form data
+    var affiliate_url = $(this).attr("data-affiliate");
+    var pid = $("#hiddenProductId").val();
+    var qty = $("#txtQuantity").val();
+    var optionTypes = [];
+    $("#productOptions").find('input[name="productOptionTypeId"]').each(function ()
+    {
+        optionTypes.push($(this).val());
+    });
+    var optionIds = [];
+    $("#productOptions").find('select[name="selectProductOption"]').each(function ()
+    {
+        optionIds.push($(this).val());
+    });
+
+    if (affiliate_url != "")
+    {
+        window.location.replace(affiliate_url);
+    }
+    else
+    {
+        // Post and get cart statistics
+        $.post("/home/add_to_cart", { pid: pid, qty: qty, optionTypes: optionTypes.join("|"), optionIds: optionIds.join("|") }, function (data) {
+
+            // Get cart containers
+            var cartContainer = $("#cartContainer");
+            var mobileCartContainer = $("#mobileCartContainer");
+            var addToCartText = $(".annytab-add-to-cart-text");
+
+            // Update data
+            mobileCartContainer.find("#mobileCartQuantity").text(data["cart_quantity"]);
+            cartContainer.find("#cartQuantity").text(data["cart_quantity"] + " " + data["units_in_cart"])
+            cartContainer.find("#cartAmount").text(data["cart_amount"]);
+
+            // Animate cart text
+            addToCartText.html('<i class="fa fa-cart-arrow-down" aria-hidden="true"></i>' + ' ' + qty);
+            addToCartText.show('slide', { direction: 'left' }, 500).hide('slide', { direction: 'left' }, 3000);
+        });
+    }
+
+} // End of the addToCart method

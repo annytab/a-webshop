@@ -14,13 +14,6 @@
     List<Campaign> leftCampaigns = Campaign.GetByCategoryName("left", domain.front_end_language, "id", "ASC");
     CultureInfo cultureInfo = ViewBag.CultureInfo;
 
-    // Check if the cart is updated
-    string cartUpdated = "false";
-    if (Request.Params["cu"] != null)
-    {
-        cartUpdated = "true";
-    }
-
     // Get translated texts
     string logotype_tt = tt.Get("logotype");
     string background_image_tt = tt.Get("background_image");
@@ -80,6 +73,7 @@
     <link rel="stylesheet" type="text/css" media="only screen and (min-width:1046px) and (max-width:1365px)" href="@(domain.custom_theme_id == 0 ? "/Content/annytab_css/front_medium_layout.css" : "/Content/theme/front_medium_layout.css")" />
     <link rel="stylesheet" type="text/css" media="only screen and (max-width:1045px)" href="@(domain.custom_theme_id == 0 ? "/Content/annytab_css/front_mobile_layout.css" : "/Content/theme/front_mobile_layout.css")" />
     <link rel="stylesheet" type="text/css" href="@(domain.custom_theme_id == 0 ? "/Content/annytab_css/front_default_style.css" : "/Content/theme/front_default_style.css")" />
+    <link rel="stylesheet" type="text/css" href="/Content/annytab_css/font-awesome.min.css" />
 </head>
 <body>
     @* Cookie consent *@
@@ -98,9 +92,6 @@
 
         @* Master inner container *@
         <div class="annytab-layout-inner-container">
-
-            @* Hidden fields *@
-            <div id="cartUpdated" data-cart-updated="@cartUpdated" style="display:none;"></div>
             
             @* Standard header *@
             <div class="annytab-layout-standard-header">
@@ -150,8 +141,8 @@
                     @* Shopping cart *@
                     <div id="cartContainer" class="annytab-menu-box">
                         <div class="annytab-menu-title">@shopping_cart_tt.ToUpper()</div>
-                        <div class="annytab-basic-bread-text">@(cartStatistics["total_quantity"].ToString("##,0.##", cultureInfo) + " " + units_in_cart_tt.ToLower())</div>
-                        <div class="annytab-basic-bread-text">@(cartStatistics["total_amount"].ToString("##,0.##", cultureInfo) + " " + domain.currency)@(pricesIncludesVat == true ? " (" + including_vat_tt.ToLower() + ")" : " (" + excluding_vat_tt.ToLower() + ")")</div>
+                        <div id="cartQuantity" class="annytab-basic-bread-text">@(cartStatistics["total_quantity"].ToString("##,0.##", cultureInfo) + " " + units_in_cart_tt.ToLower())</div>
+                        <div id="cartAmount" class="annytab-basic-bread-text">@(cartStatistics["total_amount"].ToString("##,0.##", cultureInfo) + " " + domain.currency)@(pricesIncludesVat == true ? " (" + including_vat_tt.ToLower() + ")" : " (" + excluding_vat_tt.ToLower() + ")")</div>
                         <div style="margin:4px 0px 0px 0px;"><a class="annytab-menu-link" href="@Url.Content("/order")">@check_out_tt</a><span>@(" | ")</span><a class="annytab-menu-link" href="@Url.Content("/order/clear")">@clear_tt</a></div>
                     </div>
 

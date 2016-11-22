@@ -60,9 +60,11 @@ function showLoadingAnimation()
     var animationContainer = $("#animationImage");
 
     // Start and fade in the spinner
-    animationContainer.spin({ lines: 13, length: 34, width: 8, radius: 35, corners: 1, rotate: 0, direction: 1,
+    animationContainer.spin({
+        lines: 13, length: 34, width: 8, radius: 35, corners: 1, rotate: 0, direction: 1,
         speed: 1, trail: 60, shadow: true, hwaccel: false, className: 'spinner', zIndex: 20, top: '50%',
-        left: '50%' }, '#000');
+        left: '50%'
+    }, '#000');
     $("#animationContainer").fadeIn(200);
 
 } // End of the showLoadingAnimation method

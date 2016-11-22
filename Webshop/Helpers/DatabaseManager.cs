@@ -7,6 +7,7 @@ using System.Text;
 using System.IO.Compression;
 using System.Data.SqlClient;
 using System.Threading;
+using Annytab.AzureLock;
 
 /// <summary>
 /// This class handles the creation of the database and upgrades of the database
@@ -15,20 +16,80 @@ public static class DatabaseManager
 {
     #region Variables
 
-    public static Int32 DATABASE_VERSION = 11; // The version number is +1 compared to the file version number
+    public static Int32 DATABASE_VERSION = 12; // The version number is +1 compared to the file version number
 
     #endregion
 
     #region Upgrade methods
 
     /// <summary>
-    /// Upgrade the database to the current version
+    /// Upgrade the database
     /// </summary>
     public static void UpgradeDatabase()
     {
-        // Get the current database version
-        Int32 currentDatabaseVersion = GetDatabaseVersion();
+        // Variables
+        string azureStorageAccount = Tools.GetAzureStorageAccount();
+        Int32 currentDatabaseVersion = 0;
 
+        // Check if a storage account exists
+        if (azureStorageAccount != "")
+        {
+            // Variables
+            BlobLock blobLock = null;
+
+            try
+            {
+                // Create a blob lock
+                blobLock = new BlobLock(azureStorageAccount, "locks", GetLockFilename());
+
+                // Do work inside a blob lock
+                if (blobLock.CreateOrSkip() == true)
+                {
+                    // Get the database version
+                    if(Int32.TryParse(blobLock.ReadFrom(), out currentDatabaseVersion) == false)
+                    {
+                        currentDatabaseVersion = GetDatabaseVersion();
+                    }
+
+                    // Upgrade the database
+                    UpgradeDatabaseFromFiles(currentDatabaseVersion);
+
+                    // Set the new database version
+                    blobLock.WriteTo(DATABASE_VERSION.ToString());
+                }
+            }
+            catch (Exception ex)
+            {
+                throw ex;
+            }
+            finally
+            {
+                // Dispose of the blob lock
+                if (blobLock != null)
+                {
+                    blobLock.Dispose();
+                }
+            }
+        }
+        else
+        {
+            // Get the current database version
+            currentDatabaseVersion = GetDatabaseVersion();
+
+            // Upgrade the database
+            UpgradeDatabaseFromFiles(currentDatabaseVersion);
+
+            // Set the new database version
+            SetDatabaseVersion(DATABASE_VERSION);
+        }
+
+    } // End of the UpgradeDatabase method
+
+    /// <summary>
+    /// Upgrade the database to the current version
+    /// </summary>
+    private static void UpgradeDatabaseFromFiles(Int32 currentDatabaseVersion)
+    {
         // Loop and upgrade database versions
         for (int i = currentDatabaseVersion; i < DATABASE_VERSION; i++)
         {
@@ -45,10 +106,7 @@ public static class DatabaseManager
             CustomTheme.AddCustomThemeTemplates(customThemes[i].id);
         }
 
-        // Save database version information
-        SetDatabaseVersion(DATABASE_VERSION);
-
-    } // End of the UpgradeDatabase version
+    } // End of the UpgradeDatabaseFromFiles version
 
     /// <summary>
     /// Upgrade the database to the specified version
@@ -115,8 +173,6 @@ public static class DatabaseManager
 
         } // End of the for(int r = 0; r < 10; r++)
 
-        
-
         // Return that the upgrade was successful
         return true;
 
@@ -176,6 +232,71 @@ public static class DatabaseManager
         return fileContent;
 
     } // End of the GetSqlString method
+
+    /// <summary>
+    /// Get the filename of the lock
+    /// </summary>
+    /// <returns>A filename</returns>
+    private static string GetLockFilename()
+    {
+        // Create the string to return
+        string filename = "";
+
+        // Create the connection and the sql statement
+        string connection = Tools.GetConnectionString();
+        string sql = "SELECT DB_NAME() AS database_name;";
+
+        // Make retries up to 10 times
+        for (int r = 0; r < 10; r++)
+        {
+            // The using block is used to call dispose automatically even if there are an exception
+            using (SqlConnection cn = new SqlConnection(connection))
+            {
+                // The using block is used to call dispose automatically even if there are an exception
+                using (SqlCommand cmd = new SqlCommand(sql, cn))
+                {
+                    // Set command timeout to 90 seconds
+                    cmd.CommandTimeout = 90;
+
+                    // The Try/Catch/Finally statement is used to handle unusual exceptions in the code to
+                    // avoid having our application crash in such cases
+                    try
+                    {
+                        // Open the connection.
+                        cn.Open();
+
+                        // Get the value
+                        filename = cmd.ExecuteScalar().ToString() + ".lck";
+
+                    }
+                    catch (SqlException sqlEx)
+                    {
+                        // Sleep times should be random
+                        Random rnd = new Random();
+
+                        // Deadlock or timeout, 1205 = Deadlock, -2 = TimeOut
+                        if (sqlEx.Number == 1205 || sqlEx.Number == -2)
+                        {
+                            Thread.Sleep(rnd.Next(5000, 10000));
+                            continue;
+                        }
+                    }
+                    catch (Exception e)
+                    {
+                        throw e;
+                    }
+                }
+            }
+
+            // No exceptions (break out from the loop)
+            break;
+
+        } // End of the for(int r = 0; r < 10; r++)
+
+        // Return the filename
+        return filename;
+
+    } // End of the GetLockFilename method
 
     #endregion
 

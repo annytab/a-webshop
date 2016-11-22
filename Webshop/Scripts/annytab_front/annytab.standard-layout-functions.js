@@ -14,15 +14,6 @@ function start()
     
     // Register events
     $(document).on("click", "#toggleMobileMenu", toggleMobileMenu);
-    //$(document).mouseup(hideMobileMenu);
-
-    // Check if we should animate the cart update
-    if ($("#cartUpdated").attr("data-cart-updated") == "true")
-    {
-        // Animate cart containers
-        $("#cartContainer").effect("highlight", { color: '#ff0000' }, 1000).dequeue();
-        $("#mobileCartContainer").effect("highlight", { color: '#ff0000' }, 1000).dequeue().effect("bounce", 1000);
-    }
 
 } // End of the start method
 

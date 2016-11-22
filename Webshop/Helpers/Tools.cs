@@ -27,6 +27,17 @@ public static class Tools
     } // End of the GetConnectionString method
 
     /// <summary>
+    /// Get the connection string to a Azure Storage Account
+    /// </summary>
+    /// <returns>A connection string</returns>
+    public static string GetAzureStorageAccount()
+    {
+        // Return the connection string
+        return CloudConfigurationManager.GetSetting("AzureStorageAccount");
+
+    } // End of the GetAzureStorageAccount method
+
+    /// <summary>
     /// Get the current domain
     /// </summary>
     /// <returns>The current domain, a empty domain if it is null</returns>

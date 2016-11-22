@@ -1,6 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
 using System.Web;
 using System.Web.Http;
 using System.Web.Mvc;
@@ -34,6 +32,7 @@ namespace Annytab.Webshop
 
             // Start the background worker to delete expired sessions
             Thread oThread = new Thread(new ThreadStart(SessionAgent.Run));
+            oThread.IsBackground = true;
             oThread.Start();
 
         } // End of the Application_Start method
