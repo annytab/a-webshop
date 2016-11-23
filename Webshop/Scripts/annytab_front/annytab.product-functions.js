@@ -289,8 +289,8 @@ function addToCart()
             cartContainer.find("#cartAmount").text(data["cart_amount"]);
 
             // Animate cart text
-            addToCartText.html('<i class="fa fa-cart-arrow-down" aria-hidden="true"></i>' + ' ' + qty);
-            addToCartText.show('slide', { direction: 'left' }, 500).hide('slide', { direction: 'left' }, 3000);
+            addToCartText.html('<i class="fa fa-cart-plus" aria-hidden="true"></i>' + ' ' + qty);
+            addToCartText.show('slide', { direction: 'left' }, 500).hide('slide', { direction: 'left' }, 2000);
         });
     }
 
