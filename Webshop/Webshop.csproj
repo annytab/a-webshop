@@ -395,6 +395,7 @@
     <None Include="DeveloperFiles\db_update_settings.sql" />
     <Content Include="DatabaseFiles\db_version_11.sql" />
     <Content Include="DatabaseFiles\db_version_10.sql" />
+    <Content Include="DatabaseFiles\db_version_12.sql" />
     <Content Include="DatabaseFiles\db_version_9.sql" />
     <Content Include="DatabaseFiles\db_version_8.sql" />
     <Content Include="DatabaseFiles\db_version_7.sql" />

@@ -8,7 +8,6 @@ function start()
     $(document).on("click", "#btnShowDiscountCode", toggleDiscountCode);
     $(document).on("click", "#copyInvoiceAddress", copyInvoiceAddress);
     $(document).on("change", "select[data-id='selectCountry']", changeTotalSumInCart);
-    //$("#txtVatNumber").on("change", changeTotalSumInCart);
     $(document).on("click", "#btnPrint", printDocument);
 
     // Change total sums in the cart
@@ -42,7 +41,7 @@ function changeTotalSumInCart()
     var deliveryCountryVatCode = deliveryCountry.attr("data-vat_code");
     var vatCode = 0;
 
-    // Find the vat code (0:Domestic, 1:EU, 2:Export)
+    // Find the vat code (0:Domestic, 1:Intra-Union Trade, 2:Export)
     if (customerType == 0 && invoiceCountryVatCode == 0 && deliveryCountryVatCode == 2)
     {
         // Export
@@ -50,7 +49,7 @@ function changeTotalSumInCart()
     }
     else if (customerType == 0 && invoiceCountryVatCode == 1 && deliveryCountryVatCode == 1)
     {
-        // EU-trade
+        // Intra-Union Trade
         vatCode = 1;
     }
     else if (customerType == 0 && invoiceCountryVatCode == 1 && deliveryCountryVatCode == 2)

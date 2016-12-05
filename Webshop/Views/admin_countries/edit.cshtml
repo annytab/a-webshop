@@ -19,7 +19,7 @@
     string vat_code_tt = tt.Get("vat_code");
     string no_choice_tt = tt.Get("no_choice");
     string vat_code_domestic_tt = tt.Get("vat_code_domestic");
-    string vat_code_eu_tt = tt.Get("vat_code_eu");
+    string vat_code_intra_union_trade_tt = tt.Get("vat_code_intra_union_trade");
     string vat_code_export_tt = tt.Get("vat_code_export");
     string save_tt = tt.Get("save");
     string cancel_tt = tt.Get("cancel");
@@ -67,7 +67,7 @@
             <div class="annytab-input-form-column-input">
                 <select id="selectVatCode" name="selectVatCode" class="annytab-form-select">
                     <option value="0" @(country.vat_code == 0 ? Html.Raw("selected='selected'") : Html.Raw(""))>@vat_code_domestic_tt</option>
-                    <option value="1" @(country.vat_code == 1 ? Html.Raw("selected='selected'") : Html.Raw(""))>@vat_code_eu_tt</option>
+                    <option value="1" @(country.vat_code == 1 ? Html.Raw("selected='selected'") : Html.Raw(""))>@vat_code_intra_union_trade_tt</option>
                     <option value="2" @(country.vat_code == 2 ? Html.Raw("selected='selected'") : Html.Raw(""))>@vat_code_export_tt</option>
                 </select>
             </div>
