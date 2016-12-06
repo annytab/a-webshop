@@ -131,14 +131,18 @@
         Customer reviewCustomer = Customer.GetOneById(review.customer_id);
 
         @* The review post *@
-        @:<div class="annytab-basic-inner-container" itemscope itemtype="http://data-vocabulary.org/Review">
-            @:<span itemprop="itemreviewed" style="display:none;">@product.title</span>
-            @:<span class="annytab-basic-text-bold" itemprop="reviewer">@reviewCustomer.invoice_name</span><span>@(" | ")</span><span class="annytab-basic-text-normal" itemprop="dtreviewed">@review.review_date.ToString("d", cultureInfo)</span><br />
-            @:<div style="margin-bottom:5px;"></div>
-            @:<div class="rateit" title="@review.rating" data-rateit-value="@review.rating.ToString(CultureInfo.InvariantCulture)" data-rateit-ispreset="true" data-rateit-readonly="true"></div>
-            @:<span>@(" | ")</span><span class="annytab-basic-text-normal">@(rating_tt + ": ")</span><span class="annytab-basic-text-normal" itemprop="rating">@review.rating.ToString("##,0.##", cultureInfo)</span>
-            @:<div style="margin-bottom:5px;"></div>
-            @:<span class="annytab-basic-bread-text" itemprop="description">@Html.Raw(review.review_text)</span><br />
+        @:<div itemscope itemtype="http://schema.org/Review" class="annytab-basic-inner-container">
+        @:<div itemprop="itemReviewed" itemscope itemtype="http://schema.org/Product"><span itemprop="name" style="display:none;">@product.title</span></div>
+        @:<span itemprop="author" itemscope itemtype="http://schema.org/Person"><span itemprop="name" class="annytab-basic-text-bold">@reviewCustomer.invoice_name</span></span><span>@(" | ")</span>
+        @:<span class="annytab-basic-text-normal" itemprop="datePublished">@review.review_date.ToString("d", cultureInfo)</span><br />
+        @:<div style="margin-bottom:5px;"></div>
+        @:<div class="rateit" title="@review.rating" data-rateit-value="@review.rating.ToString(CultureInfo.InvariantCulture)" data-rateit-ispreset="true" data-rateit-readonly="true"></div><span>@(" | ")</span>
+        @:<span itemprop="reviewRating" itemscope itemtype="http://schema.org/Rating">           
+        @:<span class="annytab-basic-text-normal">@(rating_tt + ": ")</span><span class="annytab-basic-text-normal" itemprop="ratingValue" content="@review.rating.ToString(CultureInfo.InvariantCulture)">@review.rating.ToString("##,0.##", cultureInfo)</span>
+        @:<meta itemprop="worstRating" content="0" /><meta itemprop="bestRating" content="5" />
+        @:</span>
+        @:<div style="margin-bottom:5px;"></div>
+        @:<span class="annytab-basic-bread-text" itemprop="reviewBody">@Html.Raw(review.review_text)</span><br />
         @:</div>
     }
 </div>

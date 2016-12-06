@@ -337,6 +337,7 @@
     <Content Include="Content\annytab_css\admin_layout.css" />
     <Content Include="Content\annytab_css\front_medium_layout.css" />
     <Content Include="Content\annytab_css\font-awesome.min.css" />
+    <Content Include="Content\annytab_css\rateit.css" />
     <Content Include="Content\fonts\fontawesome-webfont.svg" />
     <Content Include="Content\images\annytab_design\cross.cur" />
     <Content Include="Content\images\annytab_design\cross.png" />
@@ -462,7 +463,6 @@
     <Content Include="Scripts\codemirror\merge.css" />
     <Content Include="Scripts\codemirror\merge.js" />
     <Content Include="Scripts\codemirror\xml.js" />
-    <Content Include="Content\annytab_css\rateit.css" />
     <Content Include="Scripts\jquery.spin.js" />
     <Content Include="Scripts\jquery.ui.touch-punch.min.js" />
     <Content Include="Scripts\rangyinputs-jquery.js" />

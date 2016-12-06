@@ -83,7 +83,7 @@
 }
 
 @* Google markup (Product) *@
-<div itemscope itemtype="http://data-vocabulary.org/Product">
+<div itemscope itemtype="http://schema.org/Product">
 
     @* Fullscreen image container *@
     <div id="fullscreenContainer" class="annytab-fullscreen-container">
@@ -134,11 +134,13 @@
         </div>
         <div class="annytab-product-description">
             @* Review and rating *@
-            <div itemscope itemtype="http://data-vocabulary.org/Review-aggregate" style="margin-bottom:5px;">
+            <div itemprop="aggregateRating" itemscope itemtype="http://schema.org/AggregateRating" style="margin-bottom:5px;">
                 <div class="rateit" title="@product.rating.ToString()" data-rateit-value="@product.rating.ToString(CultureInfo.InvariantCulture)" data-rateit-ispreset="true" data-rateit-readonly="true"></div>
-                <span itemprop="itemreviewed" style="display:none;">@product.title</span><span>@(" | ")</span><span class="annytab-basic-text-normal">@(rating_tt + ": ")</span>
-                <span class="annytab-basic-text-normal" itemprop="rating">@product.rating.ToString("##,0.##", cultureInfo)</span><span>@(" | ")</span>
-                <a href="#reviews" style="vertical-align:middle;">@(reviews_tt + " (")<span itemprop="count">@count</span>@(")")</a>
+                <span>@(" | ")</span><span class="annytab-basic-text-normal">@(rating_tt + ": ")</span>
+                <span class="annytab-basic-text-normal" itemprop="ratingValue" content="@product.rating.ToString(CultureInfo.InvariantCulture)">@product.rating.ToString("##,0.##", cultureInfo)</span>
+                <meta itemprop="worstRating" content="0" /><meta itemprop="bestRating" content="5" />
+                <span>@(" | ")</span>
+                <a href="#reviews" style="vertical-align:middle;">@(reviews_tt + " (")<span itemprop="reviewCount">@count</span>@(")")</a>
             </div>
             @* Product description *@
             <span class="annytab-basic-bread-text" itemprop="description">@Html.Raw(product.main_content)</span>
@@ -191,9 +193,9 @@
     <div class="annytab-basic-space"></div>
 
     @* Price *@
-    <div style="display:table-cell;width:100%;margin:0px;" itemscope itemprop="offerDetails" itemtype="http://data-vocabulary.org/Offer">
-        <span id="txtProductPrice" itemprop="price" class="annytab-price-tag">@productPrice.ToString("##,0.##", cultureInfo)</span>
-        &nbsp;<span itemprop="priceCurrency" class="annytab-price-tag">@(currency.currency_code + " / " + unit.unit_code + " ")</span>
+    <div itemscope itemprop="offers" itemtype="http://schema.org/Offer" style="display:table-cell;width:100%;margin:0px;">
+        <span id="txtProductPrice" itemprop="price" content="@productPrice.ToString(CultureInfo.InvariantCulture)" class="annytab-price-tag">@productPrice.ToString("##,0.##", cultureInfo)</span>
+        &nbsp;<span itemprop="priceCurrency" class="annytab-price-tag" content="@currency.currency_code">@(currency.currency_code + " / " + unit.unit_code + " ")</span>
         <span style="font-size:14px;line-height:20px;color:#808080;vertical-align:bottom;">@(pricesIncludesVat == true ? including_vat_tt.ToLower() : excluding_vat_tt.ToLower())</span>
     </div>
         
@@ -216,7 +218,7 @@
         
     <div class="annytab-basic-space"></div>
         
-        @* 360 degree image *@
+    @* 360 degree image *@
     <div id="spinImageContainer" style="@(spinImageNames != "" ? "display:block;" : "display:none;");overflow-x:auto;">
         <div class="annytab-basic-container">
             <span class="annytab-form-heading">@spin_image_360_tt</span>
