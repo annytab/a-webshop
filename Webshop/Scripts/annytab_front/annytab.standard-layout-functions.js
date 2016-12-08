@@ -43,5 +43,3 @@ function hideMobileMenu(event)
     }
 
 } // End of the hideMobileMenu method
-
-

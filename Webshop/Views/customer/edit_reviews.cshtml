@@ -109,7 +109,7 @@
 @Html.Partial(domain.custom_theme_id == 0 ? "/Views/shared_front/_paging_menu.cshtml" : "/Views/theme/front_paging_menu.cshtml")
 
 @section scripts {
-    <script>$("#txtSearch").focus();</script>
-    @Scripts.Render("/Scripts/jquery.rateit.min.js")
+    <script type="text/javascript">$("#txtSearch").focus();</script>
     @Styles.Render(domain.custom_theme_id == 0 ? "/Content/annytab_css/rateit.css" : "/Content/theme/rateit.css")
+    @Scripts.Render("/Scripts/jquery.rateit.min.js") 
 }

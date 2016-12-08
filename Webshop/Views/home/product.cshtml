@@ -323,6 +323,6 @@
         $(".annytab-spin-image").resizable({ alsoResize: "#annytabSpinSlider", minWidth: 128, minHeight: 128 });
     </script>
     @Scripts.Render(domain.custom_theme_id == 0 ? "/Scripts/annytab_front/annytab.product-functions.js" : "/Scripts/theme/annytab.product-functions.js")
-    @Scripts.Render("/Scripts/jquery.rateit.min.js")
     @Styles.Render(domain.custom_theme_id == 0 ? "/Content/annytab_css/rateit.css" : "/Content/theme/rateit.css")
+    @Scripts.Render("/Scripts/jquery.rateit.min.js")
 }

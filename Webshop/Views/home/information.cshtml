@@ -20,8 +20,8 @@
 <h1>@ViewBag.Title</h1>
 
 @* Description *@
-<p class="annytab-basic-bread-text">@Html.Raw(staticPage.main_content)</p>
+<div class="annytab-basic-bread-text">@Html.Raw(staticPage.main_content)</div>
 
 @section scripts {
-    <script>$("#txtSearch").focus();</script>
+    <script type="text/javascript">$("#txtSearch").focus();</script>
 }
