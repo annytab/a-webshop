@@ -105,6 +105,7 @@
             var messageBox = imageMapPoint.find(".annytab-imap-box");
 
             // Show the message box
+            messageBox.css("display", "block");
             messageBox.effect("shake", 500);
 
         } // End of the showMessageBox method
