@@ -1,10 +1,10 @@
 ﻿using System.Collections.Generic;
-using System.Collections.Specialized;
 using System.Web;
 using System.Net.Http;
 using System.Net.Http.Headers;
 using System.Threading.Tasks;
 using Newtonsoft.Json;
+using Newtonsoft.Json.Linq;
 
 /// <summary>
 /// This class includes helper methods for external logins
@@ -30,6 +30,7 @@ public static class AnnytabExternalLogin
         // Create a http client
         HttpClient client = new HttpClient();
         client.DefaultRequestHeaders.Accept.Clear();
+        client.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue("application/json"));
 
         // Get the post
         HttpResponseMessage response = await client.GetAsync(url);
@@ -43,11 +44,11 @@ public static class AnnytabExternalLogin
         // Dispose of the client
         client.Dispose();
 
-        // Get the collection
-        NameValueCollection collection = HttpUtility.ParseQueryString(accessString);
+        // Convert the string to a json object
+        JObject token = AnnytabDataValidation.GetJsonObject(accessString);
 
         // Get the access token
-        string access_token = collection["access_token"] != null ? collection["access_token"] : "";
+        string access_token = token != null ? AnnytabDataValidation.GetJsonString(token["access_token"]) : "";
 
         // Return the access token
         return access_token;
@@ -101,7 +102,7 @@ public static class AnnytabExternalLogin
         // Create a http client
         HttpClient client = new HttpClient();
         client.DefaultRequestHeaders.Accept.Clear();
-        client.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue("application/x-www-form-urlencoded"));
+        client.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue("application/json"));
 
         // Create a dictionary with data
         Dictionary<string, string> data = new Dictionary<string, string>(10);

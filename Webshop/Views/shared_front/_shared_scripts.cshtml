@@ -31,17 +31,17 @@
 @* Facebook *@
 <script type="text/javascript">
 
-window.fbAsyncInit = function () 
-{ 
-   @Html.Raw("FB.init({ appId: " + "'" + domain.facebook_app_id + "'," + "xfbml: true," + "version: 'v2.8' });")     
-};
-(function (d, s, id) {
-    var js, fjs = d.getElementsByTagName(s)[0];
-    if (d.getElementById(id)) return;
-    js = d.createElement(s); js.id = id;
-    js.src = @Html.Raw("'//connect.facebook.net/" + language.language_code.ToLower() + "_" + language.country_code.ToUpper() +"/sdk.js';")
-        fjs.parentNode.insertBefore(js, fjs);
-    }(document, 'script', 'facebook-jssdk'));</script>
+    (function(d, s, id) {
+      var js, fjs = d.getElementsByTagName(s)[0];
+      if (d.getElementById(id)) return;
+      js = d.createElement(s); js.id = id;
+      js.async = true;
+      js.src = @Html.Raw("'//connect.facebook.net/" + language.language_code.ToLower() + "_" + language.country_code.ToUpper()
+              + "/sdk.js#xfbml=1&version=v2.9&appId=" + domain.facebook_app_id + "';")
+      fjs.parentNode.insertBefore(js, fjs);
+    }(document, 'script', 'facebook-jssdk'));
+
+</script>
 
 @* Twitter *@
 <script type="text/javascript">

@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Net.Mail;
 using System.Data.SqlTypes;
+using Newtonsoft.Json.Linq;
 
 /// <summary>
 /// This class contains methods to make sure that data is valid
@@ -188,5 +189,45 @@ public static class AnnytabDataValidation
         return localeCode;
 
     } // End of the GetPaysonLocaleCode method
+
+    /// <summary>
+    /// Get a json object from a string, null if the string not is json
+    /// </summary>
+    /// <param name="jsonString">A json string</param>
+    /// <returns>A JObject or null if the string not is json</returns>
+    public static JObject GetJsonObject(string jsonString)
+    {
+        // Create the object to return
+        JObject jsonObject = null;
+
+        try
+        {
+            // Create a json object
+            jsonObject = JObject.Parse(jsonString);
+        }
+        catch (Exception ex)
+        {
+            string exMessage = ex.Message;
+        }
+
+        // Return the json object
+        return jsonObject;
+
+    } // End of the GetJsonObject method
+
+    /// <summary>
+    /// Get a string from a json object
+    /// </summary>
+    /// <param name="jToken">A reference to a JToken</param>
+    /// <returns>A json string</returns>
+    public static string GetJsonString(JToken jToken)
+    {
+        // Create the string to return
+        string jsonString = jToken != null ? jToken.ToString() : "";
+
+        // Return the string
+        return jsonString;
+
+    } // End of the GetJsonString method
 
 } // End of the class
