@@ -377,7 +377,7 @@ public class CartItem
                 total_quantity += item.quantity;
 
                 // Add to the total sum (price * quantity)
-                total_amount += Math.Round(price * quantity * 100, MidpointRounding.AwayFromZero) / decimalMultiplier;
+                total_amount += Math.Round(price * quantity * decimalMultiplier, MidpointRounding.AwayFromZero) / decimalMultiplier;
             }
         }
 

@@ -48,9 +48,8 @@ public class AnnytabRequireHttpsAttribute : RequireHttpsAttribute
             uriBuilder.Host = domain.web_address.Contains("www.") == true && uriBuilder.Host.Contains("www.") == false ? "www." + uriBuilder.Host : uriBuilder.Host;
             uriBuilder.Port = 443;
 
-            // Redirect to the https add
-            filterContext.HttpContext.Response.StatusCode = 301;
-            filterContext.HttpContext.Response.Redirect(uriBuilder.Uri.AbsoluteUri);
+            // Redirect to https (301)
+            filterContext.HttpContext.Response.RedirectPermanent(uriBuilder.Uri.AbsoluteUri);
         }
         else if (domain.web_address.Contains("www.") == true && host.Contains("www.") == false)
         {
@@ -58,9 +57,8 @@ public class AnnytabRequireHttpsAttribute : RequireHttpsAttribute
             UriBuilder uriBuilder = new UriBuilder(filterContext.HttpContext.Request.Url);
             uriBuilder.Host = domain.web_address.Contains("www.") == true && uriBuilder.Host.Contains("www.") == false ? "www." + uriBuilder.Host : uriBuilder.Host;
 
-            // Redirect to the https add
-            filterContext.HttpContext.Response.StatusCode = 301;
-            filterContext.HttpContext.Response.Redirect(uriBuilder.Uri.AbsoluteUri);
+            // Redirect to www (301)
+            filterContext.HttpContext.Response.RedirectPermanent(uriBuilder.Uri.AbsoluteUri);
         }
 
     } // End of the HandleNonHttpsRequest method
@@ -84,9 +82,8 @@ public class AnnytabRequireHttpsAttribute : RequireHttpsAttribute
             UriBuilder uriBuilder = new UriBuilder(filterContext.HttpContext.Request.Url);
             uriBuilder.Host = domain.web_address.Contains("www.") == true && uriBuilder.Host.Contains("www.") == false ? "www." + uriBuilder.Host : uriBuilder.Host;
 
-            // Redirect to the https add
-            filterContext.HttpContext.Response.StatusCode = 301;
-            filterContext.HttpContext.Response.Redirect(uriBuilder.Uri.AbsoluteUri);
+            // Redirect to www (301)
+            filterContext.HttpContext.Response.RedirectPermanent(uriBuilder.Uri.AbsoluteUri);
         }
 
     } // End of the HandleHttpsRequest method
