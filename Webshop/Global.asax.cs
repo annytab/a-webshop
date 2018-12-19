@@ -19,7 +19,7 @@ namespace Annytab.Webshop
         protected void Application_Start()
         {
             // Upgrade the database to the latest version
-            DatabaseManager.UpgradeDatabase();
+            DatabaseManager.UpgradeDatabase().Wait();
 
             // Get all virtual paths and create a virtual path provider
             System.Web.Hosting.HostingEnvironment.RegisterVirtualPathProvider(new AnnytabPathProvider());

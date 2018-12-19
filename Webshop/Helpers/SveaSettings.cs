@@ -167,7 +167,7 @@ public class SveaSettings : Webpay.Integration.CSharp.Config.IConfigurationProvi
         string sveaTest = webshopSettings.Get("SVEA-TEST");
 
         // Check if we are in the test mode or the production mode
-        if(sveaTest.ToLower() == "true")
+        if (sveaTest.ToLower() == "true")
         {
             return type == Webpay.Integration.CSharp.Util.Constant.PaymentType.HOSTED ? Webpay.Integration.CSharp.Config.SveaConfig.GetTestPayPageUrl() : Webpay.Integration.CSharp.Config.SveaConfig.GetTestWebserviceUrl();
         }

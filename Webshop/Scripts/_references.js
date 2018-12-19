@@ -1,4 +1,6 @@
-﻿/// <autosync enabled="true" />
+﻿/// <reference path="jquery-ui-1.12.1.js" />
+/// <reference path="jquery-3.3.1.js" />
+/// <autosync enabled="true" />
 /// <reference path="annytab.spin-image-360.js" />
 /// <reference path="annytab_admin/annytab.default.js" />
 /// <reference path="annytab_admin/annytab.edit-image-map.js" />

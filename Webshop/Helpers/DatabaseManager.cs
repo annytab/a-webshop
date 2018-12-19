@@ -7,7 +7,9 @@ using System.Text;
 using System.IO.Compression;
 using System.Data.SqlClient;
 using System.Threading;
+using System.Threading.Tasks;
 using Annytab.AzureLock;
+using System.Web.Hosting;
 
 /// <summary>
 /// This class handles the creation of the database and upgrades of the database
@@ -25,7 +27,7 @@ public static class DatabaseManager
     /// <summary>
     /// Upgrade the database
     /// </summary>
-    public static void UpgradeDatabase()
+    public async static Task UpgradeDatabase()
     {
         // Variables
         string azureStorageAccount = Tools.GetAzureStorageAccount();
@@ -39,14 +41,22 @@ public static class DatabaseManager
 
             try
             {
+                // Create blob lock options
+                BlobLockOptions options = new BlobLockOptions
+                {
+                    connection_string = azureStorageAccount,
+                    container_name = "locks",
+                    blob_name = GetLockFilename()
+                };
+
                 // Create a blob lock
-                blobLock = new BlobLock(azureStorageAccount, "locks", GetLockFilename());
+                blobLock = new BlobLock(options);
 
                 // Do work inside a blob lock
-                if (blobLock.CreateOrSkip() == true)
+                if (await blobLock.CreateOrSkip() == true)
                 {
                     // Get the database version
-                    if(Int32.TryParse(blobLock.ReadFrom(), out currentDatabaseVersion) == false)
+                    if(Int32.TryParse(await blobLock.ReadFrom(), out currentDatabaseVersion) == false)
                     {
                         currentDatabaseVersion = GetDatabaseVersion();
                     }
@@ -55,7 +65,7 @@ public static class DatabaseManager
                     UpgradeDatabaseFromFiles(currentDatabaseVersion);
 
                     // Set the new database version
-                    blobLock.WriteTo(DATABASE_VERSION.ToString());
+                    await blobLock.WriteTo(DATABASE_VERSION.ToString());
                 }
             }
             catch (Exception ex)
@@ -193,7 +203,7 @@ public static class DatabaseManager
         string fileContent = "";
 
         // Set the filename
-        string filename = HttpContext.Current.Server.MapPath("/DatabaseFiles/db_version_" + databaseVersion.ToString() + ".sql");
+        string filename = HostingEnvironment.MapPath("/DatabaseFiles/db_version_" + databaseVersion.ToString() + ".sql");
 
         // Check if the file exists
         if (File.Exists(filename) == false)
@@ -311,7 +321,7 @@ public static class DatabaseManager
     {
 
         // Set the filename
-        string filename = HttpContext.Current.Server.MapPath("/DatabaseFiles/DatabaseVersion.xml.gz");
+        string filename = HostingEnvironment.MapPath("/DatabaseFiles/DatabaseVersion.xml.gz");
 
         // Create variables
         GZipStream gzipStream = null;
@@ -384,7 +394,7 @@ public static class DatabaseManager
         Int32 databaseVersion = 0;
 
         // Set the filename
-        string filename = HttpContext.Current.Server.MapPath("/DatabaseFiles/DatabaseVersion.xml.gz");
+        string filename = HostingEnvironment.MapPath("/DatabaseFiles/DatabaseVersion.xml.gz");
 
         // Check if the file exists
         if (File.Exists(filename) == false)

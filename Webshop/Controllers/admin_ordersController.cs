@@ -526,7 +526,7 @@ namespace Annytab.Webshop.Controllers
                     // Set invoice values
                     inoviceBuilder.SetOrderId(sveaOrderId);
                     inoviceBuilder.SetNumberOfCreditDays(15);
-                    inoviceBuilder.SetInvoiceDistributionType(Webpay.Integration.CSharp.Util.Constant.InvoiceDistributionType.POST);
+                    inoviceBuilder.SetInvoiceDistributionType(Webpay.Integration.CSharp.Util.Constant.DistributionType.POST);
                     inoviceBuilder.SetCountryCode(SveaSettings.GetSveaCountryCode(order.country_code));
 
                     // Make the request to send the invoice
