@@ -5,6 +5,7 @@ using System.Web.Mvc;
 using System.Web.Optimization;
 using System.Web.Routing;
 using System.Threading;
+using System.Net;
 
 namespace Annytab.Webshop
 {
@@ -34,6 +35,11 @@ namespace Annytab.Webshop
             Thread oThread = new Thread(new ThreadStart(SessionAgent.Run));
             oThread.IsBackground = true;
             oThread.Start();
+
+            // Force the http client to honour DNS changes
+            ServicePointManager.FindServicePoint(new Uri("https://graph.facebook.com")).ConnectionLeaseTimeout = 60 * 1000;
+            ServicePointManager.FindServicePoint(new Uri("https://accounts.google.com")).ConnectionLeaseTimeout = 60 * 1000;
+            ServicePointManager.FindServicePoint(new Uri("https://www.googleapis.com")).ConnectionLeaseTimeout = 60 * 1000;
 
         } // End of the Application_Start method
 

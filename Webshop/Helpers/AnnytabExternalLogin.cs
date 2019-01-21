@@ -1,10 +1,8 @@
 ﻿using System.Collections.Generic;
-using System.Web;
 using System.Net.Http;
 using System.Net.Http.Headers;
 using System.Threading.Tasks;
 using Newtonsoft.Json;
-using Newtonsoft.Json.Linq;
 
 /// <summary>
 /// This class includes helper methods for external logins
@@ -12,167 +10,149 @@ using Newtonsoft.Json.Linq;
 public static class AnnytabExternalLogin
 {
     /// <summary>
-    /// Get a facebook access token
+    /// Get a facebook user
     /// </summary>
-    /// <param name="domain">A reference to the current domain</param>
-    /// <param name="code">The code to exchange for an acess token</param>
-    /// <returns>The access token as a string</returns>
-    public async static Task<string> GetFacebookAccessToken(Domain domain, string code)
+    public async static Task<FacebookUser> GetFacebookUser(Domain current_domain, string code)
     {
-        // Create a string to get the access token
-        string accessString = "";
+        // Create variables
+        FacebookAuthorization facebook_authorization = null;
+        FacebookUser facebook_user = null;
 
-        // Create the url
-        string url = "https://graph.facebook.com/oauth/access_token?client_id=" + domain.facebook_app_id + "&redirect_uri="
-            + HttpContext.Current.Server.UrlEncode(domain.web_address + "/customer/facebook_login_callback") + "&client_secret=" 
-            + domain.facebook_app_secret + "&code=" + code;
+        // Get a static http client
+        HttpClient client = DefaultHttpClient.Get();
 
-        // Create a http client
-        HttpClient client = new HttpClient();
-        client.DefaultRequestHeaders.Accept.Clear();
-        client.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue("application/json"));
+        // Create a request message
+        HttpRequestMessage request = new HttpRequestMessage(HttpMethod.Get, "https://graph.facebook.com/oauth/access_token?client_id=" + current_domain.facebook_app_id + "&redirect_uri="
+            + current_domain.web_address + "/customer/facebook_login_callback" + "&client_secret=" + current_domain.facebook_app_secret + "&code=" + code);
+        request.Headers.Accept.Add(new MediaTypeWithQualityHeaderValue("application/json"));
+        request.Headers.AcceptEncoding.Add(new StringWithQualityHeaderValue("Gzip"));
+        request.Headers.AcceptEncoding.Add(new StringWithQualityHeaderValue("Deflate"));
 
-        // Get the post
-        HttpResponseMessage response = await client.GetAsync(url);
+        // Get the response
+        HttpResponseMessage response = await client.SendAsync(request);
 
         // Make sure that the response is successful
         if (response.IsSuccessStatusCode)
         {
-            accessString = await response.Content.ReadAsStringAsync();
+            // Get facebook authorization
+            facebook_authorization = JsonConvert.DeserializeObject<FacebookAuthorization>(await response.Content.ReadAsStringAsync());
         }
-
-        // Dispose of the client
-        client.Dispose();
-
-        // Convert the string to a json object
-        JObject token = AnnytabDataValidation.GetJsonObject(accessString);
-
-        // Get the access token
-        string access_token = token != null ? AnnytabDataValidation.GetJsonString(token["access_token"]) : "";
-
-        // Return the access token
-        return access_token;
-
-    } // End of the GetFacebookAccessToken method
-
-    /// <summary>
-    /// Get a facebook user as a dictionary
-    /// </summary>
-    /// <param name="domain">A reference to the current domain</param>
-    /// <param name="access_token">The access token</param>
-    /// <returns>A dictionary with user information</returns>
-    public async static Task<Dictionary<string, object>> GetFacebookUser(Domain domain, string access_token)
-    {
-        // Create a dictionary to return
-        Dictionary<string, object> facebookUser = new Dictionary<string, object>();
-
-        // Create the new url
-        string url = "https://graph.facebook.com/me?access_token=" + access_token;
-
-        // Create a http client
-        HttpClient client = new HttpClient();
-        client.DefaultRequestHeaders.Accept.Clear();
-        client.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue("application/json"));
-
-        // Get the facebook user
-        HttpResponseMessage response = await client.GetAsync(url);
-
-        // Make sure that the response is successful
-        if (response.IsSuccessStatusCode)
+        else
         {
-            facebookUser = await response.Content.ReadAsAsync<Dictionary<string, object>>();
+            // Get an error
+            FacebookErrorRoot root = JsonConvert.DeserializeObject<FacebookErrorRoot>(await response.Content.ReadAsStringAsync());
         }
 
-        // Dispose of the client
-        client.Dispose();
+        // Make sure that facebook authorization not is null
+        if (facebook_authorization == null)
+        {
+            return null;
+        }
 
-        // Return the facebook user
-        return facebookUser;
+        // Create a request message with a modified url
+        request = new HttpRequestMessage(HttpMethod.Get, "https://graph.facebook.com/me?fields=id,name&access_token=" + facebook_authorization.access_token);
+        request.Headers.Accept.Add(new MediaTypeWithQualityHeaderValue("application/json"));
+        request.Headers.AcceptEncoding.Add(new StringWithQualityHeaderValue("Gzip"));
+        request.Headers.AcceptEncoding.Add(new StringWithQualityHeaderValue("Deflate"));
 
-    } // End of the GetFacebookUser method
-
-    /// <summary>
-    /// Get a google access token
-    /// </summary>
-    /// <param name="domain">A reference to the current domain</param>
-    /// <param name="code">The code to exchange for an acess token</param>
-    /// <returns>The access token as a string</returns>
-    public async static Task<string> GetGoogleAccessToken(Domain domain, string code)
-    {
-        // Create a http client
-        HttpClient client = new HttpClient();
-        client.DefaultRequestHeaders.Accept.Clear();
-        client.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue("application/json"));
-
-        // Create a dictionary with data
-        Dictionary<string, string> data = new Dictionary<string, string>(10);
-        data.Add("code", code);
-        data.Add("client_id", domain.google_app_id);
-        data.Add("client_secret", domain.google_app_secret);
-        data.Add("redirect_uri", domain.web_address + "/customer/google_login_callback");
-        data.Add("grant_type", "authorization_code");
-
-        // Create the content
-        HttpContent content = new FormUrlEncodedContent(data);
-
-        // Post the data
-        HttpResponseMessage response = await client.PostAsync("https://accounts.google.com/o/oauth2/token", content);
-
-        // Create a string for the response data
-        string responseData = "";
+        // Get the response
+        response = await client.SendAsync(request);
 
         // Make sure that the response is successful
         if (response.IsSuccessStatusCode == true)
         {
-            // Get the response data
-            responseData = await response.Content.ReadAsStringAsync();
+            // Get a facebook user
+            facebook_user = JsonConvert.DeserializeObject<FacebookUser>(await response.Content.ReadAsStringAsync());
+        }
+        else
+        {
+            // Get an error
+            FacebookErrorRoot root = JsonConvert.DeserializeObject<FacebookErrorRoot>(await response.Content.ReadAsStringAsync());
         }
 
-        // Close the client
-        client.Dispose();
+        // Return a facebook user
+        return facebook_user;
 
-        // Convert the json response to a dictionary
-        Dictionary<string, object> googleData = JsonConvert.DeserializeObject<Dictionary<string, object>>(responseData);
-
-        // Get the access token
-        string access_token = googleData.ContainsKey("access_token") == true ? googleData["access_token"].ToString() : "";
-
-        // Return the access token
-        return access_token;
-
-    } // End of the GetGoogleAccessToken method
+    } // End of the GetFacebookUser method
 
     /// <summary>
-    /// Get a google user as a dictionary
+    /// Get a google user
     /// </summary>
-    /// <param name="domain">A reference to the current domain</param>
-    /// <param name="access_token">The access token</param>
-    /// <returns>A dictionary with user information</returns>
-    public async static Task<Dictionary<string, object>> GetGoogleUser(Domain domain, string access_token)
+    public async static Task<GoogleUser> GetGoogleUser(Domain domain, string code)
     {
-        // Create the dictionary to return
-        Dictionary<string, object> googleUser = new Dictionary<string, object>();
+        // Create variables
+        HttpRequestMessage request = null;
+        HttpResponseMessage response = null;
+        GoogleAuthorization google_authorization = null;
+        GoogleUser google_user = null;
 
-        // Create a http client
-        HttpClient client = new HttpClient();
-        client.DefaultRequestHeaders.Accept.Clear();
-        client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", access_token);
-        client.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue("application/json"));
+        // Get a static http client
+        HttpClient client = DefaultHttpClient.Get();
 
-        // Get the post
-        HttpResponseMessage response = await client.GetAsync("https://www.googleapis.com/plus/v1/people/me?key=" + domain.google_app_id);
+        // Create a dictionary with data
+        Dictionary<string, string> input = new Dictionary<string, string>(10);
+        input.Add("code", code);
+        input.Add("client_id", domain.google_app_id);
+        input.Add("client_secret", domain.google_app_secret);
+        input.Add("redirect_uri", domain.web_address + "/customer/google_login_callback");
+        input.Add("grant_type", "authorization_code");
 
-        // Make sure that the response is successful
-        if (response.IsSuccessStatusCode)
+        // Use form data content
+        using (FormUrlEncodedContent content = new FormUrlEncodedContent(input))
         {
-            googleUser = await response.Content.ReadAsAsync<Dictionary<string, object>>();
+            // Create a request message
+            request = new HttpRequestMessage(HttpMethod.Post, "https://accounts.google.com/o/oauth2/token");
+            request.Headers.Accept.Add(new MediaTypeWithQualityHeaderValue("application/json"));
+            request.Headers.AcceptEncoding.Add(new StringWithQualityHeaderValue("Gzip"));
+            request.Headers.AcceptEncoding.Add(new StringWithQualityHeaderValue("Deflate"));
+            request.Content = content;
+
+            // Get a response
+            response = await client.SendAsync(request);
+
+            // Make sure that the response is successful
+            if (response.IsSuccessStatusCode == true)
+            {
+                // Get google authorization
+                google_authorization = JsonConvert.DeserializeObject<GoogleAuthorization>(await response.Content.ReadAsStringAsync());
+            }
+            else
+            {
+                // Get error information
+                string data = await response.Content.ReadAsStringAsync();
+            }
+        }
+            
+        // Make sure that google authorization not is null
+        if(google_authorization == null)
+        {
+            return null;
         }
 
-        // Close the client
-        client.Dispose();
+        // Create a request message
+        request = new HttpRequestMessage(HttpMethod.Get, "https://www.googleapis.com/plus/v1/people/me?key=" + domain.google_app_id);
+        request.Headers.Authorization = new AuthenticationHeaderValue("Bearer", google_authorization.access_token);
+        request.Headers.Accept.Add(new MediaTypeWithQualityHeaderValue("application/json"));
+        request.Headers.AcceptEncoding.Add(new StringWithQualityHeaderValue("Gzip"));
+        request.Headers.AcceptEncoding.Add(new StringWithQualityHeaderValue("Deflate"));
 
-        // Return the google user
-        return googleUser;
+        // Get a response
+        response = await client.SendAsync(request);
+
+        // Make sure that the response is successful
+        if (response.IsSuccessStatusCode == true)
+        {
+            // Get a google user
+            google_user = JsonConvert.DeserializeObject<GoogleUser>(await response.Content.ReadAsStringAsync());
+        }
+        else
+        {
+            // Get error information
+            string data = await response.Content.ReadAsStringAsync();
+        }
+
+        // Return a google user
+        return google_user;
 
     } // End of the GetGoogleUser method
 

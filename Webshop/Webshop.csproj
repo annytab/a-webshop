@@ -233,6 +233,7 @@
     <Compile Include="Helpers\ApiAuthorizeAttribute.cs" />
     <Compile Include="Helpers\AnnytabDataValidation.cs" />
     <Compile Include="Helpers\AnnytabRequireHttpsAttribute.cs" />
+    <Compile Include="Helpers\DefaultHttpClient.cs" />
     <Compile Include="Helpers\PayExManager.cs" />
     <Compile Include="Helpers\Pricerunner.cs" />
     <Compile Include="Helpers\PriceSpy.cs" />
@@ -245,8 +246,13 @@
     <Compile Include="Helpers\SqlSessionStateProvider.cs" />
     <Compile Include="Helpers\StringHtmlExtensions.cs" />
     <Compile Include="Helpers\SveaSettings.cs" />
+    <Compile Include="Models\FacebookAuthorization.cs" />
+    <Compile Include="Models\FacebookError.cs" />
+    <Compile Include="Models\FacebookUser.cs" />
     <Compile Include="Models\GiftCard.cs" />
     <Compile Include="Models\DiscountCode.cs" />
+    <Compile Include="Models\GoogleAuthorization.cs" />
+    <Compile Include="Models\GoogleUser.cs" />
     <Compile Include="Models\InspirationImageMap.cs" />
     <Compile Include="Models\OrderGiftCard.cs" />
     <Compile Include="Models\WebshopSession.cs" />

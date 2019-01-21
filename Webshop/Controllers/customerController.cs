@@ -140,16 +140,12 @@ namespace Annytab.Webshop.Controllers
                 return Redirect("/");
             }
 
-            // Get the access token
-            string access_token = await AnnytabExternalLogin.GetFacebookAccessToken(domain, code);
-
             // Get the facebook user
-            Dictionary<string, object> facebookUser = await AnnytabExternalLogin.GetFacebookUser(domain, access_token);
+            FacebookUser facebook_user = await AnnytabExternalLogin.GetFacebookUser(domain, code);
                 
             // Get the facebook data
-            string facebookId = facebookUser.ContainsKey("id") == true ? facebookUser["id"].ToString() : "";
-            string facebookName = facebookUser.ContainsKey("name") == true ? facebookUser["name"].ToString() : "";
-            string facebookEmail = facebookId + "_facebook";
+            string facebookId = facebook_user != null ? facebook_user.id : "";
+            string facebookName = facebook_user != null ? facebook_user.name : "";
 
             // Get webshop settings
             KeyStringList webshopSettings = WebshopSetting.GetAllFromCache();
@@ -159,7 +155,7 @@ namespace Annytab.Webshop.Controllers
             Customer customer = Customer.GetSignedInCustomer();
 
             // Check if the customer exists or not
-            if (facebookId != "" && customer != null)
+            if (string.IsNullOrEmpty(facebookId) == false && customer != null)
             {
                 // Update the customer
                 customer.facebook_user_id = facebookId;
@@ -168,7 +164,7 @@ namespace Annytab.Webshop.Controllers
                 // Redirect the customer to his start page
                 return RedirectToAction("index", "customer");
             }
-            else if (facebookId != "" && customer == null)
+            else if (string.IsNullOrEmpty(facebookId) == false && customer == null)
             {
                 // Check if we can find a customer with the facebook id
                 customer = Customer.GetOneByFacebookUserId(facebookId);
@@ -178,7 +174,7 @@ namespace Annytab.Webshop.Controllers
                 {
                     // Create a new customer
                     customer = new Customer();
-                    customer.email = facebookEmail;
+                    customer.email = facebookId + "_facebook";
                     customer.customer_type = 0;
                     customer.language_id = domain.front_end_language;
                     customer.contact_name = AnnytabDataValidation.TruncateString(facebookName, 100);
@@ -284,15 +280,12 @@ namespace Annytab.Webshop.Controllers
                 return Redirect("/");
             }
 
-            // Get the access token
-            string access_token = await AnnytabExternalLogin.GetGoogleAccessToken(domain, code);
-
             // Get the google user
-            Dictionary<string, object> googleUser = await AnnytabExternalLogin.GetGoogleUser(domain, access_token);
+            GoogleUser google_user = await AnnytabExternalLogin.GetGoogleUser(domain, code);
 
             // Get the google data
-            string googleId = googleUser.ContainsKey("id") == true ? googleUser["id"].ToString() : "";
-            string googleName = googleUser.ContainsKey("displayName") == true ? googleUser["displayName"].ToString() : "";
+            string googleId = google_user != null ? google_user.id : "";
+            string googleName = google_user != null == true ? google_user.displayName : "";
 
             // Get webshop settings
             KeyStringList webshopSettings = WebshopSetting.GetAllFromCache();
@@ -302,7 +295,7 @@ namespace Annytab.Webshop.Controllers
             Customer customer = Customer.GetSignedInCustomer();
 
             // Check if the customer exists or not
-            if (googleId != "" && customer != null )
+            if (string.IsNullOrEmpty(googleId) == false && customer != null )
             {
                 // Update the customer
                 customer.google_user_id = googleId;
@@ -311,7 +304,7 @@ namespace Annytab.Webshop.Controllers
                 // Redirect the customer to his start page
                 return RedirectToAction("index", "customer");
             }
-            else if (googleId != "" && customer == null)
+            else if (string.IsNullOrEmpty(googleId) == false && customer == null)
             {
                 // Check if we can find a customer with the google id
                 customer = Customer.GetOneByGoogleUserId(googleId);
